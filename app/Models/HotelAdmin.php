@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+
+class HotelAdmin extends Authenticatable
+{
+    use Notifiable;
+
+    protected $table = 'hotel_admins';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'owner_name',
+        'email',
+        'password',
+        'phone',
+        'hotel_name',
+        'hotel_location',
+        'room_count',
+        'plan_id',
+        'payment_status',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'license_key',
+        'approval_status',
+        'status',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected $casts = [
+        'password' => 'hashed',
+        'status' => 'boolean',
+        'room_count' => 'integer',
+    ];
+
+    /**
+     * Get the plan associated with the hotel admin.
+     */
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class, 'plan_id');
+    }
+}
