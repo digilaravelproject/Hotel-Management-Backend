@@ -7,6 +7,7 @@ use App\Http\Controllers\SuperAdmin\HotelAdminController as SuperHotelController
 use App\Http\Controllers\SuperAdmin\PlanController as SuperPlanController;
 use App\Http\Controllers\SuperAdmin\AmenityController as SuperAmenityController;
 use App\Http\Controllers\SuperAdmin\DeviceController as SuperDeviceController;
+use App\Http\Controllers\SuperAdmin\TemplateController as SuperTemplateController;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,4 +42,9 @@ Route::middleware(['super_admin'])->prefix('super-admin')->name('super-admin.')-
 
     // Connected Devices
     Route::resource('devices', SuperDeviceController::class)->only(['index', 'destroy']);
+
+    // TV Templates Management
+    Route::get('templates', [SuperTemplateController::class, 'index'])->name('templates.index');
+    Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');
+    Route::post('templates/{id}/toggle-active', [SuperTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
 });

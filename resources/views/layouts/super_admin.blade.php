@@ -218,6 +218,12 @@
                         <span>Connected Devices</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('super-admin.templates.*') ? 'active' : '' }}">
+                    <a href="{{ route('super-admin.templates.index') }}">
+                        <i class="fa-solid fa-file-code"></i>
+                        <span>TV Templates</span>
+                    </a>
+                </li>
             </ul>
             <div style="padding: 20px; border-top: 1px solid var(--border-dark);">
                 <form action="{{ route('super-admin.logout') }}" method="POST">
