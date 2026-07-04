@@ -25,7 +25,7 @@ class HotelAdminController extends Controller
      */
     public function create()
     {
-        $plans = Plan::where('status', true)->get();
+        $plans = Plan::query()->where('status', '=', true)->get();
         return view('super_admin.hotels.create', compact('plans'));
     }
 
@@ -81,7 +81,7 @@ class HotelAdminController extends Controller
     /**
      * Display the specified hotel admin.
      */
-    public function show($id)
+    public function show(int $id)
     {
         $hotel = HotelAdmin::with('plan')->findOrFail($id);
         return view('super_admin.hotels.show', compact('hotel'));
@@ -90,17 +90,17 @@ class HotelAdminController extends Controller
     /**
      * Show the form for editing the specified hotel admin.
      */
-    public function edit($id)
+    public function edit(int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
-        $plans = Plan::where('status', true)->get();
+        $plans = Plan::query()->where('status', '=', true)->get();
         return view('super_admin.hotels.edit', compact('hotel', 'plans'));
     }
 
     /**
      * Update the specified hotel admin in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
 
@@ -193,7 +193,7 @@ class HotelAdminController extends Controller
     /**
      * Toggle the status of a hotel admin (active/inactive).
      */
-    public function toggleStatus($id)
+    public function toggleStatus(int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
         $hotel->status = !$hotel->status;
@@ -209,7 +209,7 @@ class HotelAdminController extends Controller
     /**
      * Update the approval status of a hotel admin.
      */
-    public function toggleApproval(Request $request, $id)
+    public function toggleApproval(Request $request, int $id)
     {
         $request->validate([
             'approval_status' => 'required|in:pending,approved,disapproved'
@@ -229,7 +229,7 @@ class HotelAdminController extends Controller
     /**
      * Remove the specified hotel admin from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
         $hotel->delete();
