@@ -221,6 +221,12 @@
                         <span>Manage Aminities</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.devices.*') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.devices.index') }}">
+                        <i class="fa-solid fa-tv"></i>
+                        <span>Connected TVs</span>
+                    </a>
+                </li>
             </ul>
             <div style="padding: 20px; border-top: 1px solid var(--border-dark);">
                 <form action="{{ route('hotel.logout') }}" method="POST">

@@ -148,6 +148,9 @@
                             <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="btn btn-outline btn-sm" title="Manage Aminities" style="padding: 8px 10px; color: var(--primary); border-color: rgba(99, 102, 241, 0.2);">
                                 <i class="fa-solid fa-spa"></i>
                             </a>
+                            <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="btn btn-outline btn-sm" title="View Devices" style="padding: 8px 10px; color: #10b981; border-color: rgba(16, 185, 129, 0.2);">
+                                <i class="fa-solid fa-tv"></i>
+                            </a>
                             <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="btn btn-outline btn-sm" title="View details" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-eye"></i>
                             </a>

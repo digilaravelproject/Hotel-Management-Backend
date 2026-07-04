@@ -65,4 +65,20 @@ class HotelAdmin extends Authenticatable
     {
         return $this->belongsTo(Plan::class, 'plan_id');
     }
+
+    /**
+     * Get the connected devices for this hotel.
+     */
+    public function connectedDevices()
+    {
+        return $this->hasMany(ConnectedDevice::class, 'hotel_admin_id');
+    }
+
+    /**
+     * Get the allowed device limit (room_count).
+     */
+    public function getAllowedDeviceLimitAttribute()
+    {
+        return $this->room_count;
+    }
 }
