@@ -18,10 +18,12 @@
         opacity: 0;
         visibility: hidden;
         transition: all 0.3s ease-in-out;
+        pointer-events: none;
     }
     .modal-overlay.show {
         opacity: 1;
         visibility: visible;
+        pointer-events: auto;
     }
     .modal-card {
         background: var(--bg-card, #ffffff);
@@ -116,6 +118,7 @@
                             <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">Version</th>
                             <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">File Location</th>
                             <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">Uploaded At</th>
+                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">File Size</th>
                             <th style="padding: 12px; font-weight: 600; color: var(--text-muted); text-align: center;">Status</th>
                             <th style="padding: 12px; font-weight: 600; color: var(--text-muted); text-align: right;">Action</th>
                         </tr>
@@ -133,6 +136,26 @@
                                 </td>
                                 <td style="padding: 12px; font-size: 14px; color: var(--text-muted);">
                                     {{ $template->created_at->format('d M Y, h:i A') }}
+                                </td>
+                                <td style="padding: 12px; font-size: 14px; color: var(--text-main); font-weight: 500;">
+                                    @php
+                                        $sizeBytes = 0;
+                                        try {
+                                            if (Storage::disk('public')->exists($template->file_path)) {
+                                                $sizeBytes = Storage::disk('public')->size($template->file_path);
+                                            }
+                                        } catch(\Exception $e) {}
+                                        
+                                        $sizeDisplay = '0 KB';
+                                        if ($sizeBytes > 0) {
+                                            if ($sizeBytes >= 1048576) {
+                                                $sizeDisplay = number_format($sizeBytes / 1048576, 2) . ' MB';
+                                            } else {
+                                                $sizeDisplay = number_format($sizeBytes / 1024, 2) . ' KB';
+                                            }
+                                        }
+                                    @endphp
+                                    {{ $sizeDisplay }}
                                 </td>
                                 <td style="padding: 12px; text-align: center;">
                                     @if($template->is_active)

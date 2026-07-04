@@ -41,7 +41,7 @@ class TvTemplateController extends Controller
             'message' => 'Template version details fetched successfully.',
             'latest_version' => $latest->version,
             'old_version' => $previous ? $previous->version : null,
-            'download_url' => Storage::url($latest->file_path),
+            'download_url' => url(Storage::url($latest->file_path)),
             'uploaded_at' => $latest->created_at->toIso8601String(),
         ], 200);
     }
