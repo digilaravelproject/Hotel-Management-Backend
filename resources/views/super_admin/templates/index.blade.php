@@ -53,6 +53,14 @@
         border-radius: 5px;
         transition: width 0.1s linear;
     }
+    @keyframes progress-pulse {
+        0% { opacity: 1; box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+        50% { opacity: 0.7; box-shadow: 0 0 15px rgba(99, 102, 241, 0.8); }
+        100% { opacity: 1; box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+    }
+    .progress-bar-fill.pulse {
+        animation: progress-pulse 1.5s infinite ease-in-out;
+    }
 </style>
 
 <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
@@ -220,6 +228,9 @@
         xhr.setRequestHeader('Accept', 'application/json');
 
         // Track upload progress events
+        let statusInterval = null;
+        let elapsed = 0;
+
         xhr.upload.addEventListener('progress', function(e) {
             if (e.lengthComputable) {
                 const percentComplete = Math.round((e.loaded / e.total) * 100);
@@ -230,16 +241,44 @@
                 progressBytes.innerText = formatMB(e.loaded) + ' / ' + formatMB(e.total);
 
                 if (percentComplete === 100) {
-                    statusText.innerText = 'Upload complete! Saving template file to storage disk...';
+                    if (!statusInterval) {
+                        progressFill.classList.add('pulse');
+                        statusText.innerText = 'Upload complete! Saving template file to storage disk...';
+                        statusInterval = setInterval(function() {
+                            elapsed += 2;
+                            if (elapsed === 2) {
+                                statusText.innerText = 'Writing archive to server SSD storage...';
+                            } else if (elapsed === 4) {
+                                statusText.innerText = 'Verifying files and registering version...';
+                            } else if (elapsed === 6) {
+                                statusText.innerText = 'Deactivating previous versions...';
+                            } else if (elapsed === 8) {
+                                statusText.innerText = 'Almost done! Finalizing deployment setup...';
+                            } else if (elapsed >= 10) {
+                                statusText.innerText = 'Almost done! Please wait a moment...';
+                            }
+                        }, 2000);
+                    }
                 } else {
                     statusText.innerText = 'Transferring zip file...';
                 }
             }
         });
 
+        // Helper to clear resources
+        function cleanupUploadUI() {
+            modal.classList.remove('show');
+            progressFill.classList.remove('pulse');
+            if (statusInterval) {
+                clearInterval(statusInterval);
+                statusInterval = null;
+            }
+            elapsed = 0;
+        }
+
         // Track request response complete
         xhr.addEventListener('load', function() {
-            modal.classList.remove('show');
+            cleanupUploadUI();
             
             if (xhr.status >= 200 && xhr.status < 300) {
                 // Success: Reload page to show new version logs
@@ -267,7 +306,7 @@
 
         // Track network / connection errors
         xhr.addEventListener('error', function() {
-            modal.classList.remove('show');
+            cleanupUploadUI();
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Upload & Deploy';
             
