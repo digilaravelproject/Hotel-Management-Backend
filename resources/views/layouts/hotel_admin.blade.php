@@ -141,6 +141,61 @@
                 padding: 24px 16px;
             }
         }
+
+        /* Profile Dropdown Styling */
+        .topbar .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .topbar .dropdown-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+        
+        .topbar .dropdown-btn:hover {
+            background-color: var(--bg-main);
+        }
+        
+        .topbar .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: var(--bg-card);
+            min-width: 190px;
+            box-shadow: var(--shadow-lg);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            z-index: 101;
+            overflow: hidden;
+            margin-top: 8px;
+            animation: fadeIn 0.2s ease-out;
+        }
+        
+        .topbar .dropdown-content a {
+            color: var(--text-main);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .topbar .dropdown-content a:hover {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
     </style>
     @yield('styles')
 </head>
@@ -154,10 +209,16 @@
                 <span>Hotel Admin</span>
             </div>
             <ul class="sidebar-menu">
-                <li class="sidebar-item active">
+                <li class="sidebar-item {{ Request::routeIs('hotel.dashboard') ? 'active' : '' }}">
                     <a href="{{ route('hotel.dashboard') }}">
                         <i class="fa-solid fa-gauge"></i>
                         <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.amenities.*') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.amenities.index') }}">
+                        <i class="fa-solid fa-spa"></i>
+                        <span>Manage Aminities</span>
                     </a>
                 </li>
             </ul>
@@ -181,10 +242,39 @@
                     </button>
                     <h2 class="topbar-title">@yield('page_title', 'Hotel Portal')</h2>
                 </div>
-                <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
                     <span style="font-size: 14px; color: var(--text-muted); font-weight: 500;">
                         <i class="fa-regular fa-clock" style="margin-right: 6px;"></i>{{ date('d M, Y') }}
                     </span>
+                    
+                    <div class="dropdown">
+                        <button class="dropdown-btn" id="profileDropdownBtn">
+                            @if(Auth::guard('hotel_admin')->user()->hotel_logo)
+                                <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                            @else
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                                    {{ substr(Auth::guard('hotel_admin')->user()->owner_name, 0, 1) }}
+                                </div>
+                            @endif
+                            <span>{{ Auth::guard('hotel_admin')->user()->owner_name }}</span>
+                            <i class="fa-solid fa-chevron-down" style="font-size: 11px; color: var(--text-muted);"></i>
+                        </button>
+                        <div class="dropdown-content" id="profileDropdownContent">
+                            <a href="{{ route('hotel.profile') }}">
+                                <i class="fa-regular fa-user" style="margin-right: 8px; color: var(--primary);"></i>Update Profile
+                            </a>
+                            <a href="{{ route('hotel.hotel-info') }}">
+                                <i class="fa-solid fa-hotel" style="margin-right: 8px; color: var(--secondary);"></i>Update Hotel Info
+                            </a>
+                            <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
+                            <form action="{{ route('hotel.logout') }}" method="POST" style="margin: 0;">
+                                @csrf
+                                <button type="submit" style="color: var(--danger); padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; font-weight: 500; background: none; border: none; width: 100%; text-align: left; cursor: pointer; transition: var(--transition);">
+                                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i>Sign Out
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </header>
 
@@ -213,6 +303,21 @@
         }
 
         document.addEventListener('DOMContentLoaded', function() {
+            // Toggle profile dropdown
+            const dropdownBtn = document.getElementById('profileDropdownBtn');
+            const dropdownContent = document.getElementById('profileDropdownContent');
+            if (dropdownBtn && dropdownContent) {
+                dropdownBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const isVisible = dropdownContent.style.display === 'block';
+                    dropdownContent.style.display = isVisible ? 'none' : 'block';
+                });
+                
+                document.addEventListener('click', function() {
+                    dropdownContent.style.display = 'none';
+                });
+            }
+
             // Toggle password fields visibility
             document.querySelectorAll('.toggle-password').forEach(function(btn) {
                 btn.addEventListener('click', function() {

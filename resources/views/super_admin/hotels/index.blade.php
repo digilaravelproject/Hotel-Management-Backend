@@ -75,15 +75,33 @@
                 <th>Payment</th>
                 <th>Status</th>
                 <th>Approval</th>
-                <th style="width: 130px;">Actions</th>
+                <th style="width: 170px;">Actions</th>
             </tr>
         </thead>
         <tbody>
             @forelse($hotels as $hotel)
                 <tr id="hotel-row-{{ $hotel->id }}">
                     <td>
-                        <div style="font-weight: 600; color: var(--bg-dark); font-size: 15px;">{{ $hotel->hotel_name }}</div>
-                        <small style="color: var(--text-muted);"><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i>{{ $hotel->hotel_location }}</small>
+                        <div style="display: flex; gap: 12px; align-items: center;">
+                            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; display: flex; align-items: center; justify-content: center;" title="Hotel Logo">
+                                @if($hotel->hotel_logo)
+                                    <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <i class="fa-solid fa-hotel" style="color: var(--text-light); font-size: 16px;"></i>
+                                @endif
+                            </div>
+                            <div style="width: 70px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; display: flex; align-items: center; justify-content: center;" title="Hotel Cover Image">
+                                @if($hotel->hotel_image)
+                                    <img src="{{ asset($hotel->hotel_image) }}" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
+                                @else
+                                    <i class="fa-regular fa-image" style="color: var(--text-light); font-size: 16px;"></i>
+                                @endif
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--bg-dark); font-size: 15px;">{{ $hotel->hotel_name }}</div>
+                                <small style="color: var(--text-muted);"><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i>{{ $hotel->hotel_location }}</small>
+                            </div>
+                        </div>
                     </td>
                     <td>
                         <div style="font-weight: 500;">{{ $hotel->owner_name }}</div>
@@ -127,6 +145,9 @@
                     </td>
                     <td>
                         <div style="display: flex; gap: 8px;">
+                            <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="btn btn-outline btn-sm" title="Manage Aminities" style="padding: 8px 10px; color: var(--primary); border-color: rgba(99, 102, 241, 0.2);">
+                                <i class="fa-solid fa-spa"></i>
+                            </a>
                             <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="btn btn-outline btn-sm" title="View details" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-eye"></i>
                             </a>

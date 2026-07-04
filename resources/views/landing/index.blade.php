@@ -4,25 +4,47 @@
 
 @section('styles')
 <style>
-    /* Premium Landing CSS */
+    /* Dark Premium Theme & Animations */
+    body {
+        background-color: #0b0f19;
+        color: #f1f5f9;
+        font-family: 'Outfit', sans-serif;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Glowing decorative background blobs */
+    .glowing-blob {
+        position: absolute;
+        width: 350px;
+        height: 350px;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(0, 0, 0, 0) 100%);
+        border-radius: 50%;
+        filter: blur(60px);
+        z-index: 0;
+        pointer-events: none;
+    }
+    .blob-1 { top: 5%; left: -5%; }
+    .blob-2 { top: 35%; right: -5%; }
+    .blob-3 { bottom: 10%; left: 15%; }
+
     .navbar {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px 8%;
-        background-color: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border-color);
+        background-color: rgba(11, 15, 25, 0.7);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         position: sticky;
         top: 0;
         z-index: 100;
-        box-shadow: var(--shadow-sm);
     }
     
     .brand {
         font-size: 24px;
         font-weight: 800;
-        color: var(--bg-dark);
+        color: white;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -30,7 +52,7 @@
     
     .brand i {
         color: var(--primary);
-        animation: pulseGlow 2s infinite;
+        animation: pulseGlow 2.5s infinite;
     }
     
     .nav-actions {
@@ -39,7 +61,7 @@
         gap: 16px;
     }
     
-    /* Dropdown Styling */
+    /* Premium Glassmorphic Dropdown */
     .dropdown {
         position: relative;
         display: inline-block;
@@ -49,7 +71,7 @@
         background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
         color: white;
         border: none;
-        padding: 10px 20px;
+        padding: 10px 22px;
         font-weight: 600;
         font-size: 15px;
         border-radius: var(--radius-md);
@@ -57,27 +79,33 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+        transition: var(--transition);
+    }
+    .dropdown-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
     }
     
     .dropdown-content {
         display: none;
         position: absolute;
         right: 0;
-        background-color: var(--bg-card);
-        min-width: 180px;
-        box-shadow: var(--shadow-lg);
+        background-color: rgba(20, 26, 43, 0.95);
+        backdrop-filter: blur(12px);
+        min-width: 190px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
         border-radius: var(--radius-md);
-        border: 1px solid var(--border-color);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         z-index: 101;
         overflow: hidden;
         margin-top: 8px;
-        animation: fadeIn 0.2s ease-out;
+        animation: fadeIn 0.25s ease-out;
     }
     
     .dropdown-content a, .dropdown-content button {
-        color: var(--text-main);
-        padding: 12px 16px;
+        color: #cbd5e1;
+        padding: 12px 18px;
         text-decoration: none;
         display: block;
         font-size: 14px;
@@ -91,8 +119,8 @@
     }
     
     .dropdown-content a:hover, .dropdown-content button:hover {
-        background-color: var(--primary-light);
-        color: var(--primary);
+        background-color: rgba(99, 102, 241, 0.15);
+        color: white;
     }
     
     .dropdown:hover .dropdown-content {
@@ -101,105 +129,149 @@
     
     /* Hero Section */
     .hero {
-        background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.05) 0%, rgba(139, 92, 246, 0.05) 90.1%), var(--bg-card);
-        padding: 100px 8% 80px 8%;
+        padding: 90px 8% 80px 8%;
         text-align: center;
         position: relative;
         overflow: hidden;
+        z-index: 2;
     }
     
     .hero-content {
-        max-width: 800px;
+        max-width: 850px;
         margin: 0 auto;
-        z-index: 2;
-        position: relative;
     }
     
     .hero h1 {
-        font-size: 54px;
+        font-size: 58px;
         font-weight: 800;
         line-height: 1.15;
-        letter-spacing: -1.5px;
-        color: var(--bg-dark);
+        letter-spacing: -2px;
+        color: white;
         margin-bottom: 24px;
     }
     
     .hero h1 span {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     
     .hero p {
         font-size: 20px;
-        color: var(--text-muted);
+        color: #94a3b8;
         margin-bottom: 40px;
-        font-weight: 400;
+        line-height: 1.6;
+    }
+
+    /* TV Mockup */
+    .tv-mockup {
+        margin: 60px auto 0 auto;
+        max-width: 680px;
+        background: #1e1e2f;
+        border: 14px solid #2e2e3f;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.25);
+        aspect-ratio: 16/9;
+        position: relative;
+        overflow: hidden;
+        animation: float 6s ease-in-out infinite;
     }
     
-    /* Stats & Highlights */
+    .tv-mockup::after {
+        content: '';
+        position: absolute;
+        bottom: -28px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 14px;
+        background: #2e2e3f;
+        border-radius: 0 0 10px 10px;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-16px) rotate(0.5deg); }
+        100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    /* Stats */
     .highlights {
         display: flex;
         justify-content: center;
-        gap: 40px;
+        gap: 32px;
         margin-top: 60px;
         flex-wrap: wrap;
     }
     
     .highlight-item {
-        background: var(--bg-card);
-        border: 1px solid var(--border-color);
-        padding: 24px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(8px);
+        padding: 24px 36px;
         border-radius: var(--radius-lg);
         min-width: 200px;
-        box-shadow: var(--shadow-sm);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+        transition: var(--transition);
+    }
+    .highlight-item:hover {
+        transform: translateY(-4px);
+        border-color: rgba(99, 102, 241, 0.3);
+        background: rgba(255, 255, 255, 0.05);
     }
     
     .highlight-item h3 {
-        font-size: 32px;
-        font-weight: 700;
-        color: var(--primary);
+        font-size: 36px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
     }
     
     .highlight-item p {
         font-size: 14px;
-        color: var(--text-muted);
+        color: #94a3b8;
         margin-bottom: 0;
     }
     
     /* Plans Pricing Grid */
     .plans-section {
-        padding: 80px 8%;
+        padding: 100px 8%;
         text-align: center;
+        position: relative;
+        z-index: 2;
     }
     
     .section-title {
-        font-size: 36px;
+        font-size: 40px;
         font-weight: 800;
-        color: var(--bg-dark);
+        color: white;
         margin-bottom: 12px;
-        letter-spacing: -0.5px;
+        letter-spacing: -1px;
     }
     
     .section-desc {
         font-size: 16px;
-        color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto 50px auto;
+        color: #94a3b8;
+        max-width: 620px;
+        margin: 0 auto 60px auto;
+        line-height: 1.6;
     }
     
     .pricing-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
         gap: 30px;
         max-width: 1200px;
         margin: 0 auto;
     }
     
+    /* Premium Glassmorphic Pricing Card */
     .price-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
+        background-color: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: var(--radius-lg);
         padding: 40px 30px;
         text-align: center;
@@ -208,17 +280,23 @@
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
     
     .price-card:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--shadow-xl);
-        border-color: var(--primary);
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.25), 0 0 20px rgba(99, 102, 241, 0.1);
+        border-color: rgba(99, 102, 241, 0.5);
+        background-color: rgba(255, 255, 255, 0.05);
     }
     
     .price-card.popular {
         border: 2px solid var(--primary);
-        box-shadow: var(--shadow-lg);
+        background-color: rgba(99, 102, 241, 0.04);
+        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
+    }
+    .price-card.popular:hover {
+        box-shadow: 0 20px 45px -5px rgba(99, 102, 241, 0.4);
     }
     
     .price-card.popular::before {
@@ -230,39 +308,41 @@
         color: white;
         font-size: 11px;
         font-weight: 700;
-        padding: 4px 8px;
+        padding: 4px 10px;
         border-radius: 4px;
         text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
     
     .plan-name {
-        font-size: 20px;
-        font-weight: 700;
-        color: var(--bg-dark);
+        font-size: 22px;
+        font-weight: 800;
+        color: white;
         margin-bottom: 8px;
     }
     
     .plan-rooms {
-        font-size: 14px;
-        font-weight: 600;
-        color: var(--primary);
-        background-color: var(--primary-light);
+        font-size: 13px;
+        font-weight: 700;
+        color: #a5b4fc;
+        background-color: rgba(99, 102, 241, 0.2);
         display: inline-block;
-        padding: 4px 10px;
+        padding: 4px 12px;
         border-radius: 20px;
         margin-bottom: 24px;
+        border: 1px solid rgba(99, 102, 241, 0.1);
     }
     
     .plan-price {
-        font-size: 42px;
+        font-size: 44px;
         font-weight: 800;
-        color: var(--bg-dark);
+        color: white;
         margin-bottom: 20px;
     }
     
     .plan-price span {
         font-size: 14px;
-        color: var(--text-muted);
+        color: #94a3b8;
         font-weight: 400;
     }
     
@@ -275,7 +355,7 @@
     
     .plan-features li {
         font-size: 14px;
-        color: var(--text-main);
+        color: #cbd5e1;
         margin-bottom: 12px;
         display: flex;
         align-items: center;
@@ -288,8 +368,8 @@
     
     /* Autosuggest Block */
     .suggested-box {
-        background-color: var(--primary-light);
-        border: 1px solid rgba(99, 102, 241, 0.2);
+        background-color: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.3);
         padding: 16px;
         border-radius: var(--radius-md);
         margin-top: 15px;
@@ -301,7 +381,7 @@
     .suggested-box-title {
         font-size: 13px;
         font-weight: 700;
-        color: var(--primary-hover);
+        color: #a5b4fc;
         text-transform: uppercase;
         margin-bottom: 4px;
     }
@@ -309,7 +389,7 @@
     .suggested-plan-info {
         font-size: 15px;
         font-weight: 600;
-        color: var(--bg-dark);
+        color: white;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -322,8 +402,8 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-color: rgba(15, 23, 42, 0.85);
-        backdrop-filter: blur(10px);
+        background-color: rgba(9, 13, 25, 0.95);
+        backdrop-filter: blur(12px);
         display: none;
         align-items: center;
         justify-content: center;
@@ -336,11 +416,12 @@
     .spinner {
         width: 50px;
         height: 50px;
-        border: 4px solid rgba(255, 255, 255, 0.1);
+        border: 4px solid rgba(255, 255, 255, 0.05);
         border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 1s linear infinite;
         margin-bottom: 24px;
+        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
     }
     
     @keyframes spin {
@@ -351,6 +432,11 @@
 @endsection
 
 @section('content')
+<!-- Decorative Glowing Blobs -->
+<div class="glowing-blob blob-1"></div>
+<div class="glowing-blob blob-2"></div>
+<div class="glowing-blob blob-3"></div>
+
 <!-- Nav bar -->
 <header class="navbar anim-fade-in">
     <div class="brand">
@@ -382,8 +468,8 @@
                 <a href="{{ route('hotel.login') }}">
                     <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px; color: var(--success);"></i>Login Hotel
                 </a>
-                <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
-                <a href="{{ route('super-admin.login') }}" style="color: var(--text-muted); font-size: 12px;">
+                <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 4px 0;"></div>
+                <a href="{{ route('super-admin.login') }}" style="color: #94a3b8; font-size: 12px;">
                     <i class="fa-solid fa-lock" style="margin-right: 8px;"></i>Super Admin
                 </a>
             </div>
@@ -396,13 +482,40 @@
     <div class="hero-content anim-slide-up">
         <h1>Connect Your Rooms with <span>Premium Smart TV Services</span></h1>
         <p>
-            An all-in-one entertainment and dashboard portal for modern hotels. Seamlessly register your rooms, purchase TV licensing, and manage guest engagement with a few clicks.
+            An all-in-one entertainment and custom branding dashboard portal for modern hotels. Seamlessly register your hotel, purchase custom licenses, and manage guest engagement with a few clicks.
         </p>
-        <div style="display: flex; justify-content: center; gap: 16px;">
-            <button onclick="openRegisterModal()" class="btn btn-primary btn-lg">
-                Register Your Hotel Now <i class="fa-solid fa-arrow-right"></i>
+        <div style="display: flex; justify-content: center; gap: 16px; position: relative; z-index: 10;">
+            <button onclick="openRegisterModal()" class="btn btn-primary btn-lg" style="padding: 14px 28px; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);">
+                Register Your Hotel Now <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
             </button>
-            <a href="#plans" class="btn btn-outline btn-lg">View Plans & Pricing</a>
+            <a href="#plans" class="btn btn-outline btn-lg" style="padding: 14px 28px; border-color: rgba(255,255,255,0.15); color: white;">
+                View Plans & Pricing
+            </a>
+        </div>
+        
+        <!-- Premium TV Mockup -->
+        <div class="tv-mockup">
+            <div style="width: 100%; height: 100%; padding: 24px; box-sizing: border-box; background: linear-gradient(135deg, #0e1227 0%, #1e1233 100%); display: flex; flex-direction: column; justify-content: space-between; text-align: left; color: white; position: relative;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-hotel" style="color: #a78bfa;"></i>
+                        <span style="font-weight: 700; font-size: 14px; letter-spacing: -0.5px;">Grand Palace & Spa</span>
+                    </div>
+                    <div style="font-size: 11px; opacity: 0.8; font-weight: 600; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 12px;">Welcome, Room 204!</div>
+                </div>
+                
+                <div style="text-align: center; margin: 20px 0;">
+                    <i class="fa-regular fa-circle-play" style="font-size: 48px; color: #818cf8; cursor: pointer; display: inline-block; margin-bottom: 10px; text-shadow: 0 0 20px rgba(99,102,241,0.5);"></i>
+                    <h4 style="font-size: 18px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px;">Press Play to Start Streaming</h4>
+                    <p style="font-size: 12px; opacity: 0.5;">Access 100+ live HD channels & hotel services</p>
+                </div>
+                
+                <div style="display: flex; gap: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
+                    <div style="padding: 8px; border-radius: 8px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 11px; font-weight: 600; flex: 1; text-align: center; color: #a5b4fc;"><i class="fa-solid fa-tv" style="margin-right: 6px;"></i>Live TV</div>
+                    <div style="padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 11px; font-weight: 600; flex: 1; text-align: center; opacity: 0.8;"><i class="fa-solid fa-utensils" style="margin-right: 6px;"></i>Room Service</div>
+                    <div style="padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 11px; font-weight: 600; flex: 1; text-align: center; opacity: 0.8;"><i class="fa-solid fa-bell" style="margin-right: 6px;"></i>Concierge</div>
+                </div>
+            </div>
         </div>
         
         <div class="highlights">
@@ -412,11 +525,11 @@
             </div>
             <div class="highlight-item">
                 <h3>10k+</h3>
-                <p>Connected TVs</p>
+                <p>Active Screens</p>
             </div>
             <div class="highlight-item">
                 <h3>24/7</h3>
-                <p>Support Access</p>
+                <p>Priority Support</p>
             </div>
         </div>
     </div>
@@ -424,9 +537,9 @@
 
 <!-- Pricing Plans Section -->
 <section id="plans" class="plans-section anim-slide-up">
-    <h2 class="section-title">Transparent Pricing For Every Scale</h2>
+    <h2 class="section-title">Flexible Pricing For Any Scale</h2>
     <p class="section-desc">
-        Select a structured subscription plan that matches your hotel room counts. All plans include 16-digit TV licensing keys valid for the registered rooms limit.
+        Choose a plan designed for your hotel's room count. Every registration grants an instant 16-digit license key to authorize and link your guest rooms.
     </p>
     
     <div class="pricing-grid">
@@ -437,18 +550,18 @@
                     <span class="plan-rooms">Up to {{ $plan->room_count }} Rooms</span>
                     <div class="plan-price">₹{{ number_format($plan->price, 0) }}<span>/month</span></div>
                     <ul class="plan-features">
-                        <li><i class="fa-solid fa-check"></i> <span>Supports up to {{ $plan->room_count }} TVs</span></li>
-                        <li><i class="fa-solid fa-check"></i> <span>Instant License Key</span></li>
-                        <li><i class="fa-solid fa-check"></i> <span>HD Stream Customization</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span>Authorize up to {{ $plan->room_count }} TVs</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span>Instant License Code</span></li>
+                        <li><i class="fa-solid fa-circle-check"></i> <span>Custom Guest Welcome Text</span></li>
                         @if($plan->room_count >= 50)
-                            <li><i class="fa-solid fa-check"></i> <span>Priority Dashboard</span></li>
+                            <li><i class="fa-solid fa-circle-check"></i> <span>Priority Dashboard Analytics</span></li>
                         @endif
                         @if($plan->room_count >= 100)
-                            <li><i class="fa-solid fa-check"></i> <span>Dedicated API & Support</span></li>
+                            <li><i class="fa-solid fa-circle-check"></i> <span>Dedicated API & Support</span></li>
                         @endif
                     </ul>
                 </div>
-                <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="btn {{ $plan->room_count === 50 ? 'btn-primary' : 'btn-outline' }}" style="width: 100%;">
+                <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="btn {{ $plan->room_count === 50 ? 'btn-primary' : 'btn-outline' }}" style="width: 100%; margin-top: 15px; {{ $plan->room_count !== 50 ? 'color: white; border-color: rgba(255,255,255,0.15);' : '' }}">
                     Select {{ $plan->name }}
                 </button>
             </div>
@@ -463,7 +576,7 @@
             <h3>Hotel Registration</h3>
             <button onclick="closeRegisterModal()" class="modal-close">&times;</button>
         </div>
-        <form id="registerForm">
+        <form id="registerForm" enctype="multipart/form-data">
             @csrf
             <div class="modal-body">
                 <div id="registerError" class="alert alert-danger" style="display: none;"></div>
@@ -502,6 +615,17 @@
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label">Location / City</label>
                         <input type="text" name="hotel_location" required class="form-control" placeholder="e.g. Mumbai, India">
+                    </div>
+                </div>
+
+                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Hotel Logo</label>
+                        <input type="file" name="hotel_logo" class="form-control" accept="image/*" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Hotel Cover Image</label>
+                        <input type="file" name="hotel_image" class="form-control" accept="image/*" required>
                     </div>
                 </div>
                 

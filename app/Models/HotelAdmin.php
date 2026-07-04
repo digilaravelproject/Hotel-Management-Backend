@@ -23,6 +23,8 @@ class HotelAdmin extends Authenticatable
         'phone',
         'hotel_name',
         'hotel_location',
+        'hotel_logo',
+        'hotel_image',
         'room_count',
         'plan_id',
         'payment_status',
@@ -31,6 +33,8 @@ class HotelAdmin extends Authenticatable
         'license_key',
         'approval_status',
         'status',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**

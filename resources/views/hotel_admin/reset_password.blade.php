@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Portal Sign In - HotelTV</title>
+    <title>Reset Password - HotelTV</title>
+    <link class="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -29,7 +30,7 @@
 
         .login-header {
             text-align: center;
-            margin-bottom: 36px;
+            margin-bottom: 30px;
         }
 
         .login-header .icon-box {
@@ -57,6 +58,7 @@
         .login-header p {
             font-size: 14px;
             color: var(--text-muted);
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -65,10 +67,10 @@
     <div class="login-card">
         <div class="login-header">
             <div class="icon-box">
-                <i class="fa-solid fa-hotel"></i>
+                <i class="fa-solid fa-shield-halved"></i>
             </div>
-            <h1>Hotel Portal</h1>
-            <p>Access your TV control dashboard</p>
+            <h1>Verification Required</h1>
+            <p>We've sent a 6-digit OTP code to <strong>{{ $email }}</strong>. Enter the OTP code and set your new password below.</p>
         </div>
 
         @if($errors->any())
@@ -81,28 +83,43 @@
             </div>
         @endif
 
-        <form action="{{ route('hotel.login') }}" method="POST">
-            @csrf
-            <div class="form-group">
-                <label class="form-label">Email Address (Username)</label>
-                <input type="email" name="email" required value="{{ old('email') }}" class="form-control" placeholder="username@example.com" autocomplete="email" autofocus>
+        @if(session('success'))
+            <div class="alert alert-success" style="margin-bottom: 24px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px;">
+                {{ session('success') }}
             </div>
-            <div class="form-group" style="margin-bottom: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <label class="form-label" style="margin-bottom: 0;">Password</label>
-                    <a href="{{ route('hotel.forgot-password') }}" style="font-size: 13px; font-weight: 600; color: var(--primary);">Forgot Password?</a>
-                </div>
+        @endif
+
+        <form action="{{ route('hotel.reset-password') }}" method="POST">
+            @csrf
+            <input type="hidden" name="email" value="{{ $email }}">
+
+            <div class="form-group">
+                <label class="form-label">6-Digit OTP Code</label>
+                <input type="text" name="otp_code" required class="form-control" placeholder="e.g. 123456" maxlength="6" style="text-align: center; font-size: 20px; font-weight: 700; letter-spacing: 4px;" autofocus>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">New Password</label>
                 <div class="password-wrapper">
-                    <input type="password" name="password" required class="form-control" placeholder="••••••••" autocomplete="current-password">
+                    <input type="password" name="password" required class="form-control" placeholder="••••••••">
                     <i class="fa-regular fa-eye toggle-password" style="color: var(--text-muted);"></i>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 20px;">
-                Sign In to Portal
+
+            <div class="form-group" style="margin-bottom: 30px;">
+                <label class="form-label">Confirm New Password</label>
+                <div class="password-wrapper">
+                    <input type="password" name="password_confirmation" required class="form-control" placeholder="••••••••">
+                    <i class="fa-regular fa-eye toggle-password" style="color: var(--text-muted);"></i>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 20px; font-weight: 600;">
+                Verify & Reset Password
             </button>
             <div style="text-align: center; margin-top: 20px;">
-                <a href="{{ route('landing') }}" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
-                    <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i> Return to Homepage
+                <a href="{{ route('hotel.forgot-password') }}" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
+                    <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i> Request New OTP
                 </a>
             </div>
         </form>

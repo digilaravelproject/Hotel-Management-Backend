@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hotel Portal Sign In - HotelTV</title>
+    <title>Forgot Password - HotelTV</title>
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -57,6 +57,7 @@
         .login-header p {
             font-size: 14px;
             color: var(--text-muted);
+            line-height: 1.5;
         }
     </style>
 </head>
@@ -65,10 +66,10 @@
     <div class="login-card">
         <div class="login-header">
             <div class="icon-box">
-                <i class="fa-solid fa-hotel"></i>
+                <i class="fa-solid fa-key"></i>
             </div>
-            <h1>Hotel Portal</h1>
-            <p>Access your TV control dashboard</p>
+            <h1>Reset Password</h1>
+            <p>Enter your registered email address below, and we will email you a 6-digit OTP code to verify your identity.</p>
         </div>
 
         @if($errors->any())
@@ -81,49 +82,29 @@
             </div>
         @endif
 
-        <form action="{{ route('hotel.login') }}" method="POST">
+        @if(session('error'))
+            <div class="alert alert-danger" style="margin-bottom: 24px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <form action="{{ route('hotel.forgot-password') }}" method="POST">
             @csrf
-            <div class="form-group">
-                <label class="form-label">Email Address (Username)</label>
-                <input type="email" name="email" required value="{{ old('email') }}" class="form-control" placeholder="username@example.com" autocomplete="email" autofocus>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label class="form-label">Email Address</label>
+                <input type="email" name="email" required value="{{ old('email') }}" class="form-control" placeholder="username@example.com" autofocus autocomplete="email">
             </div>
-            <div class="form-group" style="margin-bottom: 30px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <label class="form-label" style="margin-bottom: 0;">Password</label>
-                    <a href="{{ route('hotel.forgot-password') }}" style="font-size: 13px; font-weight: 600; color: var(--primary);">Forgot Password?</a>
-                </div>
-                <div class="password-wrapper">
-                    <input type="password" name="password" required class="form-control" placeholder="••••••••" autocomplete="current-password">
-                    <i class="fa-regular fa-eye toggle-password" style="color: var(--text-muted);"></i>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 20px;">
-                Sign In to Portal
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 20px; font-weight: 600;">
+                Send OTP Verification
             </button>
             <div style="text-align: center; margin-top: 20px;">
-                <a href="{{ route('landing') }}" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
-                    <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i> Return to Homepage
+                <a href="{{ route('hotel.login') }}" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
+                    <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i> Return to Login
                 </a>
             </div>
         </form>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.toggle-password').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const wrapper = btn.closest('.password-wrapper') || btn.parentElement;
-                    const input = wrapper.querySelector('input');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        btn.className = 'fa-regular fa-eye-slash toggle-password';
-                    } else {
-                        input.type = 'password';
-                        btn.className = 'fa-regular fa-eye toggle-password';
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
