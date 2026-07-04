@@ -24,6 +24,10 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
+        // Increase limits for large file processing on shared hosting
+        @set_time_limit(300);
+        @ini_set('memory_limit', '256M');
+
         $request->validate([
             'template_file' => 'required|file|mimes:zip|max:51200', // Max 50MB
         ]);
