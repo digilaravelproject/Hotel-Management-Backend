@@ -4,6 +4,57 @@
 @section('page_title', 'TV Offline Templates')
 
 @section('content')
+<style>
+    /* Premium Upload Progress Modal */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+    .modal-overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+    .modal-card {
+        background: var(--bg-card, #ffffff);
+        border: 1px solid var(--border-color, #e2e8f0);
+        border-radius: var(--radius-lg, 12px);
+        padding: 28px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+        transform: scale(0.9);
+        transition: transform 0.3s ease-in-out;
+    }
+    .modal-overlay.show .modal-card {
+        transform: scale(1);
+    }
+    .progress-bar-track {
+        width: 100%;
+        height: 10px;
+        background-color: var(--bg-main, #f1f5f9);
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 16px 0;
+        position: relative;
+    }
+    .progress-bar-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--primary, #6366f1) 0%, #818cf8 100%);
+        border-radius: 5px;
+        transition: width 0.1s linear;
+    }
+</style>
+
 <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
     
     @if(session('success'))
@@ -11,6 +62,8 @@
             <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
         </div>
     @endif
+
+    <div id="js-alert-container"></div>
 
     @if($errors->any())
         <div class="alert alert-danger">
@@ -28,14 +81,14 @@
             <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Release New TV Template Update
         </h3>
         
-        <form action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;">
+        <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;">
             @csrf
             <div class="form-group" style="flex: 1; min-width: 280px; margin-bottom: 0;">
                 <label class="form-label" style="font-weight: 500;">Select Template Package (.zip)</label>
-                <input type="file" name="template_file" required class="form-control" accept=".zip" style="padding: 10px 12px;">
+                <input type="file" id="templateFileField" name="template_file" required class="form-control" accept=".zip" style="padding: 10px 12px;">
                 <small style="color: var(--text-muted); display: block; margin-top: 6px;">The system will automatically calculate the next version number (+0.5 step).</small>
             </div>
-            <button type="submit" class="btn btn-primary" style="height: 42px; display: flex; align-items: center; gap: 8px;">
+            <button type="submit" id="submitBtn" class="btn btn-primary" style="height: 42px; display: flex; align-items: center; gap: 8px;">
                 <i class="fa-solid fa-upload"></i> Upload & Deploy
             </button>
         </form>
@@ -110,4 +163,122 @@
         @endif
     </div>
 </div>
+
+<!-- Real-time Upload Progress Modal Overlay -->
+<div id="uploadProgressModal" class="modal-overlay">
+    <div class="modal-card">
+        <h4 style="margin: 0 0 8px 0; color: var(--bg-dark); font-weight: 700; font-size: 16px;">Uploading Template Package...</h4>
+        <p id="uploadStatusText" style="margin: 0; font-size: 14px; color: var(--text-muted);">Preparing files to upload</p>
+        
+        <div class="progress-bar-track">
+            <div id="progressBarFill" class="progress-bar-fill"></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
+            <span id="progressBytes" style="color: var(--text-muted); font-weight: 500;">0.00 MB / 0.00 MB</span>
+            <span id="progressPercent" style="color: var(--primary); font-weight: 700;">0%</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('uploadTemplateForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const form = this;
+        const fileInput = document.getElementById('templateFileField');
+        const submitBtn = document.getElementById('submitBtn');
+        const modal = document.getElementById('uploadProgressModal');
+        const progressFill = document.getElementById('progressBarFill');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressBytes = document.getElementById('progressBytes');
+        const statusText = document.getElementById('uploadStatusText');
+        const alertContainer = document.getElementById('js-alert-container');
+
+        if (!fileInput.files || fileInput.files.length === 0) {
+            return;
+        }
+
+        // Helper to format bytes to human-readable MB string
+        function formatMB(bytes) {
+            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+        }
+
+        // 1. Debounce UI instantly
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+
+        // 2. Open progress modal
+        modal.classList.add('show');
+        statusText.innerText = 'Initializing template file upload...';
+
+        // 3. Setup AJAX / XHR multipart submit
+        const formData = new FormData(form);
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('Accept', 'application/json');
+
+        // Track upload progress events
+        xhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                const percentComplete = Math.round((e.loaded / e.total) * 100);
+                
+                // Update Progress visual representation
+                progressFill.style.width = percentComplete + '%';
+                progressPercent.innerText = percentComplete + '%';
+                progressBytes.innerText = formatMB(e.loaded) + ' / ' + formatMB(e.total);
+
+                if (percentComplete === 100) {
+                    statusText.innerText = 'Upload complete. Extracting template and updating database...';
+                } else {
+                    statusText.innerText = 'Transferring zip file...';
+                }
+            }
+        });
+
+        // Track request response complete
+        xhr.addEventListener('load', function() {
+            modal.classList.remove('show');
+            
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Success: Reload page to show new version logs
+                window.location.reload();
+            } else {
+                // Failure: display validation or server errors
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Upload & Deploy';
+                
+                let errorMessage = 'An error occurred during template upload.';
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    if (response.message) {
+                        errorMessage = response.message;
+                    }
+                } catch(e) {}
+
+                alertContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> ${errorMessage}
+                    </div>
+                `;
+            }
+        });
+
+        // Track network / connection errors
+        xhr.addEventListener('error', function() {
+            modal.classList.remove('show');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Upload & Deploy';
+            
+            alertContainer.innerHTML = `
+                <div class="alert alert-danger">
+                    <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> Connection error occurred during template upload.
+                </div>
+            `;
+        });
+
+        xhr.send(formData);
+    });
+</script>
 @endsection

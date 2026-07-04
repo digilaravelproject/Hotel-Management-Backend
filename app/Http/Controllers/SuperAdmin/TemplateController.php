@@ -53,7 +53,21 @@ class TemplateController extends Controller
                 'is_active' => true,
             ]);
 
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'TV Template version ' . $nextVersion . ' uploaded successfully!'
+                ]);
+            }
+
             return back()->with('success', 'TV Template version ' . $nextVersion . ' uploaded successfully!');
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to upload template file.'
+            ], 400);
         }
 
         return back()->with('error', 'Failed to upload template file.');
