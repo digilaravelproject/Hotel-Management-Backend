@@ -227,6 +227,12 @@
                         <span>Connected TVs</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.hotel-info') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.hotel-info') }}">
+                        <i class="fa-solid fa-hotel"></i>
+                        <span>Hotel Profile</span>
+                    </a>
+                </li>
             </ul>
             <div style="padding: 20px; border-top: 1px solid var(--border-dark);">
                 <form action="{{ route('hotel.logout') }}" method="POST">

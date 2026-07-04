@@ -37,6 +37,7 @@ Route::middleware(['hotel_admin'])->group(function () {
     Route::post('/hotel/profile', [ProfileController::class, 'updateProfile']);
     Route::get('/hotel/hotel-info', [ProfileController::class, 'showHotelInfoForm'])->name('hotel.hotel-info');
     Route::post('/hotel/hotel-info', [ProfileController::class, 'updateHotelInfo']);
+    Route::post('/hotel/hotel-info/delete-slider', [ProfileController::class, 'deleteSliderImage'])->name('hotel.hotel-info.delete-slider');
     
     // Amenities CRUD
     Route::get('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');

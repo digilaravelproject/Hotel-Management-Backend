@@ -111,9 +111,14 @@ class HotelAdminController extends Controller
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
             'room_count' => 'required|integer|min:1',
-            'plan_id' => 'required|exists:plans,id',
+            'plan_id' => 'nullable|exists:plans,id',
             'payment_status' => 'required|in:pending,paid',
             'approval_status' => 'required|in:pending,approved,disapproved',
+            'description' => 'nullable|string|max:1000',
+            'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'slider_images' => 'nullable|array|max:10',
+            'slider_images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
         ]);
 
         $data = [
@@ -126,11 +131,47 @@ class HotelAdminController extends Controller
             'plan_id' => $request->plan_id,
             'payment_status' => $request->payment_status,
             'approval_status' => $request->approval_status,
+            'description' => $request->description,
         ];
 
         if ($request->filled('password')) {
             $request->validate(['password' => 'string|min:6']);
             $data['password'] = Hash::make($request->password);
+        }
+
+        // Handle logo replacement
+        if ($request->hasFile('hotel_logo')) {
+            if ($hotel->hotel_logo && file_exists(public_path($hotel->hotel_logo))) {
+                @unlink(public_path($hotel->hotel_logo));
+            }
+            $logo = $request->file('hotel_logo');
+            $logoName = time() . '_logo_' . Str::random(8) . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('uploads/hotel_logos'), $logoName);
+            $data['hotel_logo'] = 'uploads/hotel_logos/' . $logoName;
+        }
+
+        // Handle cover image replacement
+        if ($request->hasFile('hotel_image')) {
+            if ($hotel->hotel_image && file_exists(public_path($hotel->hotel_image))) {
+                @unlink(public_path($hotel->hotel_image));
+            }
+            $image = $request->file('hotel_image');
+            $imageName = time() . '_cover_' . Str::random(8) . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/hotel_images'), $imageName);
+            $data['hotel_image'] = 'uploads/hotel_images/' . $imageName;
+        }
+
+        // Handle slider uploads
+        if ($request->hasFile('slider_images')) {
+            $existingSliders = $hotel->slider_images ?? [];
+            if (count($existingSliders) + count($request->file('slider_images')) <= 10) {
+                foreach ($request->file('slider_images') as $file) {
+                    $fileName = time() . '_slider_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+                    $file->move(public_path('uploads/hotel_sliders'), $fileName);
+                    $existingSliders[] = 'uploads/hotel_sliders/' . $fileName;
+                }
+                $data['slider_images'] = $existingSliders;
+            }
         }
 
         if (!$hotel->license_key) {

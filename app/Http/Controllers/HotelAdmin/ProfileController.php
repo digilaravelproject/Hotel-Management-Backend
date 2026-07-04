@@ -68,13 +68,17 @@ class ProfileController extends Controller
         $request->validate([
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
             'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'slider_images' => 'nullable|array|max:10',
+            'slider_images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
         ]);
 
         $data = [
             'hotel_name' => $request->hotel_name,
             'hotel_location' => $request->hotel_location,
+            'description' => $request->description,
         ];
 
         // Handle logo replacement
@@ -103,8 +107,66 @@ class ProfileController extends Controller
             $data['hotel_image'] = 'uploads/hotel_images/' . $imageName;
         }
 
+        // Handle slider uploads
+        if ($request->hasFile('slider_images')) {
+            $existingSliders = $hotelAdmin->slider_images ?? [];
+            
+            // Check limit
+            if (count($existingSliders) + count($request->file('slider_images')) > 10) {
+                return back()->withErrors(['slider_images' => 'Maximum limit of 10 slider images reached.'])->withInput();
+            }
+
+            foreach ($request->file('slider_images') as $file) {
+                $fileName = time() . '_slider_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/hotel_sliders'), $fileName);
+                $existingSliders[] = 'uploads/hotel_sliders/' . $fileName;
+            }
+            
+            $data['slider_images'] = $existingSliders;
+        }
+
         $hotelAdmin->update($data);
 
         return back()->with('success', 'Hotel information updated successfully!');
+    }
+
+    /**
+     * Delete an individual slider image
+     */
+    public function deleteSliderImage(Request $request)
+    {
+        $hotelAdmin = Auth::guard('hotel_admin')->user();
+        
+        $request->validate([
+            'image_path' => 'required|string',
+        ]);
+
+        $imagePath = $request->image_path;
+        $sliders = $hotelAdmin->slider_images ?? [];
+
+        if (($key = array_search($imagePath, $sliders)) !== false) {
+            // Delete file from disk
+            if (file_exists(public_path($imagePath))) {
+                @unlink(public_path($imagePath));
+            }
+
+            // Remove from array and reindex
+            unset($sliders[$key]);
+            $sliders = array_values($sliders);
+
+            $hotelAdmin->update(['slider_images' => $sliders]);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+
+            return back()->with('success', 'Slider image removed successfully.');
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => false, 'message' => 'Image not found.'], 404);
+        }
+
+        return back()->with('error', 'Slider image not found.');
     }
 }

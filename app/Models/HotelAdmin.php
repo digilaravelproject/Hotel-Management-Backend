@@ -35,6 +35,8 @@ class HotelAdmin extends Authenticatable
         'status',
         'otp_code',
         'otp_expires_at',
+        'description',
+        'slider_images',
     ];
 
     /**
@@ -56,6 +58,7 @@ class HotelAdmin extends Authenticatable
         'password' => 'hashed',
         'status' => 'boolean',
         'room_count' => 'integer',
+        'slider_images' => 'array',
     ];
 
     /**
