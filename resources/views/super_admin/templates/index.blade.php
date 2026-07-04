@@ -119,7 +119,7 @@
                                     v{{ $template->version }}
                                 </td>
                                 <td style="padding: 12px; font-size: 13px; font-family: monospace; color: var(--text-main);">
-                                    <a href="{{ asset($template->file_path) }}" target="_blank" style="text-decoration: underline; color: var(--secondary);">
+                                    <a href="{{ Storage::url($template->file_path) }}" target="_blank" style="text-decoration: underline; color: var(--secondary);">
                                         {{ basename($template->file_path) }}
                                     </a>
                                 </td>
@@ -230,7 +230,7 @@
                 progressBytes.innerText = formatMB(e.loaded) + ' / ' + formatMB(e.total);
 
                 if (percentComplete === 100) {
-                    statusText.innerText = 'Upload complete. Extracting template and updating database...';
+                    statusText.innerText = 'Upload complete! Saving template file to storage disk...';
                 } else {
                     statusText.innerText = 'Transferring zip file...';
                 }

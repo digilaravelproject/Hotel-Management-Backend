@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\TvTemplate;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateController extends Controller
 {
@@ -40,8 +41,7 @@ class TemplateController extends Controller
             
             // Generate distinct zip file name
             $fileName = 'template_v' . str_replace('.', '_', $nextVersion) . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads/templates'), $fileName);
-            $filePath = 'uploads/templates/' . $fileName;
+            $filePath = Storage::disk('public')->putFileAs('templates', $file, $fileName);
 
             // Deactivate previous active templates
             TvTemplate::query()->update(['is_active' => false]);
