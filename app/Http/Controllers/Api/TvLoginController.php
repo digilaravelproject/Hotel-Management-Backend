@@ -29,7 +29,7 @@ class TvLoginController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'message' => 'Validation error',
                 'errors' => $validator->errors()
             ], 422);
@@ -44,29 +44,32 @@ class TvLoginController extends Controller
 
         if (!$hotel) {
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'message' => 'Invalid or inactive license key'
             ], 403);
         }
 
-        // Check if device is already registered for this hotel
-        $device = $hotel->connectedDevices()->where('device_id', $request->deviceId)->first();
+        // Check if device with this ID & MAC already exists for this hotel (Idempotency)
+        $device = $hotel->connectedDevices()
+            ->where('device_id', $request->deviceId)
+            ->where('mac_address', $request->macAddress)
+            ->first();
+
+        $token = Str::random(80);
 
         if (!$device) {
-            // Determine allowed limit (via room_count / allowed_device_limit accessor)
+            // New Registration - Check Allowed Limit
             $allowedLimit = $hotel->allowed_device_limit;
-            
-            // Count active registered devices
             $currentCount = $hotel->connectedDevices()->count();
 
             if ($currentCount >= $allowedLimit) {
                 return response()->json([
-                    'success' => false,
+                    'status' => false,
                     'message' => 'Device limit reached for this license'
                 ], 403);
             }
 
-            // Create new device record
+            // Create new device record with API Token
             $device = $hotel->connectedDevices()->create([
                 'room_no' => $request->room_no,
                 'device_id' => $request->deviceId,
@@ -75,25 +78,56 @@ class TvLoginController extends Controller
                 'model' => $request->model,
                 'brand' => $request->brand,
                 'os_version' => $request->osVersion,
+                'api_token' => $token,
             ]);
         } else {
-            // Update existing device record
+            // Existing Device - Update dynamic details and generate new Token
             $device->update([
                 'room_no' => $request->room_no,
-                'mac_address' => $request->macAddress,
                 'ip_address' => $request->ipAddress,
                 'model' => $request->model,
                 'brand' => $request->brand,
                 'os_version' => $request->osVersion,
+                'api_token' => $token,
             ]);
         }
 
+        // Format slider images asset URLs
+        $sliders = [];
+        if ($hotel->slider_images && is_array($hotel->slider_images)) {
+            foreach ($hotel->slider_images as $path) {
+                $sliders[] = asset($path);
+            }
+        }
+
         return response()->json([
-            'success' => true,
+            'status' => true,
             'message' => 'TV logged in successfully.',
-            'device_id' => $device->device_id,
-            'mac_address' => $device->mac_address,
-            'hotel' => $hotel->load('plan')
+            'auth' => [
+                'token' => $device->api_token,
+            ],
+            'device' => [
+                'room_no' => $device->room_no,
+                'device_id' => $device->device_id,
+                'mac_address' => $device->mac_address,
+                'ip_address' => $device->ip_address,
+                'model' => $device->model,
+                'brand' => $device->brand,
+                'os_version' => $device->os_version,
+            ],
+            'hotel' => [
+                'hotel_name' => $hotel->hotel_name,
+                'hotel_location' => $hotel->hotel_location,
+                'description' => $hotel->description,
+                'owner_name' => $hotel->owner_name,
+                'email' => $hotel->email,
+                'phone' => $hotel->phone,
+                'media' => [
+                    'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
+                    'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
+                    'slider_images' => $sliders,
+                ],
+            ]
         ], 200);
     }
 }

@@ -17,6 +17,7 @@ class ConnectedDevice extends Model
         'model',
         'brand',
         'os_version',
+        'api_token',
     ];
 
     /**
