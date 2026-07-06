@@ -30,11 +30,8 @@ class TvLoginService
             throw new HttpException(403, 'Invalid or inactive license key');
         }
 
-        // 2. Check if device with this ID & MAC already exists for this hotel (Idempotency)
-        $device = $hotel->connectedDevices()
-            ->where('device_id', $data['deviceId'])
-            ->where('mac_address', $data['macAddress'])
-            ->first();
+        // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
+        $device = ConnectedDevice::where('device_id', $data['deviceId'])->first();
 
         $token = Str::random(80);
 
@@ -59,9 +56,21 @@ class TvLoginService
                 'api_token' => $token,
             ]);
         } else {
-            // Existing Device - Update dynamic details and generate new Token
+            // Existing Device - If hotel admin ID changes, check the limit for the new hotel admin
+            if ($device->hotel_admin_id !== $hotel->id) {
+                $allowedLimit = $hotel->allowed_device_limit;
+                $currentCount = $hotel->connectedDevices()->count();
+
+                if ($currentCount >= $allowedLimit) {
+                    throw new HttpException(403, 'Device limit reached for this license');
+                }
+            }
+
+            // Update dynamic details, hotel assignment, and MAC address
             $device->update([
+                'hotel_admin_id' => $hotel->id,
                 'room_no' => $data['room_no'],
+                'mac_address' => $data['macAddress'],
                 'ip_address' => $data['ipAddress'] ?? null,
                 'model' => $data['model'] ?? null,
                 'brand' => $data['brand'] ?? null,
