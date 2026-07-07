@@ -21,6 +21,7 @@ class TvLoginService
     {
         // 1. Find the active and approved hotel admin by license key
         $hotel = HotelAdmin::query()
+            ->with('plan')
             ->where('license_key', $data['license_key'])
             ->where('status', true)
             ->where('approval_status', 'approved')

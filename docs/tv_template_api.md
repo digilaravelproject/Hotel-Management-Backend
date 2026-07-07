@@ -23,34 +23,55 @@ No request body payload is required for this endpoint. Authentication must be pa
 ## 3. Simulated API Responses
 
 ### **A. Success Response (200 OK)**
-Returned when the bearer token is valid and the latest template details are successfully fetched.
+Returned when the bearer token is valid and the latest template and hotel details are successfully fetched.
 
 ```json
 {
   "status": true,
-  "message": "Template version details fetched successfully.",
-  "latest_version": "2.0",
-  "old_version": "1.5",
-  "download_url": "https://tvapp.digiemperor.com/uploads/templates/template_v2_0_1720098450.zip",
-  "uploaded_at": "2026-07-04T15:09:33+00:00"
+  "message": "TV logged in successfully.",
+  "auth": {
+    "token": "d7a8f9b0c1d2e3f4g5h6i7j8k9l0m1n2..."
+  },
+  "template": {
+    "latest_version": "2.0",
+    "old_version": "1.5",
+    "download_url": "https://tvapp.digiemperor.com/uploads/templates/template_v2_0_1720098450.zip",
+    "uploaded_at": "2026-07-04T15:09:33+00:00"
+  },
+  "device": {
+    "room_no": "101",
+    "device_id": "6231A4D7B13402C5",
+    "mac_address": "AA:BB:CC:DD:EE:FF",
+    "ip_address": "192.168.1.1",
+    "model": "SmartTV Pro",
+    "brand": "Samsung",
+    "os_version": "Tizen 6.0"
+  },
+  "hotel": {
+    "hotel_name": "The Grand Hotel",
+    "hotel_location": "Mumbai, India",
+    "description": "Standard business hotel.",
+    "owner_name": "John Doe",
+    "email": "owner@grandhotel.com",
+    "phone": "+919876543210",
+    "media": {
+      "logo_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+      "cover_image": "data:image/jpeg;base64,...",
+      "slider_images": [
+        "data:image/jpeg;base64,..."
+      ]
+    },
+    "active_plan": {
+      "plan_name": "Premium Plan",
+      "plan_price": "4999.00",
+      "purchase_date": "2026-07-02T10:00:00+00:00",
+      "expiry_date": "2026-08-01T10:00:00+00:00"
+    }
+  }
 }
 ```
 
-### **B. Error - No Templates Found (404 Not Found)**
-Returned if no templates have been uploaded or marked as active by the Super Admin yet.
-
-```json
-{
-  "status": false,
-  "message": "No active templates available at this moment.",
-  "latest_version": null,
-  "old_version": null,
-  "download_url": null,
-  "uploaded_at": null
-}
-```
-
-### **C. Error - Unauthenticated (401 Unauthorized)**
+### **B. Error - Unauthenticated (401 Unauthorized)**
 Returned when the token is missing or invalid.
 
 ```json

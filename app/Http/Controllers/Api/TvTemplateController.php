@@ -7,42 +7,51 @@ use Illuminate\Http\Request;
 use App\Models\TvTemplate;
 use Illuminate\Support\Facades\Storage;
 
+use App\Http\Resources\TvLoginResource;
+
 class TvTemplateController extends Controller
 {
     /**
      * Fetch the latest template version check info.
+     * Securely verifies user via Auth Token and returns the synchronized payload.
      */
     public function checkVersion(Request $request)
     {
-        $latest = TvTemplate::query()
+        $device = $request->input('current_device');
+        $hotel = $request->input('current_hotel');
+
+        if (!$device || !$hotel) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthenticated. Invalid token or associated hotel admin not found.'
+            ], 401);
+        }
+
+        // Fetch latest active template version
+        $latest = \App\Models\TvTemplate::query()
             ->where('is_active', '=', true)
             ->orderBy('id', 'desc')
             ->first();
 
-        if (!$latest) {
-            return response()->json([
-                'status' => false,
-                'message' => 'No active templates available at this moment.',
-                'latest_version' => null,
-                'old_version' => null,
-                'download_url' => null,
-                'uploaded_at' => null,
-            ], 404);
+        $clientVersion = $request->query('version');
+        $isUpdateAvailable = false;
+
+        if ($latest && $clientVersion !== null) {
+            // Check if server version is greater than client's version
+            $isUpdateAvailable = version_compare($latest->version, $clientVersion, '>');
         }
 
-        // Get the previous version (if any)
-        $previous = TvTemplate::query()
-            ->where('id', '<', $latest->id)
-            ->orderBy('id', 'desc')
-            ->first();
+        // Eager load the plan relation to avoid N+1 query issues
+        $hotel->loadMissing('plan');
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Template version details fetched successfully.',
-            'latest_version' => $latest->version,
-            'old_version' => $previous ? $previous->version : null,
-            'download_url' => url(Storage::url($latest->file_path)),
-            'uploaded_at' => $latest->created_at->toIso8601String(),
-        ], 200);
+        // Merge version comparison result into request for the resource to read
+        $request->merge([
+            'is_update_available' => $isUpdateAvailable,
+        ]);
+
+        return new TvLoginResource([
+            'device' => $device,
+            'hotel' => $hotel,
+        ]);
     }
 }
