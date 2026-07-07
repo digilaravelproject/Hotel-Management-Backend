@@ -83,8 +83,8 @@ class TvLoginResource extends JsonResource
                 'active_plan' => [
                     'plan_name' => $plan ? $plan->name : 'N/A',
                     'plan_price' => $plan ? $plan->price : '0.00',
-                    'purchase_date' => $hotel->created_at ? $hotel->created_at->toIso8601String() : null,
-                    'expiry_date' => $hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null,
+                    'purchase_date' => $hotel->purchase_date ? $hotel->purchase_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->toIso8601String() : null),
+                    'expiry_date' => $hotel->expiry_date ? $hotel->expiry_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null),
                 ]
             ]
         ];

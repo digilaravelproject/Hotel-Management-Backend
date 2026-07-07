@@ -37,6 +37,8 @@ class HotelAdmin extends Authenticatable
         'otp_expires_at',
         'description',
         'slider_images',
+        'purchase_date',
+        'expiry_date',
     ];
 
     /**
@@ -59,6 +61,8 @@ class HotelAdmin extends Authenticatable
         'status' => 'boolean',
         'room_count' => 'integer',
         'slider_images' => 'array',
+        'purchase_date' => 'datetime',
+        'expiry_date' => 'datetime',
     ];
 
     /**

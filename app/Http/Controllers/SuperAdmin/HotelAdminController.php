@@ -48,6 +48,8 @@ class HotelAdminController extends Controller
         ]);
 
         $licenseKey = null;
+        $purchaseDate = null;
+        $expiryDate = null;
 
         if ($request->plan_id && $request->payment_status === 'paid') {
             $licenseKey = sprintf(
@@ -57,6 +59,8 @@ class HotelAdminController extends Controller
                 strtoupper(Str::random(4)),
                 strtoupper(Str::random(4))
             );
+            $purchaseDate = now();
+            $expiryDate = now()->addDays(30);
         }
 
         HotelAdmin::create([
@@ -72,6 +76,8 @@ class HotelAdminController extends Controller
             'approval_status' => $request->approval_status,
             'license_key' => $licenseKey,
             'status' => true,
+            'purchase_date' => $purchaseDate,
+            'expiry_date' => $expiryDate,
         ]);
 
         return redirect()->route('super-admin.hotels.index')
@@ -174,7 +180,7 @@ class HotelAdminController extends Controller
             }
         }
 
-        if (!$hotel->license_key) {
+        if (!$hotel->license_key && $request->plan_id && $request->payment_status === 'paid') {
             $data['license_key'] = sprintf(
                 "%s-%s-%s-%s",
                 strtoupper(Str::random(4)),
@@ -182,6 +188,13 @@ class HotelAdminController extends Controller
                 strtoupper(Str::random(4)),
                 strtoupper(Str::random(4))
             );
+        }
+
+        if ($request->plan_id && $request->payment_status === 'paid') {
+            if (!$hotel->purchase_date || $hotel->plan_id !== (int) $request->plan_id || $hotel->payment_status !== 'paid') {
+                $data['purchase_date'] = now();
+                $data['expiry_date'] = now()->addDays(30);
+            }
         }
 
         $hotel->update($data);

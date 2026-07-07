@@ -153,6 +153,8 @@ class RegistrationController extends Controller
             'license_key' => $licenseKey,
             'approval_status' => 'pending',
             'status' => true,
+            'purchase_date' => now(),
+            'expiry_date' => now()->addDays(30),
         ]);
 
         // Send confirmation email
