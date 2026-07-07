@@ -89,9 +89,9 @@ class TvApiTest extends TestCase
         $token = $response->json('auth.token');
         $this->assertNotEmpty($token);
 
-        // Assert Base64 encoding worked
-        $base64Logo = $response->json('hotel.media.logo_image');
-        $this->assertStringStartsWith('data:image/png;base64,', $base64Logo);
+        // Assert asset URL format works
+        $logoUrl = $response->json('hotel.media.logo_image');
+        $this->assertStringContainsString('uploads/hotel_logos/test_logo.png', $logoUrl);
 
         // Assert plan details
         $response->assertJsonPath('hotel.active_plan.plan_name', 'Pro Plan');

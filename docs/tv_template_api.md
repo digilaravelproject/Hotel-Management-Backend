@@ -55,10 +55,10 @@ Returned when the bearer token is valid and the latest template and hotel detail
     "email": "owner@grandhotel.com",
     "phone": "+919876543210",
     "media": {
-      "logo_image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
-      "cover_image": "data:image/jpeg;base64,...",
+      "logo_image": "https://tvapp.digiemperor.com/uploads/hotel_logos/1720092305_logo_a8d7f2a1.png",
+      "cover_image": "https://tvapp.digiemperor.com/uploads/hotel_images/1720092305_image_c8f2b1d3.jpg",
       "slider_images": [
-        "data:image/jpeg;base64,..."
+        "https://tvapp.digiemperor.com/uploads/hotel_sliders/1720092305_slider_e8f2b1d3.jpg"
       ]
     },
     "active_plan": {

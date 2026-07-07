@@ -22,14 +22,11 @@ class TvLoginResource extends JsonResource
         $hotel = $this['hotel'];
         $device = $this['device'];
 
-        // Convert slider images to Base64 strings
+        // Format slider images asset URLs
         $sliders = [];
         if ($hotel->slider_images && is_array($hotel->slider_images)) {
             foreach ($hotel->slider_images as $path) {
-                $base64 = $this->convertToBase64($path);
-                if ($base64) {
-                    $sliders[] = $base64;
-                }
+                $sliders[] = asset($path);
             }
         }
 
@@ -76,8 +73,8 @@ class TvLoginResource extends JsonResource
                 'email' => $hotel->email,
                 'phone' => $hotel->phone,
                 'media' => [
-                    'logo_image' => $this->convertToBase64($hotel->hotel_logo),
-                    'cover_image' => $this->convertToBase64($hotel->hotel_image),
+                    'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
+                    'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
                     'slider_images' => $sliders,
                 ],
                 'active_plan' => [
@@ -88,29 +85,5 @@ class TvLoginResource extends JsonResource
                 ]
             ]
         ];
-    }
-
-    /**
-     * Helper method to convert local image path to Base64 data URL.
-     */
-    private function convertToBase64(?string $path): ?string
-    {
-        if (!$path) {
-            return null;
-        }
-
-        $fullPath = public_path($path);
-
-        if (file_exists($fullPath) && is_file($fullPath)) {
-            try {
-                $mimeType = mime_content_type($fullPath) ?: 'image/png';
-                $data = base64_encode(file_get_contents($fullPath));
-                return "data:{$mimeType};base64,{$data}";
-            } catch (\Exception $e) {
-                logger()->error("Base64 conversion failed for {$path}: " . $e->getMessage());
-            }
-        }
-
-        return null;
     }
 }
