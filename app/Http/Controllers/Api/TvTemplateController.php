@@ -52,6 +52,7 @@ class TvTemplateController extends Controller
         return new TvLoginResource([
             'device' => $device,
             'hotel' => $hotel,
+            'message' => 'Template version details fetched successfully.',
         ]);
     }
 }

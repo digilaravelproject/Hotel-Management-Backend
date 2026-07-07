@@ -76,28 +76,31 @@ class TvApiTest extends TestCase
             ->assertJsonStructure([
                 'status',
                 'message',
-                'auth' => ['token'],
-                'template' => ['latest_version', 'old_version', 'download_url', 'uploaded_at', 'is_update_available'],
-                'device' => ['room_no', 'device_id', 'mac_address'],
-                'hotel' => [
-                    'hotel_name',
-                    'media' => ['logo_image', 'cover_image', 'slider_images'],
-                    'active_plan' => ['plan_name', 'plan_price', 'purchase_date', 'expiry_date'],
+                'data' => [
+                    'auth' => ['token'],
+                    'template' => ['latest_version', 'old_version', 'download_url', 'uploaded_at', 'is_update_available'],
+                    'device' => ['room_no', 'device_id', 'mac_address'],
+                    'hotel' => [
+                        'hotel_name',
+                        'media' => ['logo_image', 'cover_image', 'slider_images'],
+                        'active_plan' => ['plan_name', 'plan_price', 'purchase_date', 'expiry_date'],
+                    ]
                 ]
             ]);
 
-        $token = $response->json('auth.token');
+        $response->assertJsonPath('message', 'TV logged in successfully.');
+        $token = $response->json('data.auth.token');
         $this->assertNotEmpty($token);
 
         // Assert asset URL format works
-        $logoUrl = $response->json('hotel.media.logo_image');
+        $logoUrl = $response->json('data.hotel.media.logo_image');
         $this->assertStringContainsString('uploads/hotel_logos/test_logo.png', $logoUrl);
 
         // Assert plan details
-        $response->assertJsonPath('hotel.active_plan.plan_name', 'Pro Plan');
-        $response->assertJsonPath('hotel.active_plan.plan_price', '2999.00');
-        $response->assertJsonPath('template.latest_version', '2.0');
-        $response->assertJsonPath('template.is_update_available', false);
+        $response->assertJsonPath('data.hotel.active_plan.plan_name', 'Pro Plan');
+        $response->assertJsonPath('data.hotel.active_plan.plan_price', '2999.00');
+        $response->assertJsonPath('data.template.latest_version', '2.0');
+        $response->assertJsonPath('data.template.is_update_available', false);
 
         // 5. Test Version Check API - Unauthenticated
         $this->getJson('/api/tv/template/check-version')
@@ -109,8 +112,9 @@ class TvApiTest extends TestCase
         ])->getJson('/api/tv/template/check-version?version=1.0');
 
         $versionResponse1->assertStatus(200);
-        $versionResponse1->assertJsonPath('template.is_update_available', true);
-        $versionResponse1->assertJsonPath('template.latest_version', '2.0');
+        $versionResponse1->assertJsonPath('message', 'Template version details fetched successfully.');
+        $versionResponse1->assertJsonPath('data.template.is_update_available', true);
+        $versionResponse1->assertJsonPath('data.template.latest_version', '2.0');
 
         // 7. Test Version Check API - Authenticated (Up to date: version=2.0)
         $versionResponse2 = $this->withHeaders([
@@ -118,8 +122,9 @@ class TvApiTest extends TestCase
         ])->getJson('/api/tv/template/check-version?version=2.0');
 
         $versionResponse2->assertStatus(200);
-        $versionResponse2->assertJsonPath('template.is_update_available', false);
-        $versionResponse2->assertJsonPath('template.latest_version', '2.0');
+        $versionResponse2->assertJsonPath('message', 'Template version details fetched successfully.');
+        $versionResponse2->assertJsonPath('data.template.is_update_available', false);
+        $versionResponse2->assertJsonPath('data.template.latest_version', '2.0');
 
         // Clean up dummy file
         @unlink(public_path($logoPath));

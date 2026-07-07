@@ -31,6 +31,7 @@ class TvLoginResource extends JsonResource
         }
 
         $plan = $hotel->plan;
+        $message = $this['message'] ?? 'TV logged in successfully.';
 
         // Fetch template details dynamically
         $latest = \App\Models\TvTemplate::query()
@@ -45,43 +46,45 @@ class TvLoginResource extends JsonResource
 
         return [
             'status' => true,
-            'message' => 'TV logged in successfully.',
-            'auth' => [
-                'token' => $device->api_token,
-            ],
-            'template' => [
-                'latest_version' => $latest ? $latest->version : null,
-                'old_version' => $previous ? $previous->version : null,
-                'download_url' => $latest ? url(\Illuminate\Support\Facades\Storage::url($latest->file_path)) : null,
-                'uploaded_at' => $latest ? $latest->created_at->toIso8601String() : null,
-                'is_update_available' => (bool) $request->input('is_update_available', false),
-            ],
-            'device' => [
-                'room_no' => $device->room_no,
-                'device_id' => $device->device_id,
-                'mac_address' => $device->mac_address,
-                'ip_address' => $device->ip_address,
-                'model' => $device->model,
-                'brand' => $device->brand,
-                'os_version' => $device->os_version,
-            ],
-            'hotel' => [
-                'hotel_name' => $hotel->hotel_name,
-                'hotel_location' => $hotel->hotel_location,
-                'description' => $hotel->description,
-                'owner_name' => $hotel->owner_name,
-                'email' => $hotel->email,
-                'phone' => $hotel->phone,
-                'media' => [
-                    'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
-                    'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
-                    'slider_images' => $sliders,
+            'message' => $message,
+            'data' => [
+                'auth' => [
+                    'token' => $device->api_token,
                 ],
-                'active_plan' => [
-                    'plan_name' => $plan ? $plan->name : 'N/A',
-                    'plan_price' => $plan ? $plan->price : '0.00',
-                    'purchase_date' => $hotel->purchase_date ? $hotel->purchase_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->toIso8601String() : null),
-                    'expiry_date' => $hotel->expiry_date ? $hotel->expiry_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null),
+                'template' => [
+                    'latest_version' => $latest ? $latest->version : null,
+                    'old_version' => $previous ? $previous->version : null,
+                    'download_url' => $latest ? url(\Illuminate\Support\Facades\Storage::url($latest->file_path)) : null,
+                    'uploaded_at' => $latest ? $latest->created_at->toIso8601String() : null,
+                    'is_update_available' => (bool) $request->input('is_update_available', false),
+                ],
+                'device' => [
+                    'room_no' => $device->room_no,
+                    'device_id' => $device->device_id,
+                    'mac_address' => $device->mac_address,
+                    'ip_address' => $device->ip_address,
+                    'model' => $device->model,
+                    'brand' => $device->brand,
+                    'os_version' => $device->os_version,
+                ],
+                'hotel' => [
+                    'hotel_name' => $hotel->hotel_name,
+                    'hotel_location' => $hotel->hotel_location,
+                    'description' => $hotel->description,
+                    'owner_name' => $hotel->owner_name,
+                    'email' => $hotel->email,
+                    'phone' => $hotel->phone,
+                    'media' => [
+                        'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
+                        'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
+                        'slider_images' => $sliders,
+                    ],
+                    'active_plan' => [
+                        'plan_name' => $plan ? $plan->name : 'N/A',
+                        'plan_price' => $plan ? $plan->price : '0.00',
+                        'purchase_date' => $hotel->purchase_date ? $hotel->purchase_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->toIso8601String() : null),
+                        'expiry_date' => $hotel->expiry_date ? $hotel->expiry_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null),
+                    ]
                 ]
             ]
         ];

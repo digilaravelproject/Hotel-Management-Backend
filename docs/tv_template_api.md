@@ -28,44 +28,47 @@ Returned when the bearer token is valid and the latest template and hotel detail
 ```json
 {
   "status": true,
-  "message": "TV logged in successfully.",
-  "auth": {
-    "token": "d7a8f9b0c1d2e3f4g5h6i7j8k9l0m1n2..."
-  },
-  "template": {
-    "latest_version": "2.0",
-    "old_version": "1.5",
-    "download_url": "https://tvapp.digiemperor.com/uploads/templates/template_v2_0_1720098450.zip",
-    "uploaded_at": "2026-07-04T15:09:33+00:00"
-  },
-  "device": {
-    "room_no": "101",
-    "device_id": "6231A4D7B13402C5",
-    "mac_address": "AA:BB:CC:DD:EE:FF",
-    "ip_address": "192.168.1.1",
-    "model": "SmartTV Pro",
-    "brand": "Samsung",
-    "os_version": "Tizen 6.0"
-  },
-  "hotel": {
-    "hotel_name": "The Grand Hotel",
-    "hotel_location": "Mumbai, India",
-    "description": "Standard business hotel.",
-    "owner_name": "John Doe",
-    "email": "owner@grandhotel.com",
-    "phone": "+919876543210",
-    "media": {
-      "logo_image": "https://tvapp.digiemperor.com/uploads/hotel_logos/1720092305_logo_a8d7f2a1.png",
-      "cover_image": "https://tvapp.digiemperor.com/uploads/hotel_images/1720092305_image_c8f2b1d3.jpg",
-      "slider_images": [
-        "https://tvapp.digiemperor.com/uploads/hotel_sliders/1720092305_slider_e8f2b1d3.jpg"
-      ]
+  "message": "Template version details fetched successfully.",
+  "data": {
+    "auth": {
+      "token": "d7a8f9b0c1d2e3f4g5h6i7j8k9l0m1n2..."
     },
-    "active_plan": {
-      "plan_name": "Premium Plan",
-      "plan_price": "4999.00",
-      "purchase_date": "2026-07-02T10:00:00+00:00",
-      "expiry_date": "2026-08-01T10:00:00+00:00"
+    "template": {
+      "latest_version": "2.0",
+      "old_version": "1.5",
+      "download_url": "https://tvapp.digiemperor.com/uploads/templates/template_v2_0_1720098450.zip",
+      "uploaded_at": "2026-07-04T15:09:33+00:00",
+      "is_update_available": true
+    },
+    "device": {
+      "room_no": "101",
+      "device_id": "6231A4D7B13402C5",
+      "mac_address": "AA:BB:CC:DD:EE:FF",
+      "ip_address": "192.168.1.1",
+      "model": "SmartTV Pro",
+      "brand": "Samsung",
+      "os_version": "Tizen 6.0"
+    },
+    "hotel": {
+      "hotel_name": "The Grand Hotel",
+      "hotel_location": "Mumbai, India",
+      "description": "Standard business hotel.",
+      "owner_name": "John Doe",
+      "email": "owner@grandhotel.com",
+      "phone": "+919876543210",
+      "media": {
+        "logo_image": "https://tvapp.digiemperor.com/uploads/hotel_logos/1720092305_logo_a8d7f2a1.png",
+        "cover_image": "https://tvapp.digiemperor.com/uploads/hotel_images/1720092305_image_c8f2b1d3.jpg",
+        "slider_images": [
+          "https://tvapp.digiemperor.com/uploads/hotel_sliders/1720092305_slider_e8f2b1d3.jpg"
+        ]
+      },
+      "active_plan": {
+        "plan_name": "Premium Plan",
+        "plan_price": "4999.00",
+        "purchase_date": "2026-07-02T10:00:00+00:00",
+        "expiry_date": "2026-08-01T10:00:00+00:00"
+      }
     }
   }
 }
