@@ -32,7 +32,7 @@ class TvLoginService
         }
 
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
-        $device = ConnectedDevice::where('device_id', $data['deviceId'])->first();
+        $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
 
         $token = Str::random(80);
 
