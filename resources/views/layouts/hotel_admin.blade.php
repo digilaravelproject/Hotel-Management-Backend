@@ -227,6 +227,12 @@
                         <span>Connected TVs</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.guests.*') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.guests.index') }}">
+                        <i class="fa-solid fa-users"></i>
+                        <span>Guests</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ Request::routeIs('hotel.hotel-info') ? 'active' : '' }}">
                     <a href="{{ route('hotel.hotel-info') }}">
                         <i class="fa-solid fa-hotel"></i>

@@ -8,6 +8,7 @@ use App\Http\Controllers\HotelAdmin\ProfileController;
 use App\Http\Controllers\HotelAdmin\AmenityController;
 use App\Http\Controllers\HotelAdmin\DashboardController as HotelDashboardController;
 use App\Http\Controllers\HotelAdmin\DeviceController as HotelDeviceController;
+use App\Http\Controllers\HotelAdmin\GuestController as HotelGuestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,4 +46,7 @@ Route::middleware(['hotel_admin'])->group(function () {
 
     // Connected TVs
     Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'destroy'])->names('hotel.devices');
+
+    // Guest Management CRUD
+    Route::resource('/hotel/guests', HotelGuestController::class)->names('hotel.guests');
 });

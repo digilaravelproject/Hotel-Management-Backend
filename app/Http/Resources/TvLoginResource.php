@@ -33,6 +33,21 @@ class TvLoginResource extends JsonResource
         $plan = $hotel->plan;
         $message = $this['message'] ?? 'TV logged in successfully.';
 
+        // Look up active guest for the room and hotel
+        $now = now();
+        $activeGuest = \App\Models\Guest::where('hotel_id', $hotel->id)
+            ->where('room_number', $device->room_no)
+            ->where('check_in_datetime', '<=', $now)
+            ->where('check_out_datetime', '>=', $now)
+            ->first();
+
+        $guestInfo = $activeGuest ? [
+            'name' => $activeGuest->name,
+            'mobile_number' => $activeGuest->mobile_number,
+            'check_in_datetime' => $activeGuest->check_in_datetime->toIso8601String(),
+            'check_out_datetime' => $activeGuest->check_out_datetime->toIso8601String(),
+        ] : null;
+
         // Fetch template details dynamically
         $latest = \App\Models\TvTemplate::query()
             ->where('is_active', '=', true)
@@ -85,7 +100,8 @@ class TvLoginResource extends JsonResource
                         'purchase_date' => $hotel->purchase_date ? $hotel->purchase_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->toIso8601String() : null),
                         'expiry_date' => $hotel->expiry_date ? $hotel->expiry_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null),
                     ]
-                ]
+                ],
+                'guest_info' => $guestInfo,
             ]
         ];
     }
