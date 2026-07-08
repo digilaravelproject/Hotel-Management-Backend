@@ -104,8 +104,7 @@ class GuestController extends Controller
     public function destroy(int $id)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $guest = Guest::query()->where('hotel_id', $hotel->id)->findOrFail($id);
-        $guest->delete();
+        Guest::query()->where('hotel_id', $hotel->id)->where('id', $id)->delete();
 
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest deleted successfully!');
