@@ -15,7 +15,7 @@ class GuestController extends Controller
     public function index(Request $request)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $query = Guest::where('hotel_id', $hotel->id);
+        $query = Guest::query()->where('hotel_id', $hotel->id);
 
         if ($request->filled('room')) {
             $query->where('room_number', $request->input('room'));
@@ -57,10 +57,10 @@ class GuestController extends Controller
     /**
      * Update the specified guest's details.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $guest = Guest::where('hotel_id', $hotel->id)->findOrFail($id);
+        $guest = Guest::query()->where('hotel_id', $hotel->id)->findOrFail($id);
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -85,10 +85,10 @@ class GuestController extends Controller
     /**
      * Checkout the guest (set check_out_datetime to now).
      */
-    public function checkout($id)
+    public function checkout(int $id)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $guest = Guest::where('hotel_id', $hotel->id)->findOrFail($id);
+        $guest = Guest::query()->where('hotel_id', $hotel->id)->findOrFail($id);
 
         $guest->update([
             'check_out_datetime' => now(),
@@ -101,10 +101,10 @@ class GuestController extends Controller
     /**
      * Remove the specified guest from storage.
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $guest = Guest::where('hotel_id', $hotel->id)->findOrFail($id);
+        $guest = Guest::query()->where('hotel_id', $hotel->id)->findOrFail($id);
         $guest->delete();
 
         return redirect()->route('hotel.guests.index')

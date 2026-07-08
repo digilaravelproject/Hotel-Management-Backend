@@ -31,7 +31,7 @@ class DeviceController extends Controller
 
         // Fetch active guests to cross-reference occupied rooms
         $now = now();
-        $activeGuests = Guest::where('hotel_id', $hotel->id)
+        $activeGuests = Guest::query()->where('hotel_id', $hotel->id)
             ->where('check_in_datetime', '<=', $now)
             ->where(function($q) use ($now) {
                 $q->whereNull('check_out_datetime')

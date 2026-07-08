@@ -2,8 +2,11 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Guest;
+use App\Models\TvTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class TvLoginResource extends JsonResource
 {
@@ -35,12 +38,12 @@ class TvLoginResource extends JsonResource
 
         // Look up active guest for the room and hotel
         $now = now();
-        $activeGuest = \App\Models\Guest::where('hotel_id', $hotel->id)
+        $activeGuest = Guest::query()->where('hotel_id', $hotel->id)
             ->where('room_number', $device->room_no)
             ->where('check_in_datetime', '<=', $now)
-            ->where(function($query) use ($now) {
+            ->where(function ($query) use ($now) {
                 $query->whereNull('check_out_datetime')
-                      ->orWhere('check_out_datetime', '>=', $now);
+                    ->orWhere('check_out_datetime', '>=', $now);
             })
             ->first();
 
@@ -52,12 +55,12 @@ class TvLoginResource extends JsonResource
         ] : null;
 
         // Fetch template details dynamically
-        $latest = \App\Models\TvTemplate::query()
+        $latest = TvTemplate::query()
             ->where('is_active', '=', true)
             ->orderBy('id', 'desc')
             ->first();
 
-        $previous = $latest ? \App\Models\TvTemplate::query()
+        $previous = $latest ? TvTemplate::query()
             ->where('id', '<', $latest->id)
             ->orderBy('id', 'desc')
             ->first() : null;
@@ -72,7 +75,7 @@ class TvLoginResource extends JsonResource
                 'template' => [
                     'latest_version' => $latest ? $latest->version : null,
                     'old_version' => $previous ? $previous->version : null,
-                    'download_url' => $latest ? url(\Illuminate\Support\Facades\Storage::url($latest->file_path)) : null,
+                    'download_url' => $latest ? url(Storage::url($latest->file_path)) : null,
                     'uploaded_at' => $latest ? $latest->created_at->toIso8601String() : null,
                     'is_update_available' => (bool) $request->input('is_update_available', false),
                 ],
@@ -102,10 +105,10 @@ class TvLoginResource extends JsonResource
                         'plan_price' => $plan ? $plan->price : '0.00',
                         'purchase_date' => $hotel->purchase_date ? $hotel->purchase_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->toIso8601String() : null),
                         'expiry_date' => $hotel->expiry_date ? $hotel->expiry_date->toIso8601String() : ($hotel->created_at ? $hotel->created_at->copy()->addDays(30)->toIso8601String() : null),
-                    ]
+                    ],
                 ],
                 'guest_info' => $guestInfo,
-            ]
+            ],
         ];
     }
 }
