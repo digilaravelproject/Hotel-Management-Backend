@@ -38,14 +38,17 @@ class TvLoginResource extends JsonResource
         $activeGuest = \App\Models\Guest::where('hotel_id', $hotel->id)
             ->where('room_number', $device->room_no)
             ->where('check_in_datetime', '<=', $now)
-            ->where('check_out_datetime', '>=', $now)
+            ->where(function($query) use ($now) {
+                $query->whereNull('check_out_datetime')
+                      ->orWhere('check_out_datetime', '>=', $now);
+            })
             ->first();
 
         $guestInfo = $activeGuest ? [
             'name' => $activeGuest->name,
             'mobile_number' => $activeGuest->mobile_number,
             'check_in_datetime' => $activeGuest->check_in_datetime->toIso8601String(),
-            'check_out_datetime' => $activeGuest->check_out_datetime->toIso8601String(),
+            'check_out_datetime' => $activeGuest->check_out_datetime ? $activeGuest->check_out_datetime->toIso8601String() : null,
         ] : null;
 
         // Fetch template details dynamically

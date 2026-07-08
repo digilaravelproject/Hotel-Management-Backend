@@ -48,5 +48,6 @@ Route::middleware(['hotel_admin'])->group(function () {
     Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'destroy'])->names('hotel.devices');
 
     // Guest Management CRUD
+    Route::post('/hotel/guests/{id}/checkout', [HotelGuestController::class, 'checkout'])->name('hotel.guests.checkout');
     Route::resource('/hotel/guests', HotelGuestController::class)->names('hotel.guests');
 });

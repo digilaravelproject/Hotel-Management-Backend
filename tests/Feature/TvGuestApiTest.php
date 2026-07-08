@@ -160,4 +160,32 @@ class TvGuestApiTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('data.guest_info', null);
     }
+
+    public function test_api_returns_guest_info_when_active_guest_has_open_checkout(): void
+    {
+        $now = now();
+        
+        // Open-ended Guest: Checked in 1 hour ago, checkout is null
+        Guest::create([
+            'hotel_id' => $this->hotel->id,
+            'name' => 'Open Guest',
+            'mobile_number' => '1122334455',
+            'room_number' => '101',
+            'check_in_datetime' => $now->copy()->subHour(),
+            'check_out_datetime' => null,
+        ]);
+
+        $loginPayload = [
+            'license_key' => 'TEST-LIC-KEY-1234',
+            'room_no' => '101',
+            'deviceId' => 'device_123',
+            'macAddress' => 'AA:BB:CC:DD:EE:FF',
+        ];
+
+        $response = $this->postJson('/api/tv/login', $loginPayload);
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.guest_info.name', 'Open Guest')
+            ->assertJsonPath('data.guest_info.check_out_datetime', null);
+    }
 }

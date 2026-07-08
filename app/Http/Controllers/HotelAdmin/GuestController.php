@@ -12,12 +12,16 @@ class GuestController extends Controller
     /**
      * Display a listing of guests for the logged-in hotel admin.
      */
-    public function index()
+    public function index(Request $request)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $guests = Guest::where('hotel_id', $hotel->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $query = Guest::where('hotel_id', $hotel->id);
+
+        if ($request->filled('room')) {
+            $query->where('room_number', $request->input('room'));
+        }
+
+        $guests = $query->orderBy('created_at', 'desc')->get();
 
         return view('hotel_admin.guests.index', compact('guests'));
     }
@@ -32,7 +36,7 @@ class GuestController extends Controller
             'mobile_number' => 'required|string|max:20',
             'room_number' => 'required|string|max:50',
             'check_in_datetime' => 'required|date',
-            'check_out_datetime' => 'required|date|after:check_in_datetime',
+            'check_out_datetime' => 'nullable|date|after:check_in_datetime',
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
@@ -47,7 +51,7 @@ class GuestController extends Controller
         ]);
 
         return redirect()->route('hotel.guests.index')
-            ->with('success', 'Guest added successfully!');
+            ->with('success', 'Guest checked in successfully!');
     }
 
     /**
@@ -63,7 +67,7 @@ class GuestController extends Controller
             'mobile_number' => 'required|string|max:20',
             'room_number' => 'required|string|max:50',
             'check_in_datetime' => 'required|date',
-            'check_out_datetime' => 'required|date|after:check_in_datetime',
+            'check_out_datetime' => 'nullable|date|after:check_in_datetime',
         ]);
 
         $guest->update([
@@ -76,6 +80,22 @@ class GuestController extends Controller
 
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest details updated successfully!');
+    }
+
+    /**
+     * Checkout the guest (set check_out_datetime to now).
+     */
+    public function checkout($id)
+    {
+        $hotel = Auth::guard('hotel_admin')->user();
+        $guest = Guest::where('hotel_id', $hotel->id)->findOrFail($id);
+
+        $guest->update([
+            'check_out_datetime' => now(),
+        ]);
+
+        return redirect()->route('hotel.guests.index')
+            ->with('success', 'Guest checked out successfully!');
     }
 
     /**

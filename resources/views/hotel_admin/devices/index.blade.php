@@ -189,7 +189,25 @@
                 <tr>
                     <td>{{ $devices->firstItem() + $index }}</td>
                     <td>
-                        <span style="font-weight: 600; color: var(--primary);">Room {{ $device->room_no }}</span>
+                        @if($activeGuest = $activeGuests->get($device->room_no))
+                            <div style="font-weight: 600;">
+                                <a href="{{ route('hotel.guests.index') }}?room={{ urlencode($device->room_no) }}" 
+                                   style="color: var(--primary); text-decoration: underline;" 
+                                   title="Occupied by {{ $activeGuest->name }}">
+                                    Room {{ $device->room_no }}
+                                </a>
+                            </div>
+                            <small style="color: var(--success); font-weight: 500;">
+                                <i class="fa-solid fa-user" style="font-size: 10px;"></i> {{ $activeGuest->name }}
+                            </small>
+                        @else
+                            <div style="font-weight: 600; color: var(--text-muted);">
+                                Room {{ $device->room_no }}
+                            </div>
+                            <small style="color: var(--text-light); font-style: italic;">
+                                Vacant
+                            </small>
+                        @endif
                     </td>
                     <td>
                         <span style="font-family: monospace; font-size: 13px; color: var(--text-main);">{{ $device->device_id }}</span>

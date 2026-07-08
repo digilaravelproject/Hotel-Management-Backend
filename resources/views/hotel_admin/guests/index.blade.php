@@ -31,10 +31,11 @@
 
     .status-badge {
         display: inline-block;
-        padding: 4px 8px;
+        padding: 4px 10px;
         font-size: 12px;
         font-weight: 600;
         border-radius: var(--radius-sm);
+        text-align: center;
     }
 
     .status-active {
@@ -59,9 +60,16 @@
     <div>
         <p style="color: var(--text-muted); font-size: 14px;">Register new guests, manage check-in/out schedules, and track room allocations.</p>
     </div>
-    <button onclick="openAddModal()" class="btn btn-primary">
-        <i class="fa-solid fa-plus"></i> Add Guest
-    </button>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        @if(request()->filled('room'))
+            <a href="{{ route('hotel.guests.index') }}" class="btn btn-outline btn-sm">
+                <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filter (Room {{ request('room') }})
+            </a>
+        @endif
+        <button onclick="openAddModal()" class="btn btn-primary">
+            <i class="fa-solid fa-plus"></i> Add Guest
+        </button>
+    </div>
 </div>
 
 <!-- Table list -->
@@ -76,7 +84,7 @@
                 <th>Check-in Datetime</th>
                 <th>Check-out Datetime</th>
                 <th>Status</th>
-                <th style="width: 120px; text-align: center;">Actions</th>
+                <th style="width: 180px; text-align: center;">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -86,7 +94,7 @@
                     if ($now->lt($guest->check_in_datetime)) {
                         $statusText = 'Scheduled';
                         $statusClass = 'status-scheduled';
-                    } elseif ($now->gt($guest->check_out_datetime)) {
+                    } elseif ($guest->check_out_datetime && $now->gt($guest->check_out_datetime)) {
                         $statusText = 'Checked Out';
                         $statusClass = 'status-checkedout';
                     } else {
@@ -107,19 +115,34 @@
                         <span style="color: var(--text-main); font-size: 14px;">{{ $guest->mobile_number }}</span>
                     </td>
                     <td>
-                        <span class="badge" style="background-color: var(--bg-main); color: var(--bg-dark); border: 1px solid var(--border-color);">Room {{ $guest->room_number }}</span>
+                        <a href="{{ route('hotel.devices.index') }}?room_no={{ urlencode($guest->room_number) }}" 
+                           class="badge" 
+                           style="background-color: var(--primary-light); color: var(--primary); border: 1px solid rgba(99, 102, 241, 0.2); font-weight: 600;" 
+                           title="View Connected Devices for Room {{ $guest->room_number }}">
+                            Room {{ $guest->room_number }} <i class="fa-solid fa-tv" style="margin-left: 4px; font-size: 10px;"></i>
+                        </a>
                     </td>
                     <td>
                         <span style="color: var(--text-muted); font-size: 14px;">{{ $guest->check_in_datetime->format('Y-m-d H:i') }}</span>
                     </td>
                     <td>
-                        <span style="color: var(--text-muted); font-size: 14px;">{{ $guest->check_out_datetime->format('Y-m-d H:i') }}</span>
+                        <span style="color: var(--text-muted); font-size: 14px;">
+                            {{ $guest->check_out_datetime ? $guest->check_out_datetime->format('Y-m-d H:i') : 'Open Check-in' }}
+                        </span>
                     </td>
                     <td>
                         <span class="status-badge {{ $statusClass }}">{{ $statusText }}</span>
                     </td>
                     <td>
-                        <div style="display: flex; gap: 8px; justify-content: center;">
+                        <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
+                            @if($statusText !== 'Checked Out')
+                                <form action="{{ route('hotel.guests.checkout', $guest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to check out this guest?');" style="display: inline; margin: 0;">
+                                    @csrf
+                                    <button type="submit" class="btn btn-sm btn-outline" style="color: var(--warning); border-color: rgba(245, 158, 11, 0.3); background-color: rgba(245, 158, 11, 0.05);" title="Check Out Guest">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Checkout
+                                    </button>
+                                </form>
+                            @endif
                             <button onclick="openEditModal({{ json_encode($guest) }})" class="btn btn-outline btn-sm" title="Edit guest" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </button>
@@ -172,8 +195,8 @@
                     <input type="datetime-local" name="check_in_datetime" required class="form-control">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Check-out Date & Time</label>
-                    <input type="datetime-local" name="check_out_datetime" required class="form-control">
+                    <label class="form-label">Check-out Date & Time (Optional)</label>
+                    <input type="datetime-local" name="check_out_datetime" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
@@ -212,8 +235,8 @@
                     <input type="datetime-local" name="check_in_datetime" id="editCheckIn" required class="form-control">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Check-out Date & Time</label>
-                    <input type="datetime-local" name="check_out_datetime" id="editCheckOut" required class="form-control">
+                    <label class="form-label">Check-out Date & Time (Optional)</label>
+                    <input type="datetime-local" name="check_out_datetime" id="editCheckOut" class="form-control">
                 </div>
             </div>
             <div class="modal-footer">
@@ -246,8 +269,8 @@
         document.getElementById('editMobile').value = guest.mobile_number;
         document.getElementById('editRoom').value = guest.room_number;
         
-        // Format dates to YYYY-MM-DDTHH:MM format required by datetime-local input
         const formatDateTime = (dateStr) => {
+            if (!dateStr) return '';
             const date = new Date(dateStr);
             const pad = (n) => n.toString().padStart(2, '0');
             return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
