@@ -103,7 +103,7 @@
                     </td>
                     <td>
                         <div style="display: flex; gap: 8px; justify-content: center;">
-                            <button onclick="openEditModal({{ json_encode($amenity) }})" class="btn btn-outline btn-sm" title="Edit aminity" style="padding: 8px 10px;">
+                            <button onclick="openEditModal(this)" data-amenity="{{ json_encode($amenity) }}" class="btn btn-outline btn-sm" title="Edit aminity" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </button>
                             <form action="{{ route('super-admin.amenities.destroy', $amenity->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this aminity?');" style="display: inline; margin: 0;">
@@ -176,7 +176,8 @@
     const toastMsg = document.getElementById('toastMessage');
 
     // Edit Modal control
-    function openEditModal(amenity) {
+    function openEditModal(button) {
+        const amenity = JSON.parse(button.getAttribute('data-amenity'));
         editForm.action = `/super-admin/amenities/${amenity.id}`;
         document.getElementById('editName').value = amenity.name;
         document.getElementById('editIcon').value = amenity.icon;

@@ -143,7 +143,7 @@
                                     </button>
                                 </form>
                             @endif
-                            <button onclick="openEditModal({{ json_encode($guest) }})" class="btn btn-outline btn-sm" title="Edit guest" style="padding: 8px 10px;">
+                            <button onclick="openEditModal(this)" data-guest="{{ json_encode($guest) }}" class="btn btn-outline btn-sm" title="Edit guest" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </button>
                             <form action="{{ route('hotel.guests.destroy', $guest->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to remove this guest?');" style="display: inline; margin: 0;">
@@ -263,7 +263,8 @@
         document.body.style.overflow = 'auto';
     }
 
-    function openEditModal(guest) {
+    function openEditModal(button) {
+        const guest = JSON.parse(button.getAttribute('data-guest'));
         editForm.action = `/hotel/guests/${guest.id}`;
         document.getElementById('editName').value = guest.name;
         document.getElementById('editMobile').value = guest.mobile_number;

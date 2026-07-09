@@ -99,10 +99,10 @@
                     </td>
                     <td>
                         <div style="display: flex; gap: 8px; justify-content: center;">
-                            <button onclick="openViewModal({{ json_encode($amenity) }})" class="btn btn-outline btn-sm" title="View details" style="padding: 8px 10px;">
+                            <button onclick="openViewModal(this)" data-amenity="{{ json_encode($amenity) }}" class="btn btn-outline btn-sm" title="View details" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-eye"></i>
                             </button>
-                            <button onclick="openEditModal({{ json_encode($amenity) }})" class="btn btn-outline btn-sm" title="Edit aminity" style="padding: 8px 10px;">
+                            <button onclick="openEditModal(this)" data-amenity="{{ json_encode($amenity) }}" class="btn btn-outline btn-sm" title="Edit aminity" style="padding: 8px 10px;">
                                 <i class="fa-regular fa-pen-to-square"></i>
                             </button>
                             <form action="{{ route('hotel.amenities.destroy', $amenity->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this aminity?');" style="display: inline; margin: 0;">
@@ -243,7 +243,8 @@
     }
 
     // Edit Modal control
-    function openEditModal(amenity) {
+    function openEditModal(button) {
+        const amenity = JSON.parse(button.getAttribute('data-amenity'));
         editForm.action = `/hotel/amenities/${amenity.id}`;
         document.getElementById('editName').value = amenity.name;
         document.getElementById('editIcon').value = amenity.icon;
@@ -257,7 +258,8 @@
     }
 
     // View Modal control
-    function openViewModal(amenity) {
+    function openViewModal(button) {
+        const amenity = JSON.parse(button.getAttribute('data-amenity'));
         document.getElementById('viewIcon').className = amenity.icon;
         document.getElementById('viewName').textContent = amenity.name;
         document.getElementById('viewDescription').textContent = amenity.description || 'No description provided for this aminity.';
