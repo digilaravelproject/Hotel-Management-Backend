@@ -185,7 +185,7 @@
             </div>
 
             <div style="margin-top: 16px;">
-                {{ $templates->links() }}
+                {{ $templates->links('pagination::bootstrap-4') }}
             </div>
         @else
             <div style="padding: 30px; text-align: center; color: var(--text-muted); background-color: var(--bg-main); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">

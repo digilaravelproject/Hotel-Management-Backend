@@ -91,52 +91,6 @@
         border-bottom: none;
     }
     
-    .table tbody tr:hover {
-        background-color: #f8fafc;
-    }
-
-    /* Pagination Styling */
-    .pagination {
-        display: flex;
-        justify-content: center;
-        list-style: none;
-        padding: 0;
-        margin: 20px 0;
-        gap: 8px;
-    }
-
-    .page-item {
-        display: inline;
-    }
-
-    .page-link, .page-item span {
-        padding: 8px 16px;
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-md);
-        color: var(--text-main);
-        background-color: var(--bg-card);
-        text-decoration: none;
-        font-weight: 500;
-        transition: var(--transition);
-    }
-
-    .page-link:hover {
-        background-color: var(--primary-light);
-        color: var(--primary);
-        border-color: var(--primary);
-    }
-
-    .page-item.disabled span {
-        color: var(--text-light);
-        background-color: #f1f5f9;
-        cursor: not-allowed;
-        border-color: var(--border-color);
-    }
-
-    .page-item.active span {
-        background-color: var(--primary);
-        color: white;
-        border-color: var(--primary);
     }
 </style>
 @endsection
