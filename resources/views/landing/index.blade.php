@@ -456,24 +456,52 @@
             </div>
         @endif
 
-        <div class="dropdown">
-            <button class="dropdown-btn">
-                <span>Access Portal</span>
-                <i class="fa-solid fa-chevron-down"></i>
-            </button>
-            <div class="dropdown-content">
-                <button onclick="openRegisterModal()">
-                    <i class="fa-solid fa-user-plus" style="margin-right: 8px; color: var(--primary);"></i>Register Hotel
+        @if(Auth::guard('hotel_admin')->check())
+            <a href="{{ route('hotel.dashboard') }}" class="btn btn-primary" style="font-size: 14px; padding: 10px 20px;">
+                <i class="fa-solid fa-gauge" style="margin-right: 6px;"></i>Dashboard
+            </a>
+            
+            <div class="dropdown">
+                <button class="dropdown-btn" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: none;">
+                    <span>Account</span>
+                    <i class="fa-solid fa-chevron-down"></i>
                 </button>
-                <a href="{{ route('hotel.login') }}">
-                    <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px; color: var(--success);"></i>Login Hotel
-                </a>
-                <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 4px 0;"></div>
-                <a href="{{ route('super-admin.login') }}" style="color: #94a3b8; font-size: 12px;">
-                    <i class="fa-solid fa-lock" style="margin-right: 8px;"></i>Super Admin
-                </a>
+                <div class="dropdown-content">
+                    <a href="{{ route('hotel.dashboard') }}">
+                        <i class="fa-solid fa-gauge" style="margin-right: 8px; color: var(--primary);"></i>Dashboard
+                    </a>
+                    <form action="{{ route('hotel.logout') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <button type="submit" style="display: flex; align-items: center; width: 100%; border: none; background: none; text-align: left; padding: 12px 18px; color: #cbd5e1; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;">
+                            <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px; color: var(--danger);"></i>Logout
+                        </button>
+                    </form>
+                </div>
             </div>
-        </div>
+        @else
+            <a href="{{ route('hotel.login') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.15); font-size: 14px; padding: 10px 20px;">
+                Hotel Login
+            </a>
+            
+            <div class="dropdown">
+                <button class="dropdown-btn">
+                    <span>Access Portal</span>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <button onclick="openRegisterModal()">
+                        <i class="fa-solid fa-user-plus" style="margin-right: 8px; color: var(--primary);"></i>Register Hotel
+                    </button>
+                    <a href="{{ route('hotel.login') }}">
+                        <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px; color: var(--success);"></i>Hotel Login
+                    </a>
+                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 4px 0;"></div>
+                    <a href="{{ route('super-admin.login') }}" style="color: #94a3b8; font-size: 12px;">
+                        <i class="fa-solid fa-lock" style="margin-right: 8px;"></i>Super Admin
+                    </a>
+                </div>
+            </div>
+        @endif
     </div>
 </header>
 
