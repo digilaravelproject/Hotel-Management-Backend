@@ -98,9 +98,25 @@
         border-radius: var(--radius-md);
         border: 1px solid rgba(255, 255, 255, 0.08);
         z-index: 101;
-        overflow: hidden;
+        overflow: visible; /* Changed from hidden to allow pseudo-element to render outside bounds */
         margin-top: 8px;
         animation: fadeIn 0.25s ease-out;
+    }
+    
+    .dropdown-content::before {
+        content: '';
+        position: absolute;
+        top: -12px;
+        left: 0;
+        width: 100%;
+        height: 12px;
+        background: transparent;
+    }
+    
+    .btn-hotel-login:hover {
+        background-color: #ffffff !important;
+        color: #0b0f19 !important;
+        border-color: #ffffff !important;
     }
     
     .dropdown-content a, .dropdown-content button {
@@ -479,7 +495,7 @@
                 </div>
             </div>
         @else
-            <a href="{{ route('hotel.login') }}" class="btn btn-outline" style="color: white; border-color: rgba(255,255,255,0.15); font-size: 14px; padding: 10px 20px;">
+            <a href="{{ route('hotel.login') }}" class="btn btn-outline btn-hotel-login" style="color: white; border-color: rgba(255,255,255,0.15); font-size: 14px; padding: 10px 20px;">
                 Hotel Login
             </a>
             
