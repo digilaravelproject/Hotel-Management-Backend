@@ -84,7 +84,8 @@ class TvApiTest extends TestCase
                         'hotel_name',
                         'media' => ['logo_image', 'cover_image', 'slider_images'],
                         'active_plan' => ['plan_name', 'plan_price', 'purchase_date', 'expiry_date'],
-                    ]
+                    ],
+                    'active_ott',
                 ]
             ]);
 
