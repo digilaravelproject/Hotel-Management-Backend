@@ -22,7 +22,8 @@ class PlanController extends Controller
      */
     public function create()
     {
-        return view('super_admin.plans.create');
+        $ottPlatforms = Plan::getAvailableOttPlatforms();
+        return view('super_admin.plans.create', compact('ottPlatforms'));
     }
 
     /**
@@ -35,6 +36,8 @@ class PlanController extends Controller
             'room_count' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'ott_platforms' => 'nullable|array',
+            'ott_platforms.*' => 'string',
         ]);
 
         Plan::create([
@@ -42,6 +45,7 @@ class PlanController extends Controller
             'room_count' => $request->room_count,
             'price' => $request->price,
             'description' => $request->description,
+            'ott_platforms' => $request->input('ott_platforms', []),
             'status' => true,
         ]);
 
@@ -55,7 +59,8 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = Plan::findOrFail($id);
-        return view('super_admin.plans.edit', compact('plan'));
+        $ottPlatforms = Plan::getAvailableOttPlatforms();
+        return view('super_admin.plans.edit', compact('plan', 'ottPlatforms'));
     }
 
     /**
@@ -70,6 +75,8 @@ class PlanController extends Controller
             'room_count' => 'required|integer|min:1',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
+            'ott_platforms' => 'nullable|array',
+            'ott_platforms.*' => 'string',
         ]);
 
         $plan->update([
@@ -77,6 +84,7 @@ class PlanController extends Controller
             'room_count' => $request->room_count,
             'price' => $request->price,
             'description' => $request->description,
+            'ott_platforms' => $request->input('ott_platforms', []),
         ]);
 
         return redirect()->route('super-admin.plans.index')

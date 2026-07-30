@@ -149,6 +149,14 @@
                 <p class="plan-desc">
                     {{ $plan->description ?? 'Standard system licensing plan with dashboard access.' }}
                 </p>
+
+                @if(!empty($plan->ott_platforms))
+                    <div style="margin-bottom: 16px;">
+                        <span style="font-size: 11px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 4px 8px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid fa-tv" style="font-size: 10px;"></i> {{ count($plan->ott_platforms) }} OTT Platforms Enabled
+                        </span>
+                    </div>
+                @endif
             </div>
             
             <div class="plan-footer-actions">
