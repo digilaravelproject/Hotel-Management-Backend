@@ -271,6 +271,12 @@
                         <span>Global OTT Settings</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.menus.*') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.menus.index') }}">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                        <span>Manage Menus</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ Request::routeIs('hotel.amenities.*') ? 'active' : '' }}">
                     <a href="{{ route('hotel.amenities.index') }}">
                         <i class="fa-solid fa-spa"></i>

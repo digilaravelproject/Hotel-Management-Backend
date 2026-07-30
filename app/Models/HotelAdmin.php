@@ -40,6 +40,7 @@ class HotelAdmin extends Authenticatable
         'purchase_date',
         'expiry_date',
         'global_ott_settings',
+        'global_menu_settings',
     ];
 
     /**
@@ -65,6 +66,7 @@ class HotelAdmin extends Authenticatable
         'purchase_date' => 'datetime',
         'expiry_date' => 'datetime',
         'global_ott_settings' => 'array',
+        'global_menu_settings' => 'array',
     ];
 
     /**

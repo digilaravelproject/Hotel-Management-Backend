@@ -86,6 +86,7 @@ class TvApiTest extends TestCase
                         'active_plan' => ['plan_name', 'plan_price', 'purchase_date', 'expiry_date'],
                     ],
                     'active_ott',
+                    'menus',
                 ]
             ]);
 

@@ -136,4 +136,69 @@ class DeviceController extends Controller
 
         return redirect()->back()->with('success', 'Room ' . $device->room_no . ' OTT configuration reset to Hotel Global Default.');
     }
+
+    /**
+     * Show individual Room / Device Menu configuration view.
+     */
+    public function showRoomMenus(int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $defaultMenus = \App\Services\MenuResolverService::getDefaultMenus();
+        
+        $globalSettings = $hotel->global_menu_settings ?? [];
+        $hasOverride = !is_null($device->menu_overrides);
+
+        $currentSettings = $hasOverride ? $device->menu_overrides : $globalSettings;
+
+        return view('hotel_admin.devices.menus', compact('hotel', 'device', 'defaultMenus', 'currentSettings', 'hasOverride', 'globalSettings'));
+    }
+
+    /**
+     * Update individual Room / Device Menu configuration.
+     */
+    public function updateRoomMenus(Request $request, int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $defaultMenus = \App\Services\MenuResolverService::getDefaultMenus();
+        $inputSettings = $request->input('menus', []);
+
+        $formattedSettings = [];
+        foreach ($defaultMenus as $menu) {
+            $formattedSettings[$menu['id']] = isset($inputSettings[$menu['id']]) ? 'show' : 'hide';
+        }
+
+        $device->update([
+            'menu_overrides' => $formattedSettings,
+        ]);
+
+        return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration saved.');
+    }
+
+    /**
+     * Reset Room / Device Menu configuration to Hotel Global Default.
+     */
+    public function resetRoomMenus(int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $device->update([
+            'menu_overrides' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration reset to Hotel Global Default.');
+    }
 }

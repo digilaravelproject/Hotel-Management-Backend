@@ -44,16 +44,23 @@ Route::middleware(['hotel_admin'])->group(function () {
     Route::get('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');
     Route::resource('/hotel/amenities', AmenityController::class)->names('hotel.amenities');
 
-    // Connected TVs & OTT Configuration
+    // Connected TVs & OTT / Menu Configurations
     Route::get('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'showRoomOtt'])->name('hotel.devices.ott');
     Route::post('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'updateRoomOtt']);
     Route::post('/hotel/devices/{id}/ott/reset', [HotelDeviceController::class, 'resetRoomOtt'])->name('hotel.devices.ott.reset');
+    Route::get('/hotel/devices/{id}/menus', [HotelDeviceController::class, 'showRoomMenus'])->name('hotel.devices.menus');
+    Route::post('/hotel/devices/{id}/menus', [HotelDeviceController::class, 'updateRoomMenus']);
+    Route::post('/hotel/devices/{id}/menus/reset', [HotelDeviceController::class, 'resetRoomMenus'])->name('hotel.devices.menus.reset');
     Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'destroy'])->names('hotel.devices');
 
     // OTT Package & Global Settings
     Route::get('/hotel/package', [\App\Http\Controllers\HotelAdmin\OttController::class, 'myPackage'])->name('hotel.package');
     Route::get('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'globalSettings'])->name('hotel.ott-settings');
     Route::post('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'updateGlobalSettings']);
+
+    // Global Manage Menus
+    Route::get('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'index'])->name('hotel.menus.index');
+    Route::post('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'update']);
 
     // Guest Management CRUD
     Route::post('/hotel/guests/{id}/checkout', [HotelGuestController::class, 'checkout'])->name('hotel.guests.checkout');

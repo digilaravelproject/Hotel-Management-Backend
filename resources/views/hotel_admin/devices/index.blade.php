@@ -186,9 +186,12 @@
                     </td>
                     <td>{{ $device->created_at->format('d M, Y H:i') }}</td>
                     <td>
-                        <div style="display: flex; gap: 8px; align-items: center;">
+                        <div style="display: flex; gap: 6px; align-items: center;">
                             <a href="{{ route('hotel.devices.ott', $device->id) }}" class="btn btn-outline btn-sm" title="Configure OTT Platforms for Room {{ $device->room_no }}" style="padding: 6px 10px;">
                                 <i class="fa-solid fa-sliders"></i> OTT Config
+                            </a>
+                            <a href="{{ route('hotel.devices.menus', $device->id) }}" class="btn btn-outline btn-sm" title="Configure Menu Visibility for Room {{ $device->room_no }}" style="padding: 6px 10px;">
+                                <i class="fa-solid fa-list-check"></i> Menu Config
                             </a>
                             <form action="{{ route('hotel.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to disconnect this TV screen?');" style="display: inline;">
                                 @csrf
