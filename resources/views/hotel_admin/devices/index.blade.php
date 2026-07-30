@@ -186,13 +186,18 @@
                     </td>
                     <td>{{ $device->created_at->format('d M, Y H:i') }}</td>
                     <td>
-                        <form action="{{ route('hotel.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to disconnect this TV screen?');" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline btn-sm btn-danger-hover" title="Disconnect device" style="padding: 6px 10px; color: var(--danger); border-color: rgba(239, 68, 68, 0.2);">
-                                <i class="fa-solid fa-power-off"></i> Disconnect
-                            </button>
-                        </form>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <a href="{{ route('hotel.devices.ott', $device->id) }}" class="btn btn-outline btn-sm" title="Configure OTT Platforms for Room {{ $device->room_no }}" style="padding: 6px 10px;">
+                                <i class="fa-solid fa-sliders"></i> OTT Config
+                            </a>
+                            <form action="{{ route('hotel.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to disconnect this TV screen?');" style="display: inline;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline btn-sm btn-danger-hover" title="Disconnect device" style="padding: 6px 10px; color: var(--danger); border-color: rgba(239, 68, 68, 0.2);">
+                                    <i class="fa-solid fa-power-off"></i> Disconnect
+                                </button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             @empty

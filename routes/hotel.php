@@ -44,8 +44,16 @@ Route::middleware(['hotel_admin'])->group(function () {
     Route::get('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');
     Route::resource('/hotel/amenities', AmenityController::class)->names('hotel.amenities');
 
-    // Connected TVs
+    // Connected TVs & OTT Configuration
+    Route::get('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'showRoomOtt'])->name('hotel.devices.ott');
+    Route::post('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'updateRoomOtt']);
+    Route::post('/hotel/devices/{id}/ott/reset', [HotelDeviceController::class, 'resetRoomOtt'])->name('hotel.devices.ott.reset');
     Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'destroy'])->names('hotel.devices');
+
+    // OTT Package & Global Settings
+    Route::get('/hotel/package', [\App\Http\Controllers\HotelAdmin\OttController::class, 'myPackage'])->name('hotel.package');
+    Route::get('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'globalSettings'])->name('hotel.ott-settings');
+    Route::post('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'updateGlobalSettings']);
 
     // Guest Management CRUD
     Route::post('/hotel/guests/{id}/checkout', [HotelGuestController::class, 'checkout'])->name('hotel.guests.checkout');

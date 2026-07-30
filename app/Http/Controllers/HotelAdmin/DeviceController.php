@@ -59,4 +59,81 @@ class DeviceController extends Controller
 
         return redirect()->back()->with('success', 'Device disconnected successfully.');
     }
+
+    /**
+     * Show individual Room / Device OTT configuration view.
+     */
+    public function showRoomOtt(int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $hotel->loadMissing('plan');
+        $plan = $hotel->plan;
+        
+        $allPlatforms = \App\Models\Plan::getAvailableOttPlatforms();
+        $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
+
+        // Available OTTs strictly bound by Super Admin plan
+        $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
+            return in_array($ott['package'], $planPackageNames);
+        }));
+
+        $globalSettings = $hotel->global_ott_settings ?? $planPackageNames;
+        $hasOverride = !is_null($device->ott_overrides);
+        $currentDeviceSettings = $hasOverride ? $device->ott_overrides : $globalSettings;
+
+        return view('hotel_admin.devices.ott', compact('hotel', 'device', 'plan', 'availablePlatforms', 'currentDeviceSettings', 'hasOverride', 'globalSettings'));
+    }
+
+    /**
+     * Update individual Room / Device OTT configuration.
+     */
+    public function updateRoomOtt(Request $request, int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $hotel->loadMissing('plan');
+        $plan = $hotel->plan;
+        $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
+
+        $request->validate([
+            'ott_platforms' => 'nullable|array',
+            'ott_platforms.*' => 'string',
+        ]);
+
+        $selected = $request->input('ott_platforms', []);
+        $validSelected = array_values(array_intersect($selected, $planPackageNames));
+
+        $device->update([
+            'ott_overrides' => $validSelected,
+        ]);
+
+        return redirect()->back()->with('success', 'Room ' . $device->room_no . ' OTT configuration saved.');
+    }
+
+    /**
+     * Reset Room / Device OTT configuration to Hotel Global Default.
+     */
+    public function resetRoomOtt(int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $device->update([
+            'ott_overrides' => null,
+        ]);
+
+        return redirect()->back()->with('success', 'Room ' . $device->room_no . ' OTT configuration reset to Hotel Global Default.');
+    }
 }

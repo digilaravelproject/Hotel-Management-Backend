@@ -39,6 +39,7 @@ class HotelAdmin extends Authenticatable
         'slider_images',
         'purchase_date',
         'expiry_date',
+        'global_ott_settings',
     ];
 
     /**
@@ -63,6 +64,7 @@ class HotelAdmin extends Authenticatable
         'slider_images' => 'array',
         'purchase_date' => 'datetime',
         'expiry_date' => 'datetime',
+        'global_ott_settings' => 'array',
     ];
 
     /**

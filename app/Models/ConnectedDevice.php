@@ -18,6 +18,11 @@ class ConnectedDevice extends Model
         'brand',
         'os_version',
         'api_token',
+        'ott_overrides',
+    ];
+
+    protected $casts = [
+        'ott_overrides' => 'array',
     ];
 
     /**

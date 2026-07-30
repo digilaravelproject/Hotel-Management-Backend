@@ -259,6 +259,18 @@
                         <span>Dashboard</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.package') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.package') }}">
+                        <i class="fa-solid fa-box-archive"></i>
+                        <span>My Package</span>
+                    </a>
+                </li>
+                <li class="sidebar-item {{ Request::routeIs('hotel.ott-settings') ? 'active' : '' }}">
+                    <a href="{{ route('hotel.ott-settings') }}">
+                        <i class="fa-solid fa-sliders"></i>
+                        <span>Global OTT Settings</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ Request::routeIs('hotel.amenities.*') ? 'active' : '' }}">
                     <a href="{{ route('hotel.amenities.index') }}">
                         <i class="fa-solid fa-spa"></i>

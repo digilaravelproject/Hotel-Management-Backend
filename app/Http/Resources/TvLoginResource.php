@@ -65,6 +65,9 @@ class TvLoginResource extends JsonResource
             ->orderBy('id', 'desc')
             ->first() : null;
 
+        $ottResolver = app(\App\Services\OttResolverService::class);
+        $activeOttList = $ottResolver->getActiveOttForDevice($device, $hotel);
+
         return [
             'status' => true,
             'message' => $message,
@@ -108,6 +111,7 @@ class TvLoginResource extends JsonResource
                     ],
                 ],
                 'guest_info' => $guestInfo,
+                'active_ott' => $activeOttList,
             ],
         ];
     }
