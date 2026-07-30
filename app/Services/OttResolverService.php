@@ -47,9 +47,11 @@ class OttResolverService
 
         foreach ($allPlatforms as $ott) {
             if (in_array($ott['package'], $effectivePackages)) {
-                // Compute clean ID slug (e.g. 'com.netflix.mediaclient' -> 'netflix')
+                // Compute clean ID slug
                 $id = Str::slug($ott['name']);
-                if ($ott['package'] === 'com.netflix.mediaclient') {
+                if ($ott['package'] === 'com.android.vending') {
+                    $id = 'playstore';
+                } elseif ($ott['package'] === 'com.netflix.mediaclient') {
                     $id = 'netflix';
                 } elseif ($ott['package'] === 'in.startv.hotstar') {
                     $id = 'hotstar';

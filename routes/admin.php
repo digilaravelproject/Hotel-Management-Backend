@@ -43,6 +43,10 @@ Route::middleware(['super_admin'])->prefix('super-admin')->name('super-admin.')-
     // Connected Devices
     Route::resource('devices', SuperDeviceController::class)->only(['index', 'destroy']);
 
+    // Manage OTTs / Applications Master Catalog
+    Route::get('ott-master/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\OttMasterController::class, 'toggleStatus'])->name('ott-master.toggle-status');
+    Route::resource('ott-master', \App\Http\Controllers\SuperAdmin\OttMasterController::class)->except(['create', 'edit', 'show'])->names('ott-master');
+
     // TV Templates Management
     Route::get('templates', [SuperTemplateController::class, 'index'])->name('templates.index');
     Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');

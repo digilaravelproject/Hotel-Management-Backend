@@ -256,6 +256,12 @@
                         <span>Plan Management</span>
                     </a>
                 </li>
+                <li class="sidebar-item {{ Request::routeIs('super-admin.ott-master.*') ? 'active' : '' }}">
+                    <a href="{{ route('super-admin.ott-master.index') }}">
+                        <i class="fa-solid fa-shapes"></i>
+                        <span>Manage OTTs / Apps</span>
+                    </a>
+                </li>
                 <li class="sidebar-item {{ Request::routeIs('super-admin.devices.*') ? 'active' : '' }}">
                     <a href="{{ route('super-admin.devices.index') }}">
                         <i class="fa-solid fa-tv"></i>
