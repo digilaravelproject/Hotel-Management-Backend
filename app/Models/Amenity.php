@@ -10,13 +10,16 @@ class Amenity extends Model
 
     protected $fillable = [
         'hotel_admin_id',
+        'sr_no',
         'name',
         'icon',
+        'image',
         'description',
         'status',
     ];
 
     protected $casts = [
+        'sr_no' => 'integer',
         'status' => 'boolean',
     ];
 

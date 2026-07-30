@@ -71,6 +71,22 @@ class TvLoginResource extends JsonResource
         $menuResolver = app(\App\Services\MenuResolverService::class);
         $menusList = $menuResolver->getResolvedMenusForDevice($device, $hotel);
 
+        // Fetch active hotel amenities ordered by sr_no asc
+        $amenities = \App\Models\Amenity::query()
+            ->where('hotel_admin_id', $hotel->id)
+            ->where('status', true)
+            ->orderBy('sr_no', 'asc')
+            ->get();
+
+        $amenitiesList = [];
+        foreach ($amenities as $amenity) {
+            $amenitiesList[] = [
+                'sr_no' => (int) $amenity->sr_no,
+                'title' => $amenity->name,
+                'image_url' => $amenity->image ? asset($amenity->image) : null,
+            ];
+        }
+
         return [
             'status' => true,
             'message' => $message,
@@ -116,6 +132,7 @@ class TvLoginResource extends JsonResource
                 'guest_info' => $guestInfo,
                 'active_ott' => $activeOttList,
                 'menus' => $menusList,
+                'amenities' => $amenitiesList,
             ],
         ];
     }

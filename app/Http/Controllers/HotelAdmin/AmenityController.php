@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Amenity;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AmenityController extends Controller
 {
     /**
-     * Display a listing of amenities for the logged-in hotel admin.
+     * Display a listing of amenities for the logged-in hotel admin, ordered by sr_no.
      */
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
         $amenities = Amenity::where('hotel_admin_id', $hotel->id)
+                            ->orderBy('sr_no', 'asc')
                             ->orderBy('created_at', 'desc')
                             ->get();
 
@@ -23,22 +25,34 @@ class AmenityController extends Controller
     }
 
     /**
-     * Store a newly created amenity.
+     * Store a newly created amenity with image validation & storage.
      */
     public function store(Request $request)
     {
         $request->validate([
+            'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:100',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB (2048KB)
+        ], [
+            'image.max' => 'The image file size must not exceed 2MB.',
+            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
 
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('uploads/amenities', 'public');
+            $imagePath = 'storage/' . $path;
+        }
+
         Amenity::create([
             'hotel_admin_id' => $hotel->id,
+            'sr_no' => $request->sr_no,
             'name' => $request->name,
-            'icon' => $request->icon ?? 'fa-solid fa-square-check', // fallback icon
+            'icon' => $request->icon ?? 'fa-solid fa-square-check',
+            'image' => $imagePath,
             'description' => $request->description,
             'status' => true,
         ]);
@@ -56,14 +70,31 @@ class AmenityController extends Controller
         $amenity = Amenity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
 
         $request->validate([
+            'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'icon' => 'nullable|string|max:100',
             'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB
+        ], [
+            'image.max' => 'The image file size must not exceed 2MB.',
+            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
+        $imagePath = $amenity->image;
+        if ($request->hasFile('image')) {
+            // Remove old image file if exists
+            if ($amenity->image && file_exists(public_path($amenity->image))) {
+                @unlink(public_path($amenity->image));
+            }
+
+            $path = $request->file('image')->store('uploads/amenities', 'public');
+            $imagePath = 'storage/' . $path;
+        }
+
         $amenity->update([
+            'sr_no' => $request->sr_no,
             'name' => $request->name,
             'icon' => $request->icon ?? 'fa-solid fa-square-check',
+            'image' => $imagePath,
             'description' => $request->description,
         ]);
 
@@ -78,6 +109,11 @@ class AmenityController extends Controller
     {
         $hotel = Auth::guard('hotel_admin')->user();
         $amenity = Amenity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+        
+        if ($amenity->image && file_exists(public_path($amenity->image))) {
+            @unlink(public_path($amenity->image));
+        }
+
         $amenity->delete();
 
         return redirect()->route('hotel.amenities.index')
@@ -98,7 +134,7 @@ class AmenityController extends Controller
         return response()->json([
             'success' => true,
             'status' => $amenity->status,
-            'message' => 'Amenity is now ' . ($amenity->status ? 'Active' : 'Inactive')
+            'message' => 'Amenity status updated to ' . ($amenity->status ? 'Active' : 'Inactive')
         ]);
     }
 }
