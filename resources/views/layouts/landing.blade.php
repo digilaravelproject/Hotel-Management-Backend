@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-900 font-sans antialiased selection:bg-indigo-500 selection:text-white">
+<html lang="en" class="h-full bg-slate-50 font-sans antialiased selection:bg-indigo-600 selection:text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +20,7 @@
     </style>
     @yield('styles')
 </head>
-<body class="h-full text-slate-100 bg-slate-900">
+<body class="h-full text-slate-800 bg-slate-50">
 
     <div class="min-h-screen flex flex-col">
         @yield('content')
