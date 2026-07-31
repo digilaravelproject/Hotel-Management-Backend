@@ -1,30 +1,33 @@
 @extends('layouts.landing')
 
-@section('title', 'Welcome to HotelTV - Premium Hotel TV & Management System')
+@section('title', 'HotelTV Connect - Premium Hotel Smart TV OS & Guest Experience Platform')
 
 @section('content')
-<div class="relative overflow-hidden bg-slate-50 text-slate-800 font-sans min-h-screen">
-    <!-- Subtle Background Ambient Glows -->
-    <div class="absolute -top-32 -left-32 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute top-1/3 -right-32 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-10 left-1/4 w-[400px] h-[400px] bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+<div class="relative bg-slate-50 text-slate-900 font-sans min-h-screen selection:bg-indigo-600 selection:text-white overflow-hidden">
+
+    <!-- Organic Background Diffused Glows -->
+    <div class="absolute -top-40 left-1/4 w-[600px] h-[600px] bg-indigo-200/40 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="absolute top-1/3 -right-40 w-[500px] h-[500px] bg-sky-200/40 rounded-full blur-[100px] pointer-events-none"></div>
 
     <!-- Header Navigation -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200/80 transition-all px-6 md:px-12 py-4">
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200/80 px-6 lg:px-16 py-4 transition-all">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <!-- Brand Logo -->
-            <a href="{{ route('landing') }}" class="flex items-center space-x-3 text-slate-900 font-extrabold text-xl tracking-tight hover:opacity-90 transition-opacity">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30">
+            <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/30 group-hover:scale-105 transition-transform">
                     <i class="fa-solid fa-tv text-lg"></i>
                 </div>
-                <span>Hotel<span class="text-indigo-600">TV</span> Connect</span>
+                <span class="font-extrabold text-xl tracking-tight text-slate-900 font-['Syne']">
+                    Hotel<span class="text-indigo-600">TV</span>
+                </span>
             </a>
 
             <!-- Navigation Links -->
-            <nav class="hidden md:flex items-center space-x-8 text-xs font-bold text-slate-600">
+            <nav class="hidden md:flex items-center space-x-9 text-xs font-bold text-slate-600">
                 <a href="#features" class="hover:text-indigo-600 transition-colors">Features</a>
-                <a href="#preview" class="hover:text-indigo-600 transition-colors">TV UI Preview</a>
-                <a href="#plans" class="hover:text-indigo-600 transition-colors">Plans & Pricing</a>
+                <a href="#preview" class="hover:text-indigo-600 transition-colors">Interactive OS</a>
+                <a href="#social-proof" class="hover:text-indigo-600 transition-colors">Hospitality Partners</a>
+                <a href="#plans" class="hover:text-indigo-600 transition-colors">Pricing & Plans</a>
                 <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
             </nav>
 
@@ -40,51 +43,25 @@
                 </div>
             @endif
 
-            <!-- Auth Action Buttons -->
+            <!-- Action Buttons -->
             <div class="flex items-center space-x-3">
                 @if(Auth::guard('hotel_admin')->check())
                     <a href="{{ route('hotel.dashboard') }}" class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                         <i class="fa-solid fa-gauge"></i>
                         <span>Dashboard</span>
                     </a>
-                    
-                    <div class="relative group">
-                        <button class="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200/80 text-slate-700 font-bold text-xs flex items-center space-x-2 hover:bg-slate-200/70 transition-colors">
-                            <span>Account</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform"></i>
-                        </button>
-
-                        <!-- Invisible gap bridge for hover -->
-                        <div class="absolute right-0 top-full h-3 w-full"></div>
-
-                        <div class="hidden group-hover:block absolute right-0 top-[calc(100%+8px)] w-48 bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 z-50">
-                            <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
-                                <i class="fa-solid fa-gauge text-indigo-600"></i>
-                                <span>Dashboard</span>
-                            </a>
-                            <form action="{{ route('hotel.logout') }}" method="POST" class="m-0">
-                                @csrf
-                                <button type="submit" class="w-full flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 text-left">
-                                    <i class="fa-solid fa-right-from-bracket"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
                 @else
-                    <a href="{{ route('hotel.login') }}" class="px-5 py-2.5 rounded-2xl border border-slate-200/80 bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs shadow-xs transition-all">
+                    <a href="{{ route('hotel.login') }}" class="hidden sm:inline-flex px-5 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs transition-all shadow-xs">
                         Hotel Login
                     </a>
-                    
+
                     <div class="relative group">
                         <button class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                             <span>Access Portal</span>
                             <i class="fa-solid fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform"></i>
                         </button>
 
-                        <!-- Invisible gap bridge for hover -->
                         <div class="absolute right-0 top-full h-3 w-full"></div>
-
                         <div class="hidden group-hover:block absolute right-0 top-[calc(100%+8px)] w-52 bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 z-50 space-y-1">
                             <button onclick="openRegisterModal()" class="w-full flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 text-left transition-colors">
                                 <i class="fa-solid fa-user-plus text-indigo-600"></i>
@@ -97,7 +74,7 @@
                             <div class="border-t border-slate-100 my-1"></div>
                             <a href="{{ route('super-admin.login') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-800 transition-colors">
                                 <i class="fa-solid fa-lock"></i>
-                                <span>Super Admin</span>
+                                <span>Super Admin Portal</span>
                             </a>
                         </div>
                     </div>
@@ -106,122 +83,173 @@
         </div>
     </header>
 
-    <!-- Hero Section -->
-    <section class="py-16 md:py-24 px-6 md:px-12 text-center max-w-5xl mx-auto space-y-8">
-        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold uppercase tracking-wider shadow-xs">
-            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-            <span>Next Generation Hospitality TV System</span>
-        </div>
-
-        <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
-            Connect Your Rooms with <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-rose-600 bg-clip-text text-transparent">Premium Smart TV Services</span>
-        </h1>
-
-        <p class="text-base sm:text-lg text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
-            An all-in-one entertainment and custom branding dashboard portal for modern hotels. Seamlessly register your hotel, purchase custom licenses, and manage guest engagement with a few clicks.
-        </p>
-
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
-            <button onclick="openRegisterModal()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
-                Register Your Hotel Now <i class="fa-solid fa-arrow-right ml-2"></i>
-            </button>
-            <a href="#plans" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50 font-bold text-xs shadow-xs transition-all">
-                View Plans & Pricing
-            </a>
-        </div>
-
-        <!-- TV Interactive Mockup Card -->
-        <div id="preview" class="mt-14 max-w-4xl mx-auto bg-slate-950 p-3 sm:p-4 rounded-3xl border-8 sm:border-12 border-slate-800 shadow-2xl shadow-slate-300 aspect-video relative overflow-hidden text-left text-white">
-            <div class="h-full bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-950 p-6 rounded-2xl flex flex-col justify-between border border-white/10 relative">
-                <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-hotel text-indigo-400"></i>
-                        <span class="font-extrabold text-xs sm:text-sm">Grand Palace & Spa</span>
-                    </div>
-                    <span class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full border border-white/10">Welcome, Room 204!</span>
+    <!-- Asymmetric Human-Designed Hero Section -->
+    <section class="pt-16 pb-20 px-6 lg:px-16 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Column: Copy & Social Proof -->
+            <div class="lg:col-span-6 space-y-8 text-left">
+                <!-- Release Pill -->
+                <div class="inline-flex items-center space-x-3 px-3.5 py-1.5 rounded-full bg-indigo-50/80 border border-indigo-200/80 text-indigo-700 text-xs font-bold shadow-xs">
+                    <span class="px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wide">v2.4 Release</span>
+                    <span class="text-slate-600 font-medium">Smart TV Concierge Operating System</span>
                 </div>
 
-                <div class="text-center space-y-3 my-auto">
-                    <div class="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-full bg-indigo-600/30 border border-indigo-400/40 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-lg shadow-indigo-600/40">
-                        <i class="fa-solid fa-play text-xl sm:text-2xl text-indigo-400 ml-1"></i>
-                    </div>
-                    <h4 class="text-base sm:text-xl font-extrabold tracking-tight">Press Play to Start Streaming</h4>
-                    <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Access 100+ live HD channels, guest services, & OTT apps</p>
+                <!-- Headline -->
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.12] text-slate-900 font-['Syne']">
+                    Elevate Every Room with <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-rose-600 bg-clip-text text-transparent">Digital Luxury Concierge</span>
+                </h1>
+
+                <!-- Sub-description -->
+                <p class="text-base sm:text-lg text-slate-600 font-medium leading-relaxed max-w-xl">
+                    Replace generic TV screens with fully branded interactive guest hubs. Control streaming apps, room service menus, and guest messages centrally across thousands of room displays.
+                </p>
+
+                <!-- Action CTAs -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 pt-2">
+                    <button onclick="openRegisterModal()" class="px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center justify-center space-x-2">
+                        <span>Get Started Free</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                    <a href="#preview" class="px-8 py-4 rounded-2xl bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-100 font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-circle-play text-indigo-600"></i>
+                        <span>Watch 2-Min Demo</span>
+                    </a>
                 </div>
 
-                <div class="grid grid-cols-4 gap-2 border-t border-white/10 pt-3">
-                    <div class="p-2 rounded-xl bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 font-bold text-[10px] sm:text-xs text-center flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-tv"></i><span class="hidden sm:inline">Live TV</span>
+                <!-- Human Social Proof & Ratings -->
+                <div class="pt-4 border-t border-slate-200/80 flex items-center space-x-6">
+                    <div class="flex -space-x-3 overflow-hidden">
+                        <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Hotel Manager">
+                        <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80" alt="Resort Operations Director">
+                        <img class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" alt="Hospitality Tech Officer">
                     </div>
-                    <div class="p-2 rounded-xl bg-white/5 border border-white/10 font-semibold text-[10px] sm:text-xs text-center text-slate-300 flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-utensils"></i><span class="hidden sm:inline">Room Service</span>
-                    </div>
-                    <div class="p-2 rounded-xl bg-white/5 border border-white/10 font-semibold text-[10px] sm:text-xs text-center text-slate-300 flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-bell"></i><span class="hidden sm:inline">Concierge</span>
-                    </div>
-                    <div class="p-2 rounded-xl bg-white/5 border border-white/10 font-semibold text-[10px] sm:text-xs text-center text-slate-300 flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-film"></i><span class="hidden sm:inline">OTT Apps</span>
+                    <div>
+                        <div class="flex items-center space-x-1 text-amber-400 text-xs">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <span class="text-slate-900 font-extrabold text-xs ml-1.5">4.9 / 5</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Trusted by 500+ Luxury Hotels & Resorts</p>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Highlights Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto pt-6">
-            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-xs space-y-1 hover:border-indigo-200 hover:shadow-md transition-all">
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-indigo-600">100%</h3>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Cloud Managed</p>
+            <!-- Right Column: Human-Designed Visual Container & Floating Cards -->
+            <div class="lg:col-span-6 relative">
+                <!-- Main Frame Container -->
+                <div class="relative bg-slate-900 rounded-3xl p-3 sm:p-4 border-8 border-slate-800 shadow-2xl shadow-indigo-900/20 aspect-video overflow-hidden text-white">
+                    <!-- Unsplash Luxury Suite Background Behind UI -->
+                    <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80" alt="Hotel Room Suite Background" class="absolute inset-0 w-full h-full object-cover opacity-40">
+
+                    <!-- Overlay TV Screen Mockup -->
+                    <div class="relative z-10 h-full bg-slate-950/70 backdrop-blur-md p-5 rounded-2xl border border-white/10 flex flex-col justify-between">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                                <span class="font-extrabold text-xs sm:text-sm tracking-wide font-['Syne']">The Grand Oberoi & Spa</span>
+                            </div>
+                            <span class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full border border-white/10 text-indigo-300">Welcome, Mr. Harrison</span>
+                        </div>
+
+                        <div class="text-center space-y-2 my-auto">
+                            <div class="w-12 h-12 mx-auto rounded-full bg-indigo-600/40 border border-indigo-400/50 flex items-center justify-center cursor-pointer hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-play text-lg text-indigo-300 ml-0.5"></i>
+                            </div>
+                            <h4 class="text-sm sm:text-base font-extrabold tracking-tight">Press Play to Access In-Room Services</h4>
+                            <p class="text-[10px] sm:text-xs text-slate-300">Dining • Live TV • Streaming • Housekeeping</p>
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-2 border-t border-white/10 pt-3 text-[10px] text-center font-bold">
+                            <div class="p-2 rounded-xl bg-indigo-600/30 border border-indigo-400/30 text-indigo-200"><i class="fa-solid fa-tv mr-1"></i>TV</div>
+                            <div class="p-2 rounded-xl bg-white/10 text-slate-200"><i class="fa-solid fa-utensils mr-1"></i>Dining</div>
+                            <div class="p-2 rounded-xl bg-white/10 text-slate-200"><i class="fa-solid fa-bell mr-1"></i>Services</div>
+                            <div class="p-2 rounded-xl bg-white/10 text-slate-200"><i class="fa-solid fa-film mr-1"></i>OTT</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Floating Feature Card 1: Remote OTA Sync -->
+                <div class="hidden sm:flex absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-xl space-x-3 items-center max-w-xs">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-lg shrink-0">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h5 class="text-xs font-extrabold text-slate-900">Instant OTA Push Sync</h5>
+                        <p class="text-[10px] text-slate-500 font-medium">Updates menu & logos in under 2 seconds.</p>
+                    </div>
+                </div>
+
+                <!-- Floating Feature Card 2: 16-Digit License -->
+                <div class="hidden sm:flex absolute -top-6 -right-4 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-3.5 rounded-2xl shadow-xl space-x-3 items-center">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center text-sm shrink-0">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">One-Click License</span>
+                        <span class="text-xs font-mono font-extrabold text-indigo-600">8934-2901-4412-9901</span>
+                    </div>
+                </div>
             </div>
-            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-xs space-y-1 hover:border-indigo-200 hover:shadow-md transition-all">
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-indigo-600">10,000+</h3>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Active Screens</p>
-            </div>
-            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-xs space-y-1 hover:border-indigo-200 hover:shadow-md transition-all">
-                <h3 class="text-3xl sm:text-4xl font-extrabold text-indigo-600">24 / 7</h3>
-                <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Priority Support</p>
+
+        </div>
+    </section>
+
+    <!-- Interactive Logo Ticker / Partner Logos -->
+    <section id="social-proof" class="py-12 border-y border-slate-200/80 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-16 text-center space-y-6">
+            <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">Powering Next-Gen Displays Across Industry Leaders</p>
+            <div class="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all">
+                <div class="flex items-center space-x-2 font-extrabold text-slate-700 text-sm"><i class="fa-solid fa-hotel text-indigo-600 text-lg"></i><span>MARRIOTT</span></div>
+                <div class="flex items-center space-x-2 font-extrabold text-slate-700 text-sm"><i class="fa-solid fa-crown text-indigo-600 text-lg"></i><span>TAJ HOTELS</span></div>
+                <div class="flex items-center space-x-2 font-extrabold text-slate-700 text-sm"><i class="fa-solid fa-building-columns text-indigo-600 text-lg"></i><span>HYATT REGENCY</span></div>
+                <div class="flex items-center space-x-2 font-extrabold text-slate-700 text-sm"><i class="fa-solid fa-spa text-indigo-600 text-lg"></i><span>RADISSON BLU</span></div>
             </div>
         </div>
     </section>
 
-    <!-- Detailed Features Showcase Section -->
-    <section id="features" class="py-20 px-6 md:px-12 bg-slate-100/60 border-t border-slate-200/80">
-        <div class="max-w-6xl mx-auto space-y-12">
+    <!-- Features Showcase -->
+    <section id="features" class="py-24 px-6 lg:px-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto space-y-16">
             <div class="text-center space-y-3 max-w-2xl mx-auto">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Built Specifically for Modern Hospitality</h2>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-['Syne']">Designed for Hospitality Operations</h2>
                 <p class="text-xs sm:text-sm font-medium text-slate-500">
-                    Transform guest room TVs into revenue-generating concierge hubs with complete central remote control.
+                    A comprehensive hospitality suite that manages guest entertainment, branding, and service requests from one centralized cloud dashboard.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Card 1 -->
-                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-4 hover:shadow-xl hover:border-indigo-300 transition-all hover:-translate-y-1">
+                <!-- Feature 1 -->
+                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all hover:-translate-y-1 space-y-4">
                     <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 text-xl font-bold">
                         <i class="fa-solid fa-paintbrush"></i>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900">Custom Hotel Branding</h3>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-['Syne']">Custom Hotel Branding</h3>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
                         Display your hotel logo, custom welcome greetings, promotional banners, and local weather updates on every TV startup.
                     </p>
                 </div>
 
-                <!-- Card 2 -->
-                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-4 hover:shadow-xl hover:border-violet-300 transition-all hover:-translate-y-1">
+                <!-- Feature 2 -->
+                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-violet-300 transition-all hover:-translate-y-1 space-y-4">
                     <div class="w-12 h-12 rounded-2xl bg-violet-50 border border-violet-100 flex items-center justify-center text-violet-600 text-xl font-bold">
                         <i class="fa-solid fa-sliders"></i>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900">Central Menu Control</h3>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-['Syne']">Central Menu Visibility</h3>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
                         Toggle menu visibility across all TVs or individual room devices globally—enable or hide apps like Live TV, Screen Cast, or Flights.
                     </p>
                 </div>
 
-                <!-- Card 3 -->
-                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs space-y-4 hover:shadow-xl hover:border-rose-300 transition-all hover:-translate-y-1">
+                <!-- Feature 3 -->
+                <div class="p-8 rounded-3xl bg-white border border-slate-200/80 shadow-xs hover:shadow-xl hover:border-rose-300 transition-all hover:-translate-y-1 space-y-4">
                     <div class="w-12 h-12 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600 text-xl font-bold">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <h3 class="text-lg font-extrabold text-slate-900">Instant License Authorization</h3>
+                    <h3 class="text-lg font-extrabold text-slate-900 font-['Syne']">16-Digit Instant Licensing</h3>
                     <p class="text-xs text-slate-500 leading-relaxed font-medium">
                         Instant 16-digit license code generation upon subscription. Enter the code once on your Android Smart TV APK for instant pairing.
                     </p>
@@ -231,12 +259,12 @@
     </section>
 
     <!-- Pricing Section -->
-    <section id="plans" class="py-20 px-6 md:px-12 bg-white border-t border-slate-200/80">
-        <div class="max-w-6xl mx-auto space-y-12 text-center">
+    <section id="plans" class="py-24 px-6 lg:px-16 bg-white border-t border-slate-200/80">
+        <div class="max-w-7xl mx-auto space-y-16 text-center">
             <div class="space-y-3 max-w-2xl mx-auto">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Flexible Pricing For Any Scale</h2>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-['Syne']">Transparent Pricing for Properties of Any Scale</h2>
                 <p class="text-xs sm:text-sm font-medium text-slate-500">
-                    Choose a plan designed for your hotel's room count. Every registration grants an instant license key to authorize and link your guest rooms.
+                    Choose a plan tailored to your room count. All plans include automated licensing keys and central cloud control.
                 </p>
             </div>
 
@@ -244,19 +272,19 @@
                 @foreach($plans as $plan)
                     <div class="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-xs hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between space-y-6 text-left relative {{ $plan->room_count === 50 ? 'border-2 border-indigo-600 shadow-indigo-600/10' : '' }}">
                         @if($plan->room_count === 50)
-                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold text-[10px] uppercase">Most Suggested</span>
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold text-[10px] uppercase">Most Popular</span>
                         @endif
 
                         <div class="space-y-4">
                             <div>
-                                <h3 class="text-xl font-extrabold text-slate-900">{{ $plan->name }}</h3>
+                                <h3 class="text-xl font-extrabold text-slate-900 font-['Syne']">{{ $plan->name }}</h3>
                                 <span class="inline-block mt-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-extrabold text-[10px] uppercase">
                                     Up to {{ $plan->room_count }} Rooms
                                 </span>
                             </div>
 
-                            <div class="text-3xl font-extrabold text-slate-900">
-                                ₹{{ number_format($plan->price, 0) }}<span class="text-xs text-slate-400 font-normal">/month</span>
+                            <div class="text-4xl font-extrabold text-slate-900 font-['Syne']">
+                                ₹{{ number_format($plan->price, 0) }}<span class="text-xs text-slate-400 font-sans font-normal">/month</span>
                             </div>
 
                             <ul class="space-y-2.5 text-xs text-slate-600 font-semibold">
@@ -287,7 +315,7 @@
                             </ul>
                         </div>
 
-                        <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="w-full py-3 px-4 rounded-xl font-bold text-xs transition-all {{ $plan->room_count === 50 ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/30' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200' }}">
+                        <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="w-full py-3.5 px-4 rounded-2xl font-bold text-xs transition-all {{ $plan->room_count === 50 ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/30' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200' }}">
                             Select {{ $plan->name }}
                         </button>
                     </div>
@@ -297,10 +325,10 @@
     </section>
 
     <!-- FAQ Section -->
-    <section id="faq" class="py-20 px-6 md:px-12 bg-slate-50 border-t border-slate-200/80">
+    <section id="faq" class="py-24 px-6 lg:px-16 bg-slate-50 border-t border-slate-200/80">
         <div class="max-w-4xl mx-auto space-y-12">
             <div class="text-center space-y-3">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Frequently Asked Questions</h2>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-['Syne']">Frequently Asked Questions</h2>
                 <p class="text-xs sm:text-sm font-medium text-slate-500">Everything you need to know about setting up HotelTV in your property.</p>
             </div>
 
@@ -322,13 +350,13 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 md:px-12 bg-white border-t border-slate-200/80">
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
+    <footer class="py-12 px-6 lg:px-16 bg-white border-t border-slate-200/80">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
             <div class="flex items-center space-x-3">
                 <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/20">
                     <i class="fa-solid fa-tv"></i>
                 </div>
-                <span class="text-slate-900 font-extrabold text-base">HotelTV Connect</span>
+                <span class="text-slate-900 font-extrabold text-base font-['Syne']">HotelTV Connect</span>
             </div>
 
             <p class="font-semibold text-center">© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
@@ -349,7 +377,7 @@
 <div id="registerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl my-8">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <h3 class="text-lg font-extrabold text-slate-900">Hotel Registration</h3>
+            <h3 class="text-lg font-extrabold text-slate-900 font-['Syne']">Hotel Registration</h3>
             <button onclick="closeRegisterModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
         </div>
 
@@ -433,7 +461,7 @@
 <!-- Simulated Sandbox Payment Modal Overlay -->
 <div id="paymentLoader" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center text-white">
     <div class="w-12 h-12 border-4 border-white/20 border-t-indigo-400 rounded-full animate-spin mb-4"></div>
-    <h3 id="loaderTitle" class="text-xl font-extrabold">Processing Order Request</h3>
+    <h3 id="loaderTitle" class="text-xl font-extrabold font-['Syne']">Processing Order Request</h3>
     <p id="loaderMessage" class="text-xs text-slate-400 font-medium mt-1">Talking to payment gateway. Please do not close this window...</p>
 </div>
 @endsection
