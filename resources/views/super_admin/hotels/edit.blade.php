@@ -170,25 +170,42 @@
 
 <script>
     function deleteAdminSlide(path) {
-        if (!confirm('Remove this slider image?')) return;
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{{ route('hotel.hotel-info.delete-slider') }}";
-        
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = "{{ csrf_token() }}";
-        form.appendChild(csrfInput);
+        Swal.fire({
+            title: 'Remove Slider Image?',
+            text: 'Are you sure you want to remove this slider image from hotel TV?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e11d48',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Yes, remove it',
+            cancelButtonText: 'Cancel',
+            customClass: {
+                popup: 'rounded-3xl border border-slate-200 shadow-2xl font-sans',
+                confirmButton: 'px-5 py-2.5 rounded-xl font-bold text-xs shadow-md',
+                cancelButton: 'px-5 py-2.5 rounded-xl font-bold text-xs'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('hotel.hotel-info.delete-slider') }}";
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = "{{ csrf_token() }}";
+                form.appendChild(csrfInput);
 
-        const pathInput = document.createElement('input');
-        pathInput.type = 'hidden';
-        pathInput.name = 'image_path';
-        pathInput.value = path;
-        form.appendChild(pathInput);
+                const pathInput = document.createElement('input');
+                pathInput.type = 'hidden';
+                pathInput.name = 'image_path';
+                pathInput.value = path;
+                form.appendChild(pathInput);
 
-        document.body.appendChild(form);
-        form.submit();
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     }
 </script>
 @endsection

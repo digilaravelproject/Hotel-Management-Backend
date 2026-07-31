@@ -15,6 +15,9 @@
     <!-- Vite Assets (Tailwind CSS v4) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
@@ -193,6 +196,45 @@
                 menu.classList.add('hidden');
             }
         });
+
+        // Global SweetAlert2 confirmation handler for forms
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form.dataset.swalBypass) return;
+
+            const onsubmitAttr = form.getAttribute('onsubmit');
+            if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+
+                let message = 'Are you sure you want to perform this action?';
+                const match = onsubmitAttr.match(/confirm\(['"]([^'"]+)['"]\)/);
+                if (match && match[1]) {
+                    message = match[1];
+                }
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: message,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Yes, proceed',
+                    cancelButtonText: 'Cancel',
+                    customClass: {
+                        popup: 'rounded-3xl border border-slate-200 shadow-2xl font-sans',
+                        confirmButton: 'px-5 py-2.5 rounded-xl font-bold text-xs shadow-md',
+                        cancelButton: 'px-5 py-2.5 rounded-xl font-bold text-xs'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.dataset.swalBypass = "true";
+                        form.submit();
+                    }
+                });
+            }
+        }, true);
     </script>
     @yield('scripts')
 </body>
