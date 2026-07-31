@@ -89,10 +89,14 @@
             
             <h4 style="font-size: 15px; font-weight: 700; color: var(--bg-dark); margin-bottom: 16px;">1. General Profile Info</h4>
             
-            <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div class="grid" style="grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px;">
                 <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label">Hotel Name</label>
                     <input type="text" name="hotel_name" value="{{ old('hotel_name', $hotelAdmin->hotel_name) }}" required class="form-control">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label">City</label>
+                    <input type="text" name="city" value="{{ old('city', $hotelAdmin->city) }}" placeholder="e.g. Pune / Mumbai" class="form-control">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label">Location / Address</label>

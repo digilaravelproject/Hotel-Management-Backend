@@ -23,6 +23,7 @@ class HotelAdmin extends Authenticatable
         'phone',
         'hotel_name',
         'hotel_location',
+        'city',
         'hotel_logo',
         'hotel_image',
         'room_count',

@@ -120,6 +120,7 @@ class TvLoginResource extends JsonResource
                 ],
                 'hotel' => [
                     'hotel_name' => $hotel->hotel_name,
+                    'city' => $hotel->city,
                     'hotel_location' => $hotel->hotel_location,
                     'description' => $hotel->description,
                     'owner_name' => $hotel->owner_name,

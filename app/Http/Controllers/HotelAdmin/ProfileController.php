@@ -68,6 +68,7 @@ class ProfileController extends Controller
         $request->validate([
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
+            'city' => 'nullable|string|max:255',
             'description' => 'nullable|string|max:1000',
             'reception_contact' => 'nullable|string|max:255',
             'dining_contact' => 'nullable|string|max:255',
@@ -98,6 +99,7 @@ class ProfileController extends Controller
         $data = [
             'hotel_name' => $request->hotel_name,
             'hotel_location' => $request->hotel_location,
+            'city' => $request->city,
             'description' => $request->description,
             'emergency_contacts' => $emergencyContacts,
             'hotel_amenities' => $amenities,
