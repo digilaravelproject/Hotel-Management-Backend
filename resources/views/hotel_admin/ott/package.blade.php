@@ -4,71 +4,60 @@
 @section('page_title', 'My Subscription Package')
 
 @section('content')
-<div style="max-width: 900px; margin: 0 auto;">
-    
-    <!-- Package Details Header Card -->
-    <div class="card" style="margin-bottom: 24px; box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 16px;">
-            <div>
-                <span style="display: inline-block; background-color: var(--primary-light); color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-bottom: 8px;">
-                    Active Plan
+<div class="max-w-4xl mx-auto space-y-6">
+    <!-- Active Plan Header Card -->
+    <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-slate-800 text-white rounded-3xl p-6 sm:p-8 shadow-xl space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-1.5"></span> Active Plan
                 </span>
-                <h2 style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800; color: var(--bg-dark);">
-                    {{ $plan ? $plan->name : 'No Active Plan Assigned' }}
-                </h2>
-                <p style="margin: 0; color: var(--text-muted); font-size: 14px;">
-                    {{ $plan->description ?? 'Standard system licensing plan assigned by Super Admin.' }}
-                </p>
+                <h2 class="text-2xl font-extrabold text-white tracking-tight">{{ $plan ? $plan->name : 'No Active Plan' }}</h2>
+                <p class="text-slate-400 text-xs font-medium">{{ $plan->description ?? 'Standard system licensing plan assigned by Super Admin.' }}</p>
             </div>
             
-            <div style="text-align: right;">
-                <div style="font-size: 28px; font-weight: 800; color: var(--primary);">
-                    ₹{{ $plan ? number_format($plan->price, 0) : '0' }}<span style="font-size: 14px; color: var(--text-muted); font-weight: 400;">/month</span>
+            <div class="text-left sm:text-right">
+                <div class="text-3xl font-extrabold text-indigo-400">
+                    ₹{{ $plan ? number_format($plan->price, 0) : '0' }}<span class="text-xs text-slate-400 font-normal"> /month</span>
                 </div>
-                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">
-                    Max TVs / Rooms: <strong style="color: var(--bg-dark);">{{ $hotel->allowed_device_limit }}</strong>
-                </div>
+                <p class="text-xs text-slate-400 font-medium mt-1">Allowed Devices Limit: <strong class="text-white">{{ $hotel->allowed_device_limit }} TVs</strong></p>
             </div>
         </div>
     </div>
 
-    <!-- Available OTT Platforms Card -->
-    <div class="card" style="box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
-        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px;">
-            <div>
-                <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: var(--bg-dark);">
-                    <i class="fa-solid fa-tv" style="color: var(--primary); margin-right: 8px;"></i>Included OTT Platforms
-                </h3>
-                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted);">
-                    These OTT platforms are enabled under your subscription plan.
-                </p>
+    <!-- OTT Platforms List -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-6 gap-4">
+            <div class="space-y-1">
+                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Included OTT Streaming Apps</h3>
+                <p class="text-xs text-slate-500 font-medium">Platforms active under your current hotel subscription tier.</p>
             </div>
-            <a href="{{ route('hotel.ott-settings') }}" class="btn btn-outline btn-sm">
-                <i class="fa-solid fa-sliders" style="margin-right: 6px;"></i>Configure Global Access
+            <a href="{{ route('hotel.ott-settings') }}" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs transition-colors flex items-center space-x-2">
+                <i class="fa-solid fa-sliders text-indigo-600"></i>
+                <span>Configure Global Visibility</span>
             </a>
         </div>
 
         @if(count($assignedPlatforms) > 0)
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($assignedPlatforms as $ott)
-                    <div style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <div style="width: 36px; height: 36px; background: #e0f2fe; color: #0369a1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px;">
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm shrink-0">
                             <i class="fa-solid fa-play"></i>
                         </div>
-                        <div style="display: flex; flex-direction: column; overflow: hidden;">
-                            <span style="font-size: 14px; font-weight: 700; color: #1e293b;">{{ $ott['name'] }}</span>
-                            <span style="font-size: 11px; color: #64748b; font-family: monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
+                        <div class="overflow-hidden">
+                            <h4 class="text-xs font-bold text-slate-800">{{ $ott['name'] }}</h4>
+                            <span class="text-[10px] font-mono text-slate-400 truncate block" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
                         </div>
                     </div>
                 @endforeach
             </div>
         @else
-            <div style="text-align: center; color: var(--text-muted); padding: 40px 0;">
-                <i class="fa-solid fa-tv" style="font-size: 36px; color: var(--text-light); margin-bottom: 12px; display: block;"></i>
-                No OTT platforms enabled in your plan yet. Please contact Super Admin to activate OTT features.
+            <div class="text-center py-12 text-slate-400 space-y-2">
+                <i class="fa-solid fa-tv text-4xl text-slate-300 block"></i>
+                <p class="text-xs font-medium">No OTT platforms enabled in your plan yet. Contact Super Admin to upgrade.</p>
             </div>
         @endif
     </div>
-
 </div>
 @endsection

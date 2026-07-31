@@ -1,80 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Forgot Password - HotelTV</title>
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background: linear-gradient(135deg, #4f46e5 0%, #312e81 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+@extends('layouts.app')
 
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            width: 100%;
-            max-width: 440px;
-            padding: 48px 40px;
-            color: var(--text-main);
-            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+@section('title', 'Forgot Password - HotelTV')
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 36px;
-        }
+@section('content')
+<div class="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-100 relative overflow-hidden">
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-violet-600/30 rounded-full blur-3xl pointer-events-none"></div>
 
-        .login-header .icon-box {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin: 0 auto 16px auto;
-            color: white;
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
-        }
-
-        .login-header h1 {
-            font-size: 26px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 6px;
-            color: var(--bg-dark);
-        }
-
-        .login-header p {
-            font-size: 14px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="login-card">
-        <div class="login-header">
-            <div class="icon-box">
-                <i class="fa-solid fa-key"></i>
+    <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl p-8 shadow-2xl shadow-indigo-950/50 space-y-6 relative z-10">
+        <div class="text-center space-y-3">
+            <div class="w-14 h-14 bg-gradient-to-tr from-indigo-600 to-violet-500 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-indigo-500/30">
+                <i class="fa-solid fa-key text-2xl text-white"></i>
             </div>
-            <h1>Reset Password</h1>
-            <p>Enter your registered email address below, and we will email you a 6-digit OTP code to verify your identity.</p>
+            <h1 class="text-2xl font-extrabold text-white tracking-tight">Forgot Password?</h1>
+            <p class="text-xs text-slate-400 leading-relaxed">Enter your registered email address and we'll send you a 6-digit OTP code to reset your account password.</p>
         </div>
 
         @if($errors->any())
-            <div class="alert alert-danger" style="margin-bottom: 24px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px;">
-                <ul style="margin: 0; padding-left: 20px;">
+            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs space-y-1">
+                <ul class="list-disc pl-4 space-y-1">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -83,28 +27,30 @@
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger" style="margin-bottom: 24px; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px;">
+            <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold">
                 {{ session('error') }}
             </div>
         @endif
 
-        <form action="{{ route('hotel.forgot-password') }}" method="POST">
+        <form action="{{ route('hotel.forgot-password') }}" method="POST" class="space-y-5">
             @csrf
-            <div class="form-group" style="margin-bottom: 24px;">
-                <label class="form-label">Email Address</label>
-                <input type="email" name="email" required value="{{ old('email') }}" class="form-control" placeholder="username@example.com" autofocus autocomplete="email">
+
+            <div class="space-y-1.5">
+                <label class="text-xs font-semibold text-slate-300">Email Address</label>
+                <input type="email" name="email" required value="{{ old('email') }}" placeholder="admin@hotel.com" autocomplete="email" autofocus
+                    class="w-full px-4 py-3 bg-slate-800/80 border border-slate-700/80 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
             </div>
-            
-            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 20px; font-weight: 600;">
-                Send OTP Verification
+
+            <button type="submit" class="w-full py-3.5 px-4 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
+                Send OTP Code <i class="fa-solid fa-paper-plane ml-1.5 text-xs"></i>
             </button>
-            <div style="text-align: center; margin-top: 20px;">
-                <a href="{{ route('hotel.login') }}" style="font-size: 13px; font-weight: 600; color: var(--text-muted);">
-                    <i class="fa-solid fa-arrow-left" style="margin-right: 4px;"></i> Return to Login
+
+            <div class="text-center pt-2">
+                <a href="{{ route('hotel.login') }}" class="text-xs font-medium text-slate-400 hover:text-slate-200 transition-colors inline-flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1.5 text-xs"></i> Return to Login
                 </a>
             </div>
         </form>
     </div>
-
-</body>
-</html>
+</div>
+@endsection

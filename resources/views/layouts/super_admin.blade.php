@@ -1,340 +1,119 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 font-sans antialiased selection:bg-indigo-500 selection:text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Super Admin Dashboard') - HotelTV</title>
-    
-    <!-- CSS styles -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>@yield('title', 'Super Admin Control Center') - HotelTV</title>
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Vite Assets (Tailwind CSS v4) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
-        /* Panel layout styles */
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            width: 260px;
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-        }
-        
-        .sidebar-brand {
-            padding: 24px;
-            font-size: 20px;
-            font-weight: 800;
-            border-bottom: 1px solid var(--border-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .sidebar-brand i {
-            color: var(--primary);
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 20px 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-        
-        .sidebar-item a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 24px;
-            color: var(--text-light);
-            font-weight: 500;
-            font-size: 15px;
-            border-left: 4px solid transparent;
-            transition: var(--transition);
-        }
-        
-        .sidebar-item a:hover, .sidebar-item.active a {
-            color: var(--text-white);
-            background-color: var(--border-dark);
-        }
-        
-        .sidebar-item.active a {
-            border-left-color: var(--primary);
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-        
-        .sidebar-item a i {
-            width: 20px;
-            font-size: 16px;
-        }
-        
-        .main-panel {
-            flex-grow: 1;
-            margin-left: 260px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .topbar {
-            background-color: var(--bg-card);
-            height: 70px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-        
-        .topbar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--bg-dark);
-        }
-        
-        .content-wrapper {
-            padding: 40px;
-            flex-grow: 1;
-            background-color: var(--bg-main);
-        }
-        
-        /* Table enhancements */
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            background-color: var(--bg-card);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-color);
-            margin-top: 20px;
-        }
-        
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-        
-        .table th, .table td {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-        }
-        
-        .table th {
-            background-color: #f8fafc;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 12px;
-            letter-spacing: 0.5px;
-        }
-        
-        .table tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .table tbody tr:hover {
-            background-color: #f8fafc;
-        }
-        
-        /* Responsive Burger menu for sidebar */
-        .sidebar-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: var(--bg-dark);
-            cursor: pointer;
-        }
-        
-        @media (max-width: 991px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-panel {
-                margin-left: 0;
-            }
-            .sidebar-toggle {
-                display: block;
-            }
-            .topbar {
-                padding: 0 20px;
-            }
-            .content-wrapper {
-                padding: 24px 16px;
-            }
-        }
-
-        /* Reusable Pagination Styling */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-            gap: 8px;
-        }
-
-        .page-item {
-            display: inline;
-        }
-
-        .page-link, .page-item span {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            background-color: var(--bg-card);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .page-link:hover {
-            background-color: var(--primary-light);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .page-item.disabled span {
-            color: var(--text-light);
-            background-color: #f1f5f9;
-            cursor: not-allowed;
-            border-color: var(--border-color);
-        }
-
-        .page-item.active span {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
     @yield('styles')
 </head>
-<body>
-    
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                <span>Super Admin</span>
+<body class="h-full bg-slate-50 text-slate-800">
+    <div class="min-h-screen flex">
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden transition-opacity"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-slate-950 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-slate-800 shadow-2xl">
+            <!-- Sidebar Header -->
+            <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-rose-500/20">
+                        <i class="fa-solid fa-shield-halved text-lg"></i>
+                    </div>
+                    <span class="text-xl font-extrabold text-white tracking-tight">Super<span class="text-rose-500">Admin</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-            <ul class="sidebar-menu">
-                <li class="sidebar-item {{ Request::routeIs('super-admin.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.dashboard') }}">
-                        <i class="fa-solid fa-chart-line"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('super-admin.hotels.*') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.hotels.index') }}">
-                        <i class="fa-solid fa-hotel"></i>
-                        <span>Hotel Admins</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('super-admin.plans.*') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.plans.index') }}">
-                        <i class="fa-solid fa-tags"></i>
-                        <span>Plan Management</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('super-admin.ott-master.*') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.ott-master.index') }}">
-                        <i class="fa-solid fa-shapes"></i>
-                        <span>Manage OTTs / Apps</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('super-admin.devices.*') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.devices.index') }}">
-                        <i class="fa-solid fa-tv"></i>
-                        <span>Connected Devices</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('super-admin.templates.*') ? 'active' : '' }}">
-                    <a href="{{ route('super-admin.templates.index') }}">
-                        <i class="fa-solid fa-file-code"></i>
-                        <span>TV Templates</span>
-                    </a>
-                </li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid var(--border-dark);">
-                <form action="{{ route('super-admin.logout') }}" method="POST">
+
+            <!-- Admin Badge -->
+            <div class="p-4 mx-3 my-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-rose-600 text-white flex items-center justify-center font-bold text-base shadow-sm">
+                    SA
+                </div>
+                <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-white truncate">Platform Director</h4>
+                    <p class="text-[11px] text-rose-400 font-medium truncate">System Administrator</p>
+                </div>
+            </div>
+
+            <!-- Menu List -->
+            <nav class="flex-1 px-3 space-y-1.5 overflow-y-auto">
+                <a href="{{ route('super.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.dashboard') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-chart-pie text-base w-5 text-center"></i>
+                    <span>Control Dashboard</span>
+                </a>
+                <a href="{{ route('super.hotels.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.hotels.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
+                    <span>Hotels Directory</span>
+                </a>
+                <a href="{{ route('super.plans.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.plans.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-layer-group text-base w-5 text-center"></i>
+                    <span>Subscription Plans</span>
+                </a>
+                <a href="{{ route('super.tv-templates.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.tv-templates.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-code-branch text-base w-5 text-center"></i>
+                    <span>TV App OTA Releases</span>
+                </a>
+            </nav>
+
+            <!-- Sign Out Button -->
+            <div class="p-4 border-t border-slate-800/80">
+                <form action="{{ route('super.logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--text-light); border-color: var(--border-dark);">
-                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-800 text-slate-400 hover:text-white hover:bg-rose-600/20 hover:border-rose-500/40 text-xs font-bold transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Admin Logout</span>
                     </button>
                 </form>
             </div>
-        </nav>
+        </aside>
 
-        <!-- Main Panel -->
-        <div class="main-panel">
-            <!-- Topbar -->
-            <header class="topbar">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="sidebar-toggle" onclick="toggleSidebar()">
-                        <i class="fa-solid fa-bars"></i>
+        <!-- Main Wrapper -->
+        <div class="flex-1 md:pl-64 flex flex-col min-w-0">
+            <!-- Topbar Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 sticky top-0 z-40 px-6 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg bg-slate-100">
+                        <i class="fa-solid fa-bars text-lg"></i>
                     </button>
-                    <h2 class="topbar-title">@yield('page_title', 'Dashboard')</h2>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">@yield('page_title', 'Super Admin Center')</h1>
                 </div>
-                <div style="display: flex; align-items: center; gap: 24px;">
-                    <span style="font-size: 14px; color: var(--text-muted); font-weight: 500;">
-                        <i class="fa-regular fa-clock" style="margin-right: 6px;"></i>{{ date('d M, Y') }}
+
+                <div class="flex items-center space-x-4">
+                    <span class="hidden sm:inline-flex items-center text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+                        <i class="fa-solid fa-shield-halved mr-1.5 text-rose-500"></i> Global Administrator
                     </span>
-                    
-                    <!-- Super Admin Profile Dropdown -->
-                    <div class="dropdown">
-                        <button class="dropdown-btn" style="background: none; color: var(--text-main); border: none; box-shadow: none; padding: 0; display: flex; align-items: center; gap: 8px;">
-                            <div style="width: 36px; height: 36px; background-color: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; box-shadow: var(--shadow-sm);">
-                                SA
-                            </div>
-                            <span style="font-weight: 600; font-size: 14px; color: var(--text-main);">Super Admin</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 10px; color: var(--text-muted);"></i>
-                        </button>
-                        <div class="dropdown-content" style="right: 0; min-width: 160px;">
-                            <button type="button" onclick="openProfileModal()">
-                                <i class="fa-regular fa-user" style="margin-right: 8px; color: var(--primary);"></i>Update Profile
-                            </button>
-                            <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
-                            <form action="{{ route('super-admin.logout') }}" method="POST" style="margin: 0; display: inline;">
-                                @csrf
-                                <button type="submit" style="color: var(--danger); width: 100%;">
-                                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px; color: var(--danger);"></i>Sign Out
-                                </button>
-                            </form>
-                        </div>
-                    </div>
                 </div>
             </header>
 
-            <!-- Main Content Area -->
-            <main class="content-wrapper anim-fade-in">
+            <!-- Main Content -->
+            <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
                 @if(session('success'))
-                    <div class="alert alert-success">
-                        <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
+                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2 shadow-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
+
                 @if(session('error'))
-                    <div class="alert alert-danger">
-                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> {{ session('error') }}
+                    <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2 shadow-sm">
+                        <i class="fa-solid fa-circle-exclamation text-rose-500 text-base"></i>
+                        <span>{{ session('error') }}</span>
                     </div>
                 @endif
 
@@ -343,87 +122,14 @@
         </div>
     </div>
 
-    <!-- Super Admin Profile Modal -->
-    <div id="profileModal" class="modal-overlay">
-        <div class="modal-container" style="max-width: 450px;">
-            <div class="modal-header">
-                <h3>Update Profile</h3>
-                <button type="button" onclick="closeProfileModal()" class="modal-close">&times;</button>
-            </div>
-            <form action="{{ route('super-admin.profile.update') }}" method="POST">
-                @csrf
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" name="email" required value="{{ auth()->guard('super_admin')->user()->email ?? 'admin@hotel.com' }}" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">New Password (Leave blank to keep current)</label>
-                        <div class="password-wrapper">
-                            <input type="password" name="password" class="form-control" placeholder="Minimum 6 characters">
-                            <i class="fa-regular fa-eye toggle-password"></i>
-                        </div>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Confirm New Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" name="password_confirmation" class="form-control" placeholder="Confirm password">
-                            <i class="fa-regular fa-eye toggle-password"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" onclick="closeProfileModal()" class="btn btn-outline">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Update Profile</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Scripts -->
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            if (backdrop) backdrop.classList.toggle('hidden');
         }
-
-        function openProfileModal() {
-            document.getElementById('profileModal').classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-dismiss alerts
-            setTimeout(function() {
-                const alerts = document.querySelectorAll('.alert');
-                alerts.forEach(function(alert) {
-                    alert.style.transition = 'opacity 0.5s ease';
-                    alert.style.opacity = '0';
-                    setTimeout(() => alert.remove(), 500);
-                });
-            }, 5000);
-
-            // Toggle password fields visibility
-            document.querySelectorAll('.toggle-password').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const wrapper = btn.closest('.password-wrapper') || btn.parentElement;
-                    const input = wrapper.querySelector('input');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        btn.className = 'fa-regular fa-eye-slash toggle-password';
-                    } else {
-                        input.type = 'password';
-                        btn.className = 'fa-regular fa-eye toggle-password';
-                    }
-                });
-            });
-        });
     </script>
-
     @yield('scripts')
 </body>
 </html>

@@ -4,82 +4,71 @@
 @section('page_title', 'Room ' . $device->room_no . ' Menu Configuration')
 
 @section('content')
-<div style="max-width: 800px; margin: 0 auto;">
-    
-    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-        <a href="{{ route('hotel.devices.index') }}" style="color: var(--text-muted); font-weight: 500; font-size: 14px;">
-            <i class="fa-solid fa-arrow-left" style="margin-right: 6px;"></i> Back to Connected TVs
+<div class="max-w-4xl mx-auto space-y-6">
+    <div class="flex items-center justify-between">
+        <a href="{{ route('hotel.devices.index') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center">
+            <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to Connected TVs
         </a>
 
         @if($hasOverride)
             <form action="{{ route('hotel.devices.menus.reset', $device->id) }}" method="POST" onsubmit="return confirm('Reset Room {{ $device->room_no }} to inherit Hotel Global Default Menu settings?');">
                 @csrf
-                <button type="submit" class="btn btn-outline btn-sm" style="color: var(--warning); border-color: rgba(245, 158, 11, 0.4);">
-                    <i class="fa-solid fa-rotate-left" style="margin-right: 6px;"></i>Reset to Hotel Global Default
+                <button type="submit" class="px-4 py-2 rounded-xl border border-amber-300 text-amber-700 bg-amber-50 hover:bg-amber-100 font-bold text-xs transition-colors flex items-center space-x-1.5">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>Reset to Hotel Global Default</span>
                 </button>
             </form>
         @endif
     </div>
 
-    @if(session('success'))
-        <div class="alert alert-success" style="margin-bottom: 20px;">
-            <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
-        </div>
-    @endif
-
-    <div class="card" style="box-shadow: var(--shadow-sm); border: 1px solid var(--border-color); background: var(--bg-card);">
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px;">
-            <div>
-                <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: var(--bg-dark);">
-                    Room {{ $device->room_no }} Specific Menu Items
-                </h3>
-                <p style="margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted);">
-                    Device ID: <span style="font-family: monospace; font-weight: 600;">{{ $device->device_id }}</span> | MAC: <span style="font-family: monospace;">{{ $device->mac_address }}</span>
-                </p>
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-6 gap-4">
+            <div class="space-y-1">
+                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Room {{ $device->room_no }} Menu Items</h3>
+                <p class="text-xs text-slate-500 font-medium font-mono">Device ID: {{ $device->device_id }} | MAC: {{ $device->mac_address }}</p>
             </div>
             
             <div>
                 @if($hasOverride)
-                    <span style="font-size: 12px; font-weight: 700; background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
-                        <i class="fa-solid fa-sliders"></i> Custom Room Override Active
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200">
+                        <i class="fa-solid fa-sliders mr-1.5 text-xs"></i> Custom Override Active
                     </span>
                 @else
-                    <span style="font-size: 12px; font-weight: 700; background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
-                        <i class="fa-solid fa-globe"></i> Inheriting Hotel Global Default
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-bold border border-sky-200">
+                        <i class="fa-solid fa-globe mr-1.5 text-xs"></i> Inheriting Hotel Global Default
                     </span>
                 @endif
             </div>
         </div>
 
-        <form action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST">
+        <form action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST" class="space-y-6">
             @csrf
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 24px;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($defaultMenus as $menu)
                     @php
                         $isShown = !isset($currentSettings[$menu['id']]) || $currentSettings[$menu['id']] !== 'hide';
                     @endphp
-                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-size: 14px; font-weight: 700; color: #1e293b;">{{ $menu['name'] }}</span>
-                            <span style="font-size: 11px; color: #64748b; font-family: monospace;">id: {{ $menu['id'] }}</span>
+                    <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                        <div>
+                            <h4 class="text-xs font-bold text-slate-800">{{ $menu['name'] }}</h4>
+                            <span class="text-[10px] font-mono text-slate-400">id: {{ $menu['id'] }}</span>
                         </div>
-                        <label class="switch">
-                            <input type="checkbox" name="menus[{{ $menu['id'] }}]" value="1" {{ $isShown ? 'checked' : '' }}>
-                            <span class="slider"></span>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" name="menus[{{ $menu['id'] }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
+                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                         </label>
                     </div>
                 @endforeach
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--border-color); padding-top: 20px;">
-                <a href="{{ route('hotel.devices.index') }}" class="btn btn-outline">Cancel</a>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fa-solid fa-floppy-disk" style="margin-right: 6px;"></i>Save Room Menu Configuration
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
+                <a href="{{ route('hotel.devices.index') }}" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
+                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
+                    Save Room Menu Settings
                 </button>
             </div>
         </form>
     </div>
-
 </div>
 @endsection

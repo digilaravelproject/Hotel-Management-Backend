@@ -1,356 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50 font-sans antialiased selection:bg-indigo-500 selection:text-white">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Hotel Panel') - HotelTV</title>
-    
-    <!-- CSS styles -->
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Vite Assets (Tailwind CSS v4) -->
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
-        /* Panel layout styles */
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-        }
-        
-        .sidebar {
-            width: 260px;
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            display: flex;
-            flex-direction: column;
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            transition: var(--transition);
-        }
-        
-        .sidebar-brand {
-            padding: 24px;
-            font-size: 20px;
-            font-weight: 800;
-            border-bottom: 1px solid var(--border-dark);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .sidebar-brand i {
-            color: var(--primary);
-        }
-        
-        .sidebar-menu {
-            list-style: none;
-            padding: 20px 0;
-            margin: 0;
-            flex-grow: 1;
-        }
-        
-        .sidebar-item a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 24px;
-            color: var(--text-light);
-            font-weight: 500;
-            font-size: 15px;
-            border-left: 4px solid transparent;
-            transition: var(--transition);
-        }
-        
-        .sidebar-item a:hover, .sidebar-item.active a {
-            color: var(--text-white);
-            background-color: var(--border-dark);
-        }
-        
-        .sidebar-item.active a {
-            border-left-color: var(--primary);
-            background-color: rgba(99, 102, 241, 0.1);
-        }
-        
-        .sidebar-item a i {
-            width: 20px;
-            font-size: 16px;
-        }
-        
-        .main-panel {
-            flex-grow: 1;
-            margin-left: 260px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .topbar {
-            background-color: var(--bg-card);
-            height: 70px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 40px;
-            position: sticky;
-            top: 0;
-            z-index: 99;
-        }
-        
-        .topbar-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--bg-dark);
-        }
-        
-        .content-wrapper {
-            padding: 40px;
-            flex-grow: 1;
-            background-color: var(--bg-main);
-        }
-        
-        .sidebar-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 20px;
-            color: var(--bg-dark);
-            cursor: pointer;
-        }
-        
-        @media (max-width: 991px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            .main-panel {
-                margin-left: 0;
-            }
-            .sidebar-toggle {
-                display: block;
-            }
-            .topbar {
-                padding: 0 20px;
-            }
-            .content-wrapper {
-                padding: 24px 16px;
-            }
-        }
-
-        /* Profile Dropdown Styling */
-        .topbar .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        
-        .topbar .dropdown-btn {
-            background: none;
-            border: none;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 12px;
-            border-radius: var(--radius-md);
-            transition: var(--transition);
-        }
-        
-        .topbar .dropdown-btn:hover {
-            background-color: var(--bg-main);
-        }
-        
-        .topbar .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: var(--bg-card);
-            min-width: 190px;
-            box-shadow: var(--shadow-lg);
-            border-radius: var(--radius-md);
-            border: 1px solid var(--border-color);
-            z-index: 101;
-            overflow: hidden;
-            margin-top: 8px;
-            animation: fadeIn 0.2s ease-out;
-        }
-        
-        .topbar .dropdown-content a {
-            color: var(--text-main);
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-        
-        .topbar .dropdown-content a:hover {
-            background-color: var(--primary-light);
-            color: var(--primary);
-        }
-
-        /* Reusable Pagination Styling */
-        .pagination {
-            display: flex;
-            justify-content: center;
-            list-style: none;
-            padding: 0;
-            margin: 20px 0;
-            gap: 8px;
-        }
-
-        .page-item {
-            display: inline;
-        }
-
-        .page-link, .page-item span {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            color: var(--text-main);
-            background-color: var(--bg-card);
-            text-decoration: none;
-            font-weight: 500;
-            transition: var(--transition);
-        }
-
-        .page-link:hover {
-            background-color: var(--primary-light);
-            color: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .page-item.disabled span {
-            color: var(--text-light);
-            background-color: #f1f5f9;
-            cursor: not-allowed;
-            border-color: var(--border-color);
-        }
-
-        .page-item.active span {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
     @yield('styles')
 </head>
-<body>
-    
-    <div class="wrapper">
-        <!-- Sidebar -->
-        <nav class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
-                <i class="fa-solid fa-hotel"></i>
-                <span>Hotel Admin</span>
+<body class="h-full bg-slate-50 text-slate-800">
+    <div class="min-h-screen flex">
+        <!-- Mobile Sidebar Backdrop Overlay -->
+        <div id="sidebarBackdrop" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden transition-opacity"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-slate-800 shadow-xl">
+            <!-- Sidebar Header -->
+            <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                        <i class="fa-solid fa-tv text-lg"></i>
+                    </div>
+                    <span class="text-xl font-extrabold text-white tracking-tight">Hotel<span class="text-indigo-400">TV</span></span>
+                </div>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
             </div>
-            <ul class="sidebar-menu">
-                <li class="sidebar-item {{ Request::routeIs('hotel.dashboard') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.dashboard') }}">
-                        <i class="fa-solid fa-gauge"></i>
-                        <span>Dashboard</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.package') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.package') }}">
-                        <i class="fa-solid fa-box-archive"></i>
-                        <span>My Package</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.ott-settings') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.ott-settings') }}">
-                        <i class="fa-solid fa-sliders"></i>
-                        <span>Global OTT Settings</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.menus.*') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.menus.index') }}">
-                        <i class="fa-solid fa-bars-staggered"></i>
-                        <span>Manage Menus</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.amenities.*') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.amenities.index') }}">
-                        <i class="fa-solid fa-spa"></i>
-                        <span>Manage Aminities</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.devices.*') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.devices.index') }}">
-                        <i class="fa-solid fa-tv"></i>
-                        <span>Connected TVs</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.guests.*') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.guests.index') }}">
-                        <i class="fa-solid fa-users"></i>
-                        <span>Guests</span>
-                    </a>
-                </li>
-                <li class="sidebar-item {{ Request::routeIs('hotel.hotel-info') ? 'active' : '' }}">
-                    <a href="{{ route('hotel.hotel-info') }}">
-                        <i class="fa-solid fa-hotel"></i>
-                        <span>Hotel Profile</span>
-                    </a>
-                </li>
-            </ul>
-            <div style="padding: 20px; border-top: 1px solid var(--border-dark);">
+
+            <!-- Hotel Branding Card -->
+            <div class="p-4 mx-3 my-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center space-x-3">
+                @if(Auth::guard('hotel_admin')->user()->hotel_logo)
+                    <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" class="w-10 h-10 rounded-xl object-cover border border-slate-700">
+                @else
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-base">
+                        {{ substr(Auth::guard('hotel_admin')->user()->hotel_name, 0, 1) }}
+                    </div>
+                @endif
+                <div class="overflow-hidden">
+                    <h4 class="text-xs font-bold text-white truncate">{{ Auth::guard('hotel_admin')->user()->hotel_name }}</h4>
+                    <p class="text-[11px] text-indigo-400 truncate font-medium"><i class="fa-solid fa-location-dot mr-1"></i>{{ Auth::guard('hotel_admin')->user()->city ?? 'Active Hotel' }}</p>
+                </div>
+            </div>
+
+            <!-- Menu List -->
+            <nav class="flex-1 px-3 space-y-1.5 overflow-y-auto">
+                <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.dashboard') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-chart-line text-base w-5 text-center"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{{ route('hotel.ott.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.ott.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-brands fa-google-play text-base w-5 text-center"></i>
+                    <span>OTT Apps Control</span>
+                </a>
+                <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-list-check text-base w-5 text-center"></i>
+                    <span>TV Menus Visibility</span>
+                </a>
+                <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-spa text-base w-5 text-center"></i>
+                    <span>Hotel Amenities</span>
+                </a>
+                <a href="{{ route('hotel.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-tv text-base w-5 text-center"></i>
+                    <span>Connected TVs</span>
+                </a>
+                <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-users text-base w-5 text-center"></i>
+                    <span>In-House Guests</span>
+                </a>
+                <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                    <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
+                    <span>Hotel Profile & Media</span>
+                </a>
+            </nav>
+
+            <!-- Sign Out Button -->
+            <div class="p-4 border-t border-slate-800/80">
                 <form action="{{ route('hotel.logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-outline btn-sm" style="width: 100%; color: var(--text-light); border-color: var(--border-dark);">
-                        <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-bold transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Sign Out</span>
                     </button>
                 </form>
             </div>
-        </nav>
+        </aside>
 
-        <!-- Main Panel -->
-        <div class="main-panel">
-            <!-- Topbar -->
-            <header class="topbar">
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <button class="sidebar-toggle" onclick="toggleSidebar()">
-                        <i class="fa-solid fa-bars"></i>
+        <!-- Main Wrapper -->
+        <div class="flex-1 md:pl-64 flex flex-col min-w-0">
+            <!-- Topbar Header -->
+            <header class="h-20 bg-white/80 backdrop-blur-xl border-b border-slate-200/80 sticky top-0 z-40 px-6 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button onclick="toggleSidebar()" class="md:hidden text-slate-600 hover:text-slate-900 p-2 rounded-lg bg-slate-100">
+                        <i class="fa-solid fa-bars text-lg"></i>
                     </button>
-                    <h2 class="topbar-title">@yield('page_title', 'Hotel Portal')</h2>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">@yield('page_title', 'Hotel Admin')</h1>
                 </div>
-                <div style="display: flex; align-items: center; gap: 20px;">
-                    <span style="font-size: 14px; color: var(--text-muted); font-weight: 500;">
-                        <i class="fa-regular fa-clock" style="margin-right: 6px;"></i>{{ date('d M, Y') }}
+
+                <div class="flex items-center space-x-4">
+                    <span class="hidden sm:inline-flex items-center text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
+                        <i class="fa-regular fa-clock mr-1.5 text-indigo-500"></i> {{ date('d M, Y') }}
                     </span>
-                    
-                    <div class="dropdown">
-                        <button class="dropdown-btn" id="profileDropdownBtn">
+
+                    <!-- Profile Dropdown -->
+                    <div class="relative" id="profileDropdownContainer">
+                        <button onclick="toggleProfileDropdown()" class="flex items-center space-x-3 p-1.5 rounded-full hover:bg-slate-100 transition-colors focus:outline-none">
                             @if(Auth::guard('hotel_admin')->user()->hotel_logo)
-                                <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);">
+                                <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" class="w-9 h-9 rounded-full object-cover border border-slate-300">
                             @else
-                                <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">
+                                <div class="w-9 h-9 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm">
                                     {{ substr(Auth::guard('hotel_admin')->user()->owner_name, 0, 1) }}
                                 </div>
                             @endif
-                            <span>{{ Auth::guard('hotel_admin')->user()->owner_name }}</span>
-                            <i class="fa-solid fa-chevron-down" style="font-size: 11px; color: var(--text-muted);"></i>
+                            <span class="text-xs font-bold text-slate-700 hidden lg:inline">{{ Auth::guard('hotel_admin')->user()->owner_name }}</span>
+                            <i class="fa-solid fa-chevron-down text-slate-400 text-xs hidden lg:inline"></i>
                         </button>
-                        <div class="dropdown-content" id="profileDropdownContent">
-                            <a href="{{ route('hotel.profile') }}">
-                                <i class="fa-regular fa-user" style="margin-right: 8px; color: var(--primary);"></i>Update Profile
+
+                        <!-- Menu Dropdown -->
+                        <div id="profileDropdownMenu" class="hidden absolute right-0 mt-2 w-56 bg-white border border-slate-200/80 rounded-2xl shadow-xl py-2 z-50">
+                            <a href="{{ route('hotel.profile') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                <i class="fa-regular fa-user text-indigo-500 w-4"></i>
+                                <span>Update Account Profile</span>
                             </a>
-                            <a href="{{ route('hotel.hotel-info') }}">
-                                <i class="fa-solid fa-hotel" style="margin-right: 8px; color: var(--secondary);"></i>Update Hotel Info
+                            <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors">
+                                <i class="fa-solid fa-hotel text-violet-500 w-4"></i>
+                                <span>Update Hotel Info</span>
                             </a>
-                            <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
-                            <form action="{{ route('hotel.logout') }}" method="POST" style="margin: 0;">
+                            <div class="border-t border-slate-100 my-1"></div>
+                            <form action="{{ route('hotel.logout') }}" method="POST">
                                 @csrf
-                                <button type="submit" style="color: var(--danger); padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; font-weight: 500; background: none; border: none; width: 100%; text-align: left; cursor: pointer; transition: var(--transition);">
-                                    <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i>Sign Out
+                                <button type="submit" class="w-full flex items-center space-x-2 px-4 py-2.5 text-xs font-semibold text-rose-600 hover:bg-rose-50 transition-colors text-left">
+                                    <i class="fa-solid fa-right-from-bracket w-4"></i>
+                                    <span>Sign Out</span>
                                 </button>
                             </form>
                         </div>
@@ -358,16 +152,19 @@
                 </div>
             </header>
 
-            <!-- Main Content Area -->
-            <main class="content-wrapper anim-fade-in">
+            <!-- Alerts -->
+            <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
                 @if(session('success'))
-                    <div class="alert alert-success">
-                        <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
+                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2 shadow-sm">
+                        <i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
                 @endif
+
                 @if(session('error'))
-                    <div class="alert alert-danger">
-                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> {{ session('error') }}
+                    <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2 shadow-sm">
+                        <i class="fa-solid fa-circle-exclamation text-rose-500 text-base"></i>
+                        <span>{{ session('error') }}</span>
                     </div>
                 @endif
 
@@ -376,45 +173,27 @@
         </div>
     </div>
 
-    <!-- Sidebar Responsive Toggle Script -->
     <script>
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            if (backdrop) backdrop.classList.toggle('hidden');
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle profile dropdown
-            const dropdownBtn = document.getElementById('profileDropdownBtn');
-            const dropdownContent = document.getElementById('profileDropdownContent');
-            if (dropdownBtn && dropdownContent) {
-                dropdownBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const isVisible = dropdownContent.style.display === 'block';
-                    dropdownContent.style.display = isVisible ? 'none' : 'block';
-                });
-                
-                document.addEventListener('click', function() {
-                    dropdownContent.style.display = 'none';
-                });
-            }
+        function toggleProfileDropdown() {
+            const menu = document.getElementById('profileDropdownMenu');
+            menu.classList.toggle('hidden');
+        }
 
-            // Toggle password fields visibility
-            document.querySelectorAll('.toggle-password').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    const wrapper = btn.closest('.password-wrapper') || btn.parentElement;
-                    const input = wrapper.querySelector('input');
-                    if (input.type === 'password') {
-                        input.type = 'text';
-                        btn.className = 'fa-regular fa-eye-slash toggle-password';
-                    } else {
-                        input.type = 'password';
-                        btn.className = 'fa-regular fa-eye toggle-password';
-                    }
-                });
-            });
+        document.addEventListener('click', function(e) {
+            const container = document.getElementById('profileDropdownContainer');
+            const menu = document.getElementById('profileDropdownMenu');
+            if (container && !container.contains(e.target) && menu) {
+                menu.classList.add('hidden');
+            }
         });
     </script>
-
     @yield('scripts')
 </body>
 </html>

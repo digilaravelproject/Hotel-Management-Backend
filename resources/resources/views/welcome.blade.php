@@ -26,12 +26,13 @@
                     <a href="#features" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Features</a>
                     <a href="#solutions" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Solutions</a>
                     <a href="#experience" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Guest Experience</a>
+                    <a href="#contact" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">Contact</a>
                 </nav>
 
                 <!-- Auth Action Buttons -->
                 <div class="flex items-center space-x-4">
                     <a href="{{ route('hotel.login') }}" class="text-sm font-semibold text-slate-300 hover:text-white px-4 py-2.5 rounded-lg transition-colors">
-                        Hotel Admin Login
+                        Hotel Login
                     </a>
                     <a href="{{ route('hotel.login') }}" class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
                         Get Started <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
