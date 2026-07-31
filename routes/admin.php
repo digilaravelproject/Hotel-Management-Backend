@@ -23,7 +23,8 @@ Route::post('/super-admin/logout', [SuperLoginController::class, 'logout'])->nam
 // Super Admin Panel (Protected by custom super_admin middleware)
 Route::middleware(['super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [SuperDashboardController::class, 'index'])->name('dashboard');
-    Route::post('/profile/update', [SuperDashboardController::class, 'updateProfile'])->name('profile.update');
+    Route::get('/profile', [SuperDashboardController::class, 'profileForm'])->name('profile');
+    Route::post('/profile', [SuperDashboardController::class, 'updateProfile']);
 
     // Hotels CRUD and Status Toggles
     Route::get('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');

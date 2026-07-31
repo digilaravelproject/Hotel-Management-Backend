@@ -36,6 +36,15 @@ class DashboardController extends Controller
     }
 
     /**
+     * Show Super Admin Profile Edit Form.
+     */
+    public function profileForm()
+    {
+        $superAdmin = auth()->guard('super_admin')->user();
+        return view('super_admin.profile', compact('superAdmin'));
+    }
+
+    /**
      * Update the authenticated Super Admin profile.
      */
     public function updateProfile(\Illuminate\Http\Request $request)
@@ -53,6 +62,6 @@ class DashboardController extends Controller
         }
         $admin->save();
 
-        return back()->with('success', 'Profile updated successfully!');
+        return redirect()->route('super-admin.profile')->with('success', 'Super Admin profile credentials updated successfully!');
     }
 }
