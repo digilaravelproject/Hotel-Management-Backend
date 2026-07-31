@@ -5,50 +5,71 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
+    <!-- Top Action Bar -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('hotel.package') }}" class="text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors inline-flex items-center">
-            <i class="fa-solid fa-arrow-left mr-1.5"></i> Back to My Package
+        <a href="{{ route('hotel.package') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-white border border-slate-200/80 text-slate-600 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold transition-all shadow-xs">
+            <i class="fa-solid fa-arrow-left mr-2 text-indigo-600"></i> Back to My Package
         </a>
     </div>
 
+    <!-- Main Clean Container -->
     <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-6 gap-4">
-            <div class="space-y-1">
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Hotel Default OTT Access</h3>
-                <p class="text-xs text-slate-500 font-medium">Enable or disable streaming apps across all hotel TVs by default.</p>
+        <!-- Header Banner -->
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-5 gap-4">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                    <i class="fa-solid fa-brands fa-google-play text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Hotel Default OTT Access</h3>
+                    <p class="text-xs text-slate-500 font-medium">Enable or disable streaming apps across all hotel room TVs by default.</p>
+                </div>
             </div>
             
-            <label class="inline-flex items-center space-x-2 text-xs font-bold text-indigo-600 cursor-pointer select-none">
-                <input type="checkbox" id="selectAllOtt" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500">
-                <span>Select All Included</span>
-            </label>
+            @if(count($availablePlatforms) > 0)
+                <label class="inline-flex items-center space-x-2 text-xs font-bold text-indigo-600 cursor-pointer select-none bg-indigo-50 px-3.5 py-1.5 rounded-full border border-indigo-100">
+                    <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500">
+                    <span>Select All Included</span>
+                </label>
+            @endif
         </div>
 
+        <!-- Form -->
         <form action="{{ url('/hotel/ott-settings') }}" method="POST" class="space-y-6">
             @csrf
 
             @if(count($availablePlatforms) > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($availablePlatforms as $ott)
-                        <label class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start space-x-3 cursor-pointer hover:bg-slate-100/80 transition-colors">
-                            <input type="checkbox" name="ott_platforms[]" value="{{ $ott['package'] }}" class="ott-checkbox mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" {{ in_array($ott['package'], $currentGlobalSettings) ? 'checked' : '' }}>
-                            <div class="overflow-hidden">
-                                <h4 class="text-xs font-bold text-slate-800">{{ $ott['name'] }}</h4>
-                                <span class="text-[10px] font-mono text-slate-400 truncate block" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
+                        <label class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:border-indigo-300 flex items-center justify-between cursor-pointer transition-all hover:bg-white group">
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0">
+                                    <i class="fa-solid fa-film text-sm"></i>
+                                </div>
+                                <div class="overflow-hidden">
+                                    <h4 class="text-xs font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{{ $ott['name'] }}</h4>
+                                    <span class="text-[10px] font-mono text-slate-400 truncate block" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
+                                </div>
                             </div>
+                            
+                            <!-- Toggle switch -->
+                            <input type="checkbox" name="ott_platforms[]" value="{{ $ott['package'] }}" class="ott-checkbox w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" {{ in_array($ott['package'], $currentGlobalSettings) ? 'checked' : '' }}>
                         </label>
                     @endforeach
                 </div>
             @else
-                <div class="text-center py-8 text-xs text-slate-400 font-medium bg-slate-50 rounded-2xl">
+                <div class="text-center py-10 text-xs text-slate-400 font-semibold bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                    <i class="fa-solid fa-circle-exclamation text-xl block mb-2 text-slate-300"></i>
                     No OTT platforms available in your current Subscription Plan.
                 </div>
             @endif
 
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
-                <a href="{{ route('hotel.package') }}" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 disabled:opacity-50">
-                    Save Global Settings
+            <!-- Submit Controls -->
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
+                <a href="{{ route('hotel.package') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
+                <button type="submit" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center space-x-2">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Save Global Settings</span>
                 </button>
             </div>
         </form>
