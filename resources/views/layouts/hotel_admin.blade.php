@@ -28,73 +28,73 @@
         <!-- Mobile Sidebar Backdrop Overlay -->
         <div id="sidebarBackdrop" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 md:hidden transition-opacity"></div>
 
-        <!-- Sidebar Navigation -->
-        <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-slate-800 shadow-xl">
+        <!-- Sidebar Navigation (100% Light Theme) -->
+        <aside id="sidebar" class="w-64 bg-white text-slate-700 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-slate-200 shadow-lg shadow-slate-200/50">
             <!-- Sidebar Header -->
-            <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
+            <div class="h-20 flex items-center justify-between px-6 border-b border-slate-100">
                 <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                    <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/20">
                         <i class="fa-solid fa-tv text-lg"></i>
                     </div>
-                    <span class="text-xl font-extrabold text-white tracking-tight">Hotel<span class="text-indigo-400">TV</span></span>
+                    <span class="text-xl font-extrabold text-slate-900 tracking-tight">Hotel<span class="text-indigo-600">TV</span></span>
                 </div>
-                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-slate-700">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <!-- Hotel Branding Card -->
-            <div class="p-4 mx-3 my-4 rounded-2xl bg-slate-800/60 border border-slate-700/60 flex items-center space-x-3">
+            <!-- Hotel Branding Card (Light Theme) -->
+            <div class="p-3.5 mx-3 my-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 flex items-center space-x-3">
                 @if(Auth::guard('hotel_admin')->user()->hotel_logo)
-                    <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" class="w-10 h-10 rounded-xl object-cover border border-slate-700">
+                    <img src="{{ asset(Auth::guard('hotel_admin')->user()->hotel_logo) }}" alt="Logo" class="w-10 h-10 rounded-xl object-cover border border-slate-200 shadow-xs">
                 @else
-                    <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 text-indigo-400 flex items-center justify-center font-bold text-base">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-base shadow-xs">
                         {{ substr(Auth::guard('hotel_admin')->user()->hotel_name, 0, 1) }}
                     </div>
                 @endif
                 <div class="overflow-hidden">
-                    <h4 class="text-xs font-bold text-white truncate">{{ Auth::guard('hotel_admin')->user()->hotel_name }}</h4>
-                    <p class="text-[11px] text-indigo-400 truncate font-medium"><i class="fa-solid fa-location-dot mr-1"></i>{{ Auth::guard('hotel_admin')->user()->city ?? 'Active Hotel' }}</p>
+                    <h4 class="text-xs font-bold text-slate-900 truncate">{{ Auth::guard('hotel_admin')->user()->hotel_name }}</h4>
+                    <p class="text-[11px] text-indigo-600 truncate font-semibold"><i class="fa-solid fa-location-dot mr-1"></i>{{ Auth::guard('hotel_admin')->user()->city ?? 'Active Hotel' }}</p>
                 </div>
             </div>
 
-            <!-- Menu List -->
+            <!-- Menu List (Light Theme) -->
             <nav class="flex-1 px-3 space-y-1.5 overflow-y-auto">
-                <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.dashboard') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.dashboard') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-chart-line text-base w-5 text-center"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.package') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.package') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-brands fa-google-play text-base w-5 text-center"></i>
                     <span>OTT Apps Control</span>
                 </a>
-                <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-list-check text-base w-5 text-center"></i>
                     <span>TV Menus Visibility</span>
                 </a>
-                <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-spa text-base w-5 text-center"></i>
                     <span>Hotel Amenities</span>
                 </a>
-                <a href="{{ route('hotel.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-tv text-base w-5 text-center"></i>
                     <span>Connected TVs</span>
                 </a>
-                <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-users text-base w-5 text-center"></i>
                     <span>In-House Guests</span>
                 </a>
-                <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
                     <span>Hotel Profile & Media</span>
                 </a>
             </nav>
 
-            <!-- Sign Out Button -->
-            <div class="p-4 border-t border-slate-800/80">
+            <!-- Sign Out Button (Light Theme) -->
+            <div class="p-4 border-t border-slate-100">
                 <form action="{{ route('hotel.logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-700/80 text-slate-300 hover:text-white hover:bg-slate-800 text-xs font-bold transition-all">
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-rose-200 bg-rose-50/50 text-rose-600 hover:bg-rose-600 hover:text-white text-xs font-bold transition-all shadow-xs">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Sign Out</span>
                     </button>
