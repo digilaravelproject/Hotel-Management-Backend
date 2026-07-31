@@ -53,19 +53,19 @@
 
             <!-- Menu List -->
             <nav class="flex-1 px-3 space-y-1.5 overflow-y-auto">
-                <a href="{{ route('super.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.dashboard') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.dashboard') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-chart-pie text-base w-5 text-center"></i>
                     <span>Control Dashboard</span>
                 </a>
-                <a href="{{ route('super.hotels.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.hotels.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                <a href="{{ route('super-admin.hotels.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.hotels.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
                     <span>Hotels Directory</span>
                 </a>
-                <a href="{{ route('super.plans.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.plans.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-layer-group text-base w-5 text-center"></i>
                     <span>Subscription Plans</span>
                 </a>
-                <a href="{{ route('super.tv-templates.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super.tv-templates.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                <a href="{{ route('super-admin.tv-templates.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.tv-templates.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-code-branch text-base w-5 text-center"></i>
                     <span>TV App OTA Releases</span>
                 </a>
@@ -73,7 +73,7 @@
 
             <!-- Sign Out Button -->
             <div class="p-4 border-t border-slate-800/80">
-                <form action="{{ route('super.logout') }}" method="POST">
+                <form action="{{ route('super-admin.logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl border border-slate-800 text-slate-400 hover:text-white hover:bg-rose-600/20 hover:border-rose-500/40 text-xs font-bold transition-all">
                         <i class="fa-solid fa-right-from-bracket"></i>

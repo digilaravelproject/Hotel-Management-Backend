@@ -178,7 +178,7 @@
             <p>© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
             <div class="flex space-x-6">
                 <a href="{{ route('hotel.login') }}" class="hover:text-white transition-colors">Hotel Admin</a>
-                <a href="{{ route('super.login') }}" class="hover:text-white transition-colors">Super Admin</a>
+                <a href="{{ route('super-admin.login') }}" class="hover:text-white transition-colors">Super Admin</a>
             </div>
         </div>
     </footer>

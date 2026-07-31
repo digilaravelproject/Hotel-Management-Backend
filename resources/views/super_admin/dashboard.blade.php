@@ -16,7 +16,7 @@
                 <p class="text-slate-400 text-xs font-medium">Monitor active hotels, subscriptions, OTA updates and TV network health.</p>
             </div>
             
-            <a href="{{ route('super.hotels.create') }}" class="px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all hover:-translate-y-0.5">
+            <a href="{{ route('super-admin.hotels.create') }}" class="px-5 py-3 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all hover:-translate-y-0.5">
                 <i class="fa-solid fa-plus mr-1.5"></i> Onboard New Hotel
             </a>
         </div>
@@ -79,7 +79,7 @@
 
     <!-- Quick Directory Actions Grid -->
     <div class="grid md:grid-cols-3 gap-6">
-        <a href="{{ route('super.hotels.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-rose-500/40 transition-all flex items-start space-x-4">
+        <a href="{{ route('super-admin.hotels.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-rose-500/40 transition-all flex items-start space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-rose-600/10 text-rose-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-rose-600 group-hover:text-white transition-all">
                 <i class="fa-solid fa-hotel"></i>
             </div>
@@ -89,7 +89,7 @@
             </div>
         </a>
 
-        <a href="{{ route('super.plans.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
+        <a href="{{ route('super-admin.plans.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
@@ -99,7 +99,7 @@
             </div>
         </a>
 
-        <a href="{{ route('super.tv-templates.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all flex items-start space-x-4">
+        <a href="{{ route('super-admin.tv-templates.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-emerald-500/40 transition-all flex items-start space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                 <i class="fa-solid fa-code-branch"></i>
             </div>
