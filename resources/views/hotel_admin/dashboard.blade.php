@@ -42,7 +42,7 @@
                 </div>
             </div>
             <div>
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight font-mono">{{ $hotelAdmin->license_key ?? 'N/A' }}</h3>
+                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight font-mono">{{ $hotel->license_key ?? 'N/A' }}</h3>
                 <p class="text-xs text-slate-500 font-medium mt-1">Unique Hotel Authentication</p>
             </div>
         </div>
@@ -56,7 +56,7 @@
                 </div>
             </div>
             <div>
-                <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $deviceCount ?? 0 }} / {{ $hotelAdmin->allowed_device_limit ?? 0 }}</h3>
+                <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $deviceCount ?? 0 }} / {{ $hotel->allowed_device_limit ?? 0 }}</h3>
                 <p class="text-xs text-slate-500 font-medium mt-1">Rooms Synchronized</p>
             </div>
         </div>
@@ -70,7 +70,7 @@
                 </div>
             </div>
             <div>
-                <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $hotelAdmin->plan ? $hotelAdmin->plan->name : 'No Active Plan' }}</h3>
+                <h3 class="text-2xl font-extrabold text-slate-900 tracking-tight">{{ $hotel->plan ? $hotel->plan->name : 'No Active Plan' }}</h3>
                 <p class="text-xs text-slate-500 font-medium mt-1">Subscription Status</p>
             </div>
         </div>
