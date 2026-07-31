@@ -61,7 +61,7 @@
                     <i class="fa-solid fa-chart-line text-base w-5 text-center"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="{{ route('hotel.ott.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.ott.*') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
+                <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.package') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' }}">
                     <i class="fa-solid fa-brands fa-google-play text-base w-5 text-center"></i>
                     <span>OTT Apps Control</span>
                 </a>

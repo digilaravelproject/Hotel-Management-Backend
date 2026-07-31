@@ -92,7 +92,7 @@
 
     <!-- Quick Action Cards Grid -->
     <div class="grid md:grid-cols-3 gap-6">
-        <a href="{{ route('hotel.ott.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
+        <a href="{{ route('hotel.package') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all">
                 <i class="fa-brands fa-google-play"></i>
             </div>
