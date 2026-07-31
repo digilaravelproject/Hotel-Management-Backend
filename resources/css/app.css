@@ -7,5 +7,5 @@
 @source "../**/*.vue";
 
 @theme {
-    --font-sans: 'Syne', ui-sans-serif, system-ui, sans-serif;
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
 }
