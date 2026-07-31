@@ -84,7 +84,7 @@
     </header>
 
     <!-- Asymmetric Human-Designed Hero Section -->
-    <section class="pt-16 pb-20 px-6 lg:px-16 max-w-7xl mx-auto">
+    <section class="pt-16 pb-28 px-6 lg:px-16 max-w-7xl mx-auto">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <!-- Left Column: Copy & Social Proof -->
@@ -139,7 +139,7 @@
             </div>
 
             <!-- Right Column: Human-Designed Visual Container & Floating Cards -->
-            <div class="lg:col-span-6 relative">
+            <div class="lg:col-span-6 relative pt-8 pb-10 px-4 sm:px-8">
                 <!-- Main Frame Container -->
                 <div class="relative bg-slate-900 rounded-3xl p-3 sm:p-4 border-8 border-slate-800 shadow-2xl shadow-indigo-900/20 aspect-video overflow-hidden text-white">
                     <!-- Unsplash Luxury Suite Background Behind UI -->
@@ -173,7 +173,7 @@
                 </div>
 
                 <!-- Floating Feature Card 1: Remote OTA Sync -->
-                <div class="hidden sm:flex absolute -bottom-6 -left-6 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-xl space-x-3 items-center max-w-xs">
+                <div class="hidden sm:flex absolute -bottom-4 left-0 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-4 rounded-2xl shadow-xl space-x-3 items-center max-w-xs z-20">
                     <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-lg shrink-0">
                         <i class="fa-solid fa-bolt"></i>
                     </div>
@@ -184,7 +184,7 @@
                 </div>
 
                 <!-- Floating Feature Card 2: 16-Digit License -->
-                <div class="hidden sm:flex absolute -top-6 -right-4 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-3.5 rounded-2xl shadow-xl space-x-3 items-center">
+                <div class="hidden sm:flex absolute -top-2 right-0 bg-white/95 backdrop-blur-xl border border-slate-200/80 p-3.5 rounded-2xl shadow-xl space-x-3 items-center z-20">
                     <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center text-sm shrink-0">
                         <i class="fa-solid fa-key"></i>
                     </div>
