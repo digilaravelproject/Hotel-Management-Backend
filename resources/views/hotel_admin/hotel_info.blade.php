@@ -208,25 +208,38 @@
     }
 
     function deleteGalleryPhoto(path) {
-        if (!confirm('Are you sure you want to delete this gallery photo?')) return;
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = "{{ route('hotel.hotel-info.delete-gallery') }}";
-        
-        const csrfInput = document.createElement('input');
-        csrfInput.type = 'hidden';
-        csrfInput.name = '_token';
-        csrfInput.value = "{{ csrf_token() }}";
-        form.appendChild(csrfInput);
+        Swal.fire({
+            title: 'Delete Gallery Photo?',
+            text: 'Are you sure you want to delete this gallery photo? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: '<i class="fa-solid fa-trash"></i> Yes, Delete',
+            cancelButtonText: 'Cancel',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = "{{ route('hotel.hotel-info.delete-gallery') }}";
+                
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = "{{ csrf_token() }}";
+                form.appendChild(csrfInput);
 
-        const pathInput = document.createElement('input');
-        pathInput.type = 'hidden';
-        pathInput.name = 'image_path';
-        pathInput.value = path;
-        form.appendChild(pathInput);
+                const pathInput = document.createElement('input');
+                pathInput.type = 'hidden';
+                pathInput.name = 'image_path';
+                pathInput.value = path;
+                form.appendChild(pathInput);
 
-        document.body.appendChild(form);
-        form.submit();
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
     }
 </script>
 @endsection
