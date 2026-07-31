@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'hotel_admin' => \App\Http\Middleware\HotelAdminMiddleware::class,
             'tv_token' => \App\Http\Middleware\AuthenticateTvToken::class,
+            '2fa' => \App\Http\Middleware\TwoFactorMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

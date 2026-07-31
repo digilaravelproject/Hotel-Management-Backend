@@ -31,11 +31,16 @@ Route::get('/hotel/reset-password', [ForgotPasswordController::class, 'showReset
 Route::post('/hotel/reset-password', [ForgotPasswordController::class, 'reset']);
 
 // Hotel Admin Dashboard (Protected by custom hotel_admin middleware)
-Route::middleware(['hotel_admin'])->group(function () {
+Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::get('/hotel/dashboard', [HotelDashboardController::class, 'index'])->name('hotel.dashboard');
     Route::post('/hotel/subscribe', [HotelDashboardController::class, 'subscribe'])->name('hotel.subscribe');
     Route::get('/hotel/profile', [ProfileController::class, 'showProfileForm'])->name('hotel.profile');
     Route::post('/hotel/profile', [ProfileController::class, 'updateProfile']);
+
+    // 2FA Management Endpoints
+    Route::post('/hotel/2fa/generate', [\App\Http\Controllers\TwoFactorController::class, 'generate'])->name('hotel.2fa.generate');
+    Route::post('/hotel/2fa/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('hotel.2fa.enable');
+    Route::post('/hotel/2fa/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('hotel.2fa.disable');
     Route::get('/hotel/hotel-info', [ProfileController::class, 'showHotelInfoForm'])->name('hotel.hotel-info');
     Route::post('/hotel/hotel-info', [ProfileController::class, 'updateHotelInfo']);
     Route::post('/hotel/hotel-info/delete-slider', [ProfileController::class, 'deleteSliderImage'])->name('hotel.hotel-info.delete-slider');

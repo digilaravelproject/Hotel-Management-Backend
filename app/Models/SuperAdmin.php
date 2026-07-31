@@ -19,6 +19,9 @@ class SuperAdmin extends Authenticatable
     protected $fillable = [
         'email',
         'password',
+        'google2fa_secret',
+        'google2fa_enabled',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -29,6 +32,8 @@ class SuperAdmin extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -38,5 +43,8 @@ class SuperAdmin extends Authenticatable
      */
     protected $casts = [
         'password' => 'hashed',
+        'google2fa_enabled' => 'boolean',
+        'google2fa_secret' => 'encrypted',
+        'two_factor_recovery_codes' => 'encrypted:array',
     ];
 }

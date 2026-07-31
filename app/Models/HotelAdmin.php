@@ -45,6 +45,9 @@ class HotelAdmin extends Authenticatable
         'expiry_date',
         'global_ott_settings',
         'global_menu_settings',
+        'google2fa_secret',
+        'google2fa_enabled',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -55,6 +58,8 @@ class HotelAdmin extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'google2fa_secret',
+        'two_factor_recovery_codes',
     ];
 
     /**
@@ -74,6 +79,9 @@ class HotelAdmin extends Authenticatable
         'expiry_date' => 'datetime',
         'global_ott_settings' => 'array',
         'global_menu_settings' => 'array',
+        'google2fa_enabled' => 'boolean',
+        'google2fa_secret' => 'encrypted',
+        'two_factor_recovery_codes' => 'encrypted:array',
     ];
 
     /**

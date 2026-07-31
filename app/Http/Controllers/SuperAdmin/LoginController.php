@@ -29,7 +29,20 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('super_admin')->attempt($credentials)) {
+        if (Auth::guard('super_admin')->validate($credentials)) {
+            $user = \App\Models\SuperAdmin::where('email', $credentials['email'])->first();
+
+            if ($user->google2fa_enabled) {
+                session([
+                    '2fa:user:id' => $user->id,
+                    '2fa:user:guard' => 'super_admin',
+                    '2fa:user:remember' => $request->boolean('remember'),
+                ]);
+                return redirect()->route('2fa.verify');
+            }
+
+            Auth::guard('super_admin')->login($user, $request->boolean('remember'));
+            session()->put('2fa_verified', true);
             $request->session()->regenerate();
             return redirect()->intended(route('super-admin.dashboard'))
                              ->with('success', 'Welcome back, Super Admin!');

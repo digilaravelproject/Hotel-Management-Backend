@@ -29,23 +29,30 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('hotel_admin')->attempt($credentials)) {
-            $hotelAdmin = Auth::guard('hotel_admin')->user();
-
+        if (Auth::guard('hotel_admin')->validate($credentials)) {
+            $hotelAdmin = \App\Models\HotelAdmin::where('email', $credentials['email'])->first();
 
             if ($hotelAdmin->approval_status === 'pending') {
-                Auth::guard('hotel_admin')->logout();
                 return back()->withErrors(['email' => 'Your account is pending Super Admin approval. You will receive an email once approved.']);
             } elseif ($hotelAdmin->approval_status === 'disapproved') {
-                Auth::guard('hotel_admin')->logout();
                 return back()->withErrors(['email' => 'Your account has been disapproved by the Super Admin.']);
             }
 
             if (!$hotelAdmin->status) {
-                Auth::guard('hotel_admin')->logout();
                 return back()->withErrors(['email' => 'Your account is currently inactive/suspended.']);
             }
 
+            if ($hotelAdmin->google2fa_enabled) {
+                session([
+                    '2fa:user:id' => $hotelAdmin->id,
+                    '2fa:user:guard' => 'hotel_admin',
+                    '2fa:user:remember' => $request->boolean('remember'),
+                ]);
+                return redirect()->route('2fa.verify');
+            }
+
+            Auth::guard('hotel_admin')->login($hotelAdmin, $request->boolean('remember'));
+            session()->put('2fa_verified', true);
             $request->session()->regenerate();
             return redirect()->intended(route('hotel.dashboard'))
                              ->with('success', 'Logged in successfully!');

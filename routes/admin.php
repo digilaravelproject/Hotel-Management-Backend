@@ -15,16 +15,24 @@ use App\Http\Controllers\SuperAdmin\TemplateController as SuperTemplateControlle
 |--------------------------------------------------------------------------
 */
 
-// Super Admin Auth routes
 Route::get('/super-admin/login', [SuperLoginController::class, 'showLoginForm'])->name('super-admin.login');
 Route::post('/super-admin/login', [SuperLoginController::class, 'login']);
 Route::post('/super-admin/logout', [SuperLoginController::class, 'logout'])->name('super-admin.logout');
 
+// 2FA Auth Routes
+Route::get('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'showVerifyForm'])->name('2fa.verify');
+Route::post('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify']);
+
 // Super Admin Panel (Protected by custom super_admin middleware)
-Route::middleware(['super_admin'])->prefix('super-admin')->name('super-admin.')->group(function () {
+Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-admin.')->group(function () {
     Route::get('/dashboard', [SuperDashboardController::class, 'index'])->name('dashboard');
     Route::get('/profile', [SuperDashboardController::class, 'profileForm'])->name('profile');
     Route::post('/profile', [SuperDashboardController::class, 'updateProfile']);
+
+    // 2FA Management Endpoints
+    Route::post('/2fa/generate', [\App\Http\Controllers\TwoFactorController::class, 'generate'])->name('2fa.generate');
+    Route::post('/2fa/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('2fa.enable');
+    Route::post('/2fa/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('2fa.disable');
 
     // Hotels CRUD and Status Toggles
     Route::get('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');
