@@ -2,710 +2,341 @@
 
 @section('title', 'Welcome to HotelTV - Premium Hotel TV & Management System')
 
-@section('styles')
-<style>
-    /* Dark Premium Theme & Animations */
-    body {
-        background-color: #0b0f19;
-        color: #f1f5f9;
-        font-family: 'Outfit', sans-serif;
-        position: relative;
-        overflow-x: hidden;
-    }
-
-    /* Glowing decorative background blobs */
-    .glowing-blob {
-        position: absolute;
-        width: 350px;
-        height: 350px;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.08) 50%, rgba(0, 0, 0, 0) 100%);
-        border-radius: 50%;
-        filter: blur(60px);
-        z-index: 0;
-        pointer-events: none;
-    }
-    .blob-1 { top: 5%; left: -5%; }
-    .blob-2 { top: 35%; right: -5%; }
-    .blob-3 { bottom: 10%; left: 15%; }
-
-    .navbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px 8%;
-        background-color: rgba(11, 15, 25, 0.7);
-        backdrop-filter: blur(16px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
-    
-    .brand {
-        font-size: 24px;
-        font-weight: 800;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .brand i {
-        color: var(--primary);
-        animation: pulseGlow 2.5s infinite;
-    }
-    
-    .nav-actions {
-        display: flex;
-        align-items: center;
-        gap: 16px;
-    }
-    
-    /* Premium Glassmorphic Dropdown */
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .dropdown-btn {
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        color: white;
-        border: none;
-        padding: 10px 22px;
-        font-weight: 600;
-        font-size: 15px;
-        border-radius: var(--radius-md);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
-        transition: var(--transition);
-    }
-    .dropdown-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 24px rgba(99, 102, 241, 0.5);
-    }
-    
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        right: 0;
-        background-color: rgba(20, 26, 43, 0.95);
-        backdrop-filter: blur(12px);
-        min-width: 190px;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
-        border-radius: var(--radius-md);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        z-index: 101;
-        overflow: visible; /* Changed from hidden to allow pseudo-element to render outside bounds */
-        margin-top: 8px;
-        animation: fadeIn 0.25s ease-out;
-    }
-    
-    .dropdown-content::before {
-        content: '';
-        position: absolute;
-        top: -12px;
-        left: 0;
-        width: 100%;
-        height: 12px;
-        background: transparent;
-    }
-    
-    .btn-hotel-login:hover {
-        background-color: #ffffff !important;
-        color: #0b0f19 !important;
-        border-color: #ffffff !important;
-    }
-    
-    .dropdown-content a, .dropdown-content button {
-        color: #cbd5e1;
-        padding: 12px 18px;
-        text-decoration: none;
-        display: block;
-        font-size: 14px;
-        font-weight: 500;
-        background: none;
-        border: none;
-        width: 100%;
-        text-align: left;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-    
-    .dropdown-content a:hover, .dropdown-content button:hover {
-        background-color: rgba(99, 102, 241, 0.15);
-        color: white;
-    }
-    
-    .dropdown:hover .dropdown-content {
-        display: block;
-    }
-    
-    /* Hero Section */
-    .hero {
-        padding: 90px 8% 80px 8%;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        z-index: 2;
-    }
-    
-    .hero-content {
-        max-width: 850px;
-        margin: 0 auto;
-    }
-    
-    .hero h1 {
-        font-size: 58px;
-        font-weight: 800;
-        line-height: 1.15;
-        letter-spacing: -2px;
-        color: white;
-        margin-bottom: 24px;
-    }
-    
-    .hero h1 span {
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-    
-    .hero p {
-        font-size: 20px;
-        color: #94a3b8;
-        margin-bottom: 40px;
-        line-height: 1.6;
-    }
-
-    /* TV Mockup */
-    .tv-mockup {
-        margin: 60px auto 0 auto;
-        max-width: 680px;
-        background: #1e1e2f;
-        border: 14px solid #2e2e3f;
-        border-radius: var(--radius-lg);
-        box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(99, 102, 241, 0.25);
-        aspect-ratio: 16/9;
-        position: relative;
-        overflow: hidden;
-        animation: float 6s ease-in-out infinite;
-    }
-    
-    .tv-mockup::after {
-        content: '';
-        position: absolute;
-        bottom: -28px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 140px;
-        height: 14px;
-        background: #2e2e3f;
-        border-radius: 0 0 10px 10px;
-    }
-
-    @keyframes float {
-        0% { transform: translateY(0px) rotate(0deg); }
-        50% { transform: translateY(-16px) rotate(0.5deg); }
-        100% { transform: translateY(0px) rotate(0deg); }
-    }
-    
-    /* Stats */
-    .highlights {
-        display: flex;
-        justify-content: center;
-        gap: 32px;
-        margin-top: 60px;
-        flex-wrap: wrap;
-    }
-    
-    .highlight-item {
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(8px);
-        padding: 24px 36px;
-        border-radius: var(--radius-lg);
-        min-width: 200px;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
-        transition: var(--transition);
-    }
-    .highlight-item:hover {
-        transform: translateY(-4px);
-        border-color: rgba(99, 102, 241, 0.3);
-        background: rgba(255, 255, 255, 0.05);
-    }
-    
-    .highlight-item h3 {
-        font-size: 36px;
-        font-weight: 800;
-        background: linear-gradient(135deg, #818cf8 0%, #a78bfa 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
-    }
-    
-    .highlight-item p {
-        font-size: 14px;
-        color: #94a3b8;
-        margin-bottom: 0;
-    }
-    
-    /* Plans Pricing Grid */
-    .plans-section {
-        padding: 100px 8%;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
-    
-    .section-title {
-        font-size: 40px;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 12px;
-        letter-spacing: -1px;
-    }
-    
-    .section-desc {
-        font-size: 16px;
-        color: #94a3b8;
-        max-width: 620px;
-        margin: 0 auto 60px auto;
-        line-height: 1.6;
-    }
-    
-    .pricing-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 30px;
-        max-width: 1200px;
-        margin: 0 auto;
-    }
-    
-    /* Premium Glassmorphic Pricing Card */
-    .price-card {
-        background-color: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: var(--radius-lg);
-        padding: 40px 30px;
-        text-align: center;
-        position: relative;
-        transition: var(--transition);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    }
-    
-    .price-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 20px 40px -5px rgba(99, 102, 241, 0.25), 0 0 20px rgba(99, 102, 241, 0.1);
-        border-color: rgba(99, 102, 241, 0.5);
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-    
-    .price-card.popular {
-        border: 2px solid var(--primary);
-        background-color: rgba(99, 102, 241, 0.04);
-        box-shadow: 0 10px 40px rgba(99, 102, 241, 0.15);
-    }
-    .price-card.popular:hover {
-        box-shadow: 0 20px 45px -5px rgba(99, 102, 241, 0.4);
-    }
-    
-    .price-card.popular::before {
-        content: "Most Suggested";
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-        color: white;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 10px;
-        border-radius: 4px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .plan-name {
-        font-size: 22px;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 8px;
-    }
-    
-    .plan-rooms {
-        font-size: 13px;
-        font-weight: 700;
-        color: #a5b4fc;
-        background-color: rgba(99, 102, 241, 0.2);
-        display: inline-block;
-        padding: 4px 12px;
-        border-radius: 20px;
-        margin-bottom: 24px;
-        border: 1px solid rgba(99, 102, 241, 0.1);
-    }
-    
-    .plan-price {
-        font-size: 44px;
-        font-weight: 800;
-        color: white;
-        margin-bottom: 20px;
-    }
-    
-    .plan-price span {
-        font-size: 14px;
-        color: #94a3b8;
-        font-weight: 400;
-    }
-    
-    .plan-features {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 30px 0;
-        text-align: left;
-    }
-    
-    .plan-features li {
-        font-size: 14px;
-        color: #cbd5e1;
-        margin-bottom: 12px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-    
-    .plan-features li i {
-        color: var(--success);
-    }
-    
-    /* Autosuggest Block */
-    .suggested-box {
-        background-color: rgba(99, 102, 241, 0.1);
-        border: 1px solid rgba(99, 102, 241, 0.3);
-        padding: 16px;
-        border-radius: var(--radius-md);
-        margin-top: 15px;
-        display: none;
-        animation: fadeIn 0.4s;
-        text-align: left;
-    }
-    
-    .suggested-box-title {
-        font-size: 13px;
-        font-weight: 700;
-        color: #a5b4fc;
-        text-transform: uppercase;
-        margin-bottom: 4px;
-    }
-    
-    .suggested-plan-info {
-        font-size: 15px;
-        font-weight: 600;
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    /* Mock Payment Loader Overlay */
-    .payment-loader {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(9, 13, 25, 0.95);
-        backdrop-filter: blur(12px);
-        display: none;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        color: white;
-        z-index: 2000;
-        text-align: center;
-    }
-    
-    .spinner {
-        width: 50px;
-        height: 50px;
-        border: 4px solid rgba(255, 255, 255, 0.05);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-        margin-bottom: 24px;
-        box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
-    }
-    
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-</style>
-@endsection
-
 @section('content')
-<!-- Decorative Glowing Blobs -->
-<div class="glowing-blob blob-1"></div>
-<div class="glowing-blob blob-2"></div>
-<div class="glowing-blob blob-3"></div>
+<div class="relative overflow-hidden bg-slate-50 text-slate-800 font-sans min-h-screen">
+    <!-- Subtle Background Glow -->
+    <div class="absolute -top-32 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute top-1/3 -right-32 w-96 h-96 bg-violet-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-<!-- Nav bar -->
-<header class="navbar anim-fade-in">
-    <div class="brand">
-        <i class="fa-solid fa-hotel"></i>
-        <span>HotelTV Connect</span>
-    </div>
-    <div class="nav-actions">
-        <!-- Status Flash notifications -->
-        @if(session('error'))
-            <div class="alert alert-danger" style="margin: 0 15px 0 0; padding: 8px 16px; font-size: 13px;">
-                {{ session('error') }}
-            </div>
-        @endif
-        @if(session('success'))
-            <div class="alert alert-success" style="margin: 0 15px 0 0; padding: 8px 16px; font-size: 13px;">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        @if(Auth::guard('hotel_admin')->check())
-            <a href="{{ route('hotel.dashboard') }}" class="btn btn-primary" style="font-size: 14px; padding: 10px 20px;">
-                <i class="fa-solid fa-gauge" style="margin-right: 6px;"></i>Dashboard
+    <!-- Header Glassmorphism Navigation -->
+    <header class="sticky top-0 z-50 backdrop-blur-xl bg-white/80 border-b border-slate-200/80 transition-all px-6 md:px-12 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="{{ route('landing') }}" class="flex items-center space-x-3 text-slate-900 font-extrabold text-xl tracking-tight">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-md shadow-indigo-600/20">
+                    <i class="fa-solid fa-tv text-lg"></i>
+                </div>
+                <span>Hotel<span class="text-indigo-600">TV</span> Connect</span>
             </a>
-            
-            <div class="dropdown">
-                <button class="dropdown-btn" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: none;">
-                    <span>Account</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="{{ route('hotel.dashboard') }}">
-                        <i class="fa-solid fa-gauge" style="margin-right: 8px; color: var(--primary);"></i>Dashboard
+
+            <!-- Status Flash notifications -->
+            @if(session('error'))
+                <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                    {{ session('error') }}
+                </div>
+            @endif
+            @if(session('success'))
+                <div class="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <div class="flex items-center space-x-3">
+                @if(Auth::guard('hotel_admin')->check())
+                    <a href="{{ route('hotel.dashboard') }}" class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-2">
+                        <i class="fa-solid fa-gauge"></i>
+                        <span>Dashboard</span>
                     </a>
-                    <form action="{{ route('hotel.logout') }}" method="POST" style="margin: 0;">
-                        @csrf
-                        <button type="submit" style="display: flex; align-items: center; width: 100%; border: none; background: none; text-align: left; padding: 12px 18px; color: #cbd5e1; font-family: inherit; font-size: 14px; font-weight: 500; cursor: pointer;">
-                            <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px; color: var(--danger);"></i>Logout
+                    
+                    <div class="relative group">
+                        <button class="px-4 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 text-slate-700 font-bold text-xs flex items-center space-x-2">
+                            <span>Account</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
                         </button>
-                    </form>
-                </div>
-            </div>
-        @else
-            <a href="{{ route('hotel.login') }}" class="btn btn-outline btn-hotel-login" style="color: white; border-color: rgba(255,255,255,0.15); font-size: 14px; padding: 10px 20px;">
-                Hotel Login
-            </a>
-            
-            <div class="dropdown">
-                <button class="dropdown-btn">
-                    <span>Access Portal</span>
-                    <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <button onclick="openRegisterModal()">
-                        <i class="fa-solid fa-user-plus" style="margin-right: 8px; color: var(--primary);"></i>Register Hotel
-                    </button>
-                    <a href="{{ route('hotel.login') }}">
-                        <i class="fa-solid fa-right-to-bracket" style="margin-right: 8px; color: var(--success);"></i>Hotel Login
+                        <div class="hidden group-hover:block absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50">
+                            <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                                <i class="fa-solid fa-gauge text-indigo-600"></i>
+                                <span>Dashboard</span>
+                            </a>
+                            <form action="{{ route('hotel.logout') }}" method="POST" class="m-0">
+                                @csrf
+                                <button type="submit" class="w-full flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 text-left">
+                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('hotel.login') }}" class="px-5 py-2.5 rounded-2xl border border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all">
+                        Hotel Login
                     </a>
-                    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); margin: 4px 0;"></div>
-                    <a href="{{ route('super-admin.login') }}" style="color: #94a3b8; font-size: 12px;">
-                        <i class="fa-solid fa-lock" style="margin-right: 8px;"></i>Super Admin
-                    </a>
-                </div>
+                    
+                    <div class="relative group">
+                        <button class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-2">
+                            <span>Access Portal</span>
+                            <i class="fa-solid fa-chevron-down text-[10px]"></i>
+                        </button>
+                        <div class="hidden group-hover:block absolute right-0 mt-2 w-52 bg-white border border-slate-200 rounded-2xl shadow-xl p-2 z-50 space-y-1">
+                            <button onclick="openRegisterModal()" class="w-full flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 text-left">
+                                <i class="fa-solid fa-user-plus text-indigo-600"></i>
+                                <span>Register Hotel</span>
+                            </button>
+                            <a href="{{ route('hotel.login') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50">
+                                <i class="fa-solid fa-right-to-bracket text-emerald-600"></i>
+                                <span>Hotel Login</span>
+                            </a>
+                            <div class="border-t border-slate-100 my-1"></div>
+                            <a href="{{ route('super-admin.login') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-800">
+                                <i class="fa-solid fa-lock"></i>
+                                <span>Super Admin</span>
+                            </a>
+                        </div>
+                    </div>
+                @endif
             </div>
-        @endif
-    </div>
-</header>
+        </div>
+    </header>
 
-<!-- Hero Section -->
-<section class="hero">
-    <div class="hero-content anim-slide-up">
-        <h1>Connect Your Rooms with <span>Premium Smart TV Services</span></h1>
-        <p>
+    <!-- Hero Section -->
+    <section class="py-16 md:py-24 px-6 md:px-12 text-center max-w-5xl mx-auto space-y-8">
+        <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold uppercase tracking-wider">
+            <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+            <span>Next Generation Hospitality TV System</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Connect Your Rooms with <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-rose-600 bg-clip-text text-transparent">Premium Smart TV Services</span>
+        </h1>
+
+        <p class="text-base sm:text-lg text-slate-600 font-medium max-w-2xl mx-auto leading-relaxed">
             An all-in-one entertainment and custom branding dashboard portal for modern hotels. Seamlessly register your hotel, purchase custom licenses, and manage guest engagement with a few clicks.
         </p>
-        <div style="display: flex; justify-content: center; gap: 16px; position: relative; z-index: 10;">
-            <button onclick="openRegisterModal()" class="btn btn-primary btn-lg" style="padding: 14px 28px; box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);">
-                Register Your Hotel Now <i class="fa-solid fa-arrow-right" style="margin-left: 8px;"></i>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <button onclick="openRegisterModal()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xl shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
+                Register Your Hotel Now <i class="fa-solid fa-arrow-right ml-2"></i>
             </button>
-            <a href="#plans" class="btn btn-outline btn-lg" style="padding: 14px 28px; border-color: rgba(255,255,255,0.15); color: white;">
+            <a href="#plans" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs shadow-sm transition-all">
                 View Plans & Pricing
             </a>
         </div>
-        
-        <!-- Premium TV Mockup -->
-        <div class="tv-mockup">
-            <div style="width: 100%; height: 100%; padding: 24px; box-sizing: border-box; background: linear-gradient(135deg, #0e1227 0%, #1e1233 100%); display: flex; flex-direction: column; justify-content: space-between; text-align: left; color: white; position: relative;">
-                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-hotel" style="color: #a78bfa;"></i>
-                        <span style="font-weight: 700; font-size: 14px; letter-spacing: -0.5px;">Grand Palace & Spa</span>
-                    </div>
-                    <div style="font-size: 11px; opacity: 0.8; font-weight: 600; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 12px;">Welcome, Room 204!</div>
-                </div>
-                
-                <div style="text-align: center; margin: 20px 0;">
-                    <i class="fa-regular fa-circle-play" style="font-size: 48px; color: #818cf8; cursor: pointer; display: inline-block; margin-bottom: 10px; text-shadow: 0 0 20px rgba(99,102,241,0.5);"></i>
-                    <h4 style="font-size: 18px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 2px;">Press Play to Start Streaming</h4>
-                    <p style="font-size: 12px; opacity: 0.5;">Access 100+ live HD channels & hotel services</p>
-                </div>
-                
-                <div style="display: flex; gap: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
-                    <div style="padding: 8px; border-radius: 8px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.2); font-size: 11px; font-weight: 600; flex: 1; text-align: center; color: #a5b4fc;"><i class="fa-solid fa-tv" style="margin-right: 6px;"></i>Live TV</div>
-                    <div style="padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 11px; font-weight: 600; flex: 1; text-align: center; opacity: 0.8;"><i class="fa-solid fa-utensils" style="margin-right: 6px;"></i>Room Service</div>
-                    <div style="padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); font-size: 11px; font-weight: 600; flex: 1; text-align: center; opacity: 0.8;"><i class="fa-solid fa-bell" style="margin-right: 6px;"></i>Concierge</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="highlights">
-            <div class="highlight-item">
-                <h3>100%</h3>
-                <p>Cloud Managed</p>
-            </div>
-            <div class="highlight-item">
-                <h3>10k+</h3>
-                <p>Active Screens</p>
-            </div>
-            <div class="highlight-item">
-                <h3>24/7</h3>
-                <p>Priority Support</p>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Pricing Plans Section -->
-<section id="plans" class="plans-section anim-slide-up">
-    <h2 class="section-title">Flexible Pricing For Any Scale</h2>
-    <p class="section-desc">
-        Choose a plan designed for your hotel's room count. Every registration grants an instant 16-digit license key to authorize and link your guest rooms.
-    </p>
-    
-    <div class="pricing-grid">
-        @foreach($plans as $plan)
-            <div class="price-card {{ $plan->room_count === 50 ? 'popular' : '' }}">
-                <div>
-                    <h3 class="plan-name">{{ $plan->name }}</h3>
-                    <span class="plan-rooms">Up to {{ $plan->room_count }} Rooms</span>
-                    <div class="plan-price">₹{{ number_format($plan->price, 0) }}<span>/month</span></div>
-                    <ul class="plan-features">
-                        <li><i class="fa-solid fa-circle-check"></i> <span>Authorize up to {{ $plan->room_count }} TVs</span></li>
-                        <li><i class="fa-solid fa-circle-check"></i> <span>Instant License Code</span></li>
-                        <li><i class="fa-solid fa-circle-check"></i> <span>Custom Guest Welcome Text</span></li>
-                        @if($plan->room_count >= 50)
-                            <li><i class="fa-solid fa-circle-check"></i> <span>Priority Dashboard Analytics</span></li>
-                        @endif
-                        @if($plan->room_count >= 100)
-                            <li><i class="fa-solid fa-circle-check"></i> <span>Dedicated API & Support</span></li>
-                        @endif
-                    </ul>
+        <!-- TV Mockup Card -->
+        <div class="mt-12 max-w-3xl mx-auto bg-slate-950 p-3 sm:p-4 rounded-3xl border-8 sm:border-12 border-slate-800 shadow-2xl shadow-slate-300 aspect-video relative overflow-hidden text-left text-white">
+            <div class="h-full bg-gradient-to-br from-slate-900 to-indigo-950 p-6 rounded-2xl flex flex-col justify-between border border-white/10">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div class="flex items-center space-x-2">
+                        <i class="fa-solid fa-hotel text-indigo-400"></i>
+                        <span class="font-extrabold text-xs sm:text-sm">Grand Palace & Spa</span>
+                    </div>
+                    <span class="text-[10px] font-bold bg-white/10 px-3 py-1 rounded-full">Welcome, Room 204!</span>
                 </div>
-                <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="btn {{ $plan->room_count === 50 ? 'btn-primary' : 'btn-outline' }}" style="width: 100%; margin-top: 15px; {{ $plan->room_count !== 50 ? 'color: white; border-color: rgba(255,255,255,0.15);' : '' }}">
-                    Select {{ $plan->name }}
-                </button>
-            </div>
-        @endforeach
-    </div>
-</section>
 
-<!-- Registration Modal -->
-<div id="registerModal" class="modal-overlay">
-    <div class="modal-container">
-        <div class="modal-header">
-            <h3>Hotel Registration</h3>
-            <button onclick="closeRegisterModal()" class="modal-close">&times;</button>
-        </div>
-        <form id="registerForm" enctype="multipart/form-data">
-            @csrf
-            <div class="modal-body">
-                <div id="registerError" class="alert alert-danger" style="display: none;"></div>
-                
-                <h4 style="margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; color: var(--primary);">Personal Details</h4>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Owner Name</label>
-                        <input type="text" name="owner_name" required class="form-control" placeholder="e.g. John Doe">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Phone Number</label>
-                        <input type="text" name="phone" required class="form-control" placeholder="e.g. 9876543210">
-                    </div>
+                <div class="text-center space-y-2 my-auto">
+                    <i class="fa-regular fa-circle-play text-4xl sm:text-5xl text-indigo-400 cursor-pointer hover:scale-110 transition-transform"></i>
+                    <h4 class="text-base sm:text-lg font-extrabold tracking-tight">Press Play to Start Streaming</h4>
+                    <p class="text-[11px] text-slate-400">Access 100+ live HD channels & hotel services</p>
                 </div>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" name="email" required class="form-control" placeholder="username@example.com">
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Password</label>
-                        <div class="password-wrapper">
-                            <input type="password" name="password" required class="form-control" placeholder="Min 6 characters">
-                            <i class="fa-regular fa-eye toggle-password"></i>
+
+                <div class="grid grid-cols-3 gap-2 border-t border-white/10 pt-3">
+                    <div class="p-2 rounded-xl bg-indigo-500/20 border border-indigo-500/30 text-indigo-300 font-bold text-[10px] sm:text-xs text-center"><i class="fa-solid fa-tv mr-1.5"></i>Live TV</div>
+                    <div class="p-2 rounded-xl bg-white/5 border border-white/10 font-semibold text-[10px] sm:text-xs text-center text-slate-300"><i class="fa-solid fa-utensils mr-1.5"></i>Room Service</div>
+                    <div class="p-2 rounded-xl bg-white/5 border border-white/10 font-semibold text-[10px] sm:text-xs text-center text-slate-300"><i class="fa-solid fa-bell mr-1.5"></i>Concierge</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Highlights Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-6">
+            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-sm space-y-1">
+                <h3 class="text-3xl font-extrabold text-indigo-600">100%</h3>
+                <p class="text-xs font-bold text-slate-500">Cloud Managed</p>
+            </div>
+            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-sm space-y-1">
+                <h3 class="text-3xl font-extrabold text-indigo-600">10k+</h3>
+                <p class="text-xs font-bold text-slate-500">Active Screens</p>
+            </div>
+            <div class="p-6 bg-white border border-slate-200/80 rounded-3xl shadow-sm space-y-1">
+                <h3 class="text-3xl font-extrabold text-indigo-600">24/7</h3>
+                <p class="text-xs font-bold text-slate-500">Priority Support</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="plans" class="py-20 px-6 md:px-12 bg-white border-t border-slate-200/80">
+        <div class="max-w-6xl mx-auto space-y-12 text-center">
+            <div class="space-y-3 max-w-2xl mx-auto">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">Flexible Pricing For Any Scale</h2>
+                <p class="text-xs sm:text-sm font-medium text-slate-500">
+                    Choose a plan designed for your hotel's room count. Every registration grants an instant 16-digit license key to authorize and link your guest rooms.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                @foreach($plans as $plan)
+                    <div class="bg-white border border-slate-200/80 rounded-3xl p-8 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col justify-between space-y-6 text-left relative {{ $plan->room_count === 50 ? 'border-2 border-indigo-600 shadow-indigo-600/10' : '' }}">
+                        @if($plan->room_count === 50)
+                            <span class="absolute top-4 right-4 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 font-extrabold text-[10px] uppercase">Most Suggested</span>
+                        @endif
+
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-slate-900">{{ $plan->name }}</h3>
+                                <span class="inline-block mt-1 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 font-extrabold text-[10px] uppercase">
+                                    Up to {{ $plan->room_count }} Rooms
+                                </span>
+                            </div>
+
+                            <div class="text-3xl font-extrabold text-slate-900">
+                                ₹{{ number_format($plan->price, 0) }}<span class="text-xs text-slate-400 font-normal">/month</span>
+                            </div>
+
+                            <ul class="space-y-2.5 text-xs text-slate-600 font-semibold">
+                                <li class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                    <span>Authorize up to {{ $plan->room_count }} TVs</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                    <span>Instant License Code</span>
+                                </li>
+                                <li class="flex items-center space-x-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                    <span>Custom Guest Welcome Text</span>
+                                </li>
+                                @if($plan->room_count >= 50)
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                        <span>Priority Dashboard Analytics</span>
+                                    </li>
+                                @endif
+                                @if($plan->room_count >= 100)
+                                    <li class="flex items-center space-x-2">
+                                        <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                        <span>Dedicated API & Support</span>
+                                    </li>
+                                @endif
+                            </ul>
                         </div>
+
+                        <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" class="w-full py-3 px-4 rounded-xl font-bold text-xs transition-all {{ $plan->room_count === 50 ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-md shadow-indigo-600/30' : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200' }}">
+                            Select {{ $plan->name }}
+                        </button>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-10 px-6 md:px-12 bg-white border-t border-slate-200/80">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/20">
+                    <i class="fa-solid fa-tv"></i>
+                </div>
+                <span class="text-slate-900 font-extrabold text-base">HotelTV Connect</span>
+            </div>
+
+            <p class="font-semibold text-center">© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
+
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('hotel.login') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold">
+                    Hotel Login
+                </a>
+                <a href="{{ route('super-admin.login') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold">
+                    Super Admin
+                </a>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<!-- Registration Modal Overlay -->
+<div id="registerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-xl p-6 sm:p-8 space-y-6 shadow-2xl my-8">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <h3 class="text-lg font-extrabold text-slate-900">Hotel Registration</h3>
+            <button onclick="closeRegisterModal()" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+        </div>
+
+        <form id="registerForm" enctype="multipart/form-data" class="space-y-6">
+            @csrf
+            <div id="registerError" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold"></div>
+
+            <!-- Owner Section -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-extrabold text-indigo-600 uppercase tracking-wider border-b border-slate-100 pb-2">Personal Details</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Owner Name</label>
+                        <input type="text" name="owner_name" required placeholder="e.g. John Doe" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Phone Number</label>
+                        <input type="text" name="phone" required placeholder="e.g. 9876543210" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Email Address</label>
+                        <input type="email" name="email" required placeholder="username@example.com" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Password</label>
+                        <input type="password" name="password" required placeholder="Min 6 characters" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotel Section -->
+            <div class="space-y-3">
+                <h4 class="text-xs font-extrabold text-indigo-600 uppercase tracking-wider border-b border-slate-100 pb-2">Hotel Details</h4>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Hotel Name</label>
+                        <input type="text" name="hotel_name" required placeholder="e.g. Grand Resort" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Location / City</label>
+                        <input type="text" name="hotel_location" required placeholder="e.g. Mumbai, India" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
                     </div>
                 </div>
 
-                <h4 style="margin: 20px 0 16px 0; border-bottom: 1px solid var(--border-color); padding-bottom: 6px; color: var(--primary);">Hotel Details</h4>
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Hotel Name</label>
-                        <input type="text" name="hotel_name" required class="form-control" placeholder="e.g. Grand Resort">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Hotel Logo</label>
+                        <input type="file" name="hotel_logo" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Location / City</label>
-                        <input type="text" name="hotel_location" required class="form-control" placeholder="e.g. Mumbai, India">
+                    <div class="space-y-1">
+                        <label class="text-xs font-bold text-slate-700">Hotel Cover Image</label>
+                        <input type="file" name="hotel_image" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white">
                     </div>
                 </div>
 
-                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Hotel Logo</label>
-                        <input type="file" name="hotel_logo" class="form-control" accept="image/*" required>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label class="form-label">Hotel Cover Image</label>
-                        <input type="file" name="hotel_image" class="form-control" accept="image/*" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label class="form-label">Total Room Count</label>
-                    <input type="number" name="room_count" id="roomCountInput" min="1" required class="form-control" placeholder="e.g. 50">
+                <div class="space-y-1">
+                    <label class="text-xs font-bold text-slate-700">Total Room Count</label>
+                    <input type="number" name="room_count" id="roomCountInput" min="1" required placeholder="e.g. 50" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-indigo-500">
                     
-                    <!-- Suggested Plan Box -->
-                    <div id="suggestedPlanBox" class="suggested-box">
-                        <div class="suggested-box-title">Suggested Subscription Plan</div>
-                        <div class="suggested-plan-info">
+                    <div id="suggestedPlanBox" class="hidden p-4 rounded-2xl bg-indigo-50 border border-indigo-200 space-y-1 mt-2">
+                        <span class="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider block">Suggested Subscription Plan</span>
+                        <div class="flex items-center justify-between text-xs font-bold text-slate-900">
                             <span id="suggestedPlanName">-</span>
-                            <span id="suggestedPlanPrice" style="color: var(--primary); font-weight: 700;">-</span>
+                            <span id="suggestedPlanPrice" class="text-indigo-600 font-extrabold">-</span>
                         </div>
                         <input type="hidden" name="plan_id" id="suggestedPlanId">
                     </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" onclick="closeRegisterModal()" class="btn btn-outline">Cancel</button>
-                <button type="submit" class="btn btn-primary">Pay & Complete Registration</button>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-3">
+                <button type="button" onclick="closeRegisterModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30">Pay & Complete Registration</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Simulated Sandbox Payment Modal Overlay -->
-<div id="paymentLoader" class="payment-loader">
-    <div class="spinner"></div>
-    <h3 id="loaderTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 8px;">Processing Order Request</h3>
-    <p id="loaderMessage" style="color: var(--text-light); font-size: 15px;">Talking to payment gateway. Please do not close this window...</p>
+<div id="paymentLoader" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center text-white">
+    <div class="w-12 h-12 border-4 border-white/20 border-t-indigo-400 rounded-full animate-spin mb-4"></div>
+    <h3 id="loaderTitle" class="text-xl font-extrabold">Processing Order Request</h3>
+    <p id="loaderMessage" class="text-xs text-slate-400 font-medium mt-1">Talking to payment gateway. Please do not close this window...</p>
 </div>
 @endsection
 
 @section('scripts')
-<!-- Razorpay Checkout library -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     const registerModal = document.getElementById('registerModal');
@@ -715,11 +346,9 @@
     const suggestedPlanPrice = document.getElementById('suggestedPlanPrice');
     const suggestedPlanId = document.getElementById('suggestedPlanId');
     const paymentLoader = document.getElementById('paymentLoader');
-    const loaderTitle = document.getElementById('loaderTitle');
-    const loaderMessage = document.getElementById('loaderMessage');
 
     function openRegisterModal() {
-        registerModal.classList.add('active');
+        registerModal.classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
@@ -730,13 +359,12 @@
     }
 
     function closeRegisterModal() {
-        registerModal.classList.remove('active');
+        registerModal.classList.add('hidden');
         document.body.style.overflow = 'auto';
         document.getElementById('registerForm').reset();
-        suggestedPlanBox.style.display = 'none';
+        suggestedPlanBox.classList.add('hidden');
     }
 
-    // Auto-suggest Plan using AJAX on typing room count
     let debounceTimer;
     roomCountInput.addEventListener('input', function() {
         clearTimeout(debounceTimer);
@@ -744,7 +372,7 @@
         if (rooms > 0) {
             debounceTimer = setTimeout(() => fetchSuggestedPlan(rooms), 300);
         } else {
-            suggestedPlanBox.style.display = 'none';
+            suggestedPlanBox.classList.add('hidden');
         }
     });
 
@@ -763,132 +391,10 @@
                 suggestedPlanName.textContent = data.plan.name + ` (Max ${data.plan.room_count} rooms)`;
                 suggestedPlanPrice.textContent = '₹' + parseFloat(data.plan.price).toLocaleString('en-IN') + '/mo';
                 suggestedPlanId.value = data.plan.id;
-                suggestedPlanBox.style.display = 'block';
+                suggestedPlanBox.classList.remove('hidden');
             }
         })
         .catch(err => console.error('Plan Suggestion Error:', err));
-    }
-
-    // Handle Form Submit (Payment & Registration)
-    document.getElementById('registerForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const form = this;
-        const formData = new FormData(form);
-        const errorDiv = document.getElementById('registerError');
-        const paymentLoader = document.getElementById('paymentLoader');
-        const loaderTitle = document.getElementById('loaderTitle');
-        const loaderMessage = document.getElementById('loaderMessage');
-
-        if (errorDiv) errorDiv.style.display = 'none';
-
-        // 1. Show processing loader
-        if (paymentLoader) paymentLoader.style.display = 'flex';
-        if (loaderTitle) loaderTitle.textContent = "Initializing Secure Checkout";
-        if (loaderMessage) loaderMessage.textContent = "Creating payment order details...";
-
-        // 2. Request Razorpay Order details from backend
-        fetch("{{ route('register.create-order') }}", {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(orderData => {
-            if (!orderData.success) {
-                throw new Error(orderData.message || 'Failed to create payment order');
-            }
-
-            formData.append('razorpay_order_id', orderData.order_id);
-
-            // 3. Handle Sandbox Mock payment vs Real payment
-            if (orderData.is_mock) {
-                // Mock flow
-                if (loaderTitle) loaderTitle.textContent = "Mock Payment Gateway Sandbox";
-                if (loaderMessage) loaderMessage.textContent = "Simulating successful transaction for ₹" + (orderData.amount / 100) + "...";
-                
-                setTimeout(() => {
-                    if (loaderTitle) loaderTitle.textContent = "Verifying Transaction";
-                    if (loaderMessage) loaderMessage.textContent = "Completing registration details...";
-                    
-                    submitRegistration(formData);
-                }, 1800);
-            } else {
-                // Real Razorpay checkout flow
-                if (paymentLoader) paymentLoader.style.display = 'none';
-                
-                const options = {
-                    "key": orderData.key_id,
-                    "amount": orderData.amount,
-                    "currency": "INR",
-                    "name": "HotelTV Connect",
-                    "description": "Subscription for " + orderData.plan_name,
-                    "order_id": orderData.order_id,
-                    "handler": function (response) {
-                        // Payment success callback from Razorpay
-                        if (paymentLoader) paymentLoader.style.display = 'flex';
-                        if (loaderTitle) loaderTitle.textContent = "Confirming Payment";
-                        if (loaderMessage) loaderMessage.textContent = "Securing TV license key generation...";
-
-                        formData.append('razorpay_payment_id', response.razorpay_payment_id);
-                        formData.append('razorpay_signature', response.razorpay_signature);
-                        submitRegistration(formData);
-                    },
-                    "theme": {
-                        "color": "#6366f1"
-                    },
-                    "modal": {
-                        "ondismiss": function() {
-                            alert("Payment cancelled. Registration could not be completed.");
-                        }
-                    }
-                };
-                
-                const rzp = new Razorpay(options);
-                rzp.open();
-            }
-        })
-        .catch(err => {
-            if (paymentLoader) paymentLoader.style.display = 'none';
-            if (errorDiv) {
-                errorDiv.textContent = err.message || 'An error occurred during order creation.';
-                errorDiv.style.display = 'block';
-            }
-        });
-    });
-
-    function submitRegistration(formData) {
-        const errorDiv = document.getElementById('registerError');
-        const paymentLoader = document.getElementById('paymentLoader');
-
-        fetch("{{ route('register.complete') }}", {
-            method: 'POST',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: formData
-        })
-        .then(res => res.json())
-        .then(completion => {
-            if (paymentLoader) paymentLoader.style.display = 'none';
-            if (completion.success && completion.redirect) {
-                window.location.href = completion.redirect;
-            } else {
-                if (errorDiv) {
-                    errorDiv.textContent = completion.message || 'Registration failed.';
-                    errorDiv.style.display = 'block';
-                }
-            }
-        })
-        .catch(err => {
-            if (paymentLoader) paymentLoader.style.display = 'none';
-            if (errorDiv) {
-                errorDiv.textContent = 'Server registration validation error: ' + err.message;
-                errorDiv.style.display = 'block';
-            }
-        });
     }
 </script>
 @endsection
