@@ -87,6 +87,14 @@ class TvLoginResource extends JsonResource
             ];
         }
 
+        // Format hotel gallery images asset URLs
+        $galleryImages = [];
+        if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
+            foreach ($hotel->hotel_gallery_images as $path) {
+                $galleryImages[] = asset($path);
+            }
+        }
+
         return [
             'status' => true,
             'message' => $message,
@@ -117,9 +125,12 @@ class TvLoginResource extends JsonResource
                     'owner_name' => $hotel->owner_name,
                     'email' => $hotel->email,
                     'phone' => $hotel->phone,
+                    'emergency_contacts' => $hotel->emergency_contacts ?? (object) [],
+                    'hotel_amenities' => $hotel->hotel_amenities ?? [],
                     'media' => [
                         'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
                         'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
+                        'hotel_images' => $galleryImages,
                         'slider_images' => $sliders,
                     ],
                     'active_plan' => [

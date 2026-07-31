@@ -69,16 +69,38 @@ class ProfileController extends Controller
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
+            'reception_contact' => 'nullable|string|max:255',
+            'dining_contact' => 'nullable|string|max:255',
+            'medical_contact' => 'nullable|string|max:255',
+            'emergency_email' => 'nullable|email|max:255',
+            'hotel_amenities' => 'nullable|array',
+            'hotel_amenities.*' => 'nullable|string|max:255',
             'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'slider_images' => 'nullable|array|max:10',
             'slider_images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
+            'hotel_gallery_images' => 'nullable|array|max:20',
+            'hotel_gallery_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:4096',
         ]);
+
+        $emergencyContacts = [
+            'reception' => $request->input('reception_contact') ?? ('Ext. 0 / ' . $hotelAdmin->phone),
+            'dining' => $request->input('dining_contact') ?? 'Ext. 102 (24x7 Available)',
+            'medical_sos' => $request->input('medical_contact') ?? 'Ext. 999 (Emergency Desk)',
+            'email' => $request->input('emergency_email') ?? $hotelAdmin->email,
+        ];
+
+        // Filter empty amenity items if any
+        $amenities = array_values(array_filter($request->input('hotel_amenities', []), function($item) {
+            return !empty(trim($item));
+        }));
 
         $data = [
             'hotel_name' => $request->hotel_name,
             'hotel_location' => $request->hotel_location,
             'description' => $request->description,
+            'emergency_contacts' => $emergencyContacts,
+            'hotel_amenities' => $amenities,
         ];
 
         // Handle logo replacement
@@ -125,6 +147,23 @@ class ProfileController extends Controller
             $data['slider_images'] = $existingSliders;
         }
 
+        // Handle hotel gallery images upload
+        if ($request->hasFile('hotel_gallery_images')) {
+            $existingGallery = $hotelAdmin->hotel_gallery_images ?? [];
+            
+            if (count($existingGallery) + count($request->file('hotel_gallery_images')) > 20) {
+                return back()->withErrors(['hotel_gallery_images' => 'Maximum limit of 20 hotel gallery images reached.'])->withInput();
+            }
+
+            foreach ($request->file('hotel_gallery_images') as $file) {
+                $fileName = time() . '_gallery_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
+                $file->move(public_path('uploads/hotel_gallery'), $fileName);
+                $existingGallery[] = 'uploads/hotel_gallery/' . $fileName;
+            }
+            
+            $data['hotel_gallery_images'] = $existingGallery;
+        }
+
         $hotelAdmin->update($data);
 
         return back()->with('success', 'Hotel information updated successfully!');
@@ -168,5 +207,43 @@ class ProfileController extends Controller
         }
 
         return back()->with('error', 'Slider image not found.');
+    }
+
+    /**
+     * Delete an individual gallery image
+     */
+    public function deleteGalleryImage(Request $request)
+    {
+        $hotelAdmin = Auth::guard('hotel_admin')->user();
+        
+        $request->validate([
+            'image_path' => 'required|string',
+        ]);
+
+        $imagePath = $request->image_path;
+        $gallery = $hotelAdmin->hotel_gallery_images ?? [];
+
+        if (($key = array_search($imagePath, $gallery)) !== false) {
+            if (file_exists(public_path($imagePath))) {
+                @unlink(public_path($imagePath));
+            }
+
+            unset($gallery[$key]);
+            $gallery = array_values($gallery);
+
+            $hotelAdmin->update(['hotel_gallery_images' => $gallery]);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => true]);
+            }
+
+            return back()->with('success', 'Hotel gallery image removed successfully.');
+        }
+
+        if ($request->ajax()) {
+            return response()->json(['success' => false, 'message' => 'Image not found.'], 404);
+        }
+
+        return back()->with('error', 'Gallery image not found.');
     }
 }
