@@ -1,149 +1,98 @@
 @extends('layouts.super_admin')
 
 @section('title', 'Connected Devices - Super Admin')
-@section('page_title', 'Connected Devices (TVs)')
-
-@section('styles')
-<style>
-    .filter-card {
-        background-color: var(--bg-card);
-        border: 1px solid var(--border-color);
-        border-radius: var(--radius-lg);
-        padding: 20px;
-        margin-bottom: 24px;
-        box-shadow: var(--shadow-sm);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 16px;
-    }
-
-    .filter-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .filter-select {
-        padding: 8px 16px;
-        font-size: 14px;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border-color);
-        background-color: white;
-        outline: none;
-        min-width: 250px;
-    }
-</style>
-@endsection
+@section('page_title', 'Connected TVs Network')
 
 @section('content')
-<div class="filter-card">
-    <div class="filter-group">
-        <label for="hotelFilter" style="font-weight: 600; color: var(--text-main);">Filter by Hotel:</label>
-        <select id="hotelFilter" class="filter-select" onchange="filterByHotel(this.value)">
-            <option value="">All Hotels</option>
-            @foreach($hotels as $hotel)
-                <option value="{{ $hotel->id }}" {{ isset($selectedHotel) && $selectedHotel->id == $hotel->id ? 'selected' : '' }}>
-                    {{ $hotel->hotel_name }} ({{ $hotel->room_count }} Rooms)
-                </option>
-            @endforeach
-        </select>
+<div class="space-y-6">
+    <!-- Filter Card -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center space-x-3 w-full sm:w-auto">
+            <label for="hotelFilter" class="text-xs font-bold text-slate-700 shrink-0">Filter by Hotel:</label>
+            <select id="hotelFilter" onchange="filterByHotel(this.value)" class="px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-800 focus:outline-none focus:border-rose-500 w-full sm:w-72">
+                <option value="">All Hotels</option>
+                @foreach($hotels as $hotel)
+                    <option value="{{ $hotel->id }}" {{ isset($selectedHotel) && $selectedHotel->id == $hotel->id ? 'selected' : '' }}>
+                        {{ $hotel->hotel_name }} ({{ $hotel->room_count }} Rooms)
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        @if(isset($selectedHotel))
+            <div class="text-xs font-semibold text-slate-600">
+                Active limit: <strong class="text-slate-900 font-extrabold">{{ $devices->total() }} / {{ $selectedHotel->allowed_device_limit }}</strong> TVs connected
+            </div>
+        @endif
     </div>
 
-    @if(isset($selectedHotel))
-        <div style="font-size: 14px; font-weight: 500; color: var(--text-muted);">
-            Active limit: <strong style="color: var(--bg-dark);">{{ $devices->total() }} / {{ $selectedHotel->allowed_device_limit }}</strong> devices connected.
+    <!-- Table -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="px-6 py-4">#</th>
+                        <th class="px-6 py-4">Hotel Client</th>
+                        <th class="px-6 py-4">Room No</th>
+                        <th class="px-6 py-4">License Key</th>
+                        <th class="px-6 py-4">Device ID</th>
+                        <th class="px-6 py-4">MAC Address</th>
+                        <th class="px-6 py-4">Hardware Info</th>
+                        <th class="px-6 py-4">IP Address</th>
+                        <th class="px-6 py-4">Connection Date</th>
+                        <th class="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($devices as $index => $device)
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="px-6 py-4 font-bold text-slate-400">{{ $devices->firstItem() + $index }}</td>
+                            <td class="px-6 py-4 font-extrabold text-slate-900">{{ $device->hotelAdmin->hotel_name ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 font-bold text-indigo-600">Room {{ $device->room_no }}</td>
+                            <td class="px-6 py-4 font-mono">
+                                <span class="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[11px]">
+                                    {{ $device->hotelAdmin->license_key ?? 'N/A' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 font-mono font-medium text-slate-600">{{ $device->device_id }}</td>
+                            <td class="px-6 py-4 font-mono text-slate-500">{{ $device->mac_address ?? 'N/A' }}</td>
+                            <td class="px-6 py-4">
+                                @if($device->brand || $device->model)
+                                    <div class="font-bold text-slate-800 capitalize">{{ $device->brand }} {{ $device->model }}</div>
+                                    @if($device->os_version)<span class="text-[10px] text-slate-400 font-medium">Android {{ $device->os_version }}</span>@endif
+                                @else
+                                    <span class="text-slate-400 italic">Generic TV</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4 font-mono text-slate-500">{{ $device->ip_address ?? 'N/A' }}</td>
+                            <td class="px-6 py-4 text-slate-500 font-medium">{{ $device->created_at->format('d M, Y H:i') }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <form action="{{ route('super-admin.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Disconnect this device?');" class="inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-[11px] transition-colors">
+                                        <i class="fa-solid fa-power-off mr-1"></i> Disconnect
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" class="px-6 py-12 text-center text-slate-400 font-medium">
+                                <i class="fa-solid fa-tv text-3xl block mb-2 text-slate-300"></i>
+                                No connected TV screens found.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
-    @endif
-</div>
+    </div>
 
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Sr Number</th>
-                <th>Hotel Name</th>
-                <th>Room No</th>
-                <th>License Key</th>
-                <th>Device ID</th>
-                <th>MAC Address</th>
-                <th>Hardware Info</th>
-                <th>IP Address</th>
-                <th>Connection Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($devices as $index => $device)
-                <tr>
-                    <td>{{ $devices->firstItem() + $index }}</td>
-                    <td>
-                        <span style="font-weight: 600; color: var(--bg-dark);">
-                            {{ $device->hotelAdmin->hotel_name ?? 'N/A' }}
-                        </span>
-                    </td>
-                    <td>
-                        <span style="font-weight: 600; color: var(--primary);">
-                            {{ $device->room_no }}
-                        </span>
-                    </td>
-                    <td>
-                        <code style="background-color: var(--primary-light); color: var(--primary-hover); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 13px;">
-                            {{ $device->hotelAdmin->license_key ?? 'N/A' }}
-                        </code>
-                    </td>
-                    <td>
-                        <span style="font-family: monospace; font-size: 13px; color: var(--text-main);">
-                            {{ $device->device_id }}
-                        </span>
-                    </td>
-                    <td>
-                        <span style="font-family: monospace; font-size: 13px;">
-                            {{ $device->mac_address ?? 'N/A' }}
-                        </span>
-                    </td>
-                    <td>
-                        @if($device->brand || $device->model)
-                            <div style="font-size: 13px; font-weight: 500; color: var(--bg-dark);">
-                                {{ ucfirst($device->brand) }} {{ $device->model }}
-                            </div>
-                            @if($device->os_version)
-                                <small style="color: var(--text-muted);">OS: {{ $device->os_version }}</small>
-                            @endif
-                        @else
-                            <span style="color: var(--text-light); font-style: italic;">N/A</span>
-                        @endif
-                    </td>
-                    <td>
-                        <span style="font-family: monospace; font-size: 13px;">
-                            {{ $device->ip_address ?? 'N/A' }}
-                        </span>
-                    </td>
-                    <td>{{ $device->created_at->format('d M, Y H:i') }}</td>
-                    <td>
-                        <form action="{{ route('super-admin.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to disconnect this device?');" style="display: inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-outline btn-sm btn-danger-hover" title="Disconnect device" style="padding: 6px 10px; color: var(--danger); border-color: rgba(239, 68, 68, 0.2);">
-                                <i class="fa-solid fa-power-off"></i> Disconnect
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
-                        No connected devices found.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-<div style="margin-top: 20px;">
-    {{ $devices->appends(request()->query())->links('pagination::bootstrap-4') }}
+    <div class="pt-2">
+        {{ $devices->appends(request()->query())->links() }}
+    </div>
 </div>
 
 <script>

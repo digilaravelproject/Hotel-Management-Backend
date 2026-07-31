@@ -1,239 +1,143 @@
 @extends('layouts.super_admin')
 
 @section('title', 'Manage Hotels - Super Admin')
-@section('page_title', 'Hotel Vendor Management')
-
-@section('styles')
-<style>
-    .action-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-    }
-    
-    .approval-select {
-        padding: 6px 12px;
-        font-size: 13px;
-        font-weight: 600;
-        border-radius: var(--radius-sm);
-        border: 1px solid var(--border-color);
-        background-color: white;
-        cursor: pointer;
-        outline: none;
-    }
-    
-    .approval-select.pending { color: var(--warning-dark); background-color: var(--warning-light); border-color: var(--warning); }
-    .approval-select.approved { color: var(--success-dark); background-color: var(--success-light); border-color: var(--success); }
-    .approval-select.disapproved { color: var(--danger-dark); background-color: var(--danger-light); border-color: var(--danger); }
-    
-    /* Live toast styling */
-    .toast-notification {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        background-color: var(--bg-dark);
-        color: white;
-        padding: 14px 24px;
-        border-radius: var(--radius-md);
-        box-shadow: var(--shadow-lg);
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        z-index: 1000;
-        transform: translateY(100px);
-        opacity: 0;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-    
-    .toast-notification.show {
-        transform: translateY(0);
-        opacity: 1;
-    }
-</style>
-@endsection
+@section('page_title', 'Hotel Vendors Directory')
 
 @section('content')
-<div class="action-header">
-    <div>
-        <p style="color: var(--text-muted); font-size: 14px;">View, edit, approve, and toggle status of all registered hotel vendors.</p>
+<div class="space-y-6">
+    <!-- Header Actions -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <p class="text-xs text-slate-500 font-medium">View, edit credentials, approve accounts, and toggle active status of hotel clients.</p>
+        </div>
+        <a href="{{ route('super-admin.hotels.create') }}" class="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Add New Hotel Vendor</span>
+        </a>
     </div>
-    <a href="{{ route('super-admin.hotels.create') }}" class="btn btn-primary">
-        <i class="fa-solid fa-plus"></i> Add New Hotel Vendor
-    </a>
-</div>
 
-<!-- Hotels List Table -->
-<div class="table-responsive">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Hotel Info</th>
-                <th>Owner Details</th>
-                <th>Rooms Limit</th>
-                <th>License Key</th>
-                <th>Payment</th>
-                <th>Status</th>
-                <th>Approval</th>
-                <th style="width: 170px;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($hotels as $hotel)
-                <tr id="hotel-row-{{ $hotel->id }}">
-                    <td>
-                        <div style="display: flex; gap: 12px; align-items: center;">
-                            <div style="width: 44px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; display: flex; align-items: center; justify-content: center;" title="Hotel Logo">
-                                @if($hotel->hotel_logo)
-                                    <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" style="width: 100%; height: 100%; object-fit: cover;">
-                                @else
-                                    <i class="fa-solid fa-hotel" style="color: var(--text-light); font-size: 16px;"></i>
+    <!-- Table Container -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="px-6 py-4">Hotel Client</th>
+                        <th class="px-6 py-4">Owner & Contact</th>
+                        <th class="px-6 py-4">Room Limit & Plan</th>
+                        <th class="px-6 py-4">License Key</th>
+                        <th class="px-6 py-4">Payment</th>
+                        <th class="px-6 py-4">Status</th>
+                        <th class="px-6 py-4">Approval</th>
+                        <th class="px-6 py-4 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($hotels as $hotel)
+                        <tr id="hotel-row-{{ $hotel->id }}" class="hover:bg-slate-50/80 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                                        @if($hotel->hotel_logo)
+                                            <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-cover">
+                                        @else
+                                            <i class="fa-solid fa-hotel text-slate-400 text-sm"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <h4 class="font-extrabold text-slate-900 text-sm">{{ $hotel->hotel_name }}</h4>
+                                        <span class="text-[11px] text-slate-400 font-medium"><i class="fa-solid fa-location-dot mr-1 text-slate-400"></i>{{ $hotel->hotel_location }}</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 space-y-0.5">
+                                <div class="font-bold text-slate-800">{{ $hotel->owner_name }}</div>
+                                <div class="text-[11px] text-slate-500 font-mono">{{ $hotel->email }}</div>
+                                <div class="text-[11px] text-slate-400">{{ $hotel->phone }}</div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="font-extrabold text-slate-900">{{ $hotel->room_count }} Rooms</div>
+                                @if($hotel->plan)
+                                    <span class="inline-block text-[11px] font-bold text-rose-600">{{ $hotel->plan->name }}</span>
                                 @endif
-                            </div>
-                            <div style="width: 70px; height: 44px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); overflow: hidden; background-color: var(--bg-main); flex-shrink: 0; display: flex; align-items: center; justify-content: center;" title="Hotel Cover Image">
-                                @if($hotel->hotel_image)
-                                    <img src="{{ asset($hotel->hotel_image) }}" alt="Cover" style="width: 100%; height: 100%; object-fit: cover;">
+                            </td>
+                            <td class="px-6 py-4 font-mono">
+                                @if($hotel->license_key)
+                                    <span class="px-2.5 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-[11px]">
+                                        {{ $hotel->license_key }}
+                                    </span>
                                 @else
-                                    <i class="fa-regular fa-image" style="color: var(--text-light); font-size: 16px;"></i>
+                                    <span class="text-slate-400 italic">Not Generated</span>
                                 @endif
-                            </div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--bg-dark); font-size: 15px;">{{ $hotel->hotel_name }}</div>
-                                <small style="color: var(--text-muted);"><i class="fa-solid fa-location-dot" style="margin-right: 4px;"></i>{{ $hotel->hotel_location }}</small>
-                            </div>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: 500;">{{ $hotel->owner_name }}</div>
-                        <div style="font-size: 12px; color: var(--text-muted);">{{ $hotel->email }}</div>
-                        <div style="font-size: 12px; color: var(--text-muted);">{{ $hotel->phone }}</div>
-                    </td>
-                    <td>
-                        <span style="font-weight: 600; color: var(--bg-dark);">{{ $hotel->room_count }} Rooms</span>
-                        @if($hotel->plan)
-                            <div style="font-size: 12px; color: var(--primary); font-weight: 500;">{{ $hotel->plan->name }}</div>
-                        @endif
-                    </td>
-                    <td>
-                        @if($hotel->license_key)
-                            <code style="background-color: var(--primary-light); color: var(--primary-hover); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 13px;">{{ $hotel->license_key }}</code>
-                        @else
-                            <span style="color: var(--text-light); font-style: italic;">Not Generated</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($hotel->payment_status === 'paid')
-                            <span class="badge badge-success">Paid</span>
-                        @else
-                            <span class="badge badge-danger">Pending</span>
-                        @endif
-                    </td>
-                    <td>
-                        <!-- Status Toggle switch -->
-                        <label class="switch">
-                            <input type="checkbox" onchange="toggleStatus({{ $hotel->id }})" {{ $hotel->status ? 'checked' : '' }}>
-                            <span class="slider"></span>
-                        </label>
-                    </td>
-                    <td>
-                        <!-- Approval Dropdown -->
-                        <select onchange="updateApproval({{ $hotel->id }}, this.value)" class="approval-select {{ $hotel->approval_status }}">
-                            <option value="pending" {{ $hotel->approval_status == 'pending' ? 'selected' : '' }}>Pending</option>
-                            <option value="approved" {{ $hotel->approval_status == 'approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="disapproved" {{ $hotel->approval_status == 'disapproved' ? 'selected' : '' }}>Disapproved</option>
-                        </select>
-                    </td>
-                    <td>
-                        <div style="display: flex; gap: 8px;">
-                            <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="btn btn-outline btn-sm" title="Manage Aminities" style="padding: 8px 10px; color: var(--primary); border-color: rgba(99, 102, 241, 0.2);">
-                                <i class="fa-solid fa-spa"></i>
-                            </a>
-                            <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="btn btn-outline btn-sm" title="View Devices" style="padding: 8px 10px; color: #10b981; border-color: rgba(16, 185, 129, 0.2);">
-                                <i class="fa-solid fa-tv"></i>
-                            </a>
-                            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="btn btn-outline btn-sm" title="View details" style="padding: 8px 10px;">
-                                <i class="fa-regular fa-eye"></i>
-                            </a>
-                            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="btn btn-outline btn-sm" title="Edit credentials" style="padding: 8px 10px;">
-                                <i class="fa-regular fa-pen-to-square"></i>
-                            </a>
-                            <form action="{{ route('super-admin.hotels.destroy', $hotel->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this vendor? This action is permanent.');" style="display: inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline btn-sm btn-danger-hover" title="Delete account" style="padding: 8px 10px; color: var(--danger); border-color: rgba(239, 68, 68, 0.2);">
-                                    <i class="fa-regular fa-trash-can"></i>
-                                </button>
-                            </form>
-                        </div>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 50px 0;">
-                        <i class="fa-regular fa-folder-open" style="font-size: 40px; display: block; margin-bottom: 16px;"></i>
-                        No registered hotel admins found.
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
-</div>
-
-<!-- Dynamic toast container -->
-<div id="statusToast" class="toast-notification">
-    <i class="fa-regular fa-circle-check" style="color: var(--success); font-size: 20px;"></i>
-    <span id="toastMessage">Status updated successfully</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                @if($hotel->payment_status === 'paid')
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] uppercase">Paid</span>
+                                @else
+                                    <span class="px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px] uppercase">Pending</span>
+                                @endif
+                            </td>
+                            <td class="px-6 py-4">
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleStatus({{ $hotel->id }})" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
+                                </label>
+                            </td>
+                            <td class="px-6 py-4">
+                                <select onchange="updateApproval({{ $hotel->id }}, this.value)" class="px-3 py-1.5 rounded-xl border text-xs font-bold focus:outline-none transition-colors {{ $hotel->approval_status === 'approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-300' : ($hotel->approval_status === 'pending' ? 'bg-amber-50 text-amber-700 border-amber-300' : 'bg-rose-50 text-rose-700 border-rose-300') }}">
+                                    <option value="pending" {{ $hotel->approval_status == 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $hotel->approval_status == 'approved' ? 'selected' : '' }}>Approved</option>
+                                    <option value="disapproved" {{ $hotel->approval_status == 'disapproved' ? 'selected' : '' }}>Disapproved</option>
+                                </select>
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="p-2 rounded-lg border border-slate-200 text-indigo-600 hover:bg-indigo-50 transition-colors" title="Manage Amenities">
+                                        <i class="fa-solid fa-spa"></i>
+                                    </a>
+                                    <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="p-2 rounded-lg border border-slate-200 text-emerald-600 hover:bg-emerald-50 transition-colors" title="View TVs">
+                                        <i class="fa-solid fa-tv"></i>
+                                    </a>
+                                    <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors" title="View details">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </a>
+                                    <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="p-2 rounded-lg border border-slate-200 text-violet-600 hover:bg-violet-50 transition-colors" title="Edit credentials">
+                                        <i class="fa-regular fa-pen-to-square"></i>
+                                    </a>
+                                    <form action="{{ route('super-admin.hotels.destroy', $hotel->id) }}" method="POST" onsubmit="return confirm('Delete this vendor?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors" title="Delete account">
+                                            <i class="fa-regular fa-trash-can"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="px-6 py-12 text-center text-slate-400 font-medium">
+                                <i class="fa-solid fa-hotel text-3xl block mb-2 text-slate-300"></i>
+                                No registered hotel vendors found. Click 'Add New Hotel Vendor' to register one.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 @endsection
 
 @section('scripts')
 <script>
-    const toast = document.getElementById('statusToast');
-    const toastMsg = document.getElementById('toastMessage');
-
-    function showToast(message, isSuccess = true) {
-        toastMsg.textContent = message;
-        const icon = toast.querySelector('i');
-        if (isSuccess) {
-            icon.className = 'fa-regular fa-circle-check';
-            icon.style.color = 'var(--success)';
-        } else {
-            icon.className = 'fa-regular fa-circle-xmark';
-            icon.style.color = 'var(--danger)';
-        }
-        
-        toast.classList.add('show');
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    }
-
-    // Toggle Active Status AJAX
     function toggleStatus(id) {
         fetch(`/super-admin/hotels/${id}/toggle-status`, {
-            method: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                showToast(data.message);
-            } else {
-                showToast('Failed to update status', false);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('Server error while updating status', false);
+            headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
         });
     }
 
-    // Toggle Approval Status AJAX
     function updateApproval(id, status) {
-        const select = document.querySelector(`#hotel-row-${id} .approval-select`);
-        
         fetch(`/super-admin/hotels/${id}/toggle-approval`, {
             method: 'POST',
             headers: {
@@ -241,20 +145,6 @@
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
             },
             body: JSON.stringify({ approval_status: status })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                // Update select CSS class
-                select.className = `approval-select ${status}`;
-                showToast(data.message);
-            } else {
-                showToast('Failed to update approval status', false);
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            showToast('Server error while updating approval', false);
         });
     }
 </script>

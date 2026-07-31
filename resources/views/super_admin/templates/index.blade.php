@@ -1,83 +1,15 @@
 @extends('layouts.super_admin')
 
 @section('title', 'TV Templates Management - Super Admin')
-@section('page_title', 'TV Offline Templates')
+@section('page_title', 'TV App OTA Release Builds')
 
 @section('content')
-<style>
-    /* Premium Upload Progress Modal */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.6);
-        backdrop-filter: blur(4px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease-in-out;
-        pointer-events: none;
-    }
-    .modal-overlay.show {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;
-    }
-    .modal-card {
-        background: var(--bg-card, #ffffff);
-        border: 1px solid var(--border-color, #e2e8f0);
-        border-radius: var(--radius-lg, 12px);
-        padding: 28px;
-        width: 100%;
-        max-width: 480px;
-        box-shadow: var(--shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
-        transform: scale(0.9);
-        transition: transform 0.3s ease-in-out;
-    }
-    .modal-overlay.show .modal-card {
-        transform: scale(1);
-    }
-    .progress-bar-track {
-        width: 100%;
-        height: 10px;
-        background-color: var(--bg-main, #f1f5f9);
-        border-radius: 5px;
-        overflow: hidden;
-        margin: 16px 0;
-        position: relative;
-    }
-    .progress-bar-fill {
-        height: 100%;
-        width: 0%;
-        background: linear-gradient(90deg, var(--primary, #6366f1) 0%, #818cf8 100%);
-        border-radius: 5px;
-        transition: width 0.1s linear;
-    }
-    @keyframes progress-pulse {
-        0% { opacity: 1; box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
-        50% { opacity: 0.7; box-shadow: 0 0 15px rgba(99, 102, 241, 0.8); }
-        100% { opacity: 1; box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
-    }
-    .progress-bar-fill.pulse {
-        animation: progress-pulse 1.5s infinite ease-in-out;
-    }
-</style>
-
-<div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
-    
-    @if(session('success'))
-        <div class="alert alert-success">
-            <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
-        </div>
-    @endif
-
+<div class="max-w-4xl mx-auto space-y-6">
     <div id="js-alert-container"></div>
 
     @if($errors->any())
-        <div class="alert alert-danger">
-            <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
+            <ul class="list-disc pl-4 space-y-1">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -86,58 +18,67 @@
     @endif
 
     <!-- Upload Template Card -->
-    <div class="card" style="box-shadow: var(--shadow-sm); background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
-        <h3 style="font-size: 16px; font-weight: 700; color: var(--bg-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-cloud-arrow-up" style="color: var(--primary);"></i> Release New TV Template Update
-        </h3>
-        
-        <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-end;">
-            @csrf
-            <div class="form-group" style="flex: 1; min-width: 280px; margin-bottom: 0;">
-                <label class="form-label" style="font-weight: 500;">Select Template Package (.zip)</label>
-                <input type="file" id="templateFileField" name="template_file" required class="form-control" accept=".zip" style="padding: 10px 12px;">
-                <small style="color: var(--text-muted); display: block; margin-top: 6px;">The system will automatically calculate the next version number (+0.5 step).</small>
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="border-b border-slate-100 pb-4 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
+                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
             </div>
-            <button type="submit" id="submitBtn" class="btn btn-primary" style="height: 42px; display: flex; align-items: center; gap: 8px;">
-                <i class="fa-solid fa-upload"></i> Upload & Deploy
+            <div>
+                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Release New TV Template Update</h3>
+                <p class="text-xs text-slate-500 font-medium">Upload new ZIP build to deploy OTA updates to all connected TV screens.</p>
+            </div>
+        </div>
+        
+        <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4 sm:space-y-0 sm:flex sm:items-end sm:space-x-4">
+            @csrf
+            <div class="flex-1 space-y-1.5">
+                <label class="text-xs font-bold text-slate-700">Select Template Package (.zip)</label>
+                <input type="file" id="templateFileField" name="template_file" required accept=".zip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white">
+                <span class="text-[11px] text-slate-400 font-medium block">The system will automatically increment version number (+0.5).</span>
+            </div>
+            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center space-x-2 shrink-0">
+                <i class="fa-solid fa-upload"></i>
+                <span>Upload & Deploy</span>
             </button>
         </form>
     </div>
 
     <!-- Template History List -->
-    <div class="card" style="box-shadow: var(--shadow-sm); background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 24px;">
-        <h3 style="font-size: 16px; font-weight: 700; color: var(--bg-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
-            <i class="fa-solid fa-history" style="color: var(--primary);"></i> Template Version History
-        </h3>
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="border-b border-slate-100 pb-4 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                <i class="fa-solid fa-history text-lg"></i>
+            </div>
+            <div>
+                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Template Version History</h3>
+                <p class="text-xs text-slate-500 font-medium">Over-the-air deployment release log and active build status.</p>
+            </div>
+        </div>
 
         @if($templates->count() > 0)
-            <div class="table-responsive">
-                <table class="table" style="width: 100%; border-collapse: collapse; margin-top: 8px;">
-                    <thead>
-                        <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">Version</th>
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">File Location</th>
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">Uploaded At</th>
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted);">File Size</th>
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted); text-align: center;">Status</th>
-                            <th style="padding: 12px; font-weight: 600; color: var(--text-muted); text-align: right;">Action</th>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-700">
+                    <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                        <tr>
+                            <th class="px-6 py-4">Version</th>
+                            <th class="px-6 py-4">File Location</th>
+                            <th class="px-6 py-4">Uploaded At</th>
+                            <th class="px-6 py-4">File Size</th>
+                            <th class="px-6 py-4 text-center">Status</th>
+                            <th class="px-6 py-4 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="divide-y divide-slate-100">
                         @foreach($templates as $template)
-                            <tr style="border-bottom: 1px solid var(--border-color); transition: var(--transition);">
-                                <td style="padding: 12px; font-weight: 700; color: var(--primary);">
-                                    v{{ $template->version }}
-                                </td>
-                                <td style="padding: 12px; font-size: 13px; font-family: monospace; color: var(--text-main);">
-                                    <a href="{{ Storage::url($template->file_path) }}" target="_blank" style="text-decoration: underline; color: var(--secondary);">
+                            <tr class="hover:bg-slate-50/80 transition-colors">
+                                <td class="px-6 py-4 font-extrabold text-rose-600 text-sm">v{{ $template->version }}</td>
+                                <td class="px-6 py-4 font-mono">
+                                    <a href="{{ Storage::url($template->file_path) }}" target="_blank" class="text-indigo-600 hover:underline font-semibold">
                                         {{ basename($template->file_path) }}
                                     </a>
                                 </td>
-                                <td style="padding: 12px; font-size: 14px; color: var(--text-muted);">
-                                    {{ $template->created_at->format('d M Y, h:i A') }}
-                                </td>
-                                <td style="padding: 12px; font-size: 14px; color: var(--text-main); font-weight: 500;">
+                                <td class="px-6 py-4 text-slate-500 font-medium">{{ $template->created_at->format('d M Y, h:i A') }}</td>
+                                <td class="px-6 py-4 font-medium text-slate-800">
                                     @php
                                         $sizeBytes = 0;
                                         try {
@@ -157,22 +98,22 @@
                                     @endphp
                                     {{ $sizeDisplay }}
                                 </td>
-                                <td style="padding: 12px; text-align: center;">
+                                <td class="px-6 py-4 text-center">
                                     @if($template->is_active)
-                                        <span class="badge badge-success" style="background-color: var(--success-light); color: var(--success); padding: 4px 10px; border-radius: 20px; font-weight: 600; font-size: 12px;">Active</span>
+                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] uppercase">Active</span>
                                     @else
-                                        <span class="badge badge-secondary" style="background-color: var(--bg-main); color: var(--text-muted); padding: 4px 10px; border-radius: 20px; font-weight: 500; font-size: 12px;">Inactive</span>
+                                        <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase">Inactive</span>
                                     @endif
                                 </td>
-                                <td style="padding: 12px; text-align: right;">
-                                    <form action="{{ route('super-admin.templates.toggle-active', $template->id) }}" method="POST" style="margin: 0; display: inline-block;">
+                                <td class="px-6 py-4 text-right">
+                                    <form action="{{ route('super-admin.templates.toggle-active', $template->id) }}" method="POST" class="inline">
                                         @csrf
                                         @if($template->is_active)
-                                            <button type="submit" class="btn btn-outline btn-sm" style="color: var(--danger); border-color: var(--danger); padding: 4px 10px;">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-[11px]">
                                                 Deactivate
                                             </button>
                                         @else
-                                            <button type="submit" class="btn btn-outline btn-sm" style="color: var(--success); border-color: var(--success); padding: 4px 10px;">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-[11px]">
                                                 Activate
                                             </button>
                                         @endif
@@ -184,163 +125,110 @@
                 </table>
             </div>
 
-            <div style="margin-top: 16px;">
-                {{ $templates->links('pagination::bootstrap-4') }}
+            <div class="pt-2">
+                {{ $templates->links() }}
             </div>
         @else
-            <div style="padding: 30px; text-align: center; color: var(--text-muted); background-color: var(--bg-main); border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
-                No templates have been uploaded yet. Release the first version above.
+            <div class="text-center py-12 text-slate-400 font-medium">
+                <i class="fa-solid fa-code-branch text-3xl block mb-2 text-slate-300"></i>
+                No template versions uploaded yet. Select a .zip build file above to release.
             </div>
         @endif
     </div>
 </div>
 
-<!-- Real-time Upload Progress Modal Overlay -->
-<div id="uploadProgressModal" class="modal-overlay">
-    <div class="modal-card">
-        <h4 style="margin: 0 0 8px 0; color: var(--bg-dark); font-weight: 700; font-size: 16px;">Uploading Template Package...</h4>
-        <p id="uploadStatusText" style="margin: 0; font-size: 14px; color: var(--text-muted);">Preparing files to upload</p>
-        
-        <div class="progress-bar-track">
-            <div id="progressBarFill" class="progress-bar-fill"></div>
+<!-- Upload Progress Modal Overlay -->
+<div id="uploadProgressModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+        <div class="flex items-center justify-between">
+            <h4 id="progressStatusText" class="text-sm font-extrabold text-slate-900">Uploading Template Package...</h4>
+            <span id="progressPercentageText" class="text-xs font-mono font-bold text-rose-600">0%</span>
         </div>
-
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px;">
-            <span id="progressBytes" style="color: var(--text-muted); font-weight: 500;">0.00 MB / 0.00 MB</span>
-            <span id="progressPercent" style="color: var(--primary); font-weight: 700;">0%</span>
+        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+            <div id="progressBarFill" class="h-full bg-rose-600 rounded-full transition-all duration-200" style="width: 0%;"></div>
         </div>
+        <p id="progressSubText" class="text-[11px] text-slate-400 font-medium">Please wait while the server extracts and deploys the build...</p>
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
-    document.getElementById('uploadTemplateForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const form = this;
-        const fileInput = document.getElementById('templateFileField');
-        const submitBtn = document.getElementById('submitBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('uploadTemplateForm');
         const modal = document.getElementById('uploadProgressModal');
         const progressFill = document.getElementById('progressBarFill');
-        const progressPercent = document.getElementById('progressPercent');
-        const progressBytes = document.getElementById('progressBytes');
-        const statusText = document.getElementById('uploadStatusText');
+        const percentageText = document.getElementById('progressPercentageText');
+        const statusText = document.getElementById('progressStatusText');
+        const subText = document.getElementById('progressSubText');
+        const submitBtn = document.getElementById('submitBtn');
         const alertContainer = document.getElementById('js-alert-container');
 
-        if (!fileInput.files || fileInput.files.length === 0) {
-            return;
-        }
+        if (!form) return;
 
-        // Helper to format bytes to human-readable MB string
-        function formatMB(bytes) {
-            return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
-        }
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-        // 1. Debounce UI instantly
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Uploading...';
+            const fileInput = document.getElementById('templateFileField');
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('Please select a .zip template file to upload.');
+                return;
+            }
 
-        // 2. Open progress modal
-        modal.classList.add('show');
-        statusText.innerText = 'Initializing template file upload...';
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
 
-        // 3. Setup AJAX / XHR multipart submit
-        const formData = new FormData(form);
-        const xhr = new XMLHttpRequest();
+            // Reset UI
+            modal.classList.remove('hidden');
+            progressFill.style.width = '0%';
+            percentageText.textContent = '0%';
+            statusText.textContent = 'Uploading Package...';
+            subText.textContent = 'Sending template zip archive to server...';
+            submitBtn.disabled = true;
 
-        xhr.open('POST', form.action, true);
-        xhr.setRequestHeader('Accept', 'application/json');
+            xhr.upload.addEventListener('progress', function(e) {
+                if (e.lengthComputable) {
+                    const percent = Math.round((e.loaded / e.total) * 100);
+                    progressFill.style.width = percent + '%';
+                    percentageText.textContent = percent + '%';
 
-        // Track upload progress events
-        let statusInterval = null;
-        let elapsed = 0;
-
-        xhr.upload.addEventListener('progress', function(e) {
-            if (e.lengthComputable) {
-                const percentComplete = Math.round((e.loaded / e.total) * 100);
-                
-                // Update Progress visual representation
-                progressFill.style.width = percentComplete + '%';
-                progressPercent.innerText = percentComplete + '%';
-                progressBytes.innerText = formatMB(e.loaded) + ' / ' + formatMB(e.total);
-
-                if (percentComplete === 100) {
-                    if (!statusInterval) {
-                        progressFill.classList.add('pulse');
-                        statusText.innerText = 'Upload complete! Saving template file to storage disk...';
-                        statusInterval = setInterval(function() {
-                            elapsed += 2;
-                            if (elapsed === 2) {
-                                statusText.innerText = 'Writing archive to server SSD storage...';
-                            } else if (elapsed === 4) {
-                                statusText.innerText = 'Verifying files and registering version...';
-                            } else if (elapsed === 6) {
-                                statusText.innerText = 'Deactivating previous versions...';
-                            } else if (elapsed === 8) {
-                                statusText.innerText = 'Almost done! Finalizing deployment setup...';
-                            } else if (elapsed >= 10) {
-                                statusText.innerText = 'Almost done! Please wait a moment...';
-                            }
-                        }, 2000);
+                    if (percent === 100) {
+                        statusText.textContent = 'Extracting & Validating Build...';
+                        subText.textContent = 'Unzipping template assets onto production server...';
                     }
-                } else {
-                    statusText.innerText = 'Transferring zip file...';
                 }
-            }
-        });
+            });
 
-        // Helper to clear resources
-        function cleanupUploadUI() {
-            modal.classList.remove('show');
-            progressFill.classList.remove('pulse');
-            if (statusInterval) {
-                clearInterval(statusInterval);
-                statusInterval = null;
-            }
-            elapsed = 0;
-        }
-
-        // Track request response complete
-        xhr.addEventListener('load', function() {
-            cleanupUploadUI();
-            
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // Success: Reload page to show new version logs
-                window.location.reload();
-            } else {
-                // Failure: display validation or server errors
+            xhr.addEventListener('load', function() {
+                modal.classList.add('hidden');
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Upload & Deploy';
-                
-                let errorMessage = 'An error occurred during template upload.';
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    if (response.message) {
-                        errorMessage = response.message;
+
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    window.location.reload();
+                } else {
+                    try {
+                        const res = JSON.parse(xhr.responseText);
+                        let errMsg = res.message || 'Upload failed.';
+                        if (res.errors) {
+                            errMsg = Object.values(res.errors).flat().join('<br>');
+                        }
+                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">${errMsg}</div>`;
+                    } catch(err) {
+                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">Upload failed with status code ${xhr.status}.</div>`;
                     }
-                } catch(e) {}
+                }
+            });
 
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger">
-                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> ${errorMessage}
-                    </div>
-                `;
-            }
+            xhr.addEventListener('error', function() {
+                modal.classList.add('hidden');
+                submitBtn.disabled = false;
+                alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">Network error during upload.</div>`;
+            });
+
+            xhr.open('POST', form.action, true);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.send(formData);
         });
-
-        // Track network / connection errors
-        xhr.addEventListener('error', function() {
-            cleanupUploadUI();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa-solid fa-upload"></i> Upload & Deploy';
-            
-            alertContainer.innerHTML = `
-                <div class="alert alert-danger">
-                    <i class="fa-solid fa-triangle-exclamation" style="margin-right: 8px;"></i> Connection error occurred during template upload.
-                </div>
-            `;
-        });
-
-        xhr.send(formData);
     });
 </script>
 @endsection

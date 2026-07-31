@@ -65,6 +65,10 @@
                     <i class="fa-solid fa-layer-group text-base w-5 text-center"></i>
                     <span>Subscription Plans</span>
                 </a>
+                <a href="{{ route('super-admin.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.devices.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-tv text-base w-5 text-center"></i>
+                    <span>Connected TVs</span>
+                </a>
                 <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-code-branch text-base w-5 text-center"></i>
                     <span>TV App OTA Releases</span>
