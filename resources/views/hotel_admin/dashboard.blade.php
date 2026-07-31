@@ -14,7 +14,7 @@
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                     <span>Live Hotel System</span>
                 </span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Welcome back, {{ $hotelAdmin->owner_name }}! 👋</h2>
+                <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Welcome back, {{ Auth::guard('hotel_admin')->user()->owner_name }}! 👋</h2>
                 <p class="text-indigo-100 text-sm font-medium leading-relaxed">
                     Manage room devices, active subscriptions, OTT apps visibility, and guest services seamlessly.
                 </p>
