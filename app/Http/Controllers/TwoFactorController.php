@@ -30,11 +30,11 @@ class TwoFactorController extends Controller
         $route = request()->route();
         $routeName = $route ? $route->getName() : '';
 
-        if (str_starts-with($routeName, 'hotel.') && Auth::guard('hotel_admin')->check()) {
+        if ($routeName && str_starts_with($routeName, 'hotel.') && Auth::guard('hotel_admin')->check()) {
             return Auth::guard('hotel_admin')->user();
         }
 
-        if (str_starts-with($routeName, 'super-admin.') && Auth::guard('super_admin')->check()) {
+        if ($routeName && str_starts_with($routeName, 'super-admin.') && Auth::guard('super_admin')->check()) {
             return Auth::guard('super_admin')->user();
         }
 
