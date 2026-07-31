@@ -27,11 +27,23 @@ class TwoFactorController extends Controller
      */
     protected function getUser()
     {
-        if (Auth::guard('super_admin')->check()) {
+        $route = request()->route();
+        $routeName = $route ? $route->getName() : '';
+
+        if (str_starts-with($routeName, 'hotel.') && Auth::guard('hotel_admin')->check()) {
+            return Auth::guard('hotel_admin')->user();
+        }
+
+        if (str_starts-with($routeName, 'super-admin.') && Auth::guard('super_admin')->check()) {
             return Auth::guard('super_admin')->user();
         }
+
+        // Fallbacks
         if (Auth::guard('hotel_admin')->check()) {
             return Auth::guard('hotel_admin')->user();
+        }
+        if (Auth::guard('super_admin')->check()) {
+            return Auth::guard('super_admin')->user();
         }
         return null;
     }
