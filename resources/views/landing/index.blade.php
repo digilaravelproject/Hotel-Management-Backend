@@ -350,24 +350,96 @@
     </section>
 
     <!-- Footer -->
-    <footer class="py-12 px-6 lg:px-16 bg-white border-t border-slate-200/80">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-slate-500">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-600/20">
-                    <i class="fa-solid fa-tv"></i>
+    <footer class="bg-slate-900 text-slate-300 pt-16 pb-6 px-6 lg:px-16">
+        <div class="max-w-7xl mx-auto">
+            <!-- Footer Top Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-slate-700/60">
+
+                <!-- Brand Column -->
+                <div class="space-y-5 lg:col-span-1">
+                    <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-600/30 group-hover:scale-105 transition-transform">
+                            <i class="fa-solid fa-tv text-lg"></i>
+                        </div>
+                        <span class="font-extrabold text-xl tracking-tight text-white">
+                            Hotel<span class="text-indigo-400">TV</span>
+                        </span>
+                    </a>
+                    <p class="text-sm text-slate-400 leading-relaxed max-w-xs">
+                        The all-in-one smart TV operating system built for modern hospitality. Control guest experiences at scale.
+                    </p>
+                    <!-- Social Icons -->
+                    <div class="flex items-center space-x-3 pt-2">
+                        <a href="#" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-twitter text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-linkedin-in text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-instagram text-sm"></i>
+                        </a>
+                        <a href="#" class="w-9 h-9 rounded-xl bg-slate-800 hover:bg-indigo-600 flex items-center justify-center text-slate-400 hover:text-white transition-all">
+                            <i class="fa-brands fa-youtube text-sm"></i>
+                        </a>
+                    </div>
                 </div>
-                <span class="text-slate-900 font-extrabold text-base font-['Syne']">HotelTV Connect</span>
+
+                <!-- Product Links -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest">Product</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#features" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Features</a></li>
+                        <li><a href="#preview" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Interactive OS</a></li>
+                        <li><a href="#plans" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Pricing & Plans</a></li>
+                        <li><a href="#faq" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- Company Links -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest">Company</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">About Us</a></li>
+                        <li><a href="#social-proof" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Hospitality Partners</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+
+                <!-- Access Portal -->
+                <div class="space-y-4">
+                    <h4 class="text-xs font-bold text-white uppercase tracking-widest">Access Portal</h4>
+                    <ul class="space-y-3">
+                        <li>
+                            <a href="{{ route('hotel.login') }}" class="inline-flex items-center space-x-2 text-sm text-slate-400 hover:text-indigo-400 transition-colors">
+                                <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                                <span>Hotel Admin Login</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('super-admin.login') }}" class="inline-flex items-center space-x-2 text-sm text-slate-400 hover:text-indigo-400 transition-colors">
+                                <i class="fa-solid fa-shield-halved text-xs"></i>
+                                <span>Super Admin Panel</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="pt-3">
+                        <button onclick="openRegisterModal()" class="w-full px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 transition-all">
+                            Get Started Free <i class="fa-solid fa-arrow-right ml-1 text-xs"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <p class="font-semibold text-center">© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
-
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('hotel.login') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold transition-all">
-                    Hotel Login
-                </a>
-                <a href="{{ route('super-admin.login') }}" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 font-bold transition-all">
-                    Super Admin
-                </a>
+            <!-- Footer Bottom Bar -->
+            <div class="flex flex-col md:flex-row items-center justify-between pt-6 gap-4">
+                <p class="text-xs text-slate-500 font-medium">© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
+                <div class="flex items-center space-x-6 text-xs text-slate-500">
+                    <a href="#" class="hover:text-slate-300 transition-colors">Privacy</a>
+                    <a href="#" class="hover:text-slate-300 transition-colors">Terms</a>
+                    <a href="#" class="hover:text-slate-300 transition-colors">Cookies</a>
+                </div>
             </div>
         </div>
     </footer>
