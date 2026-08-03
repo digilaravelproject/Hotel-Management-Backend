@@ -20,26 +20,6 @@
         </button>
     </div>
 
-    @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold space-y-1">
-            <div class="flex items-center space-x-2 font-bold">
-                <i class="fa-solid fa-circle-exclamation text-rose-500 text-base"></i>
-                <span>Please fix the following validation errors:</span>
-            </div>
-            <ul class="list-disc list-inside pl-6 text-rose-700">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 
     <!-- Table of Amenities -->
     <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
