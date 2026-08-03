@@ -5,6 +5,7 @@ namespace App\Http\Controllers\HotelAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Amenity;
+use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -25,7 +26,7 @@ class AmenityController extends Controller
     }
 
     /**
-     * Store a newly created amenity with image validation & storage.
+     * Store a newly created amenity with image compression & WebP conversion.
      */
     public function store(Request $request)
     {
@@ -35,17 +36,16 @@ class AmenityController extends Controller
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB (2048KB)
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Max 5MB (5120KB)
         ], [
             'description.max' => 'Description payload cannot exceed 100 characters.',
-            'image.max' => 'The image file size must not exceed 2MB.',
+            'image.max' => 'The image file size must not exceed 5MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('uploads/amenities', 'public');
-            $imagePath = 'storage/' . $path;
+            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/amenities', 1000);
         }
 
         Amenity::create([
@@ -59,7 +59,7 @@ class AmenityController extends Controller
         ]);
 
         return redirect()->route('hotel.amenities.index')
-                         ->with('success', 'Amenity added successfully!');
+                         ->with('success', 'Amenity added & compressed to WebP successfully!');
     }
 
     /**
@@ -74,10 +74,10 @@ class AmenityController extends Controller
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Max 5MB (5120KB)
         ], [
             'description.max' => 'Description payload cannot exceed 100 characters.',
-            'image.max' => 'The image file size must not exceed 2MB.',
+            'image.max' => 'The image file size must not exceed 5MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
@@ -88,8 +88,7 @@ class AmenityController extends Controller
                 @unlink(public_path($amenity->image));
             }
 
-            $path = $request->file('image')->store('uploads/amenities', 'public');
-            $imagePath = 'storage/' . $path;
+            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/amenities', 1000);
         }
 
         $amenity->update([
@@ -101,7 +100,7 @@ class AmenityController extends Controller
         ]);
 
         return redirect()->route('hotel.amenities.index')
-                         ->with('success', 'Amenity updated successfully!');
+                         ->with('success', 'Amenity updated & compressed to WebP successfully!');
     }
 
     /**

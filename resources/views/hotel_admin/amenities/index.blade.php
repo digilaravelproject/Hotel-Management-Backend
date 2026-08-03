@@ -205,7 +205,7 @@
                                 <div>
                                     <p class="text-sm font-extrabold text-slate-800">Drag & drop image file here, or <span class="text-indigo-600 underline">Browse</span></p>
                                     <p class="text-[11px] text-slate-500 font-medium mt-1">
-                                        Required Size: <span class="font-bold text-slate-700">1920 × 1080 px (16:9 Widescreen)</span> • PNG, SVG, JPG, WEBP (Max 2MB)
+                                        Required Size: <span class="font-bold text-slate-700">1920 × 1080 px (16:9 Widescreen)</span> • PNG, SVG, JPG, WEBP (Max 5MB • Auto-compressed to WebP ≤ 1MB)
                                     </p>
                                 </div>
                             </div>
