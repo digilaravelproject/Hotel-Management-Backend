@@ -14,9 +14,9 @@
             </h2>
             <p class="text-xs text-slate-500 font-medium mt-1">Configure, reorder, or update guest amenities available at your hotel for smart TV display.</p>
         </div>
-        <button id="toggleFormBtn" onclick="toggleAmenityForm()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
-            <i class="fa-solid fa-plus text-xs" id="toggleFormBtnIcon"></i>
-            <span id="toggleFormBtnText">Add New Amenity</span>
+        <button onclick="openAmenityModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+            <i class="fa-solid fa-plus text-xs"></i>
+            <span>Add New Amenity</span>
         </button>
     </div>
 
@@ -40,160 +40,6 @@
             </ul>
         </div>
     @endif
-
-    <!-- Inline Add/Edit Form Component (Wireframe Layout) -->
-    <div id="amenityFormCard" class="{{ $errors->any() ? '' : 'hidden' }} transition-all duration-300">
-        <div class="bg-white border-2 border-indigo-100 rounded-3xl p-6 sm:p-8 shadow-xl shadow-indigo-500/5 relative overflow-hidden">
-            <!-- Header bar inside form card -->
-            <div class="flex items-center justify-between pb-6 mb-6 border-b border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <span id="formModeBadge" class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-indigo-100 text-indigo-700">
-                        Add Mode
-                    </span>
-                    <h3 id="formTitleText" class="text-base font-extrabold text-slate-900">Create New Amenity Item</h3>
-                </div>
-                <button type="button" onclick="resetAndCloseForm()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-
-            <form id="amenityForm" action="{{ route('hotel.amenities.store') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <div id="methodContainer"></div>
-                
-                <!-- Layout Grid: Main Content (Left: Title & Image Upload) vs Sidebar (Right: Description) -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    <!-- MAIN CONTENT AREA (2 Cols) -->
-                    <div class="lg:col-span-2 space-y-6">
-                        <!-- Top Row: TITLE input & DISPLAY ORDER -->
-                        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
-                            <div class="sm:col-span-3 space-y-2">
-                                <label for="amenityNameInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                                    TITLE / AMENITY NAME <span class="text-rose-500">*</span>
-                                </label>
-                                <div class="relative">
-                                    <input type="text" 
-                                           id="amenityNameInput" 
-                                           name="name" 
-                                           required 
-                                           placeholder="e.g., Infinity Swimming Pool, Spa & Wellness Center" 
-                                           class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all">
-                                </div>
-                            </div>
-                            <div class="sm:col-span-1 space-y-2">
-                                <label for="amenitySrNoInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                                    SR NO <span class="text-rose-500">*</span>
-                                </label>
-                                <input type="number" 
-                                       id="amenitySrNoInput" 
-                                       name="sr_no" 
-                                       min="1" 
-                                       required 
-                                       value="{{ count($amenities) + 1 }}" 
-                                       class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all">
-                            </div>
-                        </div>
-
-                        <!-- UPLOAD IMAGE BOX (Wireframe Upload Image Component) -->
-                        <div class="space-y-2">
-                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                                UPLOAD IMAGE / ICON
-                            </label>
-                            
-                            <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/80 hover:bg-indigo-50/20 rounded-3xl p-6 transition-all text-center flex flex-col items-center justify-center min-h-[220px] relative group cursor-pointer">
-                                <input type="file" 
-                                       id="amenityImageInput" 
-                                       name="image" 
-                                       accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" 
-                                       onchange="handleImagePreview(this)" 
-                                       class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-
-                                <!-- Image Preview Container -->
-                                <div id="previewContainer" class="hidden flex flex-col items-center justify-center space-y-3 z-0">
-                                    <div class="relative group/preview">
-                                        <img id="imagePreview" src="" alt="Amenity Preview" class="w-32 h-32 object-cover rounded-2xl border-2 border-indigo-200 shadow-md">
-                                        <button type="button" onclick="clearImagePreview(event)" class="absolute -top-2 -right-2 bg-rose-600 hover:bg-rose-700 text-white rounded-full p-1.5 shadow-md transition-all">
-                                            <i class="fa-solid fa-xmark text-xs"></i>
-                                        </button>
-                                    </div>
-                                    <p class="text-xs text-indigo-600 font-bold">Click or drag new image to replace</p>
-                                </div>
-
-                                <!-- Default Upload Prompt -->
-                                <div id="uploadPrompt" class="space-y-3 pointer-events-none">
-                                    <div class="w-16 h-16 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-center mx-auto text-indigo-600 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-                                        <i class="fa-solid fa-cloud-arrow-up text-2xl"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-extrabold text-slate-800">Drag & drop image file here, or <span class="text-indigo-600 underline">Browse</span></p>
-                                        <p class="text-[11px] text-slate-400 font-medium mt-1">Supports PNG, SVG, JPG, WEBP (Max 2MB)</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- SIDEBAR CONFIGURATION (Right Sidebar: Description Panel) -->
-                    <div class="lg:col-span-1 bg-slate-50 border border-slate-200 rounded-3xl p-5 flex flex-col justify-between space-y-4">
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
-                                <label for="amenityDescriptionInput" class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
-                                    <i class="fa-solid fa-align-left text-indigo-600"></i>
-                                    DESCRIPTION
-                                </label>
-                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
-                                    Contextual Sidebar
-                                </span>
-                            </div>
-
-                            <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
-                                Enter details displayed on room TVs when guests highlight this amenity. Max 100 characters allowed.
-                            </p>
-
-                            <div class="space-y-2">
-                                <textarea id="amenityDescriptionInput" 
-                                          name="description" 
-                                          rows="6" 
-                                          maxlength="100" 
-                                          oninput="updateCharCounter(this)" 
-                                          placeholder="Provide a concise description for guest TV interface..." 
-                                          class="w-full p-3.5 bg-white border border-slate-200 rounded-2xl text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all resize-none"></textarea>
-                                
-                                <!-- Real-time Interactive Character Counter -->
-                                <div class="flex items-center justify-between text-[11px] font-bold">
-                                    <span id="charLimitWarning" class="text-slate-400 font-medium">Character Limit</span>
-                                    <span id="charCounter" class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">
-                                        100 / 100 characters remaining
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sidebar Tips -->
-                        <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-[11px] text-indigo-900 space-y-1">
-                            <p class="font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-lightbulb text-amber-500"></i> Tip for Smart TV Display:
-                            </p>
-                            <p class="text-[10px] text-indigo-700 leading-tight">Keep descriptions concise so text scales cleanly across standard hotel screen sizes.</p>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- Action Controls Bar -->
-                <div class="flex items-center justify-end space-x-3 pt-6 mt-6 border-t border-slate-100">
-                    <button type="button" onclick="resetAndCloseForm()" class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all">
-                        Cancel
-                    </button>
-                    <button type="submit" id="submitFormBtn" class="px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
-                        <i class="fa-solid fa-floppy-disk"></i>
-                        <span id="submitFormBtnText">Save Amenity</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <!-- Table of Amenities -->
     <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
@@ -268,6 +114,159 @@
     </div>
 </div>
 
+<!-- Add/Edit Amenity POPUP MODAL (Wireframe Layout in Floating Dialog) -->
+<div id="amenityFormModal" class="{{ $errors->any() ? '' : 'hidden' }} fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-md flex items-center justify-center p-4 transition-all">
+    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-4xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden my-8">
+        
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div class="flex items-center space-x-3">
+                <span id="formModeBadge" class="px-3 py-1 rounded-full text-[11px] font-extrabold uppercase tracking-wide bg-indigo-100 text-indigo-700">
+                    Add Mode
+                </span>
+                <h3 id="formTitleText" class="text-lg font-extrabold text-slate-900">Create New Amenity Item</h3>
+            </div>
+            <button type="button" onclick="closeAmenityModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+        </div>
+
+        <form id="amenityForm" action="{{ route('hotel.amenities.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div id="methodContainer"></div>
+            
+            <!-- Layout Grid inside Modal: Main Area (Left) vs Sidebar Area (Right) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- MAIN CONTENT AREA (Left 2 Cols) -->
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- Top Row: TITLE input & DISPLAY ORDER -->
+                    <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                        <div class="sm:col-span-3 space-y-2">
+                            <label for="amenityNameInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                                TITLE / AMENITY NAME <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="amenityNameInput" 
+                                   name="name" 
+                                   required 
+                                   placeholder="e.g., Infinity Swimming Pool, Spa & Wellness Center" 
+                                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all">
+                        </div>
+                        <div class="sm:col-span-1 space-y-2">
+                            <label for="amenitySrNoInput" class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                                SR NO <span class="text-rose-500">*</span>
+                            </label>
+                            <input type="number" 
+                                   id="amenitySrNoInput" 
+                                   name="sr_no" 
+                                   min="1" 
+                                   required 
+                                   value="{{ count($amenities) + 1 }}" 
+                                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-semibold text-slate-900 focus:outline-none focus:bg-white focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all">
+                        </div>
+                    </div>
+
+                    <!-- UPLOAD IMAGE BOX (Upload Image Component) -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                            UPLOAD IMAGE / ICON
+                        </label>
+                        
+                        <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/80 hover:bg-indigo-50/20 rounded-3xl p-6 transition-all text-center flex flex-col items-center justify-center min-h-[200px] relative group cursor-pointer">
+                            <input type="file" 
+                                   id="amenityImageInput" 
+                                   name="image" 
+                                   accept="image/png,image/jpeg,image/jpg,image/webp,image/svg+xml" 
+                                   onchange="handleImagePreview(this)" 
+                                   class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+
+                            <!-- Image Preview Container -->
+                            <div id="previewContainer" class="hidden flex flex-col items-center justify-center space-y-3 z-0">
+                                <div class="relative group/preview">
+                                    <img id="imagePreview" src="" alt="Amenity Preview" class="w-28 h-28 object-cover rounded-2xl border-2 border-indigo-200 shadow-md">
+                                    <button type="button" onclick="clearImagePreview(event)" class="absolute -top-2 -right-2 bg-rose-600 hover:bg-rose-700 text-white rounded-full p-1.5 shadow-md transition-all">
+                                        <i class="fa-solid fa-xmark text-xs"></i>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-indigo-600 font-bold">Click or drag new image to replace</p>
+                            </div>
+
+                            <!-- Default Upload Prompt -->
+                            <div id="uploadPrompt" class="space-y-3 pointer-events-none">
+                                <div class="w-14 h-14 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center justify-center mx-auto text-indigo-600 group-hover:scale-110 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-extrabold text-slate-800">Drag & drop image file here, or <span class="text-indigo-600 underline">Browse</span></p>
+                                    <p class="text-[11px] text-slate-400 font-medium mt-1">Supports PNG, SVG, JPG, WEBP (Max 2MB)</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR CONFIGURATION (Right Sidebar: Description Panel) -->
+                <div class="lg:col-span-1 bg-slate-50 border border-slate-200 rounded-3xl p-5 flex flex-col justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200/80 pb-3">
+                            <label for="amenityDescriptionInput" class="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+                                <i class="fa-solid fa-align-left text-indigo-600"></i>
+                                DESCRIPTION
+                            </label>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 text-slate-600">
+                                Contextual Sidebar
+                            </span>
+                        </div>
+
+                        <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                            Enter details displayed on room TVs when guests highlight this amenity. Max 100 characters allowed.
+                        </p>
+
+                        <div class="space-y-2">
+                            <textarea id="amenityDescriptionInput" 
+                                      name="description" 
+                                      rows="5" 
+                                      maxlength="100" 
+                                      oninput="updateCharCounter(this)" 
+                                      placeholder="Provide a concise description for guest TV interface..." 
+                                      class="w-full p-3.5 bg-white border border-slate-200 rounded-2xl text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all resize-none"></textarea>
+                            
+                            <!-- Real-time Interactive Character Counter -->
+                            <div class="flex items-center justify-between text-[11px] font-bold">
+                                <span id="charLimitWarning" class="text-slate-400 font-medium">Character Limit</span>
+                                <span id="charCounter" class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">
+                                    100 / 100 characters remaining
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sidebar Tips -->
+                    <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-[11px] text-indigo-900 space-y-1">
+                        <p class="font-bold flex items-center gap-1">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Tip for Smart TV Display:
+                        </p>
+                        <p class="text-[10px] text-indigo-700 leading-tight">Keep descriptions concise so text scales cleanly across standard hotel screen sizes.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Action Buttons Footer -->
+            <div class="flex items-center justify-end space-x-3 pt-6 mt-6 border-t border-slate-100">
+                <button type="button" onclick="closeAmenityModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all">
+                    Cancel
+                </button>
+                <button type="submit" id="submitFormBtn" class="px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span id="submitFormBtnText">Save Amenity</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <!-- View Modal -->
 <div id="viewAmenityModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-sm p-6 text-center space-y-4 shadow-2xl">
@@ -282,7 +281,6 @@
 @section('scripts')
 <script>
     const storeUrl = "{{ route('hotel.amenities.store') }}";
-    let isEditMode = false;
 
     function updateCharCounter(textarea) {
         const maxLength = 100;
@@ -304,21 +302,19 @@
         }
     }
 
-    function toggleAmenityForm() {
-        const formCard = document.getElementById('amenityFormCard');
-        if (formCard.classList.contains('hidden')) {
-            if (!isEditMode) {
-                resetFormToAddMode();
-            }
-            formCard.classList.remove('hidden');
-            document.getElementById('amenityNameInput').focus();
-        } else {
-            resetAndCloseForm();
-        }
+    function openAmenityModal() {
+        resetFormToAddMode();
+        document.getElementById('amenityFormModal').classList.remove('hidden');
+        document.getElementById('amenityNameInput').focus();
+    }
+
+    function closeAmenityModal() {
+        document.getElementById('amenityFormModal').classList.add('hidden');
+        document.getElementById('amenityForm').reset();
+        clearImagePreview();
     }
 
     function resetFormToAddMode() {
-        isEditMode = false;
         const form = document.getElementById('amenityForm');
         form.action = storeUrl;
         document.getElementById('methodContainer').innerHTML = '';
@@ -328,17 +324,13 @@
         document.getElementById('formTitleText').textContent = 'Create New Amenity Item';
         document.getElementById('submitFormBtnText').textContent = 'Save Amenity';
 
-        document.getElementById('toggleFormBtnText').textContent = 'Cancel Form';
-        document.getElementById('toggleFormBtnIcon').className = 'fa-solid fa-xmark text-xs';
-
         form.reset();
         clearImagePreview();
         updateCharCounter(document.getElementById('amenityDescriptionInput'));
     }
 
     function triggerEditMode(amenity) {
-        isEditMode = true;
-        const formCard = document.getElementById('amenityFormCard');
+        const modal = document.getElementById('amenityFormModal');
         const form = document.getElementById('amenityForm');
 
         form.action = `/hotel/amenities/${amenity.id}`;
@@ -349,16 +341,12 @@
         document.getElementById('formTitleText').textContent = `Editing: ${amenity.name}`;
         document.getElementById('submitFormBtnText').textContent = 'Update Amenity';
 
-        document.getElementById('toggleFormBtnText').textContent = 'Close Edit';
-        document.getElementById('toggleFormBtnIcon').className = 'fa-solid fa-xmark text-xs';
-
         document.getElementById('amenityNameInput').value = amenity.name;
         document.getElementById('amenitySrNoInput').value = amenity.sr_no;
         document.getElementById('amenityDescriptionInput').value = amenity.description || '';
 
         updateCharCounter(document.getElementById('amenityDescriptionInput'));
 
-        // Show image preview if exists
         if (amenity.image) {
             document.getElementById('imagePreview').src = `/${amenity.image}`;
             document.getElementById('previewContainer').classList.remove('hidden');
@@ -367,21 +355,8 @@
             clearImagePreview();
         }
 
-        formCard.classList.remove('hidden');
-        formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        modal.classList.remove('hidden');
         document.getElementById('amenityNameInput').focus();
-    }
-
-    function resetAndCloseForm() {
-        const formCard = document.getElementById('amenityFormCard');
-        formCard.classList.add('hidden');
-
-        document.getElementById('toggleFormBtnText').textContent = 'Add New Amenity';
-        document.getElementById('toggleFormBtnIcon').className = 'fa-solid fa-plus text-xs';
-
-        isEditMode = false;
-        document.getElementById('amenityForm').reset();
-        clearImagePreview();
     }
 
     function handleImagePreview(input) {
@@ -431,7 +406,6 @@
         });
     }
 
-    // Initialize character counter on page load
     document.addEventListener('DOMContentLoaded', () => {
         const descInput = document.getElementById('amenityDescriptionInput');
         if (descInput) updateCharCounter(descInput);
