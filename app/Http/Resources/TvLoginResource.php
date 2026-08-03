@@ -83,6 +83,7 @@ class TvLoginResource extends JsonResource
             $amenitiesList[] = [
                 'sr_no' => (int) $amenity->sr_no,
                 'title' => $amenity->name,
+                'description' => $amenity->description ?? '',
                 'image_url' => $amenity->image ? asset($amenity->image) : null,
             ];
         }

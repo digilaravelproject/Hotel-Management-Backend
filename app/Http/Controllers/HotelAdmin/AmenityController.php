@@ -29,17 +29,18 @@ class AmenityController extends Controller
      */
     public function store(Request $request)
     {
+        $hotel = Auth::guard('hotel_admin')->user();
+
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB (2048KB)
         ], [
+            'description.max' => 'Description payload cannot exceed 100 characters.',
             'image.max' => 'The image file size must not exceed 2MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
-
-        $hotel = Auth::guard('hotel_admin')->user();
 
         $imagePath = null;
         if ($request->hasFile('image')) {
@@ -72,9 +73,10 @@ class AmenityController extends Controller
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'description' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:2048', // Max 2MB
         ], [
+            'description.max' => 'Description payload cannot exceed 100 characters.',
             'image.max' => 'The image file size must not exceed 2MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
