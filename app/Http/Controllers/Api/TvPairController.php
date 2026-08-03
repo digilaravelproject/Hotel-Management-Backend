@@ -32,12 +32,13 @@ class TvPairController extends Controller
             $pairCode = substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4);
         } while (TvPairSession::where('pair_code', $pairCode)->where('status', 'pending')->exists());
 
-        // Invalidate previous pending sessions for this device
-        TvPairSession::where('device_id', $request->deviceId)
-            ->where('status', 'pending')
-            ->update(['status' => 'expired']);
+        // Auto Cleanup: Delete all previous sessions (pending or expired) for this device_id
+        TvPairSession::where('device_id', $request->deviceId)->delete();
 
-        $expiresAt = now()->addMinutes(3); // 3 minutes expiration for easy user entry
+        // Also cleanup any global expired sessions older than 5 minutes
+        TvPairSession::where('expires_at', '<', now())->delete();
+
+        $expiresAt = now()->addMinutes(3);
 
         $session = TvPairSession::create([
             'pair_code' => $pairCode,
@@ -115,11 +116,16 @@ class TvPairController extends Controller
 
             $hotel->loadMissing('plan');
 
-            return new TvLoginResource([
+            $response = new TvLoginResource([
                 'device' => $device,
                 'hotel' => $hotel,
                 'message' => 'TV Paired and logged in successfully!'
             ]);
+
+            // Once login response is delivered to TV app, cleanup the temporary pairing session record
+            $session->delete();
+
+            return $response;
         }
 
         return response()->json([

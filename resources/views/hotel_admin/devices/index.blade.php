@@ -53,6 +53,24 @@
                 </button>
             </div>
 
+            <!-- Tab Navigation for Manual Code vs Camera Scanner -->
+            <div class="flex items-center p-1 bg-slate-100 rounded-2xl">
+                <button type="button" id="tabManualBtn" onclick="switchPairTab('manual')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>Enter Code</span>
+                </button>
+                <button type="button" id="tabScanBtn" onclick="switchPairTab('scan')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-camera"></i>
+                    <span>Scan TV QR</span>
+                </button>
+            </div>
+
+            <!-- Camera Scanner Box -->
+            <div id="qrScannerBox" class="hidden space-y-3 text-center">
+                <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-indigo-500/30 bg-slate-950 aspect-square flex items-center justify-center"></div>
+                <p class="text-[11px] text-slate-500 font-medium">Point your camera at the QR code displayed on TV screen</p>
+            </div>
+
             <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
                 @csrf
                 <div class="space-y-1.5">
@@ -159,16 +177,89 @@
     </div>
 </div>
 
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
+    let html5QrCode = null;
+
     function openPairModal() {
         document.getElementById('pairModal').classList.remove('hidden');
-        document.getElementById('pairCodeInput').focus();
+        switchPairTab('manual');
     }
 
     function closePairModal() {
+        stopScanner();
         document.getElementById('pairModal').classList.add('hidden');
         document.getElementById('pairFormAlert').classList.add('hidden');
         document.getElementById('pairForm').reset();
+    }
+
+    function switchPairTab(tab) {
+        const manualBtn = document.getElementById('tabManualBtn');
+        const scanBtn = document.getElementById('tabScanBtn');
+        const qrBox = document.getElementById('qrScannerBox');
+
+        if (tab === 'scan') {
+            scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
+            manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            qrBox.classList.remove('hidden');
+            startScanner();
+        } else {
+            manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
+            scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            qrBox.classList.add('hidden');
+            stopScanner();
+            document.getElementById('pairCodeInput').focus();
+        }
+    }
+
+    function startScanner() {
+        if (html5QrCode && html5QrCode.isScanning) return;
+
+        html5QrCode = new Html5Qrcode("qrReader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            {
+                fps: 10,
+                qrbox: { width: 220, height: 220 }
+            },
+            (decodedText) => {
+                let code = decodedText.trim().toUpperCase();
+                // Extract code if QR contains URL or raw code string
+                if (code.includes('code=')) {
+                    code = code.split('code=')[1].split('&')[0];
+                }
+                
+                if (code.length > 4 && !code.includes('-')) {
+                    code = code.substring(0, 4) + '-' + code.substring(4, 8);
+                }
+
+                document.getElementById('pairCodeInput').value = code;
+                switchPairTab('manual');
+                document.getElementById('roomNoInput').focus();
+                
+                const alertBox = document.getElementById('pairFormAlert');
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800';
+                alertBox.innerText = 'QR Code Scanned Successfully: ' + code + '. Now assign room number.';
+                alertBox.classList.remove('hidden');
+            },
+            (errorMessage) => {
+                // scanning errors ignored
+            }
+        ).catch((err) => {
+            console.error("Camera access failed:", err);
+            const alertBox = document.getElementById('pairFormAlert');
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+            alertBox.innerText = 'Camera access denied or unavailable. Please enter the 8-digit code manually.';
+            alertBox.classList.remove('hidden');
+        });
+    }
+
+    function stopScanner() {
+        if (html5QrCode && html5QrCode.isScanning) {
+            html5QrCode.stop().then(() => {
+                html5QrCode.clear();
+            }).catch(err => console.error(err));
+        }
     }
 
     // Auto-format pair code input with hyphen e.g., ABCD-EFGH
