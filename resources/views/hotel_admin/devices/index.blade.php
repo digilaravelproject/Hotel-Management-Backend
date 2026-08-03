@@ -73,7 +73,7 @@
 
             <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
                 @csrf
-                <div class="space-y-1.5">
+                <div id="pairCodeInputWrapper" class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">8-Digit Pairing Code (Shown on TV Screen)</label>
                     <input type="text" id="pairCodeInput" required placeholder="e.g. 8F2A-9K3P" maxlength="10" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-extrabold text-lg tracking-widest text-indigo-600 uppercase focus:outline-none focus:border-indigo-500">
                 </div>
@@ -197,16 +197,19 @@
         const manualBtn = document.getElementById('tabManualBtn');
         const scanBtn = document.getElementById('tabScanBtn');
         const qrBox = document.getElementById('qrScannerBox');
+        const codeInputWrapper = document.getElementById('pairCodeInputWrapper');
 
         if (tab === 'scan') {
             scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
             manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
             qrBox.classList.remove('hidden');
+            codeInputWrapper.classList.add('hidden');
             startScanner();
         } else {
             manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
             scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
             qrBox.classList.add('hidden');
+            codeInputWrapper.classList.remove('hidden');
             stopScanner();
             document.getElementById('pairCodeInput').focus();
         }
