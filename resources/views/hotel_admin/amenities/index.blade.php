@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-spa text-indigo-600"></i>
                 Hotel Guest Amenities
             </h2>
-            <p class="text-xs text-slate-500 font-medium mt-1">Configure, reorder, or update guest amenities available at your hotel for smart TV display.</p>
+            <p class="text-xs text-slate-500 font-medium mt-1">Configure, reorder, or update guest amenities available at your hotel for smart TV display (16:9 widescreen format).</p>
         </div>
         <button onclick="openAmenityModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
@@ -54,7 +54,7 @@
                 <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
                     <tr>
                         <th class="px-6 py-4 w-20">Sr No</th>
-                        <th class="px-6 py-4 w-20">Image</th>
+                        <th class="px-6 py-4 w-36">Image (16:9)</th>
                         <th class="px-6 py-4">Amenity Title</th>
                         <th class="px-6 py-4">Description</th>
                         <th class="px-6 py-4 w-28">Status</th>
@@ -67,9 +67,9 @@
                             <td class="px-6 py-4 font-extrabold text-indigo-600">#{{ $amenity->sr_no }}</td>
                             <td class="px-6 py-4">
                                 @if($amenity->image)
-                                    <img src="{{ asset($amenity->image) }}" alt="{{ $amenity->name }}" class="w-11 h-11 rounded-xl object-cover border border-slate-200 shadow-xs">
+                                    <img src="{{ asset($amenity->image) }}" alt="{{ $amenity->name }}" style="aspect-ratio: 16 / 9; width: 88px; object-fit: cover;" class="rounded-xl border border-slate-200 shadow-xs">
                                 @else
-                                    <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center border border-indigo-100 text-xs">
+                                    <div style="aspect-ratio: 16 / 9; width: 88px;" class="rounded-xl bg-indigo-50 text-indigo-600 font-bold flex items-center justify-center border border-indigo-100 text-xs">
                                         #{{ $amenity->sr_no }}
                                     </div>
                                 @endif
@@ -167,13 +167,18 @@
                         </div>
                     </div>
 
-                    <!-- UPLOAD IMAGE BOX (Upload Image Component) -->
+                    <!-- UPLOAD IMAGE BOX (Strict 16:9 Ratio - 1920x1080 Widescreen Display) -->
                     <div class="space-y-2">
-                        <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                            UPLOAD IMAGE / ICON
-                        </label>
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-extrabold uppercase tracking-wider text-slate-700">
+                                UPLOAD IMAGE / ICON
+                            </label>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center gap-1">
+                                <i class="fa-solid fa-expand text-[9px]"></i> 1920 × 1080 px (16:9)
+                            </span>
+                        </div>
                         
-                        <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/80 hover:bg-indigo-50/20 rounded-3xl p-6 transition-all text-center flex flex-col items-center justify-center min-h-[200px] relative group cursor-pointer">
+                        <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/80 hover:bg-indigo-50/20 rounded-3xl p-5 transition-all text-center flex flex-col items-center justify-center min-h-[220px] relative group cursor-pointer">
                             <input type="file" 
                                    id="amenityImageInput" 
                                    name="image" 
@@ -181,15 +186,15 @@
                                    onchange="handleImagePreview(this)" 
                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
 
-                            <!-- Image Preview Container -->
-                            <div id="previewContainer" class="hidden flex flex-col items-center justify-center space-y-3 z-0">
-                                <div class="relative group/preview">
-                                    <img id="imagePreview" src="" alt="Amenity Preview" class="w-28 h-28 object-cover rounded-2xl border-2 border-indigo-200 shadow-md">
+                            <!-- Image Preview Container (Strict 16:9 Widescreen Frame) -->
+                            <div id="previewContainer" class="hidden flex flex-col items-center justify-center space-y-3 z-0 w-full max-w-xs">
+                                <div class="relative group/preview w-full">
+                                    <img id="imagePreview" src="" alt="Amenity Preview" style="aspect-ratio: 16 / 9; width: 100%; object-fit: cover;" class="rounded-2xl border-2 border-indigo-200 shadow-md">
                                     <button type="button" onclick="clearImagePreview(event)" class="absolute -top-2 -right-2 bg-rose-600 hover:bg-rose-700 text-white rounded-full p-1.5 shadow-md transition-all">
                                         <i class="fa-solid fa-xmark text-xs"></i>
                                     </button>
                                 </div>
-                                <p class="text-xs text-indigo-600 font-bold">Click or drag new image to replace</p>
+                                <p class="text-xs text-indigo-600 font-bold">Click or drag new 16:9 image to replace</p>
                             </div>
 
                             <!-- Default Upload Prompt -->
@@ -199,7 +204,9 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-extrabold text-slate-800">Drag & drop image file here, or <span class="text-indigo-600 underline">Browse</span></p>
-                                    <p class="text-[11px] text-slate-400 font-medium mt-1">Supports PNG, SVG, JPG, WEBP (Max 2MB)</p>
+                                    <p class="text-[11px] text-slate-500 font-medium mt-1">
+                                        Required Size: <span class="font-bold text-slate-700">1920 × 1080 px (16:9 Widescreen)</span> • PNG, SVG, JPG, WEBP (Max 2MB)
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -245,9 +252,9 @@
                     <!-- Sidebar Tips -->
                     <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-2xl text-[11px] text-indigo-900 space-y-1">
                         <p class="font-bold flex items-center gap-1">
-                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Tip for Smart TV Display:
+                            <i class="fa-solid fa-tv text-indigo-600"></i> 16:9 TV Display Format:
                         </p>
-                        <p class="text-[10px] text-indigo-700 leading-tight">Keep descriptions concise so text scales cleanly across standard hotel screen sizes.</p>
+                        <p class="text-[10px] text-indigo-700 leading-tight">Using 1920×1080 px images ensures crisp full-screen display on HD & 4K hotel smart TVs.</p>
                     </div>
                 </div>
 
@@ -267,9 +274,9 @@
     </div>
 </div>
 
-<!-- View Modal -->
+<!-- View Modal (16:9 Preview) -->
 <div id="viewAmenityModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-sm p-6 text-center space-y-4 shadow-2xl">
+    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md p-6 text-center space-y-4 shadow-2xl">
         <div id="viewImagePreview"></div>
         <h3 id="viewName" class="text-lg font-extrabold text-slate-900"></h3>
         <p id="viewDescription" class="text-xs text-slate-500 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-100"></p>
@@ -385,9 +392,9 @@
         document.getElementById('viewDescription').textContent = amenity.description || 'No description provided.';
         const imgContainer = document.getElementById('viewImagePreview');
         if (amenity.image) {
-            imgContainer.innerHTML = `<img src="/${amenity.image}" class="w-24 h-24 rounded-2xl mx-auto object-cover border-2 border-indigo-100 shadow-md">`;
+            imgContainer.innerHTML = `<img src="/${amenity.image}" style="aspect-ratio: 16 / 9; width: 100%; object-fit: cover;" class="rounded-2xl mx-auto border-2 border-indigo-100 shadow-md">`;
         } else {
-            imgContainer.innerHTML = `<div class="w-20 h-20 rounded-2xl bg-indigo-50 text-indigo-600 font-bold text-xl flex items-center justify-center mx-auto border border-indigo-100">#${amenity.sr_no}</div>`;
+            imgContainer.innerHTML = `<div style="aspect-ratio: 16 / 9; width: 100%;" class="rounded-2xl bg-indigo-50 text-indigo-600 font-bold text-xl flex items-center justify-center mx-auto border border-indigo-100">#${amenity.sr_no}</div>`;
         }
         document.getElementById('viewAmenityModal').classList.remove('hidden');
     }
