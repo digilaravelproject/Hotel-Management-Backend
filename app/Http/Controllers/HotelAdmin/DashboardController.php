@@ -17,7 +17,7 @@ class DashboardController extends Controller
         $plan = $hotel->plan;
 
         $deviceCount = \App\Models\ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();
-        $guestCount = \App\Models\Guest::where('hotel_admin_id', $hotel->id)->where('status', 'checked_in')->count();
+        $guestCount = \App\Models\Guest::where('hotel_id', $hotel->id)->whereNull('check_out_datetime')->count();
         
         $plans = [];
         if ($hotel->payment_status !== 'paid') {
