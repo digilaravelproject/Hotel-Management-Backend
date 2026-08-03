@@ -61,6 +61,67 @@ class DeviceController extends Controller
     }
 
     /**
+     * Pair TV Device by 8-Digit Pairing Code from Hotel Admin Web UI.
+     */
+    public function pairDeviceByCode(Request $request, \App\Services\TvLoginService $tvLoginService)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $request->validate([
+            'pair_code' => 'required|string',
+            'room_no' => 'required|string|max:50',
+        ]);
+
+        $cleanCode = strtoupper(trim($request->pair_code));
+        $session = \App\Models\TvPairSession::where('pair_code', $cleanCode)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$session) {
+            return response()->json(['success' => false, 'message' => 'Invalid or expired 8-digit pair code. Please refresh TV code.'], 404);
+        }
+
+        if ($session->isExpired()) {
+            $session->update(['status' => 'expired']);
+            return response()->json(['success' => false, 'message' => 'This 8-digit pair code has expired. Please refresh TV code.'], 410);
+        }
+
+        try {
+            // Authenticate TV using existing service logic (validates limits & idempotency)
+            $result = $tvLoginService->authenticateTv([
+                'license_key' => $hotel->license_key,
+                'room_no' => $request->room_no,
+                'deviceId' => $session->device_id,
+                'macAddress' => $session->mac_address,
+                'ipAddress' => $session->ip_address,
+                'model' => $session->model,
+                'brand' => $session->brand,
+                'osVersion' => $session->os_version,
+            ]);
+
+            // Mark session as paired so TV App polling receives full login response
+            $session->update([
+                'status' => 'paired',
+                'hotel_admin_id' => $hotel->id,
+                'assigned_room_no' => $request->room_no,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'TV Room ' . $request->room_no . ' paired and connected successfully!'
+            ]);
+
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            return response()->json(['success' => false, 'message' => $e->getMessage()], $e->getStatusCode());
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to pair device: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Show individual Room / Device OTT configuration view.
      */
     public function showRoomOtt(int $id)
