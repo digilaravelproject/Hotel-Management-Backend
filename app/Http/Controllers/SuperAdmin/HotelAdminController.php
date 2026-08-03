@@ -121,6 +121,8 @@ class HotelAdminController extends Controller
             'payment_status' => 'required|in:pending,paid',
             'approval_status' => 'required|in:pending,approved,disapproved',
             'description' => 'nullable|string|max:1000',
+            'purchase_date' => 'nullable|date',
+            'expiry_date' => 'nullable|date|after_or_equal:purchase_date',
             'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
             'slider_images' => 'nullable|array|max:10',
@@ -139,6 +141,14 @@ class HotelAdminController extends Controller
             'approval_status' => $request->approval_status,
             'description' => $request->description,
         ];
+
+        if ($request->filled('purchase_date')) {
+            $data['purchase_date'] = $request->purchase_date;
+        }
+
+        if ($request->filled('expiry_date')) {
+            $data['expiry_date'] = $request->expiry_date;
+        }
 
         if ($request->filled('password')) {
             $request->validate(['password' => 'string|min:6']);
@@ -190,10 +200,12 @@ class HotelAdminController extends Controller
             );
         }
 
-        if ($request->plan_id && $request->payment_status === 'paid') {
+        if ($request->plan_id && $request->payment_status === 'paid' && !$request->filled('purchase_date')) {
             if (!$hotel->purchase_date || $hotel->plan_id !== (int) $request->plan_id || $hotel->payment_status !== 'paid') {
                 $data['purchase_date'] = now();
-                $data['expiry_date'] = now()->addDays(30);
+                if (!$request->filled('expiry_date')) {
+                    $data['expiry_date'] = now()->addDays(30);
+                }
             }
         }
 

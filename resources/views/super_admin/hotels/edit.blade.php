@@ -109,6 +109,17 @@
                         </select>
                     </div>
                 </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700">Subscription Purchase Date</label>
+                        <input type="datetime-local" name="purchase_date" value="{{ old('purchase_date', $hotel->purchase_date ? $hotel->purchase_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-rose-500">
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700">Subscription Expiry Date (Increase/Extend Expiry)</label>
+                        <input type="datetime-local" name="expiry_date" value="{{ old('expiry_date', $hotel->expiry_date ? $hotel->expiry_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
             </div>
 
             <!-- Media Section -->

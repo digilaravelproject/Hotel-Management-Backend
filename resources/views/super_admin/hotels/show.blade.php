@@ -114,11 +114,30 @@
                             <span class="text-slate-500 font-semibold">Active Plan Tier</span>
                             <span class="font-extrabold text-indigo-600">{{ $hotel->plan->name ?? 'None' }}</span>
                         </div>
-                        <div class="flex items-center justify-between">
+                        <div class="flex items-center justify-between border-b border-slate-200/50 pb-2">
                             <span class="text-slate-500 font-semibold">Payment State</span>
                             <span class="font-extrabold {{ $hotel->payment_status === 'paid' ? 'text-emerald-600' : 'text-rose-600' }}">
                                 {{ $hotel->payment_status === 'paid' ? 'Paid (Razorpay)' : 'Unpaid' }}
                             </span>
+                        </div>
+                        <div class="flex items-center justify-between border-b border-slate-200/50 pb-2">
+                            <span class="text-slate-500 font-semibold">Purchase Date</span>
+                            <span class="font-bold text-slate-800">{{ $hotel->purchase_date ? $hotel->purchase_date->format('d M Y, h:i A') : 'N/A' }}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-slate-500 font-semibold">Expiry Date</span>
+                            <div class="text-right">
+                                <span class="font-bold text-slate-800 block">{{ $hotel->expiry_date ? $hotel->expiry_date->format('d M Y, h:i A') : 'N/A' }}</span>
+                                @if($hotel->expiry_date)
+                                    @if($hotel->expiry_date->isPast())
+                                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-rose-100 text-rose-700">Expired</span>
+                                    @elseif($hotel->expiry_date->diffInDays(now()) <= 7)
+                                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-amber-100 text-amber-800">Expires in {{ ceil(now()->diffInHours($hotel->expiry_date)/24) }} days</span>
+                                    @else
+                                        <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-700">Active</span>
+                                    @endif
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>
