@@ -13,14 +13,18 @@ class DashboardController extends Controller
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
+        $hotel->loadMissing('plan');
         $plan = $hotel->plan;
+
+        $deviceCount = \App\Models\ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();
+        $guestCount = \App\Models\Guest::where('hotel_admin_id', $hotel->id)->where('status', 'checked_in')->count();
         
         $plans = [];
         if ($hotel->payment_status !== 'paid') {
             $plans = \App\Models\Plan::where('status', true)->orderBy('room_count', 'asc')->get();
         }
 
-        return view('hotel_admin.dashboard', compact('hotel', 'plan', 'plans'));
+        return view('hotel_admin.dashboard', compact('hotel', 'plan', 'plans', 'deviceCount', 'guestCount'));
     }
 
     /**

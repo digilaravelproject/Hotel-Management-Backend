@@ -90,6 +90,63 @@
         </div>
     </div>
 
+    <!-- Plan Subscription & Expiry Summary Banner -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-4 gap-4">
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Subscription Plan Timeline</h3>
+                    @if($hotel->expiry_date)
+                        @if($hotel->expiry_date->isPast())
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-rose-100 text-rose-700">Expired</span>
+                        @elseif($hotel->expiry_date->diffInDays(now()) <= 7)
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-amber-100 text-amber-800">Expires Soon</span>
+                        @else
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-700">Active</span>
+                        @endif
+                    @endif
+                </div>
+                <p class="text-xs text-slate-500 font-medium">Your current licensing plan validity details.</p>
+            </div>
+            <a href="{{ route('hotel.package') }}" class="px-4 py-2 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 transition-colors">
+                View Full Package Features
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Purchase Date</span>
+                <p class="text-sm font-extrabold text-slate-800">
+                    <i class="fa-regular fa-calendar-check text-indigo-600 mr-1.5"></i>
+                    {{ $hotel->purchase_date ? $hotel->purchase_date->format('d M, Y') : 'N/A' }}
+                </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Expiry Date</span>
+                <p class="text-sm font-extrabold text-slate-800">
+                    <i class="fa-regular fa-clock text-amber-600 mr-1.5"></i>
+                    {{ $hotel->expiry_date ? $hotel->expiry_date->format('d M, Y') : 'N/A' }}
+                </p>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Remaining Time</span>
+                @if($hotel->expiry_date)
+                    @if($hotel->expiry_date->isPast())
+                        <p class="text-sm font-extrabold text-rose-600">
+                            <i class="fa-solid fa-circle-exclamation mr-1.5"></i> Expired
+                        </p>
+                    @else
+                        <p class="text-sm font-extrabold text-emerald-600">
+                            <i class="fa-solid fa-shield-check mr-1.5"></i> {{ ceil(now()->diffInHours($hotel->expiry_date)/24) }} Days Left
+                        </p>
+                    @endif
+                @else
+                    <p class="text-sm font-extrabold text-slate-400">N/A</p>
+                @endif
+            </div>
+        </div>
+    </div>
+
     <!-- Quick Action Cards Grid -->
     <div class="grid md:grid-cols-3 gap-6">
         <a href="{{ route('hotel.package') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
