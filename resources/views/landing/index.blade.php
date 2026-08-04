@@ -44,9 +44,9 @@
             @endif
 
             <!-- Action Buttons -->
-            <div class="flex items-center space-x-3">
+            <div class="flex items-center space-x-2 sm:space-x-3">
                 @if(Auth::guard('hotel_admin')->check())
-                    <a href="{{ route('hotel.dashboard') }}" class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+                    <a href="{{ route('hotel.dashboard') }}" class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                         <i class="fa-solid fa-gauge"></i>
                         <span>Dashboard</span>
                     </a>
@@ -55,26 +55,26 @@
                         Hotel Login
                     </a>
 
-                    <div class="relative group">
-                        <button class="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+                    <!-- Access Portal Dropdown (Desktop Hover + Mobile Touch Toggle) -->
+                    <div class="relative">
+                        <button type="button" id="accessPortalBtn" onclick="toggleAccessPortal(event)" class="px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-1.5 sm:space-x-2">
                             <span>Access Portal</span>
-                            <i class="fa-solid fa-chevron-down text-[10px] group-hover:rotate-180 transition-transform"></i>
+                            <i id="accessPortalChevron" class="fa-solid fa-chevron-down text-[10px] transition-transform"></i>
                         </button>
 
-                        <div class="absolute right-0 top-full h-3 w-full"></div>
-                        <div class="hidden group-hover:block absolute right-0 top-[calc(100%+8px)] w-52 bg-white border border-slate-200/80 rounded-2xl shadow-xl p-2 z-50 space-y-1">
-                            <button onclick="openRegisterModal()" class="w-full flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 text-left transition-colors">
+                        <div id="accessPortalMenu" class="hidden absolute right-0 top-[calc(100%+8px)] w-56 bg-white border border-slate-200/90 rounded-2xl shadow-2xl p-2 z-50 space-y-1">
+                            <button type="button" onclick="openRegisterModal(); closeAccessPortal();" class="w-full flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 text-left transition-colors">
                                 <i class="fa-solid fa-user-plus text-indigo-600"></i>
                                 <span>Register Hotel</span>
                             </button>
-                            <a href="{{ route('hotel.login') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
+                            <a href="{{ route('hotel.login') }}" class="flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
                                 <i class="fa-solid fa-right-to-bracket text-emerald-600"></i>
-                                <span>Hotel Login</span>
+                                <span>Hotel Admin Login</span>
                             </a>
                             <div class="border-t border-slate-100 my-1"></div>
-                            <a href="{{ route('super-admin.login') }}" class="flex items-center space-x-2 px-3 py-2 rounded-xl text-[11px] font-semibold text-slate-400 hover:text-slate-800 transition-colors">
-                                <i class="fa-solid fa-lock"></i>
-                                <span>Super Admin Portal</span>
+                            <a href="{{ route('super-admin.login') }}" class="flex items-center space-x-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                                <i class="fa-solid fa-lock text-slate-400"></i>
+                                <span>Super Admin Panel</span>
                             </a>
                         </div>
                     </div>
@@ -598,5 +598,37 @@
         })
         .catch(err => console.error('Plan Suggestion Error:', err));
     }
+
+    function toggleAccessPortal(event) {
+        event.stopPropagation();
+        const menu = document.getElementById('accessPortalMenu');
+        const chevron = document.getElementById('accessPortalChevron');
+        const isHidden = menu.classList.contains('hidden');
+
+        if (isHidden) {
+            menu.classList.remove('hidden');
+            chevron.classList.add('rotate-180');
+        } else {
+            closeAccessPortal();
+        }
+    }
+
+    function closeAccessPortal() {
+        const menu = document.getElementById('accessPortalMenu');
+        const chevron = document.getElementById('accessPortalChevron');
+        if (menu) menu.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+    }
+
+    // Close Access Portal dropdown if clicked outside on touch screens
+    document.addEventListener('click', function(e) {
+        const btn = document.getElementById('accessPortalBtn');
+        const menu = document.getElementById('accessPortalMenu');
+        if (menu && !menu.classList.contains('hidden')) {
+            if (btn && !btn.contains(e.target) && !menu.contains(e.target)) {
+                closeAccessPortal();
+            }
+        }
+    });
 </script>
 @endsection
