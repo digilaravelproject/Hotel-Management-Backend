@@ -38,7 +38,7 @@ class TvPairController extends Controller
         // Also cleanup any global expired sessions older than 5 minutes
         TvPairSession::where('expires_at', '<', now())->delete();
 
-        $expiresAt = now()->addMinutes(3);
+        $expiresAt = now()->addMinutes(5);
 
         $session = TvPairSession::create([
             'pair_code' => $pairCode,

@@ -226,13 +226,24 @@
                 qrbox: { width: 220, height: 220 }
             },
             (decodedText) => {
-                let code = decodedText.trim().toUpperCase();
-                // Extract code if QR contains URL or raw code string
-                if (code.includes('code=')) {
-                    code = code.split('code=')[1].split('&')[0];
+                let text = decodedText.trim();
+                let code = '';
+
+                // Robust URL / query string parser for extract 8-digit code
+                if (text.includes('code=')) {
+                    code = text.split('code=')[1].split('&')[0].split('#')[0];
+                } else if (text.includes('/')) {
+                    // If QR is full URL like https://domain.com/pair/8F2A-9K3P or 8F2A9K3P
+                    const parts = text.split('/');
+                    code = parts[parts.length - 1];
+                } else {
+                    code = text;
                 }
+
+                // Clean formatting to uppercase alphanumeric
+                code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                 
-                if (code.length > 4 && !code.includes('-')) {
+                if (code.length > 4) {
                     code = code.substring(0, 4) + '-' + code.substring(4, 8);
                 }
 
@@ -242,7 +253,7 @@
                 
                 const alertBox = document.getElementById('pairFormAlert');
                 alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800';
-                alertBox.innerText = 'QR Code Scanned Successfully: ' + code + '. Now assign room number.';
+                alertBox.innerText = 'QR Scanned Code: ' + code + '. Now assign room number to connect.';
                 alertBox.classList.remove('hidden');
             },
             (errorMessage) => {
