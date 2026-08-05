@@ -27,32 +27,42 @@ class TvTemplateController extends Controller
             ], 401);
         }
 
-        // Fetch latest active template version
-        $latest = \App\Models\TvTemplate::query()
-            ->where('is_active', '=', true)
-            ->orderBy('id', 'desc')
-            ->first();
-
         $clientVersion = $request->query('version');
-        $isUpdateAvailable = false;
 
-        if ($latest && $clientVersion !== null) {
-            // Check if server version is greater than client's version
-            $isUpdateAvailable = version_compare($latest->version, $clientVersion, '>');
-        }
+        $responseData = \App\Services\TvVersionCacheService::rememberCheckVersion(
+            (int) $hotel->id,
+            (int) $device->id,
+            $clientVersion,
+            function () use ($hotel, $device, $clientVersion, $request) {
+                // Fetch latest active template version
+                $latest = \App\Models\TvTemplate::query()
+                    ->where('is_active', '=', true)
+                    ->orderBy('id', 'desc')
+                    ->first();
 
-        // Eager load the plan relation to avoid N+1 query issues
-        $hotel->loadMissing('plan');
+                $isUpdateAvailable = false;
 
-        // Merge version comparison result into request for the resource to read
-        $request->merge([
-            'is_update_available' => $isUpdateAvailable,
-        ]);
+                if ($latest && $clientVersion !== null) {
+                    // Check if server version is greater than client's version
+                    $isUpdateAvailable = version_compare($latest->version, $clientVersion, '>');
+                }
 
-        return new TvLoginResource([
-            'device' => $device,
-            'hotel' => $hotel,
-            'message' => 'Template version details fetched successfully.',
-        ]);
+                // Eager load the plan relation to avoid N+1 query issues
+                $hotel->loadMissing('plan');
+
+                // Merge version comparison result into request for the resource to read
+                $request->merge([
+                    'is_update_available' => $isUpdateAvailable,
+                ]);
+
+                return (new TvLoginResource([
+                    'device' => $device,
+                    'hotel' => $hotel,
+                    'message' => 'Template version details fetched successfully.',
+                ]))->resolve();
+            }
+        );
+
+        return response()->json($responseData);
     }
 }

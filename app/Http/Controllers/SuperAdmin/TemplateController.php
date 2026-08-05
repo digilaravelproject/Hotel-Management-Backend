@@ -49,6 +49,7 @@ class TemplateController extends Controller
 
             // Deactivate previous active templates
             TvTemplate::query()->update(['is_active' => false]);
+            \App\Services\TvVersionCacheService::clearAllHotelsCache();
 
             // Save new template record
             TvTemplate::create([

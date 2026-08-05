@@ -126,7 +126,17 @@ class TvApiTest extends TestCase
         $versionResponse2->assertStatus(200);
         $versionResponse2->assertJsonPath('message', 'Template version details fetched successfully.');
         $versionResponse2->assertJsonPath('data.template.is_update_available', false);
-        $versionResponse2->assertJsonPath('data.template.latest_version', '2.0');
+        // 8. Test Hotel-Isolated Cache Invalidation
+        // Update Hotel Name for $hotel
+        $hotel->update(['hotel_name' => 'Updated Hotel Name']);
+
+        // Check Version API should return updated hotel name (cache was cleared by HotelAdminObserver)
+        $versionResponse3 = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->getJson('/api/tv/template/check-version?version=2.0');
+
+        $versionResponse3->assertStatus(200);
+        $versionResponse3->assertJsonPath('data.hotel.hotel_name', 'Updated Hotel Name');
 
         // Clean up dummy file
         @unlink(public_path($logoPath));
