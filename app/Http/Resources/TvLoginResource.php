@@ -104,6 +104,7 @@ class TvLoginResource extends JsonResource
                     'token' => $device->api_token,
                 ],
                 'template' => [
+                    'template_id' => 1,
                     'latest_version' => $latest ? $latest->version : null,
                     'old_version' => $previous ? $previous->version : null,
                     'download_url' => $latest ? url(Storage::url($latest->file_path)) : null,
