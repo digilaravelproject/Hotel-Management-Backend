@@ -77,18 +77,24 @@ class FirebaseFirestoreService
     /**
      * Sync data object directly into Firestore document (e.g., collection "hotels", document "hotel_1").
      */
-    public function syncDocument(string $collection, string $documentId, array $data): bool
+    public function syncDocument(string $collection, string $documentId, array $data): array
     {
         $projectId = $this->getProjectId();
         if (!$projectId) {
             Log::info('Firebase project ID not available for Firestore sync.');
-            return false;
+            return [
+                'success' => false,
+                'message' => 'Firebase Project ID is missing or credentials are not configured.',
+            ];
         }
 
         $accessToken = $this->fcmService->getAccessToken();
         if (!$accessToken) {
             Log::warning('Firebase OAuth token unavailable for Firestore sync.');
-            return false;
+            return [
+                'success' => false,
+                'message' => 'Failed to obtain Google OAuth access token. Please check credentials.',
+            ];
         }
 
         $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/{$collection}/{$documentId}";
