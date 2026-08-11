@@ -12,8 +12,9 @@ class ConnectedDeviceObserver
      */
     public function saved(ConnectedDevice $device): void
     {
-        if ($device->hotel_id) {
-            TvVersionCacheService::clearHotelCache((int) $device->hotel_id);
+        $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
+        if ($hotelId) {
+            TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no);
         }
     }
 
@@ -22,8 +23,9 @@ class ConnectedDeviceObserver
      */
     public function deleted(ConnectedDevice $device): void
     {
-        if ($device->hotel_id) {
-            TvVersionCacheService::clearHotelCache((int) $device->hotel_id);
+        $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
+        if ($hotelId) {
+            TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no);
         }
     }
 }
