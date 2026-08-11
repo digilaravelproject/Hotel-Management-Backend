@@ -1,25 +1,25 @@
 @extends('layouts.super_admin')
 
-@section('title', 'Firebase FCM Realtime Engine')
-@section('page_title', 'Firebase FCM Real-Time Synchronization Center')
+@section('title', 'Firebase Firestore Realtime Engine')
+@section('page_title', 'Firebase Firestore Real-Time Synchronization Center')
 
 @section('content')
 <div class="space-y-8">
     <!-- Header Hero Banner -->
     <div class="p-6 md:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-950 text-white shadow-2xl border border-slate-800 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 opacity-10 text-amber-500 pointer-events-none">
-            <i class="fa-solid fa-fire text-9xl"></i>
+        <div class="absolute -right-10 -bottom-10 opacity-10 text-emerald-500 pointer-events-none">
+            <i class="fa-solid fa-database text-9xl"></i>
         </div>
         <div class="relative z-10 max-w-3xl">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-amber-500/20 text-amber-400 text-xs font-bold mb-4 border border-amber-500/30">
-                <i class="fa-solid fa-bolt text-amber-400"></i>
-                <span>WebSocket-Free & Zero-Polling Architecture</span>
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-bold mb-4 border border-emerald-500/30">
+                <i class="fa-solid fa-bolt text-emerald-400"></i>
+                <span>Notification-Free & Zero-Polling Native Stream Architecture</span>
             </div>
             <h2 class="text-2xl md:text-3xl font-extrabold tracking-tight text-white mb-2">
-                Firebase Cloud Messaging (FCM) Sync Controller
+                Firebase Firestore Real-Time Sync Controller
             </h2>
             <p class="text-slate-300 text-xs md:text-sm leading-relaxed">
-                Upload your Firebase Service Account credentials JSON file to enable instant, silent, real-time data sync across all Flutter TV devices. When hotel details, menus, or guest info change, silent pushes trigger instant TV UI updates automatically.
+                Upload your Firebase Service Account credentials JSON file to enable native, real-time Firestore database sync across all Flutter TV devices. When hotel details, menus, amenities, or guest info change, Firestore streams trigger instant TV UI updates without any notification popups.
             </p>
         </div>
     </div>
@@ -132,35 +132,6 @@
                         <p class="text-[11px] text-amber-700">Please upload your Firebase service-account.json file to activate real-time pushes.</p>
                     </div>
                 @endif
-            </div>
-
-            <!-- Live Test Push Panel -->
-            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xl space-y-4">
-                <h3 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
-                    <i class="fa-solid fa-paper-plane text-indigo-600"></i>
-                    <span>Live Test FCM Data Push</span>
-                </h3>
-
-                <form action="{{ route('super-admin.firebase-settings.test-push') }}" method="POST" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Target Type</label>
-                        <select name="target_type" class="w-full text-xs font-bold p-3 rounded-xl border border-slate-200 bg-slate-50 focus:ring-2 focus:ring-indigo-500">
-                            <option value="topic">FCM Topic (e.g., all_tvs or hotel_1)</option>
-                            <option value="token">Specific Device FCM Token</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1">Topic Name or Device Token</label>
-                        <input type="text" name="target_value" value="all_tvs" required placeholder="all_tvs or hotel_1" class="w-full text-xs font-mono p-3 rounded-xl border border-slate-200 bg-white focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-bolt text-amber-400"></i>
-                        <span>Send Test Data Push Now</span>
-                    </button>
-                </form>
             </div>
 
             <!-- Live Test Firestore Database Sync Panel -->
