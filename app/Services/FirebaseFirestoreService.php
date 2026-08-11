@@ -97,7 +97,8 @@ class FirebaseFirestoreService
             ];
         }
 
-        $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/{$collection}/{$documentId}";
+        $path = trim($collection, '/') . '/' . trim($documentId, '/');
+        $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/{$path}";
 
         // Format fields for Firestore REST API
         $fields = [];

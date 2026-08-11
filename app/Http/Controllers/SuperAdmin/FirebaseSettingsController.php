@@ -135,21 +135,24 @@ class FirebaseSettingsController extends Controller
     public function testFirestore(Request $request)
     {
         $firestore = app(\App\Services\FirebaseFirestoreService::class);
-        $testHotelId = 'hotel_test';
+        $collectionPath = 'hotels/hotel_1/devices';
+        $testRoomId = 'room_105';
 
         $testData = [
-            'scope' => 'TEST_FIRESTORE_SYNC',
+            'scope' => 'TEST_FIRESTORE_SUBCOLLECTION',
+            'room_no' => '105',
+            'device_id' => 'd6dd133551507f77',
             'updated_at' => now()->toIso8601String(),
             'data' => [
-                'test_message' => 'Super Admin Firestore Live Connection Success!',
+                'test_message' => 'Super Admin Firestore Sub-Collection Connection Success!',
                 'timestamp' => now()->timestamp,
             ]
         ];
 
-        $result = $firestore->syncDocument('hotels', $testHotelId, $testData);
+        $result = $firestore->syncDocument($collectionPath, $testRoomId, $testData);
 
         if (is_array($result) && ($result['success'] ?? false)) {
-            return redirect()->back()->with('success', "Live Firestore Test Document successfully created in Firebase! Check collection 'hotels' / document '{$testHotelId}'.");
+            return redirect()->back()->with('success', "Live Firestore Test Document successfully created! Check path: '{$collectionPath}/{$testRoomId}'.");
         }
 
         $errorDetail = is_array($result) ? ($result['message'] ?? 'Unknown Error') : 'Firestore connection failed.';

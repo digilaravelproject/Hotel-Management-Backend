@@ -40,25 +40,24 @@ class SendFcmTvSyncNotification implements ShouldQueue
             'updated_at' => (string) now()->toIso8601String(),
         ], $event->extraData);
 
-        // 1. FIRESTORE REALTIME SYNC (No Notifications, Native Stream)
+        // 1. FIRESTORE REALTIME SYNC (Sub-collection per device/room)
         if ($event->hotelId) {
             $hotel = HotelAdmin::with('plan')->find($event->hotelId);
             if ($hotel) {
-                // Fetch a sample device for resource building or sync hotel-wide info
-                $sampleDevice = ConnectedDevice::where('hotel_admin_id', $hotel->id)->first();
-                if ($sampleDevice) {
-                    $resourceArray = (new TvLoginResource([
-                        'device' => $sampleDevice,
-                        'hotel' => $hotel,
-                        'message' => 'Realtime Firestore Config Update',
-                    ]))->resolve(request());
-
-                    // Sync to Firestore document: collection "hotels", document "hotel_{hotelId}"
-                    $this->firestoreService->syncDocument('hotels', 'hotel_' . $hotel->id, [
-                        'scope' => $event->scope,
-                        'updated_at' => now()->toIso8601String(),
-                        'data' => $resourceArray['data'] ?? [],
-                    ]);
+                // If a specific room number was changed (e.g., Guest Check-in for Room 105)
+                if ($event->roomNo) {
+                    $device = ConnectedDevice::where('hotel_admin_id', $hotel->id)
+                        ->where('room_no', $event->roomNo)
+                        ->first();
+                    if ($device) {
+                        $this->syncDeviceToFirestore($hotel, $device, $event->scope);
+                    }
+                } else {
+                    // Hotel-wide change (Hotel info, Menu, Amenity): Update all connected room devices
+                    $devices = ConnectedDevice::where('hotel_admin_id', $hotel->id)->get();
+                    foreach ($devices as $device) {
+                        $this->syncDeviceToFirestore($hotel, $device, $event->scope);
+                    }
                 }
             }
         } else {
@@ -91,5 +90,29 @@ class SendFcmTvSyncNotification implements ShouldQueue
         } else {
             $this->fcmService->sendToTopic('all_tvs', $dataPayload);
         }
+    }
+
+    /**
+     * Helper to sync individual room device data to Firestore sub-collection:
+     * Path: hotels/hotel_{hotelId}/devices/room_{roomNo}
+     */
+    protected function syncDeviceToFirestore(HotelAdmin $hotel, ConnectedDevice $device, string $scope): void
+    {
+        $resourceArray = (new TvLoginResource([
+            'device' => $device,
+            'hotel' => $hotel,
+            'message' => 'Realtime Firestore Device Config Update',
+        ]))->resolve(request());
+
+        $collectionPath = 'hotels/hotel_' . $hotel->id . '/devices';
+        $documentId = 'room_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->room_no);
+
+        $this->firestoreService->syncDocument($collectionPath, $documentId, [
+            'scope' => $scope,
+            'room_no' => (string) $device->room_no,
+            'device_id' => (string) $device->device_id,
+            'updated_at' => now()->toIso8601String(),
+            'data' => $resourceArray['data'] ?? [],
+        ]);
     }
 }
