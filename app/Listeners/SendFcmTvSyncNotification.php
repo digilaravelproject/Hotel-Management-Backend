@@ -107,12 +107,6 @@ class SendFcmTvSyncNotification implements ShouldQueue
         $collectionPath = 'hotels/hotel_' . $hotel->id . '/rooms';
         $documentId = 'room_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->room_no);
 
-        $this->firestoreService->syncDocument($collectionPath, $documentId, [
-            'scope' => $scope,
-            'room_no' => (string) $device->room_no,
-            'device_id' => (string) $device->device_id,
-            'updated_at' => now()->toIso8601String(),
-            'data' => $resourceArray['data'] ?? [],
-        ]);
+        $this->firestoreService->syncDocument($collectionPath, $documentId, $resourceArray['data'] ?? []);
     }
 }

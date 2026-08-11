@@ -139,14 +139,11 @@ class FirebaseSettingsController extends Controller
         $testRoomId = 'room_105';
 
         $testData = [
-            'scope' => 'TEST_FIRESTORE_SUBCOLLECTION',
-            'room_no' => '105',
-            'device_id' => 'd6dd133551507f77',
-            'updated_at' => now()->toIso8601String(),
-            'data' => [
-                'test_message' => 'Super Admin Firestore Sub-Collection Connection Success!',
-                'timestamp' => now()->timestamp,
-            ]
+            'auth' => ['token' => 'sample_test_token'],
+            'template' => ['template_id' => 1, 'latest_version' => '20.0'],
+            'device' => ['room_no' => '105', 'device_id' => 'd6dd133551507f77'],
+            'hotel' => ['hotel_name' => 'Test Hotel'],
+            'message' => 'Super Admin Firestore Connection Success!',
         ];
 
         $result = $firestore->syncDocument($collectionPath, $testRoomId, $testData);
