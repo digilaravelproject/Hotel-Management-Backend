@@ -61,12 +61,13 @@ class SendFcmTvSyncNotification implements ShouldQueue
                 }
             }
         } else {
-            // Global TvTemplate version change - Sync to "global_config" collection
-            $this->firestoreService->syncDocument('global_config', 'tv_template', [
-                'scope' => 'TEMPLATE',
-                'updated_at' => now()->toIso8601String(),
-                'version_stamp' => (string) now()->timestamp,
-            ]);
+            // Global TvTemplate version change - Update all room devices across all hotels
+            $allDevices = ConnectedDevice::with('hotelAdmin')->get();
+            foreach ($allDevices as $device) {
+                if ($device->hotelAdmin) {
+                    $this->syncDeviceToFirestore($device->hotelAdmin, $device, $event->scope);
+                }
+            }
         }
 
         // 2. FCM PUSH NOTIFICATION BACKUP
