@@ -135,7 +135,7 @@ class FirebaseSettingsController extends Controller
     public function testFirestore(Request $request)
     {
         $firestore = app(\App\Services\FirebaseFirestoreService::class);
-        $collectionPath = 'hotels/hotel_1/devices';
+        $collectionPath = 'hotel_1';
         $testRoomId = 'room_105';
 
         $testData = [

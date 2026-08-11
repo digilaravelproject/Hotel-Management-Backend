@@ -104,7 +104,7 @@ class SendFcmTvSyncNotification implements ShouldQueue
             'message' => 'Realtime Firestore Device Config Update',
         ]))->resolve(request());
 
-        $collectionPath = 'hotels/hotel_' . $hotel->id . '/devices';
+        $collectionPath = 'hotel_' . $hotel->id;
         $documentId = 'room_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->room_no);
 
         $this->firestoreService->syncDocument($collectionPath, $documentId, [
