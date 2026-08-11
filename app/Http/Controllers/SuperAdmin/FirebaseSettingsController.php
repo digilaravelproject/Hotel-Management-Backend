@@ -128,4 +128,30 @@ class FirebaseSettingsController extends Controller
 
         return redirect()->back()->with('error', "Failed to send Test FCM Data Push. Please check system logs and Firebase credentials.");
     }
+
+    /**
+     * Send a test sync document directly to Firebase Firestore Database.
+     */
+    public function testFirestore(Request $request)
+    {
+        $firestore = app(\App\Services\FirebaseFirestoreService::class);
+        $testHotelId = 'hotel_test';
+
+        $testData = [
+            'scope' => 'TEST_FIRESTORE_SYNC',
+            'updated_at' => now()->toIso8601String(),
+            'data' => [
+                'test_message' => 'Super Admin Firestore Live Connection Success!',
+                'timestamp' => now()->timestamp,
+            ]
+        ];
+
+        $success = $firestore->syncDocument('hotels', $testHotelId, $testData);
+
+        if ($success) {
+            return redirect()->back()->with('success', "Live Firestore Test Document successfully created in Firebase! Check collection 'hotels' / document '{$testHotelId}'.");
+        }
+
+        return redirect()->back()->with('error', "Failed to sync to Firebase Firestore. Please check if Firestore Database is enabled in your Firebase Console under 'Firestore Database'.");
+    }
 }

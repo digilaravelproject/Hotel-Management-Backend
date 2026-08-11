@@ -162,6 +162,23 @@
                     </button>
                 </form>
             </div>
+
+            <!-- Live Test Firestore Database Sync Panel -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xl space-y-4">
+                <h3 class="text-sm font-extrabold text-slate-900 border-b border-slate-100 pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-database text-emerald-600"></i>
+                    <span>Live Test Firestore DB Sync</span>
+                </h3>
+                <p class="text-[11px] text-slate-500">Pushes a test document directly into Firebase Firestore Database under collection <code class="bg-slate-100 px-1 py-0.5 rounded font-mono text-emerald-700">hotels/hotel_test</code>.</p>
+
+                <form action="{{ route('super-admin.firebase-settings.test-firestore') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/20 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-rotate text-white"></i>
+                        <span>Sync Test Document to Firestore</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>

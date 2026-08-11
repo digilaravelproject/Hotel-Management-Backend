@@ -67,4 +67,5 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('firebase-settings', [SuperFirebaseSettingsController::class, 'index'])->name('firebase-settings.index');
     Route::post('firebase-settings', [SuperFirebaseSettingsController::class, 'update'])->name('firebase-settings.update');
     Route::post('firebase-settings/test-push', [SuperFirebaseSettingsController::class, 'testPush'])->name('firebase-settings.test-push');
+    Route::post('firebase-settings/test-firestore', [SuperFirebaseSettingsController::class, 'testFirestore'])->name('firebase-settings.test-firestore');
 });
