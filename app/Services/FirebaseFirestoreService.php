@@ -109,14 +109,23 @@ class FirebaseFirestoreService
 
         if ($response->successful()) {
             Log::info("Firestore document successfully synced: {$collection}/{$documentId}");
-            return true;
+            return [
+                'success' => true,
+                'message' => "Document successfully synced to {$collection}/{$documentId}",
+            ];
         }
+
+        $errorBody = $response->json();
+        $errorMsg = $errorBody['error']['message'] ?? $response->body();
 
         Log::error("Failed to sync Firestore document: {$collection}/{$documentId}", [
             'status' => $response->status(),
             'response' => $response->body(),
         ]);
 
-        return false;
+        return [
+            'success' => false,
+            'message' => "Google API Error ({$response->status()}): {$errorMsg}",
+        ];
     }
 }

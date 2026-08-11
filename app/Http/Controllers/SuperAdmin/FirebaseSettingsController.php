@@ -146,12 +146,14 @@ class FirebaseSettingsController extends Controller
             ]
         ];
 
-        $success = $firestore->syncDocument('hotels', $testHotelId, $testData);
+        $result = $firestore->syncDocument('hotels', $testHotelId, $testData);
 
-        if ($success) {
+        if (is_array($result) && ($result['success'] ?? false)) {
             return redirect()->back()->with('success', "Live Firestore Test Document successfully created in Firebase! Check collection 'hotels' / document '{$testHotelId}'.");
         }
 
-        return redirect()->back()->with('error', "Failed to sync to Firebase Firestore. Please check if Firestore Database is enabled in your Firebase Console under 'Firestore Database'.");
+        $errorDetail = is_array($result) ? ($result['message'] ?? 'Unknown Error') : 'Firestore connection failed.';
+
+        return redirect()->back()->with('error', "Failed to sync to Firebase Firestore: {$errorDetail}");
     }
 }
