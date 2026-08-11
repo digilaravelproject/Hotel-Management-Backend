@@ -135,4 +135,49 @@ class FirebaseFirestoreService
             'message' => "Google API Error ({$response->status()}): {$errorMsg}",
         ];
     }
+
+    /**
+     * Delete a document directly from Firestore Database.
+     */
+    public function deleteDocument(string $collection, string $documentId): array
+    {
+        $projectId = $this->getProjectId();
+        if (!$projectId) {
+            return [
+                'success' => false,
+                'message' => 'Firebase Project ID is missing.',
+            ];
+        }
+
+        $accessToken = $this->fcmService->getAccessToken();
+        if (!$accessToken) {
+            return [
+                'success' => false,
+                'message' => 'Failed to obtain Google OAuth access token.',
+            ];
+        }
+
+        $path = trim($collection, '/') . '/' . trim($documentId, '/');
+        $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/{$path}";
+
+        $response = Http::withToken($accessToken)->delete($url);
+
+        if ($response->successful()) {
+            Log::info("Firestore document successfully deleted: {$path}");
+            return [
+                'success' => true,
+                'message' => "Document successfully deleted: {$path}",
+            ];
+        }
+
+        Log::error("Failed to delete Firestore document: {$path}", [
+            'status' => $response->status(),
+            'response' => $response->body(),
+        ]);
+
+        return [
+            'success' => false,
+            'message' => "Google API Error ({$response->status()}): {$response->body()}",
+        ];
+    }
 }

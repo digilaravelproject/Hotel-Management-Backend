@@ -26,6 +26,13 @@ class ConnectedDeviceObserver
         $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
         if ($hotelId) {
             TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no);
+
+            if ($device->device_id) {
+                $firestore = app(\App\Services\FirebaseFirestoreService::class);
+                $collectionPath = 'hotels/hotel_' . $hotelId . '/rooms';
+                $documentId = 'device_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->device_id);
+                $firestore->deleteDocument($collectionPath, $documentId);
+            }
         }
     }
 }
