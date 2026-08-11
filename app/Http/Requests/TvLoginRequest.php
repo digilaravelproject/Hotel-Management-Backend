@@ -32,6 +32,8 @@ class TvLoginRequest extends FormRequest
             'model' => 'nullable|string|max:100',
             'brand' => 'nullable|string|max:100',
             'osVersion' => 'nullable|string|max:50',
+            'fcmToken' => 'nullable|string',
+            'fcm_token' => 'nullable|string',
         ];
     }
 

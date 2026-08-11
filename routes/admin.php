@@ -9,6 +9,8 @@ use App\Http\Controllers\SuperAdmin\AmenityController as SuperAmenityController;
 use App\Http\Controllers\SuperAdmin\DeviceController as SuperDeviceController;
 use App\Http\Controllers\SuperAdmin\TemplateController as SuperTemplateController;
 
+use App\Http\Controllers\SuperAdmin\FirebaseSettingsController as SuperFirebaseSettingsController;
+
 /*
 |--------------------------------------------------------------------------
 | Super Admin Routes
@@ -60,4 +62,9 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('templates', [SuperTemplateController::class, 'index'])->name('templates.index');
     Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');
     Route::post('templates/{id}/toggle-active', [SuperTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
+
+    // Firebase FCM Real-Time Engine Management
+    Route::get('firebase-settings', [SuperFirebaseSettingsController::class, 'index'])->name('firebase-settings.index');
+    Route::post('firebase-settings', [SuperFirebaseSettingsController::class, 'update'])->name('firebase-settings.update');
+    Route::post('firebase-settings/test-push', [SuperFirebaseSettingsController::class, 'testPush'])->name('firebase-settings.test-push');
 });

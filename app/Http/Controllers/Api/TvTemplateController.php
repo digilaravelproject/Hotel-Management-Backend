@@ -27,6 +27,12 @@ class TvTemplateController extends Controller
             ], 401);
         }
 
+        // Dynamically update FCM Token if passed during check-version call
+        $incomingFcmToken = $request->input('fcm_token') ?? $request->input('fcmToken') ?? $request->query('fcm_token');
+        if ($incomingFcmToken && $device->fcm_token !== $incomingFcmToken) {
+            $device->update(['fcm_token' => $incomingFcmToken]);
+        }
+
         $clientVersion = $request->query('version');
 
         $responseData = \App\Services\TvVersionCacheService::rememberCheckVersion(

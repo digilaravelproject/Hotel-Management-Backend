@@ -18,6 +18,7 @@ class ConnectedDevice extends Model
         'brand',
         'os_version',
         'api_token',
+        'fcm_token',
         'ott_overrides',
         'menu_overrides',
     ];

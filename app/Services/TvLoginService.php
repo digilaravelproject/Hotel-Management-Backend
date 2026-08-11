@@ -45,6 +45,8 @@ class TvLoginService
                 throw new HttpException(403, 'Device limit reached for this license');
             }
 
+            $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? null;
+
             // Create new device record with API Token
             $device = $hotel->connectedDevices()->create([
                 'room_no' => $data['room_no'],
@@ -55,6 +57,7 @@ class TvLoginService
                 'brand' => $data['brand'] ?? null,
                 'os_version' => $data['osVersion'] ?? null,
                 'api_token' => $token,
+                'fcm_token' => $fcmToken,
             ]);
         } else {
             // Existing Device - If hotel admin ID changes, check the limit for the new hotel admin
@@ -67,6 +70,8 @@ class TvLoginService
                 }
             }
 
+            $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? $device->fcm_token;
+
             // Update dynamic details, hotel assignment, and MAC address
             $device->update([
                 'hotel_admin_id' => $hotel->id,
@@ -77,6 +82,7 @@ class TvLoginService
                 'brand' => $data['brand'] ?? null,
                 'os_version' => $data['osVersion'] ?? null,
                 'api_token' => $token,
+                'fcm_token' => $fcmToken,
             ]);
         }
 

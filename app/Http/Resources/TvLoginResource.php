@@ -103,6 +103,10 @@ class TvLoginResource extends JsonResource
                 'auth' => [
                     'token' => $device->api_token,
                 ],
+                'fcm_sync' => [
+                    'hotel_topic' => 'hotel_' . $hotel->id,
+                    'global_topic' => 'all_tvs',
+                ],
                 'template' => [
                     'latest_version' => $latest ? $latest->version : null,
                     'old_version' => $previous ? $previous->version : null,
