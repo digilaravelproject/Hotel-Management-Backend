@@ -20,6 +20,7 @@ class MenuResolverService
             ['id' => 'languages', 'name' => 'Languages'],
             ['id' => 'live_tv', 'name' => 'Live TV'],
             ['id' => 'our_city', 'name' => 'Our City'],
+            ['id' => 'refresh', 'name' => 'Refresh'],
             ['id' => 'screen_cast', 'name' => 'Screen Cast'],
             ['id' => 'settings', 'name' => 'Settings'],
             ['id' => 'travel', 'name' => 'Travel'],
