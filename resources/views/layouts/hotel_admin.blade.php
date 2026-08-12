@@ -229,6 +229,9 @@
         // Global SweetAlert2 confirmation handler for forms
         document.addEventListener('submit', function(e) {
             const form = e.target;
+            if (form.dataset.ajaxForm === "true") {
+                return; // Do not trigger full screen loader for background AJAX forms
+            }
             if (form.dataset.swalBypass) {
                 showGlobalLoader();
                 return;

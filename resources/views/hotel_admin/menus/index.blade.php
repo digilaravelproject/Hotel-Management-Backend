@@ -25,7 +25,7 @@
     </div>
 
     <!-- Main Settings Form -->
-    <form id="menuForm" action="{{ url('/hotel/menus') }}" method="POST" class="space-y-8" data-swal-bypass="true">
+    <form id="menuForm" action="{{ url('/hotel/menus') }}" method="POST" class="space-y-8" data-swal-bypass="true" data-ajax-form="true">
         @csrf
 
         <!-- Interactive Cards Grid -->
