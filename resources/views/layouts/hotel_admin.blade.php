@@ -226,6 +226,11 @@
             if (loader) loader.classList.remove('hidden');
         }
 
+        function hideGlobalLoader() {
+            const loader = document.getElementById('globalAppLoader');
+            if (loader) loader.classList.add('hidden');
+        }
+
         // Global SweetAlert2 confirmation handler for forms
         document.addEventListener('submit', function(e) {
             const form = e.target;

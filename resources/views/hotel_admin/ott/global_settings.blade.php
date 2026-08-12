@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
             btn.disabled = true;
             btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Realtime...</span>';
             btn.classList.add('opacity-90');
+            if (typeof showGlobalLoader === 'function') showGlobalLoader();
 
             const formData = new FormData(this);
 
@@ -150,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: 'Network error while syncing.'
                 });
             } finally {
+                if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>Save Global Settings</span>';
                 btn.classList.remove('opacity-90');
