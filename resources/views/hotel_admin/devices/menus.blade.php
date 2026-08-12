@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <form action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST" class="space-y-6">
+        <form id="deviceMenuForm" action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST" class="space-y-6" data-swal-bypass="true" data-ajax-form="true">
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -64,11 +64,75 @@
 
             <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
                 <a href="{{ route('hotel.devices.index') }}" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5">
-                    Save Room Menu Settings
+                <button type="submit" id="saveRoomMenuBtn" class="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    <span>Save Room Menu Settings</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
 @endsection
+
+@section('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+
+    const form = document.getElementById('deviceMenuForm');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('saveRoomMenuBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Realtime...</span>';
+            btn.classList.add('opacity-90');
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Room Menu Settings Synced in Realtime! ⚡'
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: result.message || 'Failed to save room menu settings.'
+                    });
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Network error while syncing.'
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>Save Room Menu Settings</span>';
+                btn.classList.remove('opacity-90');
+            }
+        });
+    }
+});
+</script>

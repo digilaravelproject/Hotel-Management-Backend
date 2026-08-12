@@ -143,8 +143,8 @@
         const originalText = btnText.innerText;
 
         btn.disabled = true;
-        btnText.innerText = 'Syncing Realtime...';
-        btn.classList.add('opacity-80');
+        btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Realtime...</span>';
+        btn.classList.add('opacity-90');
 
         const formData = new FormData(this);
 
@@ -180,8 +180,8 @@
             });
         } finally {
             btn.disabled = false;
-            btnText.innerText = originalText;
-            btn.classList.remove('opacity-80');
+            btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>Save Global Settings</span>';
+            btn.classList.remove('opacity-90');
         }
     });
 </script>

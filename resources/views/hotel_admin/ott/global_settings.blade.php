@@ -35,7 +35,7 @@
         </div>
 
         <!-- Form -->
-        <form action="{{ url('/hotel/ott-settings') }}" method="POST" class="space-y-6">
+        <form id="ottForm" action="{{ url('/hotel/ott-settings') }}" method="POST" class="space-y-6" data-swal-bypass="true" data-ajax-form="true">
             @csrf
 
             @if(count($availablePlatforms) > 0)
@@ -67,7 +67,7 @@
             <!-- Submit Controls -->
             <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
                 <a href="{{ route('hotel.package') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center space-x-2">
+                <button type="submit" id="saveOttBtn" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Save Global Settings</span>
                 </button>
@@ -97,6 +97,66 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ottCheckboxes.forEach(cb => { cb.addEventListener('change', updateSelectAllState); });
     updateSelectAllState();
+
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+    });
+
+    // Async AJAX submit for OTT settings
+    const ottForm = document.getElementById('ottForm');
+    if (ottForm) {
+        ottForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('saveOttBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Realtime...</span>';
+            btn.classList.add('opacity-90');
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'OTT Settings Synced in Realtime! ⚡'
+                    });
+                } else {
+                    Toast.fire({
+                        icon: 'error',
+                        title: result.message || 'Failed to save settings.'
+                    });
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Network error while syncing.'
+                });
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>Save Global Settings</span>';
+                btn.classList.remove('opacity-90');
+            }
+        });
+    }
 });
+</script>
 </script>
 @endsection
