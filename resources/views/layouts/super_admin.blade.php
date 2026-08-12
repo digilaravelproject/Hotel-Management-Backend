@@ -146,10 +146,41 @@
             if (backdrop) backdrop.classList.toggle('hidden');
         }
 
+        // Global loader overlay on form submits
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!document.getElementById('globalAppLoader')) {
+                const loaderDiv = document.createElement('div');
+                loaderDiv.id = 'globalAppLoader';
+                loaderDiv.className = 'fixed inset-0 bg-slate-950/50 backdrop-blur-xs z-[9999] hidden flex flex-col items-center justify-center transition-all duration-300';
+                loaderDiv.innerHTML = `
+                    <div class="bg-slate-900/95 text-white backdrop-blur-md p-6 rounded-3xl shadow-2xl border border-slate-800 flex flex-col items-center space-y-4 max-w-xs w-full mx-4 text-center">
+                        <div class="relative w-12 h-12 flex items-center justify-center">
+                            <div class="absolute inset-0 rounded-full border-4 border-rose-950"></div>
+                            <div class="absolute inset-0 rounded-full border-4 border-rose-500 border-t-transparent animate-spin"></div>
+                            <i class="fa-solid fa-bolt text-rose-500 text-sm"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h4 class="text-sm font-extrabold text-white">Processing Admin Request...</h4>
+                            <p class="text-[11px] text-slate-400 font-medium">Syncing database & connected devices</p>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(loaderDiv);
+            }
+        });
+
+        function showGlobalLoader() {
+            const loader = document.getElementById('globalAppLoader');
+            if (loader) loader.classList.remove('hidden');
+        }
+
         // Global SweetAlert2 confirmation handler for forms
         document.addEventListener('submit', function(e) {
             const form = e.target;
-            if (form.dataset.swalBypass) return;
+            if (form.dataset.swalBypass) {
+                showGlobalLoader();
+                return;
+            }
 
             const onsubmitAttr = form.getAttribute('onsubmit');
             if (onsubmitAttr && onsubmitAttr.includes('confirm(')) {
@@ -178,10 +209,13 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        showGlobalLoader();
                         form.dataset.swalBypass = "true";
                         form.submit();
                     }
                 });
+            } else {
+                showGlobalLoader();
             }
         }, true);
     </script>
