@@ -119,7 +119,7 @@
             <h3 class="text-base font-extrabold text-slate-900">Add New Guest Check-In</h3>
             <button onclick="closeAddModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        <form action="{{ route('hotel.guests.store') }}" method="POST" class="space-y-4">
+        <form id="addGuestForm" action="{{ route('hotel.guests.store') }}" method="POST" class="space-y-4" data-swal-bypass="true" data-ajax-form="true">
             @csrf
             <div class="space-y-1.5">
                 <label class="text-xs font-bold text-slate-700">Guest Name</label>
@@ -145,7 +145,9 @@
             </div>
             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md">Register Guest</button>
+                <button type="submit" id="addGuestBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md flex items-center space-x-2">
+                    <span>Register Guest</span>
+                </button>
             </div>
         </form>
     </div>
@@ -158,7 +160,7 @@
             <h3 class="text-base font-extrabold text-slate-900">Edit Guest Details</h3>
             <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
-        <form id="editGuestForm" method="POST" class="space-y-4">
+        <form id="editGuestForm" method="POST" class="space-y-4" data-swal-bypass="true" data-ajax-form="true">
             @csrf
             @method('PUT')
             <div class="space-y-1.5">
@@ -185,7 +187,9 @@
             </div>
             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md">Save Changes</button>
+                <button type="submit" id="editGuestBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md flex items-center space-x-2">
+                    <span>Save Changes</span>
+                </button>
             </div>
         </form>
     </div>
@@ -208,5 +212,91 @@
         document.getElementById('editGuestModal').classList.remove('hidden');
     }
     function closeEditModal() { document.getElementById('editGuestModal').classList.add('hidden'); }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+
+        // Add Guest AJAX Submit
+        const addForm = document.getElementById('addGuestForm');
+        if (addForm) {
+            addForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('addGuestBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Registering...</span>';
+                if (typeof showGlobalLoader === 'function') showGlobalLoader();
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: new FormData(this)
+                    });
+                    const result = await response.json();
+                    if (response.ok && result.status === 'success') {
+                        closeAddModal();
+                        Toast.fire({ icon: 'success', title: 'Guest Checked In & Synced to TV! ⚡' });
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        Toast.fire({ icon: 'error', title: result.message || 'Check-in failed.' });
+                    }
+                } catch (err) {
+                    Toast.fire({ icon: 'error', title: 'Network error.' });
+                } finally {
+                    if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Register Guest</span>';
+                }
+            });
+        }
+
+        // Edit Guest AJAX Submit
+        const editForm = document.getElementById('editGuestForm');
+        if (editForm) {
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const btn = document.getElementById('editGuestBtn');
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Saving...</span>';
+                if (typeof showGlobalLoader === 'function') showGlobalLoader();
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: new FormData(this)
+                    });
+                    const result = await response.json();
+                    if (response.ok && result.status === 'success') {
+                        closeEditModal();
+                        Toast.fire({ icon: 'success', title: 'Guest Updated & Synced to TV! ⚡' });
+                        setTimeout(() => window.location.reload(), 1000);
+                    } else {
+                        Toast.fire({ icon: 'error', title: result.message || 'Update failed.' });
+                    }
+                } catch (err) {
+                    Toast.fire({ icon: 'error', title: 'Network error.' });
+                } finally {
+                    if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Save Changes</span>';
+                }
+            });
+        }
+    });
 </script>
 @endsection
