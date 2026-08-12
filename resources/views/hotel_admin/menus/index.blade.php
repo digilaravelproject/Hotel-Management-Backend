@@ -38,7 +38,7 @@
                     'live_tv'     => 'fa-tv',
                     'our_city'    => 'fa-city',
                     'refresh'     => 'fa-arrows-rotate',
-                    'screen_cast' => 'fa-cast',
+                    'screen_cast' => 'fa-display',
                     'settings'    => 'fa-gear',
                     'travel'      => 'fa-compass',
                     'weather'     => 'fa-cloud-sun'
