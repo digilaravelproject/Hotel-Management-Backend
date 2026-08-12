@@ -58,6 +58,13 @@ class AmenityController extends Controller
             'status' => true,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Amenity added & synced to TVs in real-time!'
+            ]);
+        }
+
         return redirect()->route('hotel.amenities.index')
                          ->with('success', 'Amenity added & compressed to WebP successfully!');
     }
@@ -99,6 +106,13 @@ class AmenityController extends Controller
             'description' => $request->description,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Amenity updated & synced to TVs in real-time!'
+            ]);
+        }
+
         return redirect()->route('hotel.amenities.index')
                          ->with('success', 'Amenity updated & compressed to WebP successfully!');
     }
@@ -116,6 +130,13 @@ class AmenityController extends Controller
         }
 
         $amenity->delete();
+
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Amenity deleted & synced to TVs in real-time!'
+            ]);
+        }
 
         return redirect()->route('hotel.amenities.index')
                          ->with('success', 'Amenity deleted successfully!');

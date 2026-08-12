@@ -168,6 +168,13 @@ class ProfileController extends Controller
 
         $hotelAdmin->update($data);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Hotel information updated & synced to TVs in real-time!'
+            ]);
+        }
+
         return back()->with('success', 'Hotel information updated successfully!');
     }
 

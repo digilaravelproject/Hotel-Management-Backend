@@ -47,6 +47,14 @@ class MenuController extends Controller
             'global_menu_settings' => $formattedSettings,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Global Menu Visibility updated & synced to TVs in real-time!',
+                'data' => $formattedSettings
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Global Menu Visibility settings updated successfully.');
     }
 }

@@ -50,6 +50,13 @@ class GuestController extends Controller
             'check_out_datetime' => $request->check_out_datetime,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Guest checked in & synced to TV in real-time!'
+            ]);
+        }
+
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest checked in successfully!');
     }
@@ -78,6 +85,13 @@ class GuestController extends Controller
             'check_out_datetime' => $request->check_out_datetime,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Guest details updated & synced to TV in real-time!'
+            ]);
+        }
+
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest details updated successfully!');
     }
@@ -94,6 +108,13 @@ class GuestController extends Controller
             'check_out_datetime' => now(),
         ]);
 
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Guest checked out & synced to TV in real-time!'
+            ]);
+        }
+
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest checked out successfully!');
     }
@@ -105,6 +126,13 @@ class GuestController extends Controller
     {
         $hotel = Auth::guard('hotel_admin')->user();
         Guest::query()->where('hotel_id', $hotel->id)->where('id', $id)->delete();
+
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Guest deleted & synced in real-time!'
+            ]);
+        }
 
         return redirect()->route('hotel.guests.index')
             ->with('success', 'Guest deleted successfully!');

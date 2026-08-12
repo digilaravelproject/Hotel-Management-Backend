@@ -177,6 +177,13 @@ class DeviceController extends Controller
             'ott_overrides' => $validSelected,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Room ' . $device->room_no . ' OTT configuration synced in real-time!'
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Room ' . $device->room_no . ' OTT configuration saved.');
     }
 
@@ -194,6 +201,13 @@ class DeviceController extends Controller
         $device->update([
             'ott_overrides' => null,
         ]);
+
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Room ' . $device->room_no . ' OTT reset & synced in real-time!'
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Room ' . $device->room_no . ' OTT configuration reset to Hotel Global Default.');
     }
@@ -242,6 +256,13 @@ class DeviceController extends Controller
             'menu_overrides' => $formattedSettings,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Room ' . $device->room_no . ' Menu configuration synced in real-time!'
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration saved.');
     }
 
@@ -259,6 +280,13 @@ class DeviceController extends Controller
         $device->update([
             'menu_overrides' => null,
         ]);
+
+        if (request()->expectsJson() || request()->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Room ' . $device->room_no . ' Menu reset & synced in real-time!'
+            ]);
+        }
 
         return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration reset to Hotel Global Default.');
     }

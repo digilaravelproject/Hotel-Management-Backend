@@ -25,7 +25,7 @@
     </div>
 
     <!-- Main Settings Form -->
-    <form action="{{ url('/hotel/menus') }}" method="POST" class="space-y-8">
+    <form id="menuForm" action="{{ url('/hotel/menus') }}" method="POST" class="space-y-8" data-swal-bypass="true">
         @csrf
 
         <!-- Interactive Cards Grid -->
@@ -78,17 +78,17 @@
 
                         <!-- Toggle Switch -->
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="menus[{{ $menu['id'] }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
+                            <input type="checkbox" name="menus[{{ $menu['id'] }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer menu-toggle-checkbox">
                             <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                         </label>
                     </div>
 
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] status-indicator-container">
                         <span class="text-slate-400 font-semibold">Visibility Status</span>
                         @if($isShown)
-                            <span class="text-emerald-600 font-bold flex items-center"><i class="fa-solid fa-circle text-[8px] mr-1 text-emerald-500"></i> Visible on TV</span>
+                            <span class="text-emerald-600 font-bold flex items-center status-badge"><i class="fa-solid fa-circle text-[8px] mr-1 text-emerald-500"></i> Visible on TV</span>
                         @else
-                            <span class="text-slate-400 font-bold flex items-center"><i class="fa-solid fa-circle text-[8px] mr-1 text-slate-300"></i> Hidden from TV</span>
+                            <span class="text-slate-400 font-bold flex items-center status-badge"><i class="fa-solid fa-circle text-[8px] mr-1 text-slate-300"></i> Hidden from TV</span>
                         @endif
                     </div>
                 </div>
@@ -98,11 +98,91 @@
         <!-- Submit Controls -->
         <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex items-center justify-between">
             <a href="{{ route('hotel.dashboard') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-            <button type="submit" class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+            <button type="submit" id="saveMenuBtn" class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span>Save Global Settings</span>
+                <span id="saveBtnText">Save Global Settings</span>
             </button>
         </div>
     </form>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+
+    // Update status text on toggle change locally
+    document.querySelectorAll('.menu-toggle-checkbox').forEach(cb => {
+        cb.addEventListener('change', function() {
+            const card = this.closest('.bg-white');
+            const statusContainer = card.querySelector('.status-indicator-container');
+            if (this.checked) {
+                statusContainer.innerHTML = '<span class="text-slate-400 font-semibold">Visibility Status</span><span class="text-emerald-600 font-bold flex items-center status-badge"><i class="fa-solid fa-circle text-[8px] mr-1 text-emerald-500"></i> Visible on TV</span>';
+            } else {
+                statusContainer.innerHTML = '<span class="text-slate-400 font-semibold">Visibility Status</span><span class="text-slate-400 font-bold flex items-center status-badge"><i class="fa-solid fa-circle text-[8px] mr-1 text-slate-300"></i> Hidden from TV</span>';
+            }
+        });
+    });
+
+    // Async AJAX Form Submit handler
+    document.getElementById('menuForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const btn = document.getElementById('saveMenuBtn');
+        const btnText = document.getElementById('saveBtnText');
+        const originalText = btnText.innerText;
+
+        btn.disabled = true;
+        btnText.innerText = 'Syncing Realtime...';
+        btn.classList.add('opacity-80');
+
+        const formData = new FormData(this);
+
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.status === 'success') {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Realtime TV Sync Complete! ⚡'
+                });
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: result.message || 'Failed to update settings.'
+                });
+            }
+        } catch (error) {
+            console.error('Save error:', error);
+            Toast.fire({
+                icon: 'error',
+                title: 'Network error while syncing.'
+            });
+        } finally {
+            btn.disabled = false;
+            btnText.innerText = originalText;
+            btn.classList.remove('opacity-80');
+        }
+    });
+</script>
 @endsection

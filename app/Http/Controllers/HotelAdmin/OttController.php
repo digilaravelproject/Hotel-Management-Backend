@@ -86,6 +86,14 @@ class OttController extends Controller
             'global_ott_settings' => $validSelected,
         ]);
 
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Global OTT Apps updated & synced to TVs in real-time!',
+                'data' => $validSelected
+            ]);
+        }
+
         return redirect()->back()->with('success', 'Global OTT Platform settings updated successfully.');
     }
 }
