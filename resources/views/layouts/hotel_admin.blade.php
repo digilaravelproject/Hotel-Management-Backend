@@ -73,8 +73,12 @@
                     <span>TV Menus Visibility</span>
                 </a>
                 <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
-                    <i class="fa-solid fa-spa text-base w-5 text-center"></i>
+                    <i class="fa-solid fa-spa text-base w-6 text-center"></i>
                     <span>Hotel Amenities</span>
+                </a>
+                <a href="{{ route('hotel.room-infos.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.room-infos.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
+                    <i class="fa-solid fa-bed text-base w-6 text-center"></i>
+                    <span>Room Information</span>
                 </a>
                 <a href="{{ route('hotel.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-tv text-base w-5 text-center"></i>

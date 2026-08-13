@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         // Strict Change Detection Observer
         \App\Models\HotelAdmin::observe(\App\Observers\TvConfigObserver::class);
         \App\Models\Amenity::observe(\App\Observers\TvConfigObserver::class);
+        \App\Models\RoomInfo::observe(\App\Observers\TvConfigObserver::class);
         \App\Models\Guest::observe(\App\Observers\TvConfigObserver::class);
         \App\Models\TvTemplate::observe(\App\Observers\TvConfigObserver::class);
     }

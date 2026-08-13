@@ -169,6 +169,16 @@
             </div>
         </a>
 
+        <a href="{{ route('hotel.room-infos.index') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-indigo-500/40 transition-all flex items-start space-x-4">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-600/10 text-indigo-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                <i class="fa-solid fa-bed"></i>
+            </div>
+            <div class="space-y-1">
+                <h4 class="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Manage Room Info</h4>
+                <p class="text-xs text-slate-500 font-medium leading-relaxed">Customize room details, icons, 16:9 images, and sort order.</p>
+            </div>
+        </a>
+
         <a href="{{ route('hotel.hotel-info') }}" class="group bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:border-pink-500/40 transition-all flex items-start space-x-4">
             <div class="w-12 h-12 rounded-2xl bg-pink-600/10 text-pink-600 flex items-center justify-center text-xl shrink-0 group-hover:bg-pink-600 group-hover:text-white transition-all">
                 <i class="fa-solid fa-images"></i>

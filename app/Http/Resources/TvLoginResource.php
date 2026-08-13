@@ -88,6 +88,24 @@ class TvLoginResource extends JsonResource
             ];
         }
 
+        // Fetch active room info items ordered by sr_no asc
+        $roomInfos = \App\Models\RoomInfo::query()
+            ->where('hotel_admin_id', $hotel->id)
+            ->where('status', true)
+            ->orderBy('sr_no', 'asc')
+            ->get();
+
+        $roomInfoList = [];
+        foreach ($roomInfos as $info) {
+            $roomInfoList[] = [
+                'sr_no' => (int) $info->sr_no,
+                'title' => $info->title,
+                'icon' => $info->icon ?? 'fa-solid fa-bed',
+                'description' => $info->description ?? '',
+                'image_url' => $info->image ? asset($info->image) : null,
+            ];
+        }
+
         // Format hotel gallery images asset URLs
         $galleryImages = [];
         if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
@@ -147,6 +165,7 @@ class TvLoginResource extends JsonResource
                 'active_ott' => $activeOttList,
                 'menus' => $menusList,
                 'amenities' => $amenitiesList,
+                'room_info' => $roomInfoList,
             ],
         ];
     }
