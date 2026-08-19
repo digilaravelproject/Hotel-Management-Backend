@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\HotelAdmin;
 use App\Models\Plan;
 use App\Mail\HotelRegisteredMail;
+use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
@@ -76,8 +77,8 @@ class RegistrationController extends Controller
             'phone' => 'required|string|max:20',
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
-            'hotel_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'hotel_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'hotel_logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'hotel_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'room_count' => 'required|integer|min:1',
             'plan_id' => 'required|exists:plans,id',
             'razorpay_order_id' => 'required|string',
@@ -107,21 +108,27 @@ class RegistrationController extends Controller
             }
         }
 
-        // Handle file uploads
+        // Handle file uploads with WebP conversion
         $logoPath = null;
         if ($request->hasFile('hotel_logo')) {
-            $logo = $request->file('hotel_logo');
-            $logoName = time() . '_logo_' . Str::random(8) . '.' . $logo->getClientOriginalExtension();
-            $logo->move(public_path('uploads/hotel_logos'), $logoName);
-            $logoPath = 'uploads/hotel_logos/' . $logoName;
+            $logoPath = ImageHelper::compressAndConvertToWebp(
+                $request->file('hotel_logo'),
+                'uploads/hotel_logos',
+                500,
+                'logo',
+                1200
+            );
         }
 
         $imagePath = null;
         if ($request->hasFile('hotel_image')) {
-            $image = $request->file('hotel_image');
-            $imageName = time() . '_image_' . Str::random(8) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/hotel_images'), $imageName);
-            $imagePath = 'uploads/hotel_images/' . $imageName;
+            $imagePath = ImageHelper::compressAndConvertToWebp(
+                $request->file('hotel_image'),
+                'uploads/hotel_images',
+                1000,
+                'cover',
+                2560
+            );
         }
 
         // Generate License Key (XXXX-XXXX-XXXX-XXXX)

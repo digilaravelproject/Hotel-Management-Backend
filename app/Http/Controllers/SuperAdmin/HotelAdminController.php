@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HotelAdmin;
 use App\Models\Plan;
+use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -123,10 +124,10 @@ class HotelAdminController extends Controller
             'description' => 'nullable|string|max:1000',
             'purchase_date' => 'nullable|date',
             'expiry_date' => 'nullable|date|after_or_equal:purchase_date',
-            'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:4096',
+            'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
+            'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'slider_images' => 'nullable|array|max:10',
-            'slider_images.*' => 'image|mimes:jpeg,png,jpg|max:4096',
+            'slider_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
         $data = [
@@ -155,36 +156,47 @@ class HotelAdminController extends Controller
             $data['password'] = Hash::make($request->password);
         }
 
-        // Handle logo replacement
+        // Handle logo replacement with WebP conversion
         if ($request->hasFile('hotel_logo')) {
-            if ($hotel->hotel_logo && file_exists(public_path($hotel->hotel_logo))) {
-                @unlink(public_path($hotel->hotel_logo));
+            if ($hotel->hotel_logo) {
+                ImageHelper::deleteFile($hotel->hotel_logo);
             }
-            $logo = $request->file('hotel_logo');
-            $logoName = time() . '_logo_' . Str::random(8) . '.' . $logo->getClientOriginalExtension();
-            $logo->move(public_path('uploads/hotel_logos'), $logoName);
-            $data['hotel_logo'] = 'uploads/hotel_logos/' . $logoName;
+            $data['hotel_logo'] = ImageHelper::compressAndConvertToWebp(
+                $request->file('hotel_logo'),
+                'uploads/hotel_logos',
+                500,
+                'logo',
+                1200
+            );
         }
 
-        // Handle cover image replacement
+        // Handle cover image replacement with WebP conversion
         if ($request->hasFile('hotel_image')) {
-            if ($hotel->hotel_image && file_exists(public_path($hotel->hotel_image))) {
-                @unlink(public_path($hotel->hotel_image));
+            if ($hotel->hotel_image) {
+                ImageHelper::deleteFile($hotel->hotel_image);
             }
-            $image = $request->file('hotel_image');
-            $imageName = time() . '_cover_' . Str::random(8) . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('uploads/hotel_images'), $imageName);
-            $data['hotel_image'] = 'uploads/hotel_images/' . $imageName;
+            $data['hotel_image'] = ImageHelper::compressAndConvertToWebp(
+                $request->file('hotel_image'),
+                'uploads/hotel_images',
+                1000,
+                'cover',
+                2560
+            );
         }
 
-        // Handle slider uploads
+        // Handle slider uploads with WebP conversion
         if ($request->hasFile('slider_images')) {
             $existingSliders = $hotel->slider_images ?? [];
             if (count($existingSliders) + count($request->file('slider_images')) <= 10) {
                 foreach ($request->file('slider_images') as $file) {
-                    $fileName = time() . '_slider_' . Str::random(8) . '.' . $file->getClientOriginalExtension();
-                    $file->move(public_path('uploads/hotel_sliders'), $fileName);
-                    $existingSliders[] = 'uploads/hotel_sliders/' . $fileName;
+                    $savedSlider = ImageHelper::compressAndConvertToWebp(
+                        $file,
+                        'uploads/hotel_sliders',
+                        800,
+                        'slider',
+                        2560
+                    );
+                    $existingSliders[] = $savedSlider;
                 }
                 $data['slider_images'] = $existingSliders;
             }
@@ -257,6 +269,24 @@ class HotelAdminController extends Controller
     public function destroy(int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
+
+        if ($hotel->hotel_logo) {
+            ImageHelper::deleteFile($hotel->hotel_logo);
+        }
+        if ($hotel->hotel_image) {
+            ImageHelper::deleteFile($hotel->hotel_image);
+        }
+        if ($hotel->slider_images && is_array($hotel->slider_images)) {
+            foreach ($hotel->slider_images as $slider) {
+                ImageHelper::deleteFile($slider);
+            }
+        }
+        if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
+            foreach ($hotel->hotel_gallery_images as $gallery) {
+                ImageHelper::deleteFile($gallery);
+            }
+        }
+
         $hotel->delete();
 
         return redirect()->route('super-admin.hotels.index')

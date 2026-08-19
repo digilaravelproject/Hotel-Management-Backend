@@ -44,7 +44,13 @@ class RoomInfoController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/room_infos', 1000);
+            $imagePath = ImageHelper::compressAndConvertToWebp(
+                $request->file('image'),
+                'uploads/room_infos',
+                800,
+                'room_info',
+                1920
+            );
         }
 
         RoomInfo::create([
@@ -89,10 +95,16 @@ class RoomInfoController extends Controller
 
         $imagePath = $roomInfo->image;
         if ($request->hasFile('image')) {
-            if ($roomInfo->image && file_exists(public_path($roomInfo->image))) {
-                @unlink(public_path($roomInfo->image));
+            if ($roomInfo->image) {
+                ImageHelper::deleteFile($roomInfo->image);
             }
-            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/room_infos', 1000);
+            $imagePath = ImageHelper::compressAndConvertToWebp(
+                $request->file('image'),
+                'uploads/room_infos',
+                800,
+                'room_info',
+                1920
+            );
         }
 
         $roomInfo->update([
@@ -122,8 +134,8 @@ class RoomInfoController extends Controller
         $hotel = Auth::guard('hotel_admin')->user();
         $roomInfo = RoomInfo::where('hotel_admin_id', $hotel->id)->findOrFail($id);
 
-        if ($roomInfo->image && file_exists(public_path($roomInfo->image))) {
-            @unlink(public_path($roomInfo->image));
+        if ($roomInfo->image) {
+            ImageHelper::deleteFile($roomInfo->image);
         }
 
         $roomInfo->delete();

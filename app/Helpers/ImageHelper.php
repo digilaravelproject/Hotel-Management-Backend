@@ -8,77 +8,212 @@ use Illuminate\Support\Str;
 class ImageHelper
 {
     /**
-     * Compress an uploaded image file, convert it to high-quality WebP format (target <= 1MB),
-     * and save it to the specified public storage directory.
+     * Compress an uploaded image file, convert it to high-definition WebP format,
+     * maintaining crisp quality for 4K / 64-inch TV displays while minimizing file size (KB).
      *
-     * @param UploadedFile $file The uploaded image file (supports JPEG, PNG, WEBP, SVG, etc.)
-     * @param string $folder Relative path inside storage/app/public (e.g. 'uploads/amenities')
-     * @param int $targetMaxKb Target max size in KB (default 1000 KB = ~1MB)
-     * @return string Relative public asset path (e.g. 'storage/uploads/amenities/filename.webp')
+     * @param UploadedFile|string $file Uploaded file instance or local path
+     * @param string $folder Destination directory relative to public/ (e.g. 'uploads/hotel_logos')
+     * @param int $targetMaxKb Target maximum size in KB (default: 800 KB)
+     * @param string $prefix File name prefix (e.g. 'logo', 'cover', 'slider', 'amenity')
+     * @param int $maxDimension Maximum width or height constraint in pixels (default: 2560px for 4K/64" TV)
+     * @return string Relative asset path for storage and display (e.g. 'uploads/hotel_logos/logo_1720000000_a1b2c3d4.webp')
      */
-    public static function compressAndConvertToWebp(UploadedFile $file, string $folder = 'uploads/amenities', int $targetMaxKb = 1000): string
-    {
-        $destinationPath = storage_path('app/public/' . trim($folder, '/'));
+    public static function compressAndConvertToWebp(
+        UploadedFile|string $file,
+        string $folder = 'uploads/general',
+        int $targetMaxKb = 800,
+        string $prefix = 'img',
+        int $maxDimension = 2560
+    ): string {
+        $cleanFolder = trim(str_replace('\\', '/', $folder), '/');
+        // Clean leading 'storage/' if present to standardize on public/
+        if (str_starts_with($cleanFolder, 'public/')) {
+            $cleanFolder = substr($cleanFolder, 7);
+        }
+
+        $destinationPath = public_path($cleanFolder);
 
         if (!file_exists($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
+            @mkdir($destinationPath, 0755, true);
         }
 
-        $extension = strtolower($file->getClientOriginalExtension());
-        $filename = 'amenity_' . time() . '_' . Str::random(8);
+        $safePrefix = preg_replace('/[^a-zA-Z0-9_-]/', '', $prefix) ?: 'img';
+        $filename = $safePrefix . '_' . time() . '_' . Str::random(8);
 
-        // SVG files are vector graphics - store directly without raster conversion
-        if ($extension === 'svg' || $file->getClientMimeType() === 'image/svg+xml') {
+        $isUploadedFile = $file instanceof UploadedFile;
+        $extension = strtolower($isUploadedFile ? $file->getClientOriginalExtension() : pathinfo($file, PATHINFO_EXTENSION));
+        $mime = $isUploadedFile ? $file->getClientMimeType() : (@mime_content_type($file) ?: '');
+
+        // 1. Vector graphics (SVG): Keep original SVG format for infinite vector scaling without rasterization
+        if ($extension === 'svg' || $mime === 'image/svg+xml') {
             $savedName = $filename . '.svg';
-            $file->move($destinationPath, $savedName);
-            return 'storage/' . trim($folder, '/') . '/' . $savedName;
+            if ($isUploadedFile) {
+                $file->move($destinationPath, $savedName);
+            } else {
+                @copy($file, $destinationPath . DIRECTORY_SEPARATOR . $savedName);
+            }
+            return $cleanFolder . '/' . $savedName;
         }
 
-        // Read raw file content into GD image resource
-        $fileContent = file_get_contents($file->getRealPath());
+        // 2. Read source file content into memory
+        $filePath = $isUploadedFile ? $file->getRealPath() : $file;
+        $fileContent = @file_get_contents($filePath);
+
+        if ($fileContent === false) {
+            // Fallback move
+            $savedName = $filename . '.' . ($extension ?: 'jpg');
+            if ($isUploadedFile) {
+                $file->move($destinationPath, $savedName);
+            }
+            return $cleanFolder . '/' . $savedName;
+        }
+
         $sourceImage = @imagecreatefromstring($fileContent);
 
         if (!$sourceImage) {
-            // Fallback to standard Laravel storage if GD cannot parse the image
-            $path = $file->store($folder, 'public');
-            return 'storage/' . $path;
+            // Fallback if GD cannot parse format
+            $savedName = $filename . '.' . ($extension ?: 'jpg');
+            if ($isUploadedFile) {
+                $file->move($destinationPath, $savedName);
+            }
+            return $cleanFolder . '/' . $savedName;
         }
 
-        $width = imagesx($sourceImage);
-        $height = imagesy($sourceImage);
+        // 3. Fix JPEG / Phone camera EXIF orientation if available
+        if (function_exists('exif_read_data') && ($extension === 'jpg' || $extension === 'jpeg')) {
+            try {
+                $exif = @exif_read_data($filePath);
+                if (!empty($exif['Orientation'])) {
+                    switch ($exif['Orientation']) {
+                        case 3:
+                            $rotated = imagerotate($sourceImage, 180, 0);
+                            imagedestroy($sourceImage);
+                            $sourceImage = $rotated;
+                            break;
+                        case 6:
+                            $rotated = imagerotate($sourceImage, -90, 0);
+                            imagedestroy($sourceImage);
+                            $sourceImage = $rotated;
+                            break;
+                        case 8:
+                            $rotated = imagerotate($sourceImage, 90, 0);
+                            imagedestroy($sourceImage);
+                            $sourceImage = $rotated;
+                            break;
+                    }
+                }
+            } catch (\Throwable $e) {
+                // Ignore EXIF read errors
+            }
+        }
 
-        // Create a truecolor image buffer preserving transparency for WebP
-        $canvas = imagecreatetruecolor($width, $height);
+        $origWidth = imagesx($sourceImage);
+        $origHeight = imagesy($sourceImage);
+
+        // 4. Calculate dimensions - downscale only if unusually large to preserve TV sharpness without lag
+        $targetWidth = $origWidth;
+        $targetHeight = $origHeight;
+
+        if ($origWidth > $maxDimension || $origHeight > $maxDimension) {
+            if ($origWidth >= $origHeight) {
+                $targetWidth = $maxDimension;
+                $targetHeight = (int) round(($origHeight / $origWidth) * $maxDimension);
+            } else {
+                $targetHeight = $maxDimension;
+                $targetWidth = (int) round(($origWidth / $origHeight) * $maxDimension);
+            }
+        }
+
+        // 5. Create TrueColor canvas with full Alpha channel transparency support
+        $canvas = imagecreatetruecolor($targetWidth, $targetHeight);
         imagealphablending($canvas, false);
         imagesavealpha($canvas, true);
+        $transparent = imagecolorallocatealpha($canvas, 255, 255, 255, 127);
+        imagefilledrectangle($canvas, 0, 0, $targetWidth, $targetHeight, $transparent);
 
-        // Copy source image to canvas
-        imagecopyresampled($canvas, $sourceImage, 0, 0, 0, 0, $width, $height, $width, $height);
+        // Resample smoothly to canvas
+        imagecopyresampled(
+            $canvas,
+            $sourceImage,
+            0, 0, 0, 0,
+            $targetWidth,
+            $targetHeight,
+            $origWidth,
+            $origHeight
+        );
 
         $savedName = $filename . '.webp';
-        $fullPath = $destinationPath . '/' . $savedName;
+        $fullPath = $destinationPath . DIRECTORY_SEPARATOR . $savedName;
 
-        // Start with high quality (90) for TV displays, iteratively compress if size > targetMaxKb
-        $quality = 90;
+        // 6. Encode to WebP with high initial quality (88) for 64" TV display crispness
+        $quality = 88;
+        $finalImageData = null;
+
         do {
             ob_start();
             imagewebp($canvas, null, $quality);
             $imageData = ob_get_clean();
             $fileSizeKb = strlen($imageData) / 1024;
 
-            if ($fileSizeKb <= $targetMaxKb || $quality <= 30) {
-                file_put_contents($fullPath, $imageData);
+            $finalImageData = $imageData;
+
+            // Stop if under target size or if quality threshold reached
+            if ($fileSizeKb <= $targetMaxKb || $quality <= 68) {
                 break;
             }
 
-            // Reduce quality slightly for next iteration
-            $quality -= 8;
-        } while ($quality >= 25);
+            // Gently reduce quality to preserve pristine visual details
+            $quality -= 5;
+        } while ($quality >= 65);
 
-        // Free GD memory
+        if ($finalImageData !== null) {
+            file_put_contents($fullPath, $finalImageData);
+        }
+
+        // 7. Free GD memory resources
         imagedestroy($sourceImage);
         imagedestroy($canvas);
 
-        return 'storage/' . trim($folder, '/') . '/' . $savedName;
+        return $cleanFolder . '/' . $savedName;
+    }
+
+    /**
+     * Delete an existing image file from public or storage path safely.
+     *
+     * @param string|null $path Relative path stored in database
+     * @return bool True if deleted or already non-existent, false on failure
+     */
+    public static function deleteFile(?string $path): bool
+    {
+        if (empty($path)) {
+            return false;
+        }
+
+        $cleanPath = trim(str_replace('\\', '/', $path), '/');
+
+        // Check standard public path
+        $publicFile = public_path($cleanPath);
+        if (file_exists($publicFile) && is_file($publicFile)) {
+            @unlink($publicFile);
+            return true;
+        }
+
+        // Check storage symlink variants
+        if (str_starts_with($cleanPath, 'storage/')) {
+            $storageSubPath = substr($cleanPath, 8);
+            $realStorage = storage_path('app/public/' . $storageSubPath);
+            if (file_exists($realStorage) && is_file($realStorage)) {
+                @unlink($realStorage);
+                return true;
+            }
+        } else {
+            $realStorage = storage_path('app/public/' . $cleanPath);
+            if (file_exists($realStorage) && is_file($realStorage)) {
+                @unlink($realStorage);
+                return true;
+            }
+        }
+
+        return false;
     }
 }

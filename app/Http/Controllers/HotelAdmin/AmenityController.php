@@ -45,7 +45,13 @@ class AmenityController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/amenities', 1000);
+            $imagePath = ImageHelper::compressAndConvertToWebp(
+                $request->file('image'),
+                'uploads/amenities',
+                800,
+                'amenity',
+                1920
+            );
         }
 
         Amenity::create([
@@ -90,12 +96,18 @@ class AmenityController extends Controller
 
         $imagePath = $amenity->image;
         if ($request->hasFile('image')) {
-            // Remove old image file if exists
-            if ($amenity->image && file_exists(public_path($amenity->image))) {
-                @unlink(public_path($amenity->image));
+            // Remove old image file safely
+            if ($amenity->image) {
+                ImageHelper::deleteFile($amenity->image);
             }
 
-            $imagePath = ImageHelper::compressAndConvertToWebp($request->file('image'), 'uploads/amenities', 1000);
+            $imagePath = ImageHelper::compressAndConvertToWebp(
+                $request->file('image'),
+                'uploads/amenities',
+                800,
+                'amenity',
+                1920
+            );
         }
 
         $amenity->update([
@@ -125,8 +137,8 @@ class AmenityController extends Controller
         $hotel = Auth::guard('hotel_admin')->user();
         $amenity = Amenity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
         
-        if ($amenity->image && file_exists(public_path($amenity->image))) {
-            @unlink(public_path($amenity->image));
+        if ($amenity->image) {
+            ImageHelper::deleteFile($amenity->image);
         }
 
         $amenity->delete();
