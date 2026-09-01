@@ -35,10 +35,10 @@ class AmenityController extends Controller
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:250',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Max 5MB (5120KB)
         ], [
-            'description.max' => 'Description payload cannot exceed 100 characters.',
+            'description.max' => 'Description payload cannot exceed 250 characters.',
             'image.max' => 'The image file size must not exceed 5MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
@@ -86,10 +86,10 @@ class AmenityController extends Controller
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:250',
             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120', // Max 5MB (5120KB)
         ], [
-            'description.max' => 'Description payload cannot exceed 100 characters.',
+            'description.max' => 'Description payload cannot exceed 250 characters.',
             'image.max' => 'The image file size must not exceed 5MB.',
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);

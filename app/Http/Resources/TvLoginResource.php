@@ -100,17 +100,33 @@ class TvLoginResource extends JsonResource
             $roomInfoList[] = [
                 'sr_no' => (int) $info->sr_no,
                 'title' => $info->title,
-                'icon' => $info->icon ?? 'fa-solid fa-bed',
                 'description' => $info->description ?? '',
+                'specifications' => is_array($info->specifications) ? $info->specifications : [],
                 'image_url' => $info->image ? asset($info->image) : null,
             ];
         }
 
-        // Format hotel gallery images asset URLs
+        // Format hotel gallery images with individual details
         $galleryImages = [];
         if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
-            foreach ($hotel->hotel_gallery_images as $path) {
-                $galleryImages[] = asset($path);
+            foreach ($hotel->hotel_gallery_images as $k => $item) {
+                if (is_array($item)) {
+                    $galleryImages[] = [
+                        'id' => $item['id'] ?? ('gal_' . $k),
+                        'title' => $item['title'] ?? ('Facility #' . ($k + 1)),
+                        'description' => $item['description'] ?? '',
+                        'features' => is_array($item['features'] ?? null) ? $item['features'] : [],
+                        'image_url' => !empty($item['image']) ? asset($item['image']) : null,
+                    ];
+                } else {
+                    $galleryImages[] = [
+                        'id' => 'gal_' . md5($item),
+                        'title' => 'Facility #' . ($k + 1),
+                        'description' => '',
+                        'features' => [],
+                        'image_url' => asset($item),
+                    ];
+                }
             }
         }
 

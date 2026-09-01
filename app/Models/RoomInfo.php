@@ -15,14 +15,15 @@ class RoomInfo extends Model
         'hotel_admin_id',
         'sr_no',
         'title',
-        'icon',
         'image',
         'description',
+        'specifications',
         'status',
     ];
 
     protected $casts = [
         'sr_no' => 'integer',
+        'specifications' => 'array',
         'status' => 'boolean',
     ];
 

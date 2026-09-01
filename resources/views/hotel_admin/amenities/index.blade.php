@@ -207,14 +207,14 @@
                         </div>
 
                         <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
-                            Enter details displayed on room TVs when guests highlight this amenity. Max 100 characters allowed.
+                            Enter details displayed on room TVs when guests highlight this amenity. Max 250 characters allowed.
                         </p>
 
                         <div class="space-y-2">
                             <textarea id="amenityDescriptionInput" 
                                       name="description" 
                                       rows="5" 
-                                      maxlength="100" 
+                                      maxlength="250" 
                                       oninput="updateCharCounter(this)" 
                                       placeholder="Provide a concise description for guest TV interface..." 
                                       class="w-full p-3.5 bg-white border border-slate-200 rounded-2xl text-xs font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-indigo-600 focus:ring-4 focus:ring-indigo-600/10 transition-all resize-none"></textarea>
@@ -223,7 +223,7 @@
                             <div class="flex items-center justify-between text-[11px] font-bold">
                                 <span id="charLimitWarning" class="text-slate-400 font-medium">Character Limit</span>
                                 <span id="charCounter" class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100">
-                                    100 / 100 characters remaining
+                                    250 / 250 characters remaining
                                 </span>
                             </div>
                         </div>
@@ -270,15 +270,15 @@
     const storeUrl = "{{ route('hotel.amenities.store') }}";
 
     function updateCharCounter(textarea) {
-        const maxLength = 100;
+        const maxLength = 250;
         const currentLength = textarea.value.length;
         const remaining = maxLength - currentLength;
         const counterEl = document.getElementById('charCounter');
         const warningEl = document.getElementById('charLimitWarning');
 
-        counterEl.textContent = `${remaining} / 100 characters remaining`;
+        counterEl.textContent = `${remaining} / 250 characters remaining`;
 
-        if (remaining <= 10) {
+        if (remaining <= 15) {
             counterEl.className = 'text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg border border-rose-200 animate-pulse';
             warningEl.textContent = 'Near limit!';
             warningEl.className = 'text-rose-600 font-bold';

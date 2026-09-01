@@ -27,104 +27,128 @@ class RoomInfoController extends Controller
     /**
      * Store a newly created room info item with image compression.
      */
-    public function store(Request $request)
-    {
-        $hotel = Auth::guard('hotel_admin')->user();
+     public function store(Request $request)
+     {
+         $hotel = Auth::guard('hotel_admin')->user();
 
-        $request->validate([
-            'sr_no' => 'required|integer|min:1',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
-        ], [
-            'description.max' => 'Description cannot exceed 500 characters.',
-            'image.max' => 'The image file size must not exceed 5MB.',
-            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
-        ]);
+         $request->validate([
+             'sr_no' => 'required|integer|min:1',
+             'title' => 'required|string|max:255',
+             'description' => 'nullable|string|max:250',
+             'specifications' => 'nullable|array|max:4',
+             'specifications.*' => 'nullable|string|max:100',
+             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
+         ], [
+             'description.max' => 'Description payload cannot exceed 250 characters.',
+             'specifications.max' => 'You can specify a maximum of 4 room specifications.',
+             'image.max' => 'The image file size must not exceed 5MB.',
+             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
+         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = ImageHelper::compressAndConvertToWebp(
-                $request->file('image'),
-                'uploads/room_infos',
-                800,
-                'room_info',
-                1920
-            );
-        }
+         $imagePath = null;
+         if ($request->hasFile('image')) {
+             $imagePath = ImageHelper::compressAndConvertToWebp(
+                 $request->file('image'),
+                 'uploads/room_infos',
+                 800,
+                 'room_info',
+                 1920
+             );
+         }
 
-        RoomInfo::create([
-            'hotel_admin_id' => $hotel->id,
-            'sr_no' => $request->sr_no,
-            'title' => $request->title,
-            'icon' => $request->icon ?? 'fa-solid fa-bed',
-            'image' => $imagePath,
-            'description' => $request->description,
-            'status' => true,
-        ]);
+         // Filter and clean specifications (max 4)
+         $specifications = [];
+         if ($request->has('specifications') && is_array($request->specifications)) {
+             $specifications = array_values(array_filter($request->specifications, function($val) {
+                 return !empty(trim($val));
+             }));
+             $specifications = array_slice($specifications, 0, 4);
+         }
 
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Room Info added & synced to TVs in real-time!'
-            ]);
-        }
+         RoomInfo::create([
+             'hotel_admin_id' => $hotel->id,
+             'sr_no' => $request->sr_no,
+             'title' => $request->title,
+             'image' => $imagePath,
+             'description' => $request->description,
+             'specifications' => $specifications,
+             'status' => true,
+         ]);
 
-        return redirect()->route('hotel.room-infos.index')
-                         ->with('success', 'Room Info added successfully!');
-    }
+         if ($request->expectsJson() || $request->ajax()) {
+             return response()->json([
+                 'status' => 'success',
+                 'message' => 'Room Info added & synced to TVs in real-time!'
+             ]);
+         }
+
+         return redirect()->route('hotel.room-infos.index')
+                          ->with('success', 'Room Info added successfully!');
+     }
 
     /**
      * Update the specified room info item.
      */
-    public function update(Request $request, $id)
-    {
-        $hotel = Auth::guard('hotel_admin')->user();
-        $roomInfo = RoomInfo::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+     public function update(Request $request, $id)
+     {
+         $hotel = Auth::guard('hotel_admin')->user();
+         $roomInfo = RoomInfo::where('hotel_admin_id', $hotel->id)->findOrFail($id);
 
-        $request->validate([
-            'sr_no' => 'required|integer|min:1',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
-        ], [
-            'description.max' => 'Description cannot exceed 500 characters.',
-            'image.max' => 'The image file size must not exceed 5MB.',
-            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
-        ]);
+         $request->validate([
+             'sr_no' => 'required|integer|min:1',
+             'title' => 'required|string|max:255',
+             'description' => 'nullable|string|max:250',
+             'specifications' => 'nullable|array|max:4',
+             'specifications.*' => 'nullable|string|max:100',
+             'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
+         ], [
+             'description.max' => 'Description payload cannot exceed 250 characters.',
+             'specifications.max' => 'You can specify a maximum of 4 room specifications.',
+             'image.max' => 'The image file size must not exceed 5MB.',
+             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
+         ]);
 
-        $imagePath = $roomInfo->image;
-        if ($request->hasFile('image')) {
-            if ($roomInfo->image) {
-                ImageHelper::deleteFile($roomInfo->image);
-            }
-            $imagePath = ImageHelper::compressAndConvertToWebp(
-                $request->file('image'),
-                'uploads/room_infos',
-                800,
-                'room_info',
-                1920
-            );
-        }
+         $imagePath = $roomInfo->image;
+         if ($request->hasFile('image')) {
+             if ($roomInfo->image) {
+                 ImageHelper::deleteFile($roomInfo->image);
+             }
+             $imagePath = ImageHelper::compressAndConvertToWebp(
+                 $request->file('image'),
+                 'uploads/room_infos',
+                 800,
+                 'room_info',
+                 1920
+             );
+         }
 
-        $roomInfo->update([
-            'sr_no' => $request->sr_no,
-            'title' => $request->title,
-            'icon' => $request->icon ?? 'fa-solid fa-bed',
-            'image' => $imagePath,
-            'description' => $request->description,
-        ]);
+         // Filter and clean specifications (max 4)
+         $specifications = [];
+         if ($request->has('specifications') && is_array($request->specifications)) {
+             $specifications = array_values(array_filter($request->specifications, function($val) {
+                 return !empty(trim($val));
+             }));
+             $specifications = array_slice($specifications, 0, 4);
+         }
 
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Room Info updated & synced to TVs in real-time!'
-            ]);
-        }
+         $roomInfo->update([
+             'sr_no' => $request->sr_no,
+             'title' => $request->title,
+             'image' => $imagePath,
+             'description' => $request->description,
+             'specifications' => $specifications,
+         ]);
 
-        return redirect()->route('hotel.room-infos.index')
-                         ->with('success', 'Room Info updated successfully!');
-    }
+         if ($request->expectsJson() || $request->ajax()) {
+             return response()->json([
+                 'status' => 'success',
+                 'message' => 'Room Info updated & synced to TVs in real-time!'
+             ]);
+         }
+
+         return redirect()->route('hotel.room-infos.index')
+                          ->with('success', 'Room Info updated successfully!');
+     }
 
     /**
      * Remove the specified room info item.

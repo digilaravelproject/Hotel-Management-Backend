@@ -45,6 +45,9 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::post('/hotel/hotel-info', [ProfileController::class, 'updateHotelInfo']);
     Route::post('/hotel/hotel-info/delete-slider', [ProfileController::class, 'deleteSliderImage'])->name('hotel.hotel-info.delete-slider');
     Route::post('/hotel/hotel-info/delete-gallery', [ProfileController::class, 'deleteGalleryImage'])->name('hotel.hotel-info.delete-gallery');
+    Route::post('/hotel/hotel-info/gallery/store', [ProfileController::class, 'storeGalleryItem'])->name('hotel.hotel-info.gallery.store');
+    Route::post('/hotel/hotel-info/gallery/{id}/update', [ProfileController::class, 'updateGalleryItem'])->name('hotel.hotel-info.gallery.update');
+    Route::post('/hotel/hotel-info/gallery/{id}/delete', [ProfileController::class, 'deleteGalleryItem'])->name('hotel.hotel-info.gallery.delete');
     
     // Amenities CRUD
     Route::get('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');
