@@ -178,7 +178,7 @@ class ProfileController extends Controller
             
             $data['hotel_gallery_images'] = $existingGallery;
         }
-
+dd($data);
         $hotelAdmin->update($data);
 
         if ($request->expectsJson() || $request->ajax()) {
