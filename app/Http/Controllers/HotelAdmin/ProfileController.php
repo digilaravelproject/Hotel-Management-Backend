@@ -330,6 +330,43 @@ class ProfileController extends Controller
     }
 
     /**
+     * Helper to match a gallery item by any ID representation
+     */
+    private function matchGalleryItem($item, $key, $targetId): bool
+    {
+        $targetId = (string) $targetId;
+        $cleanTargetId = str_starts_with($targetId, 'gal_') ? substr($targetId, 4) : $targetId;
+
+        // 1. Direct index match (e.g. 0, "0", "gal_0")
+        if ((string)$key === $targetId || (string)$key === $cleanTargetId || ('gal_' . $key) === $targetId) {
+            return true;
+        }
+
+        $imagePath = is_array($item) ? ($item['image'] ?? '') : (string) $item;
+        $itemId = is_array($item) ? ($item['id'] ?? '') : '';
+
+        // 2. Stored ID match
+        if (!empty($itemId)) {
+            if ($itemId === $targetId || $itemId === $cleanTargetId || ('gal_' . $itemId) === $targetId) {
+                return true;
+            }
+        }
+
+        // 3. MD5 hash match
+        if (!empty($imagePath)) {
+            $hash = md5($imagePath);
+            if ($hash === $targetId || $hash === $cleanTargetId || ('gal_' . $hash) === $targetId) {
+                return true;
+            }
+            if ($imagePath === $targetId || $imagePath === $cleanTargetId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Update a single structured hotel info media / gallery item
      */
     public function updateGalleryItem(Request $request, $id)
@@ -360,8 +397,7 @@ class ProfileController extends Controller
         }
 
         foreach ($gallery as $key => $item) {
-            $itemId = is_array($item) ? ($item['id'] ?? md5($item['image'] ?? $key)) : md5($item);
-            if ($itemId === $id || (string)$key === (string)$id) {
+            if ($this->matchGalleryItem($item, $key, $id)) {
                 $oldImagePath = is_array($item) ? ($item['image'] ?? '') : $item;
                 $newImagePath = $oldImagePath;
 
@@ -379,7 +415,7 @@ class ProfileController extends Controller
                 }
 
                 $gallery[$key] = [
-                    'id' => is_array($item) && isset($item['id']) ? $item['id'] : 'gal_' . uniqid(),
+                    'id' => is_array($item) && !empty($item['id']) ? $item['id'] : ('gal_' . uniqid()),
                     'title' => $request->title,
                     'description' => $request->description,
                     'features' => $features,
@@ -417,8 +453,7 @@ class ProfileController extends Controller
         $found = false;
 
         foreach ($gallery as $key => $item) {
-            $itemId = is_array($item) ? ($item['id'] ?? md5($item['image'] ?? $key)) : md5($item);
-            if ($itemId === $id || (string)$key === (string)$id) {
+            if ($this->matchGalleryItem($item, $key, $id)) {
                 $imagePath = is_array($item) ? ($item['image'] ?? '') : $item;
                 if ($imagePath) {
                     ImageHelper::deleteFile($imagePath);
