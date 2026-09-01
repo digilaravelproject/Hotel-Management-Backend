@@ -106,20 +106,22 @@ class TvLoginResource extends JsonResource
             ];
         }
 
-        // Format hotel gallery images with individual details
-        $galleryImages = [];
+        // Format hotel facilities / hotel info list
+        $hotelInfoList = [];
         if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
             foreach ($hotel->hotel_gallery_images as $k => $item) {
                 if (is_array($item)) {
-                    $galleryImages[] = [
+                    $hotelInfoList[] = [
+                        'sr_no' => (int) ($k + 1),
                         'id' => $item['id'] ?? ('gal_' . $k),
                         'title' => $item['title'] ?? ('Facility #' . ($k + 1)),
                         'description' => $item['description'] ?? '',
-                        'features' => is_array($item['features'] ?? null) ? $item['features'] : [],
+                        'features' => is_array($item['features'] ?? null) ? array_values($item['features']) : [],
                         'image_url' => !empty($item['image']) ? asset($item['image']) : null,
                     ];
                 } else {
-                    $galleryImages[] = [
+                    $hotelInfoList[] = [
+                        'sr_no' => (int) ($k + 1),
                         'id' => 'gal_' . md5($item),
                         'title' => 'Facility #' . ($k + 1),
                         'description' => '',
@@ -167,7 +169,7 @@ class TvLoginResource extends JsonResource
                     'media' => [
                         'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
                         'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
-                        'hotel_images' => $galleryImages,
+                        'hotel_images' => $hotelInfoList,
                         'slider_images' => $sliders,
                     ],
                     'active_plan' => [
@@ -180,6 +182,7 @@ class TvLoginResource extends JsonResource
                 'guest_info' => $guestInfo,
                 'active_ott' => $activeOttList,
                 'menus' => $menusList,
+                'hotel_info' => $hotelInfoList,
                 'amenities' => $amenitiesList,
                 'room_info' => $roomInfoList,
             ],
