@@ -113,7 +113,6 @@ class TvLoginResource extends JsonResource
                 if (is_array($item)) {
                     $hotelInfoList[] = [
                         'sr_no' => (int) ($k + 1),
-                        'id' => $item['id'] ?? ('gal_' . $k),
                         'title' => $item['title'] ?? ('Facility #' . ($k + 1)),
                         'description' => $item['description'] ?? '',
                         'features' => is_array($item['features'] ?? null) ? array_values($item['features']) : [],
@@ -122,7 +121,6 @@ class TvLoginResource extends JsonResource
                 } else {
                     $hotelInfoList[] = [
                         'sr_no' => (int) ($k + 1),
-                        'id' => 'gal_' . md5($item),
                         'title' => 'Facility #' . ($k + 1),
                         'description' => '',
                         'features' => [],
@@ -165,11 +163,9 @@ class TvLoginResource extends JsonResource
                     'email' => $hotel->email,
                     'phone' => $hotel->phone,
                     'emergency_contacts' => $hotel->emergency_contacts ?? (object) [],
-                    'hotel_amenities' => $hotel->hotel_amenities ?? [],
                     'media' => [
                         'logo_image' => $hotel->hotel_logo ? asset($hotel->hotel_logo) : null,
                         'cover_image' => $hotel->hotel_image ? asset($hotel->hotel_image) : null,
-                        'hotel_images' => $hotelInfoList,
                         'slider_images' => $sliders,
                     ],
                     'active_plan' => [
