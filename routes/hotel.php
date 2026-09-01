@@ -57,6 +57,9 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::get('/hotel/room-infos/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\RoomInfoController::class, 'toggleStatus'])->name('hotel.room-infos.toggle-status');
     Route::resource('/hotel/room-infos', \App\Http\Controllers\HotelAdmin\RoomInfoController::class)->names('hotel.room-infos');
 
+    // Hotel Facilities / Information Media CRUD
+    Route::resource('/hotel/facilities', \App\Http\Controllers\HotelAdmin\HotelFacilityController::class)->names('hotel.facilities');
+
     // Connected TVs & OTT / Menu Configurations
     Route::get('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'showRoomOtt'])->name('hotel.devices.ott');
     Route::post('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'updateRoomOtt']);
