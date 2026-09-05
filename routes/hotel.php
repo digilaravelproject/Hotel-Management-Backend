@@ -82,4 +82,12 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     // Guest Management CRUD
     Route::post('/hotel/guests/{id}/checkout', [HotelGuestController::class, 'checkout'])->name('hotel.guests.checkout');
     Route::resource('/hotel/guests', HotelGuestController::class)->names('hotel.guests');
+
+    // Airport & Flight Settings
+    Route::get('/hotel/flights', [\App\Http\Controllers\HotelAdmin\FlightController::class, 'index'])->name('hotel.flights.index');
+    Route::post('/hotel/flights', [\App\Http\Controllers\HotelAdmin\FlightController::class, 'update'])->name('hotel.flights.update');
+
+    // TV Themes & Styling
+    Route::get('/hotel/themes', [\App\Http\Controllers\HotelAdmin\TvThemeController::class, 'index'])->name('hotel.themes.index');
+    Route::post('/hotel/themes/select', [\App\Http\Controllers\HotelAdmin\TvThemeController::class, 'select'])->name('hotel.themes.select');
 });

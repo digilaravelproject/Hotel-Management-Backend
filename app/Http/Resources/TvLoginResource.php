@@ -54,13 +54,29 @@ class TvLoginResource extends JsonResource
             'check_out_datetime' => $activeGuest->check_out_datetime ? $activeGuest->check_out_datetime->toIso8601String() : null,
         ] : null;
 
-        // Fetch template details dynamically
+        // Fetch template details dynamically based on hotel's selected theme
+        $selectedThemeId = (int) ($hotel->selected_theme_id ?? 1);
+
         $latest = TvTemplate::query()
+            ->where('theme_id', '=', $selectedThemeId)
             ->where('is_active', '=', true)
             ->orderBy('id', 'desc')
             ->first();
 
+        // Fallback to Theme 1 if selected theme has no active build
+        if (!$latest && $selectedThemeId !== 1) {
+            $latest = TvTemplate::query()
+                ->where('theme_id', '=', 1)
+                ->where('is_active', '=', true)
+                ->orderBy('id', 'desc')
+                ->first();
+            if ($latest) {
+                $selectedThemeId = (int) $latest->theme_id;
+            }
+        }
+
         $previous = $latest ? TvTemplate::query()
+            ->where('theme_id', '=', $latest->theme_id)
             ->where('id', '<', $latest->id)
             ->orderBy('id', 'desc')
             ->first() : null;
@@ -138,7 +154,7 @@ class TvLoginResource extends JsonResource
                     'token' => $device->api_token,
                 ],
                 'template' => [
-                    'template_id' => 1,
+                    'template_id' => $latest ? (int) $latest->theme_id : $selectedThemeId,
                     'latest_version' => $latest ? $latest->version : null,
                     'old_version' => $previous ? $previous->version : null,
                     'download_url' => $latest ? url(Storage::url($latest->file_path)) : null,
@@ -181,6 +197,18 @@ class TvLoginResource extends JsonResource
                 'hotel_info' => $hotelInfoList,
                 'amenities' => $amenitiesList,
                 'room_info' => $roomInfoList,
+                'airports' => [
+                    'primary' => $hotel->primaryAirport ? [
+                        'name' => $hotel->primaryAirport->name,
+                        'iata_code' => $hotel->primaryAirport->iata_code,
+                        'city' => $hotel->primaryAirport->city,
+                    ] : null,
+                    'secondary' => $hotel->secondaryAirport ? [
+                        'name' => $hotel->secondaryAirport->name,
+                        'iata_code' => $hotel->secondaryAirport->iata_code,
+                        'city' => $hotel->secondaryAirport->city,
+                    ] : null,
+                ],
             ],
         ];
     }

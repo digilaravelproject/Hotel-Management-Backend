@@ -1,0 +1,212 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use App\Models\Airport;
+
+class AirportSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        $airports = [
+            [
+                'iata_code' => 'BOM',
+                'icao_code' => 'VABB',
+                'name' => 'Chhatrapati Shivaji Maharaj International Airport',
+                'city' => 'Mumbai',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 19.0896,
+                'longitude' => 72.8656,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'NMI',
+                'icao_code' => 'VANM',
+                'name' => 'Navi Mumbai International Airport',
+                'city' => 'Mumbai',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 18.9902,
+                'longitude' => 73.0722,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'DEL',
+                'icao_code' => 'VIDP',
+                'name' => 'Indira Gandhi International Airport',
+                'city' => 'Delhi',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 28.5562,
+                'longitude' => 77.1000,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'HDO',
+                'icao_code' => 'VIDX',
+                'name' => 'Hindon Domestic Airport',
+                'city' => 'Delhi',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 28.7061,
+                'longitude' => 77.3586,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'GOI',
+                'icao_code' => 'VOGO',
+                'name' => 'Dabolim International Airport',
+                'city' => 'Goa',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 15.3808,
+                'longitude' => 73.8314,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'GOX',
+                'icao_code' => 'VOGA',
+                'name' => 'Manohar International Airport (Mopa)',
+                'city' => 'Goa',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 15.7483,
+                'longitude' => 73.8644,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'BLR',
+                'icao_code' => 'VOBL',
+                'name' => 'Kempegowda International Airport',
+                'city' => 'Bangalore',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 13.1986,
+                'longitude' => 77.7066,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'HYD',
+                'icao_code' => 'VOHS',
+                'name' => 'Rajiv Gandhi International Airport',
+                'city' => 'Hyderabad',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 17.2403,
+                'longitude' => 78.4294,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'MAA',
+                'icao_code' => 'VOMM',
+                'name' => 'Chennai International Airport',
+                'city' => 'Chennai',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 12.9941,
+                'longitude' => 80.1709,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'CCU',
+                'icao_code' => 'VECC',
+                'name' => 'Netaji Subhash Chandra Bose International Airport',
+                'city' => 'Kolkata',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 22.6547,
+                'longitude' => 88.4467,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'AMD',
+                'icao_code' => 'VAAH',
+                'name' => 'Sardar Vallabhbhai Patel International Airport',
+                'city' => 'Ahmedabad',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 23.0772,
+                'longitude' => 72.6347,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'PNQ',
+                'icao_code' => 'VAPO',
+                'name' => 'Pune International Airport',
+                'city' => 'Pune',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 18.5822,
+                'longitude' => 73.9197,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'JAI',
+                'icao_code' => 'VIJP',
+                'name' => 'Jaipur International Airport',
+                'city' => 'Jaipur',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 26.8242,
+                'longitude' => 75.8122,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'COK',
+                'icao_code' => 'VOCI',
+                'name' => 'Cochin International Airport',
+                'city' => 'Kochi',
+                'country' => 'India',
+                'timezone' => 'Asia/Kolkata',
+                'latitude' => 10.1556,
+                'longitude' => 76.3913,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'DXB',
+                'icao_code' => 'OMDB',
+                'name' => 'Dubai International Airport',
+                'city' => 'Dubai',
+                'country' => 'United Arab Emirates',
+                'timezone' => 'Asia/Dubai',
+                'latitude' => 25.2532,
+                'longitude' => 55.3657,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'LHR',
+                'icao_code' => 'EGLL',
+                'name' => 'London Heathrow Airport',
+                'city' => 'London',
+                'country' => 'United Kingdom',
+                'timezone' => 'Europe/London',
+                'latitude' => 51.4700,
+                'longitude' => -0.4543,
+                'status' => true,
+            ],
+            [
+                'iata_code' => 'SIN',
+                'icao_code' => 'WSSS',
+                'name' => 'Singapore Changi Airport',
+                'city' => 'Singapore',
+                'country' => 'Singapore',
+                'timezone' => 'Asia/Singapore',
+                'latitude' => 1.3644,
+                'longitude' => 103.9915,
+                'status' => true,
+            ],
+        ];
+
+        foreach ($airports as $airport) {
+            Airport::updateOrCreate(
+                ['iata_code' => $airport['iata_code']],
+                $airport
+            );
+        }
+    }
+}

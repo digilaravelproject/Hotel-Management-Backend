@@ -24,10 +24,13 @@ class HotelAdmin extends Authenticatable
         'hotel_name',
         'hotel_location',
         'city',
+        'primary_airport_id',
+        'secondary_airport_id',
         'hotel_logo',
         'hotel_image',
         'room_count',
         'plan_id',
+        'selected_theme_id',
         'payment_status',
         'razorpay_order_id',
         'razorpay_payment_id',
@@ -71,6 +74,9 @@ class HotelAdmin extends Authenticatable
         'password' => 'hashed',
         'status' => 'boolean',
         'room_count' => 'integer',
+        'selected_theme_id' => 'integer',
+        'primary_airport_id' => 'integer',
+        'secondary_airport_id' => 'integer',
         'emergency_contacts' => 'array',
         'hotel_amenities' => 'array',
         'slider_images' => 'array',
@@ -90,6 +96,22 @@ class HotelAdmin extends Authenticatable
     public function plan()
     {
         return $this->belongsTo(Plan::class, 'plan_id');
+    }
+
+    /**
+     * Get the primary airport for the hotel.
+     */
+    public function primaryAirport()
+    {
+        return $this->belongsTo(Airport::class, 'primary_airport_id');
+    }
+
+    /**
+     * Get the secondary airport for the hotel.
+     */
+    public function secondaryAirport()
+    {
+        return $this->belongsTo(Airport::class, 'secondary_airport_id');
     }
 
     /**

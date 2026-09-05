@@ -76,6 +76,10 @@
                     <i class="fa-solid fa-code-branch text-base w-5 text-center"></i>
                     <span>TV App OTA Releases</span>
                 </a>
+                <a href="{{ route('super-admin.flights.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.flights.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-plane-departure text-base w-5 text-center text-sky-400"></i>
+                    <span>Flights & Airports</span>
+                </a>
                 <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-fire text-base w-5 text-center text-amber-500"></i>
                     <span>FCM Config & Realtime</span>

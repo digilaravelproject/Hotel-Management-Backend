@@ -40,17 +40,34 @@ class TvTemplateController extends Controller
             (int) $device->id,
             $clientVersion,
             function () use ($hotel, $device, $clientVersion, $request) {
-                // Fetch latest active template version
+                // Fetch latest active template version for hotel's selected theme
+                $selectedThemeId = (int) ($hotel->selected_theme_id ?? 1);
                 $latest = \App\Models\TvTemplate::query()
+                    ->where('theme_id', '=', $selectedThemeId)
                     ->where('is_active', '=', true)
                     ->orderBy('id', 'desc')
                     ->first();
 
-                $isUpdateAvailable = false;
+                // Fallback to Theme 1 if selected theme has no active build
+                if (!$latest && $selectedThemeId !== 1) {
+                    $latest = \App\Models\TvTemplate::query()
+                        ->where('theme_id', '=', 1)
+                        ->where('is_active', '=', true)
+                        ->orderBy('id', 'desc')
+                        ->first();
+                }
 
-                if ($latest && $clientVersion !== null) {
-                    // Check if server version is greater than client's version
-                    $isUpdateAvailable = version_compare($latest->version, $clientVersion, '>');
+                $isUpdateAvailable = false;
+                $clientThemeId = $request->query('theme_id') ?? $request->query('template_id');
+
+                if ($latest) {
+                    if ($clientThemeId !== null && (int) $clientThemeId !== (int) $latest->theme_id) {
+                        // Hotel theme switched - force update so TV downloads the new theme
+                        $isUpdateAvailable = true;
+                    } elseif ($clientVersion !== null) {
+                        // Check if server version is greater than client's version
+                        $isUpdateAvailable = version_compare($latest->version, $clientVersion, '>');
+                    }
                 }
 
                 // Eager load the plan relation to avoid N+1 query issues

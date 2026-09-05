@@ -63,6 +63,13 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');
     Route::post('templates/{id}/toggle-active', [SuperTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
 
+    // Flight & Airport Management
+    Route::get('flights', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'index'])->name('flights.index');
+    Route::post('flights/settings', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'updateSettings'])->name('flights.settings.update');
+    Route::post('flights/airports', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'storeAirport'])->name('flights.airports.store');
+    Route::get('flights/airports/{id}/toggle', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'toggleAirportStatus'])->name('flights.airports.toggle');
+    Route::get('flights/refresh/{iata}', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'forceRefresh'])->name('flights.refresh');
+
     // Firebase FCM Real-Time Engine Management
     Route::get('firebase-settings', [SuperFirebaseSettingsController::class, 'index'])->name('firebase-settings.index');
     Route::post('firebase-settings', [SuperFirebaseSettingsController::class, 'update'])->name('firebase-settings.update');

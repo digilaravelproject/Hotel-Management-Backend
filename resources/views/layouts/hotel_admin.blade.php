@@ -88,6 +88,14 @@
                     <i class="fa-solid fa-tv text-base w-5 text-center"></i>
                     <span>Connected TVs</span>
                 </a>
+                <a href="{{ route('hotel.flights.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.flights.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
+                    <i class="fa-solid fa-plane-departure text-base w-5 text-center text-sky-500"></i>
+                    <span>Airport & Flights</span>
+                </a>
+                <a href="{{ route('hotel.themes.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.themes.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
+                    <i class="fa-solid fa-palette text-base w-5 text-center"></i>
+                    <span>TV Themes & Styling</span>
+                </a>
                 <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-users text-base w-5 text-center"></i>
                     <span>In-House Guests</span>
