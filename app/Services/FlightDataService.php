@@ -73,10 +73,39 @@ class FlightDataService
                 'api_key' => $apiKey,
             ]);
 
+            $now = Carbon::now('Asia/Kolkata');
+
+            // DEPARTURES: Filter out stale past flights, show live/upcoming and delayed flights
             $departures = [];
             if ($depRes->successful() && isset($depRes->json()['response'])) {
-                foreach (array_slice($depRes->json()['response'], 0, 15) as $f) {
-                    $departures[] = [
+                $rawDeps = $depRes->json()['response'];
+                $candidateDeps = [];
+
+                foreach ($rawDeps as $f) {
+                    $status = $this->normalizeStatus($f['status'] ?? 'On Time');
+                    $depTimeRaw = $f['dep_actual'] ?? $f['dep_estimated'] ?? $f['dep_time'] ?? null;
+                    if (!$depTimeRaw) continue;
+
+                    $depCarbon = Carbon::parse($depTimeRaw, 'Asia/Kolkata');
+
+                    // Skip flights that have already completed their journey and landed
+                    if ($status === 'Landed') {
+                        continue;
+                    }
+
+                    // If departed more than 15 mins ago, remove from board
+                    if ($status === 'Departed' && $depCarbon->lt($now->copy()->subMinutes(15))) {
+                        continue;
+                    }
+
+                    // If scheduled time was more than 30 mins ago, ONLY keep if Delayed or Boarding (still at gate)
+                    if ($depCarbon->lt($now->copy()->subMinutes(30))) {
+                        if (!in_array($status, ['Delayed', 'Boarding'])) {
+                            continue;
+                        }
+                    }
+
+                    $candidateDeps[] = [
                         'flight_no' => $f['flight_iata'] ?? $f['flight_number'] ?? 'N/A',
                         'airline' => $f['airline_name'] ?? $f['airline_iata'] ?? 'Airline',
                         'destination' => $f['arr_city'] ?? $f['arr_iata'] ?? 'Destination',
@@ -85,15 +114,64 @@ class FlightDataService
                         'estimated_time' => (isset($f['dep_actual']) || isset($f['dep_estimated']) || isset($f['dep_time'])) ? Carbon::parse($f['dep_actual'] ?? $f['dep_estimated'] ?? $f['dep_time'])->format('H:i') : '--:--',
                         'terminal' => $f['dep_terminal'] ?? 'T2',
                         'gate' => $f['dep_gate'] ?? null,
-                        'status' => $this->normalizeStatus($f['status'] ?? 'On Time'),
+                        'status' => $status,
+                        '_sort' => $depCarbon->timestamp,
                     ];
                 }
+
+                // If candidate list is empty, fallback to raw list so board is never completely blank
+                if (empty($candidateDeps)) {
+                    foreach (array_slice($rawDeps, 0, 21) as $f) {
+                        $candidateDeps[] = [
+                            'flight_no' => $f['flight_iata'] ?? $f['flight_number'] ?? 'N/A',
+                            'airline' => $f['airline_name'] ?? $f['airline_iata'] ?? 'Airline',
+                            'destination' => $f['arr_city'] ?? $f['arr_iata'] ?? 'Destination',
+                            'dest_iata' => $f['arr_iata'] ?? '',
+                            'scheduled_time' => isset($f['dep_time']) ? Carbon::parse($f['dep_time'])->format('H:i') : '--:--',
+                            'estimated_time' => (isset($f['dep_actual']) || isset($f['dep_estimated']) || isset($f['dep_time'])) ? Carbon::parse($f['dep_actual'] ?? $f['dep_estimated'] ?? $f['dep_time'])->format('H:i') : '--:--',
+                            'terminal' => $f['dep_terminal'] ?? 'T2',
+                            'gate' => $f['dep_gate'] ?? null,
+                            'status' => $this->normalizeStatus($f['status'] ?? 'On Time'),
+                            '_sort' => isset($f['dep_time']) ? Carbon::parse($f['dep_time'])->timestamp : 0,
+                        ];
+                    }
+                }
+
+                // Sort chronologically (earliest upcoming first)
+                usort($candidateDeps, fn($a, $b) => $a['_sort'] <=> $b['_sort']);
+
+                $departures = array_map(function($item) {
+                    unset($item['_sort']);
+                    return $item;
+                }, array_slice($candidateDeps, 0, 21));
             }
 
+            // ARRIVALS: Filter out flights landed long ago, show upcoming and active arrivals
             $arrivals = [];
             if ($arrRes->successful() && isset($arrRes->json()['response'])) {
-                foreach (array_slice($arrRes->json()['response'], 0, 15) as $f) {
-                    $arrivals[] = [
+                $rawArrs = $arrRes->json()['response'];
+                $candidateArrs = [];
+
+                foreach ($rawArrs as $f) {
+                    $status = $this->normalizeStatus($f['status'] ?? 'Landed');
+                    $arrTimeRaw = $f['arr_actual'] ?? $f['arr_estimated'] ?? $f['arr_time'] ?? null;
+                    if (!$arrTimeRaw) continue;
+
+                    $arrCarbon = Carbon::parse($arrTimeRaw, 'Asia/Kolkata');
+
+                    // If landed more than 30 mins ago, baggage is already collected -> skip
+                    if ($status === 'Landed' && $arrCarbon->lt($now->copy()->subMinutes(30))) {
+                        continue;
+                    }
+
+                    // If scheduled time was more than 30 mins ago and not delayed, skip
+                    if ($arrCarbon->lt($now->copy()->subMinutes(30))) {
+                        if (!in_array($status, ['Delayed', 'On Time'])) {
+                            continue;
+                        }
+                    }
+
+                    $candidateArrs[] = [
                         'flight_no' => $f['flight_iata'] ?? $f['flight_number'] ?? 'N/A',
                         'airline' => $f['airline_name'] ?? $f['airline_iata'] ?? 'Airline',
                         'origin' => $f['dep_city'] ?? $f['dep_iata'] ?? 'Origin',
@@ -102,9 +180,34 @@ class FlightDataService
                         'estimated_time' => (isset($f['arr_actual']) || isset($f['arr_estimated']) || isset($f['arr_time'])) ? Carbon::parse($f['arr_actual'] ?? $f['arr_estimated'] ?? $f['arr_time'])->format('H:i') : '--:--',
                         'terminal' => $f['arr_terminal'] ?? 'T2',
                         'belt' => $f['arr_baggage'] ?? null,
-                        'status' => $this->normalizeStatus($f['status'] ?? 'Landed'),
+                        'status' => $status,
+                        '_sort' => $arrCarbon->timestamp,
                     ];
                 }
+
+                if (empty($candidateArrs)) {
+                    foreach (array_slice($rawArrs, 0, 21) as $f) {
+                        $candidateArrs[] = [
+                            'flight_no' => $f['flight_iata'] ?? $f['flight_number'] ?? 'N/A',
+                            'airline' => $f['airline_name'] ?? $f['airline_iata'] ?? 'Airline',
+                            'origin' => $f['dep_city'] ?? $f['dep_iata'] ?? 'Origin',
+                            'origin_iata' => $f['dep_iata'] ?? '',
+                            'scheduled_time' => isset($f['arr_time']) ? Carbon::parse($f['arr_time'])->format('H:i') : '--:--',
+                            'estimated_time' => (isset($f['arr_actual']) || isset($f['arr_estimated']) || isset($f['arr_time'])) ? Carbon::parse($f['arr_actual'] ?? $f['arr_estimated'] ?? $f['arr_time'])->format('H:i') : '--:--',
+                            'terminal' => $f['arr_terminal'] ?? 'T2',
+                            'belt' => $f['arr_baggage'] ?? null,
+                            'status' => $this->normalizeStatus($f['status'] ?? 'Landed'),
+                            '_sort' => isset($f['arr_time']) ? Carbon::parse($f['arr_time'])->timestamp : 0,
+                        ];
+                    }
+                }
+
+                usort($candidateArrs, fn($a, $b) => $a['_sort'] <=> $b['_sort']);
+
+                $arrivals = array_map(function($item) {
+                    unset($item['_sort']);
+                    return $item;
+                }, array_slice($candidateArrs, 0, 21));
             }
 
             return [
