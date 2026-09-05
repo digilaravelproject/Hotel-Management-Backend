@@ -82,9 +82,9 @@ class FlightDataService
                         'destination' => $f['arr_city'] ?? $f['arr_iata'] ?? 'Destination',
                         'dest_iata' => $f['arr_iata'] ?? '',
                         'scheduled_time' => isset($f['dep_time']) ? Carbon::parse($f['dep_time'])->format('H:i') : '--:--',
-                        'estimated_time' => isset($f['dep_estimated']) ? Carbon::parse($f['dep_estimated'])->format('H:i') : (isset($f['dep_time']) ? Carbon::parse($f['dep_time'])->format('H:i') : '--:--'),
+                        'estimated_time' => (isset($f['dep_actual']) || isset($f['dep_estimated']) || isset($f['dep_time'])) ? Carbon::parse($f['dep_actual'] ?? $f['dep_estimated'] ?? $f['dep_time'])->format('H:i') : '--:--',
                         'terminal' => $f['dep_terminal'] ?? 'T2',
-                        'gate' => $f['dep_gate'] ?? (string) rand(10, 45),
+                        'gate' => $f['dep_gate'] ?? null,
                         'status' => $this->normalizeStatus($f['status'] ?? 'On Time'),
                     ];
                 }
@@ -99,9 +99,9 @@ class FlightDataService
                         'origin' => $f['dep_city'] ?? $f['dep_iata'] ?? 'Origin',
                         'origin_iata' => $f['dep_iata'] ?? '',
                         'scheduled_time' => isset($f['arr_time']) ? Carbon::parse($f['arr_time'])->format('H:i') : '--:--',
-                        'estimated_time' => isset($f['arr_estimated']) ? Carbon::parse($f['arr_estimated'])->format('H:i') : (isset($f['arr_time']) ? Carbon::parse($f['arr_time'])->format('H:i') : '--:--'),
+                        'estimated_time' => (isset($f['arr_actual']) || isset($f['arr_estimated']) || isset($f['arr_time'])) ? Carbon::parse($f['arr_actual'] ?? $f['arr_estimated'] ?? $f['arr_time'])->format('H:i') : '--:--',
                         'terminal' => $f['arr_terminal'] ?? 'T2',
-                        'belt' => $f['arr_baggage'] ?? ('B' . rand(1, 8)),
+                        'belt' => $f['arr_baggage'] ?? null,
                         'status' => $this->normalizeStatus($f['status'] ?? 'Landed'),
                     ];
                 }
