@@ -5,21 +5,6 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Notifications -->
-    @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center space-x-2">
-            <i class="fa-solid fa-circle-exclamation text-rose-600 text-base"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
-
     <!-- Header Banner Card -->
     <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl shadow-indigo-950/20 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2 max-w-xl">

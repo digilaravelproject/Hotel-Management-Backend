@@ -24,12 +24,6 @@
     </button>
 </div>
 
-@if(session('success'))
-    <div class="alert alert-success" style="margin-bottom: 20px;">
-        <i class="fa-solid fa-circle-check" style="margin-right: 8px;"></i> {{ session('success') }}
-    </div>
-@endif
-
 @if($errors->any())
     <div class="alert alert-danger" style="margin-bottom: 20px;">
         <ul style="margin: 0; padding-left: 20px;">

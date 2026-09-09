@@ -237,7 +237,29 @@
             }
         });
 
-        function showGlobalLoader() {
+        function showGlobalLoader(form = null) {
+            // Hide any parent modal or open modals immediately so there is no double popup collision
+            if (form) {
+                const parentModal = form.closest('.fixed, [id*="Modal"], [id*="modal"], .modal-overlay');
+                if (parentModal && parentModal.id !== 'globalAppLoader') {
+                    parentModal.classList.add('hidden');
+                    parentModal.classList.remove('active');
+                    parentModal.style.display = 'none';
+                }
+            }
+            document.querySelectorAll('[id*="Modal"], [id*="modal"], .modal-overlay').forEach(m => {
+                if (m.id !== 'globalAppLoader') {
+                    m.classList.add('hidden');
+                    m.classList.remove('active');
+                    m.style.display = 'none';
+                }
+            });
+
+            // Close SweetAlert if visible
+            if (typeof Swal !== 'undefined' && Swal.isVisible()) {
+                Swal.close();
+            }
+
             const loader = document.getElementById('globalAppLoader');
             if (loader) loader.classList.remove('hidden');
         }
@@ -250,11 +272,11 @@
         // Global SweetAlert2 confirmation handler for forms
         document.addEventListener('submit', function(e) {
             const form = e.target;
-            if (form.dataset.ajaxForm === "true") {
+            if (form.dataset.ajaxForm === "true" || form.dataset.noLoader === "true") {
                 return; // Do not trigger full screen loader for background AJAX forms
             }
             if (form.dataset.swalBypass) {
-                showGlobalLoader();
+                showGlobalLoader(form);
                 return;
             }
 
@@ -285,13 +307,13 @@
                     }
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        showGlobalLoader();
+                        showGlobalLoader(form);
                         form.dataset.swalBypass = "true";
                         form.submit();
                     }
                 });
             } else {
-                showGlobalLoader();
+                showGlobalLoader(form);
             }
         }, true);
     </script>

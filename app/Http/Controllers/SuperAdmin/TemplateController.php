@@ -13,13 +13,18 @@ use App\Services\TvVersionCacheService;
 class TemplateController extends Controller
 {
     /**
-     * Display a listing of templates grouped by themes.
+     * Display a listing of templates (newest builds first).
      */
-    public function index()
+    public function index(Request $request)
     {
-        $templates = TvTemplate::orderBy('theme_id', 'asc')
-            ->orderBy('id', 'desc')
-            ->paginate(15);
+        $query = TvTemplate::query();
+
+        if ($request->filled('theme_id')) {
+            $query->where('theme_id', $request->theme_id);
+        }
+
+        // Always show the newest/latest uploaded builds first so Theme 2 or any update isn't buried
+        $templates = $query->orderBy('id', 'desc')->paginate(15);
 
         // Fetch distinct registered themes
         $existingThemes = TvTemplate::select('theme_id', 'theme_name', 'preview_image')

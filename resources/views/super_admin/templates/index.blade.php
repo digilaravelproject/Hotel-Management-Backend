@@ -17,13 +17,6 @@
         </div>
     @endif
 
-    @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
     <!-- Active Registered Themes Overview -->
     <div class="space-y-3">
         <div class="flex items-center justify-between">
@@ -168,13 +161,27 @@
 
     <!-- Template History List -->
     <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div class="border-b border-slate-100 pb-4 flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
-                <i class="fa-solid fa-history text-lg"></i>
+        <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                    <i class="fa-solid fa-history text-lg"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Theme Build Release Log</h3>
+                    <p class="text-xs text-slate-500 font-medium">Full historical record of OTA updates (Newest uploads first across all themes).</p>
+                </div>
             </div>
-            <div>
-                <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Theme Build Release Log</h3>
-                <p class="text-xs text-slate-500 font-medium">Full historical record of OTA updates across all registered theme IDs.</p>
+
+            <!-- Filter by Theme -->
+            <div class="flex items-center flex-wrap gap-1.5">
+                <a href="{{ route('super-admin.templates.index') }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ !request('theme_id') ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    All Themes
+                </a>
+                @foreach($existingThemes as $t)
+                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                        Theme #{{ $t->theme_id }}
+                    </a>
+                @endforeach
             </div>
         </div>
 
@@ -268,7 +275,7 @@
             </div>
 
             <div class="pt-2">
-                {{ $templates->links() }}
+                {{ $templates->appends(request()->query())->links() }}
             </div>
         @else
             <div class="text-center py-12 text-slate-400 font-medium">
