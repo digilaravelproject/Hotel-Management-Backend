@@ -102,7 +102,7 @@
             </button>
         </div>
         
-        <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+        <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5" data-ajax-form="true" data-no-loader="true">
             @csrf
             
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
