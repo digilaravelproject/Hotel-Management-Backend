@@ -43,6 +43,14 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($cityPlaces as $place)
+                        @php
+                            $tags = $place->attractions ?? $place->features ?? [];
+                            if (is_string($tags)) {
+                                $decoded = json_decode($tags, true);
+                                $tags = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$tags];
+                            }
+                            $tags = is_array($tags) ? array_values(array_filter($tags)) : [];
+                        @endphp
                         <tr id="city-row-{{ $place->id }}" class="hover:bg-slate-50/80 transition-colors">
                             <td class="px-6 py-4 font-extrabold text-amber-600">#{{ $place->sr_no }}</td>
                             <td class="px-6 py-4">
@@ -56,9 +64,9 @@
                             </td>
                             <td class="px-6 py-4 font-bold text-slate-900 text-sm">{{ $place->title }}</td>
                             <td class="px-6 py-4">
-                                @if(!empty($place->attractions) && is_array($place->attractions))
+                                @if(!empty($tags) && count($tags) > 0)
                                     <div class="flex flex-wrap gap-1.5 max-w-xs">
-                                        @foreach($place->attractions as $tag)
+                                        @foreach($tags as $tag)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[10px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
                                                 <i class="fa-solid fa-location-dot text-[9px] mr-1 text-amber-500"></i> {{ $tag }}
                                             </span>
@@ -108,4 +116,164 @@
 </div>
 
 @include('hotel_admin.our_city.modal')
+@endsection
+
+@section('scripts')
+<script>
+    let highlightsCount = 0;
+    const maxHighlights = 4;
+
+    function openOurCityModal() {
+        const modal = document.getElementById('ourCityFormModal');
+        const form = document.getElementById('ourCityForm');
+        form.reset();
+        form.action = "{{ route('hotel.our-city.store') }}";
+        document.getElementById('methodContainer').innerHTML = '';
+        document.getElementById('formModeBadge').innerText = 'Add Mode';
+        document.getElementById('formTitleText').innerText = 'Add New City Attraction';
+        document.getElementById('submitBtn').innerText = 'Save Attraction';
+        document.getElementById('highlightsContainer').innerHTML = '';
+        highlightsCount = 0;
+        updateHighlightBadge();
+        clearImagePreview();
+        updateCharCounter(document.getElementById('cityDescriptionInput'));
+        modal.classList.remove('hidden');
+    }
+
+    function closeOurCityModal() {
+        document.getElementById('ourCityFormModal').classList.add('hidden');
+    }
+
+    function triggerEditMode(place) {
+        openOurCityModal();
+        const form = document.getElementById('ourCityForm');
+        form.action = `/hotel/our-city/${place.id}`;
+        document.getElementById('methodContainer').innerHTML = `@method('PUT')`;
+        document.getElementById('formModeBadge').innerText = 'Edit Mode';
+        document.getElementById('formTitleText').innerText = 'Edit City Attraction';
+        document.getElementById('submitBtn').innerText = 'Update Attraction';
+
+        document.getElementById('cityTitleInput').value = place.title || '';
+        document.getElementById('citySrNoInput').value = place.sr_no || 1;
+        document.getElementById('cityDescriptionInput').value = place.description || '';
+        updateCharCounter(document.getElementById('cityDescriptionInput'));
+
+        if (place.image) {
+            document.getElementById('imagePreview').src = `/${place.image}`;
+            document.getElementById('previewContainer').classList.remove('hidden');
+            document.getElementById('uploadPrompt').classList.add('hidden');
+        }
+
+        document.getElementById('highlightsContainer').innerHTML = '';
+        highlightsCount = 0;
+
+        let tags = place.attractions || place.features || [];
+        if (typeof tags === 'string') {
+            try { tags = JSON.parse(tags); } catch(e) { tags = []; }
+        }
+        if (Array.isArray(tags) && tags.length > 0) {
+            tags.forEach(tag => addHighlightInput(tag));
+        }
+    }
+
+    function addHighlightInput(val = '') {
+        if (highlightsCount >= maxHighlights) return;
+        highlightsCount++;
+        const container = document.getElementById('highlightsContainer');
+        const div = document.createElement('div');
+        div.className = 'flex items-center space-x-2';
+        div.innerHTML = `
+            <input type="text" name="attractions[]" value="${(val || '').replace(/"/g, '&quot;')}" placeholder="e.g. Distance: 3.5 km / Entry: Free" 
+                   class="flex-1 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:border-amber-500 transition-all">
+            <button type="button" onclick="removeHighlightInput(this)" class="p-2 rounded-xl text-rose-500 hover:bg-rose-50 transition-colors">
+                <i class="fa-solid fa-trash text-xs"></i>
+            </button>
+        `;
+        container.appendChild(div);
+        updateHighlightBadge();
+    }
+
+    function removeHighlightInput(btn) {
+        btn.parentElement.remove();
+        highlightsCount--;
+        updateHighlightBadge();
+    }
+
+    function updateHighlightBadge() {
+        const badge = document.getElementById('specCountBadge');
+        badge.innerText = `${highlightsCount} / ${maxHighlights}`;
+        const addBtn = document.getElementById('addHighlightBtn');
+        if (highlightsCount >= maxHighlights) {
+            addBtn.classList.add('opacity-50', 'pointer-events-none');
+        } else {
+            addBtn.classList.remove('opacity-50', 'pointer-events-none');
+        }
+    }
+
+    function handleImagePreview(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('imagePreview').src = e.target.result;
+                document.getElementById('previewContainer').classList.remove('hidden');
+                document.getElementById('uploadPrompt').classList.add('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function clearImagePreview(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        document.getElementById('cityImageInput').value = '';
+        document.getElementById('imagePreview').src = '';
+        document.getElementById('previewContainer').classList.add('hidden');
+        document.getElementById('uploadPrompt').classList.remove('hidden');
+    }
+
+    function updateCharCounter(textarea) {
+        const len = textarea ? textarea.value.length : 0;
+        document.getElementById('charCounter').innerText = `${500 - len} / 500 chars left`;
+    }
+
+    function openViewModal(btn) {
+        const place = JSON.parse(btn.getAttribute('data-city'));
+        document.getElementById('modalViewTitle').innerText = place.title;
+        document.getElementById('modalViewSrNo').innerText = `#${place.sr_no}`;
+        document.getElementById('modalViewDesc').innerText = place.description || 'No description provided.';
+        document.getElementById('modalViewImage').src = place.image ? `/${place.image}` : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="337" fill="%23f1f5f9"><rect width="100%" height="100%"/></svg>';
+
+        const tagBox = document.getElementById('modalViewHighlights');
+        tagBox.innerHTML = '';
+        let tags = place.attractions || place.features || [];
+        if (typeof tags === 'string') {
+            try { tags = JSON.parse(tags); } catch(e) { tags = []; }
+        }
+        if (Array.isArray(tags)) {
+            tags.forEach(t => {
+                const sp = document.createElement('span');
+                sp.className = 'px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200';
+                sp.innerText = t;
+                tagBox.appendChild(sp);
+            });
+        }
+        document.getElementById('viewCityModal').classList.remove('hidden');
+    }
+
+    function closeViewModal() {
+        document.getElementById('viewCityModal').classList.add('hidden');
+    }
+
+    function toggleOurCityStatus(id) {
+        fetch(`/hotel/our-city/${id}/toggle-status`, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                console.log('Status updated successfully');
+            }
+        })
+        .catch(err => console.error(err));
+    }
+</script>
 @endsection

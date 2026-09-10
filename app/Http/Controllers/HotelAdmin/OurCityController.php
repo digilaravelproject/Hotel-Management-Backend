@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\OurCity;
 use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class OurCityController extends Controller
 {
@@ -15,13 +17,21 @@ class OurCityController extends Controller
      */
     public function index()
     {
-        $hotel = Auth::guard('hotel_admin')->user();
-        $cityPlaces = OurCity::where('hotel_admin_id', $hotel->id)
-                             ->orderBy('sr_no', 'asc')
-                             ->orderBy('created_at', 'desc')
-                             ->get();
+        try {
+            $hotel = Auth::guard('hotel_admin')->user();
+            $cityPlaces = OurCity::where('hotel_admin_id', $hotel->id)
+                                 ->orderBy('sr_no', 'asc')
+                                 ->orderBy('created_at', 'desc')
+                                 ->get();
 
-        return view('hotel_admin.our_city.index', compact('cityPlaces'));
+            return view('hotel_admin.our_city.index', compact('cityPlaces'));
+        } catch (\Throwable $e) {
+            Log::error('OurCityController@index Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return back()->with('error', 'Unable to load city attractions: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -29,8 +39,6 @@ class OurCityController extends Controller
      */
     public function store(Request $request)
     {
-        $hotel = Auth::guard('hotel_admin')->user();
-
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'title' => 'required|string|max:255',
@@ -45,45 +53,79 @@ class OurCityController extends Controller
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = ImageHelper::compressAndConvertToWebp(
-                $request->file('image'),
-                'uploads/our_city',
-                800,
-                'city_place',
-                1920
-            );
-        }
+        try {
+            $hotel = Auth::guard('hotel_admin')->user();
 
-        // Clean and slice attractions (max 4)
-        $attractions = [];
-        if ($request->has('attractions') && is_array($request->attractions)) {
-            $attractions = array_values(array_filter($request->attractions, function ($val) {
-                return !empty(trim($val));
-            }));
-            $attractions = array_slice($attractions, 0, 4);
-        }
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $imagePath = ImageHelper::compressAndConvertToWebp(
+                    $request->file('image'),
+                    'uploads/our_city',
+                    800,
+                    'city_place',
+                    1920
+                );
+            }
 
-        OurCity::create([
-            'hotel_admin_id' => $hotel->id,
-            'sr_no' => $request->sr_no,
-            'title' => $request->title,
-            'image' => $imagePath,
-            'description' => $request->description,
-            'attractions' => $attractions,
-            'status' => true,
-        ]);
+            // Extract and clean attractions/highlights
+            $rawAttractions = $request->input('attractions') 
+                ?? $request->input('features') 
+                ?? $request->input('specifications') 
+                ?? [];
 
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'City attraction added & synced to TVs in real-time!'
+            if (is_string($rawAttractions)) {
+                $decoded = json_decode($rawAttractions, true);
+                $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
+            }
+
+            $attractions = [];
+            if (is_array($rawAttractions)) {
+                $attractions = array_values(array_filter($rawAttractions, function ($val) {
+                    return !empty(trim((string) $val));
+                }));
+                $attractions = array_slice($attractions, 0, 4);
+            }
+
+            $saveData = [
+                'hotel_admin_id' => $hotel->id,
+                'sr_no' => $request->sr_no,
+                'title' => $request->title,
+                'image' => $imagePath,
+                'description' => $request->description,
+                'attractions' => $attractions,
+                'status' => true,
+            ];
+
+            if (Schema::hasColumn('our_cities', 'features')) {
+                $saveData['features'] = $attractions;
+            }
+
+            OurCity::create($saveData);
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'City attraction added & synced to TVs in real-time!'
+                ]);
+            }
+
+            return redirect()->route('hotel.our-city.index')
+                             ->with('success', 'City attraction added successfully!');
+        } catch (\Throwable $e) {
+            Log::error('OurCityController@store Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'payload' => $request->except(['image']),
             ]);
-        }
 
-        return redirect()->route('hotel.our-city.index')
-                         ->with('success', 'City attraction added successfully!');
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to add city attraction: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->withInput()->with('error', 'Failed to add city attraction: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -91,9 +133,6 @@ class OurCityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $hotel = Auth::guard('hotel_admin')->user();
-        $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
-
         $request->validate([
             'sr_no' => 'required|integer|min:1',
             'title' => 'required|string|max:255',
@@ -108,46 +147,82 @@ class OurCityController extends Controller
             'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
         ]);
 
-        $imagePath = $cityPlace->image;
-        if ($request->hasFile('image')) {
-            if ($cityPlace->image) {
-                ImageHelper::deleteFile($cityPlace->image);
+        try {
+            $hotel = Auth::guard('hotel_admin')->user();
+            $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+
+            $imagePath = $cityPlace->image;
+            if ($request->hasFile('image')) {
+                if ($cityPlace->image) {
+                    ImageHelper::deleteFile($cityPlace->image);
+                }
+                $imagePath = ImageHelper::compressAndConvertToWebp(
+                    $request->file('image'),
+                    'uploads/our_city',
+                    800,
+                    'city_place',
+                    1920
+                );
             }
-            $imagePath = ImageHelper::compressAndConvertToWebp(
-                $request->file('image'),
-                'uploads/our_city',
-                800,
-                'city_place',
-                1920
-            );
-        }
 
-        // Clean and slice attractions (max 4)
-        $attractions = [];
-        if ($request->has('attractions') && is_array($request->attractions)) {
-            $attractions = array_values(array_filter($request->attractions, function ($val) {
-                return !empty(trim($val));
-            }));
-            $attractions = array_slice($attractions, 0, 4);
-        }
+            // Extract and clean attractions/highlights
+            $rawAttractions = $request->input('attractions') 
+                ?? $request->input('features') 
+                ?? $request->input('specifications') 
+                ?? [];
 
-        $cityPlace->update([
-            'sr_no' => $request->sr_no,
-            'title' => $request->title,
-            'image' => $imagePath,
-            'description' => $request->description,
-            'attractions' => $attractions,
-        ]);
+            if (is_string($rawAttractions)) {
+                $decoded = json_decode($rawAttractions, true);
+                $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
+            }
 
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'City attraction updated & synced to TVs in real-time!'
+            $attractions = [];
+            if (is_array($rawAttractions)) {
+                $attractions = array_values(array_filter($rawAttractions, function ($val) {
+                    return !empty(trim((string) $val));
+                }));
+                $attractions = array_slice($attractions, 0, 4);
+            }
+
+            $updateData = [
+                'sr_no' => $request->sr_no,
+                'title' => $request->title,
+                'image' => $imagePath,
+                'description' => $request->description,
+                'attractions' => $attractions,
+            ];
+
+            if (Schema::hasColumn('our_cities', 'features')) {
+                $updateData['features'] = $attractions;
+            }
+
+            $cityPlace->update($updateData);
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'City attraction updated & synced to TVs in real-time!'
+                ]);
+            }
+
+            return redirect()->route('hotel.our-city.index')
+                             ->with('success', 'City attraction updated successfully!');
+        } catch (\Throwable $e) {
+            Log::error('OurCityController@update Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'id' => $id,
+                'payload' => $request->except(['image']),
             ]);
-        }
 
-        return redirect()->route('hotel.our-city.index')
-                         ->with('success', 'City attraction updated successfully!');
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to update city attraction: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->withInput()->with('error', 'Failed to update city attraction: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -155,24 +230,40 @@ class OurCityController extends Controller
      */
     public function destroy($id)
     {
-        $hotel = Auth::guard('hotel_admin')->user();
-        $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+        try {
+            $hotel = Auth::guard('hotel_admin')->user();
+            $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
 
-        if ($cityPlace->image) {
-            ImageHelper::deleteFile($cityPlace->image);
-        }
+            if ($cityPlace->image) {
+                ImageHelper::deleteFile($cityPlace->image);
+            }
 
-        $cityPlace->delete();
+            $cityPlace->delete();
 
-        if (request()->expectsJson() || request()->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'City attraction deleted & synced to TVs in real-time!'
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'City attraction deleted & synced to TVs in real-time!'
+                ]);
+            }
+
+            return redirect()->route('hotel.our-city.index')
+                             ->with('success', 'City attraction deleted successfully!');
+        } catch (\Throwable $e) {
+            Log::error('OurCityController@destroy Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'id' => $id,
             ]);
-        }
 
-        return redirect()->route('hotel.our-city.index')
-                         ->with('success', 'City attraction deleted successfully!');
+            if (request()->expectsJson() || request()->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Failed to delete city attraction: ' . $e->getMessage()
+                ], 500);
+            }
+
+            return back()->with('error', 'Failed to delete city attraction: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -180,16 +271,28 @@ class OurCityController extends Controller
      */
     public function toggleStatus($id)
     {
-        $hotel = Auth::guard('hotel_admin')->user();
-        $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+        try {
+            $hotel = Auth::guard('hotel_admin')->user();
+            $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
 
-        $cityPlace->status = !$cityPlace->status;
-        $cityPlace->save();
+            $cityPlace->status = !$cityPlace->status;
+            $cityPlace->save();
 
-        return response()->json([
-            'success' => true,
-            'status' => $cityPlace->status,
-            'message' => 'City attraction status updated to ' . ($cityPlace->status ? 'Active' : 'Inactive')
-        ]);
+            return response()->json([
+                'success' => true,
+                'status' => $cityPlace->status,
+                'message' => 'City attraction status updated to ' . ($cityPlace->status ? 'Active' : 'Inactive')
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('OurCityController@toggleStatus Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'id' => $id,
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update status: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

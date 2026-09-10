@@ -123,22 +123,34 @@ class TvLoginResource extends JsonResource
         }
 
         // Fetch active our city items ordered by sr_no asc
-        $ourCities = \App\Models\OurCity::query()
-            ->where('hotel_admin_id', $hotel->id)
-            ->where('status', true)
-            ->orderBy('sr_no', 'asc')
-            ->get();
-
         $ourCityList = [];
-        foreach ($ourCities as $city) {
-            $ourCityList[] = [
-                'sr_no' => (int) $city->sr_no,
-                'title' => $city->title,
-                'description' => $city->description ?? '',
-                'attractions' => is_array($city->attractions) ? $city->attractions : [],
-                'features' => is_array($city->attractions) ? $city->attractions : [],
-                'image_url' => $city->image ? asset($city->image) : null,
-            ];
+        try {
+            $ourCities = \App\Models\OurCity::query()
+                ->where('hotel_admin_id', $hotel->id)
+                ->where('status', true)
+                ->orderBy('sr_no', 'asc')
+                ->get();
+
+            foreach ($ourCities as $city) {
+                $rawAttractions = $city->attractions ?? $city->features ?? [];
+                if (is_string($rawAttractions)) {
+                    $decoded = json_decode($rawAttractions, true);
+                    $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
+                }
+                $cleanAttractions = is_array($rawAttractions) ? array_values(array_filter($rawAttractions)) : [];
+
+                $ourCityList[] = [
+                    'sr_no' => (int) $city->sr_no,
+                    'title' => $city->title,
+                    'description' => $city->description ?? '',
+                    'attractions' => $cleanAttractions,
+                    'features' => $cleanAttractions,
+                    'image_url' => $city->image ? asset($city->image) : null,
+                ];
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('TvLoginResource OurCity error: ' . $e->getMessage());
+            $ourCityList = [];
         }
 
         // Format hotel facilities / hotel info list
