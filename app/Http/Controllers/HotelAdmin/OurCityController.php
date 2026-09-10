@@ -8,7 +8,6 @@ use App\Models\OurCity;
 use App\Helpers\ImageHelper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
 
 class OurCityController extends Controller
 {
@@ -39,22 +38,9 @@ class OurCityController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'sr_no' => 'required|integer|min:1',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'attractions' => 'nullable|array|max:4',
-            'attractions.*' => 'nullable|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
-        ], [
-            'description.max' => 'Description payload cannot exceed 500 characters.',
-            'attractions.max' => 'You can specify a maximum of 4 highlights or tags.',
-            'image.max' => 'The image file size must not exceed 5MB.',
-            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
-        ]);
-
         try {
             $hotel = Auth::guard('hotel_admin')->user();
+            $this->validateRequest($request);
 
             $imagePath = null;
             if ($request->hasFile('image')) {
@@ -67,24 +53,7 @@ class OurCityController extends Controller
                 );
             }
 
-            // Extract and clean attractions/highlights
-            $rawAttractions = $request->input('attractions') 
-                ?? $request->input('features') 
-                ?? $request->input('specifications') 
-                ?? [];
-
-            if (is_string($rawAttractions)) {
-                $decoded = json_decode($rawAttractions, true);
-                $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
-            }
-
-            $attractions = [];
-            if (is_array($rawAttractions)) {
-                $attractions = array_values(array_filter($rawAttractions, function ($val) {
-                    return !empty(trim((string) $val));
-                }));
-                $attractions = array_slice($attractions, 0, 4);
-            }
+            $attractions = $this->extractAttractions($request);
 
             $saveData = [
                 'hotel_admin_id' => $hotel->id,
@@ -95,10 +64,6 @@ class OurCityController extends Controller
                 'attractions' => $attractions,
                 'status' => true,
             ];
-
-            if (Schema::hasColumn('our_cities', 'features')) {
-                $saveData['features'] = $attractions;
-            }
 
             OurCity::create($saveData);
 
@@ -111,6 +76,15 @@ class OurCityController extends Controller
 
             return redirect()->route('hotel.our-city.index')
                              ->with('success', 'City attraction added successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed.',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
         } catch (\Throwable $e) {
             Log::error('OurCityController@store Error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
@@ -133,23 +107,10 @@ class OurCityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'sr_no' => 'required|integer|min:1',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string|max:500',
-            'attractions' => 'nullable|array|max:4',
-            'attractions.*' => 'nullable|string|max:100',
-            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
-        ], [
-            'description.max' => 'Description payload cannot exceed 500 characters.',
-            'attractions.max' => 'You can specify a maximum of 4 highlights or tags.',
-            'image.max' => 'The image file size must not exceed 5MB.',
-            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
-        ]);
-
         try {
             $hotel = Auth::guard('hotel_admin')->user();
             $cityPlace = OurCity::where('hotel_admin_id', $hotel->id)->findOrFail($id);
+            $this->validateRequest($request);
 
             $imagePath = $cityPlace->image;
             if ($request->hasFile('image')) {
@@ -165,24 +126,7 @@ class OurCityController extends Controller
                 );
             }
 
-            // Extract and clean attractions/highlights
-            $rawAttractions = $request->input('attractions') 
-                ?? $request->input('features') 
-                ?? $request->input('specifications') 
-                ?? [];
-
-            if (is_string($rawAttractions)) {
-                $decoded = json_decode($rawAttractions, true);
-                $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
-            }
-
-            $attractions = [];
-            if (is_array($rawAttractions)) {
-                $attractions = array_values(array_filter($rawAttractions, function ($val) {
-                    return !empty(trim((string) $val));
-                }));
-                $attractions = array_slice($attractions, 0, 4);
-            }
+            $attractions = $this->extractAttractions($request);
 
             $updateData = [
                 'sr_no' => $request->sr_no,
@@ -191,10 +135,6 @@ class OurCityController extends Controller
                 'description' => $request->description,
                 'attractions' => $attractions,
             ];
-
-            if (Schema::hasColumn('our_cities', 'features')) {
-                $updateData['features'] = $attractions;
-            }
 
             $cityPlace->update($updateData);
 
@@ -207,6 +147,15 @@ class OurCityController extends Controller
 
             return redirect()->route('hotel.our-city.index')
                              ->with('success', 'City attraction updated successfully!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Validation failed.',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            throw $e;
         } catch (\Throwable $e) {
             Log::error('OurCityController@update Error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
@@ -294,5 +243,51 @@ class OurCityController extends Controller
                 'message' => 'Failed to update status: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Helper to cleanly extract and format attractions/highlights array (max 4).
+     */
+    private function extractAttractions(Request $request): array
+    {
+        $rawAttractions = $request->input('attractions') 
+            ?? $request->input('features') 
+            ?? $request->input('specifications') 
+            ?? [];
+
+        if (is_string($rawAttractions)) {
+            $decoded = json_decode($rawAttractions, true);
+            $rawAttractions = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) ? $decoded : [$rawAttractions];
+        }
+
+        if (!is_array($rawAttractions)) {
+            return [];
+        }
+
+        $attractions = array_values(array_filter($rawAttractions, function ($val) {
+            return !empty(trim((string) $val));
+        }));
+
+        return array_slice($attractions, 0, 4);
+    }
+
+    /**
+     * Validate incoming request parameters for Our City attractions.
+     */
+    private function validateRequest(Request $request): void
+    {
+        $request->validate([
+            'sr_no' => 'required|integer|min:1',
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string|max:500',
+            'attractions' => 'nullable|array|max:4',
+            'attractions.*' => 'nullable|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp,svg|max:5120',
+        ], [
+            'description.max' => 'Description payload cannot exceed 500 characters.',
+            'attractions.max' => 'You can specify a maximum of 4 highlights or tags.',
+            'image.max' => 'The image file size must not exceed 5MB.',
+            'image.mimes' => 'Only JPG, JPEG, PNG, WEBP, and SVG image formats are allowed.',
+        ]);
     }
 }

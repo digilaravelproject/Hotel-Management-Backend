@@ -144,7 +144,6 @@ class TvLoginResource extends JsonResource
                     'title' => $city->title,
                     'description' => $city->description ?? '',
                     'attractions' => $cleanAttractions,
-                    'features' => $cleanAttractions,
                     'image_url' => $city->image ? asset($city->image) : null,
                 ];
             }
