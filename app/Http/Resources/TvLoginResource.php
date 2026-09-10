@@ -122,6 +122,25 @@ class TvLoginResource extends JsonResource
             ];
         }
 
+        // Fetch active our city items ordered by sr_no asc
+        $ourCities = \App\Models\OurCity::query()
+            ->where('hotel_admin_id', $hotel->id)
+            ->where('status', true)
+            ->orderBy('sr_no', 'asc')
+            ->get();
+
+        $ourCityList = [];
+        foreach ($ourCities as $city) {
+            $ourCityList[] = [
+                'sr_no' => (int) $city->sr_no,
+                'title' => $city->title,
+                'description' => $city->description ?? '',
+                'attractions' => is_array($city->attractions) ? $city->attractions : [],
+                'features' => is_array($city->attractions) ? $city->attractions : [],
+                'image_url' => $city->image ? asset($city->image) : null,
+            ];
+        }
+
         // Format hotel facilities / hotel info list
         $hotelInfoList = [];
         if ($hotel->hotel_gallery_images && is_array($hotel->hotel_gallery_images)) {
@@ -197,6 +216,7 @@ class TvLoginResource extends JsonResource
                 'hotel_info' => $hotelInfoList,
                 'amenities' => $amenitiesList,
                 'room_info' => $roomInfoList,
+                'our_city' => $ourCityList,
                 'airports' => [
                     'primary' => $hotel->primaryAirport ? [
                         'name' => $hotel->primaryAirport->name,

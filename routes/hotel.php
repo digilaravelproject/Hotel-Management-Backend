@@ -60,6 +60,10 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     // Hotel Facilities / Information Media CRUD
     Route::resource('/hotel/facilities', \App\Http\Controllers\HotelAdmin\HotelFacilityController::class)->names('hotel.facilities');
 
+    // Our City Attractions / Places CRUD
+    Route::get('/hotel/our-city/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\OurCityController::class, 'toggleStatus'])->name('hotel.our-city.toggle-status');
+    Route::resource('/hotel/our-city', \App\Http\Controllers\HotelAdmin\OurCityController::class)->names('hotel.our-city');
+
     // Connected TVs & OTT / Menu Configurations
     Route::get('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'showRoomOtt'])->name('hotel.devices.ott');
     Route::post('/hotel/devices/{id}/ott', [HotelDeviceController::class, 'updateRoomOtt']);

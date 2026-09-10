@@ -84,6 +84,10 @@
                     <i class="fa-solid fa-hotel text-base w-6 text-center"></i>
                     <span>Hotel Facilities</span>
                 </a>
+                <a href="{{ route('hotel.our-city.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.our-city.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
+                    <i class="fa-solid fa-city text-base w-6 text-center"></i>
+                    <span>Our City Guide</span>
+                </a>
                 <a href="{{ route('hotel.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-bold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-indigo-600 text-white shadow-md shadow-indigo-600/30' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100/80' }}">
                     <i class="fa-solid fa-tv text-base w-5 text-center"></i>
                     <span>Connected TVs</span>

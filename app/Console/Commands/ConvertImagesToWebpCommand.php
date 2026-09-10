@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use App\Models\HotelAdmin;
 use App\Models\Amenity;
 use App\Models\RoomInfo;
+use App\Models\OurCity;
 use App\Helpers\ImageHelper;
 
 class ConvertImagesToWebpCommand extends Command
@@ -65,6 +66,9 @@ class ConvertImagesToWebpCommand extends Command
 
         // 3. Process RoomInfo models
         $this->processRoomInfos($isDryRun);
+
+        // 4. Process OurCity models
+        $this->processOurCities($isDryRun);
 
         $this->newLine();
         $this->info("==========================================================");
@@ -232,7 +236,7 @@ class ConvertImagesToWebpCommand extends Command
     protected function processRoomInfos(bool $isDryRun): void
     {
         $roomInfos = RoomInfo::all();
-        $this->line("<fg=blue;options=bold>[3/3] Processing Room Infos (" . $roomInfos->count() . " found)...</>");
+        $this->line("<fg=blue;options=bold>[3/4] Processing Room Infos (" . $roomInfos->count() . " found)...</>");
 
         foreach ($roomInfos as $roomInfo) {
             if (!empty($roomInfo->image)) {
@@ -250,6 +254,36 @@ class ConvertImagesToWebpCommand extends Command
                     $roomInfo->image = $newPath;
                     if (!$isDryRun) {
                         $roomInfo->save();
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Process OurCity records.
+     */
+    protected function processOurCities(bool $isDryRun): void
+    {
+        $cityPlaces = OurCity::all();
+        $this->line("<fg=blue;options=bold>[4/4] Processing Our City Attractions (" . $cityPlaces->count() . " found)...</>");
+
+        foreach ($cityPlaces as $place) {
+            if (!empty($place->image)) {
+                $newPath = $this->convertSinglePath(
+                    $place->image,
+                    'uploads/our_city',
+                    800,
+                    'city_place',
+                    1920,
+                    $isDryRun,
+                    "OurCity #{$place->id} ({$place->title})"
+                );
+
+                if ($newPath && $newPath !== $place->image) {
+                    $place->image = $newPath;
+                    if (!$isDryRun) {
+                        $place->save();
                     }
                 }
             }

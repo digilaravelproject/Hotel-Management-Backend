@@ -59,6 +59,9 @@ class TvConfigObserver
         } elseif ($model instanceof \App\Models\RoomInfo) {
             // Hotel room info list change
             event(new TvConfigUpdatedEvent($model->hotel_admin_id, 'ROOM_INFO', null, ['action' => $action]));
+        } elseif ($model instanceof \App\Models\OurCity) {
+            // Hotel our city / attractions change
+            event(new TvConfigUpdatedEvent($model->hotel_admin_id, 'OUR_CITY', null, ['action' => $action]));
         }
     }
 }
