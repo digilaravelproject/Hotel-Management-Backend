@@ -25,10 +25,6 @@
         </div>
 
         <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
-            <button type="button" id="previewJsonBtn" class="px-4 py-2.5 rounded-2xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all flex items-center space-x-2">
-                <i class="fa-solid fa-code text-indigo-600"></i>
-                <span>TV JSON Preview</span>
-            </button>
             <button type="button" id="resetDefaultBtn" class="px-4 py-2.5 rounded-2xl border border-rose-200 hover:bg-rose-50 text-rose-600 text-xs font-bold transition-all flex items-center space-x-2">
                 <i class="fa-solid fa-rotate-left"></i>
                 <span>Reset to Default</span>
@@ -172,28 +168,6 @@
     </div>
 </div>
 
-<!-- Live TV JSON Preview Modal -->
-<div id="jsonPreviewModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] shadow-2xl flex flex-col overflow-hidden border border-slate-200">
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-tv"></i>
-                </div>
-                <div>
-                    <h4 class="text-sm font-extrabold text-slate-900">TV JSON Payload (window.MENU_DATA)</h4>
-                    <p class="text-[11px] text-slate-500">Live preview of the exact menu tree for {{ $hotel->hotel_name }}.</p>
-                </div>
-            </div>
-            <button type="button" onclick="closeJsonModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-        </div>
-        <div class="p-6 overflow-y-auto flex-1 bg-slate-900 text-emerald-400 font-mono text-xs rounded-b-3xl">
-            <pre id="jsonPreviewContent" class="whitespace-pre-wrap leading-relaxed"></pre>
-        </div>
-    </div>
-</div>
 @endsection
 
 @section('scripts')
@@ -478,19 +452,5 @@
         });
     });
 
-    // Preview JSON Modal
-    document.getElementById('previewJsonBtn').addEventListener('click', function() {
-        const hierarchy = buildMenuHierarchy();
-        document.getElementById('jsonPreviewContent').textContent = JSON.stringify(hierarchy, null, 4);
-        const modal = document.getElementById('jsonPreviewModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    });
-
-    function closeJsonModal() {
-        const modal = document.getElementById('jsonPreviewModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
 </script>
 @endsection
