@@ -223,14 +223,14 @@ class DeviceController extends Controller
         }
 
         $device = $hotel->connectedDevices()->findOrFail($id);
-        $defaultMenus = \App\Services\MenuResolverService::getDefaultMenus();
+        $catalog = \App\Services\MenuResolverService::getItemCatalog();
         
         $globalSettings = $hotel->global_menu_settings ?? [];
         $hasOverride = !is_null($device->menu_overrides);
 
         $currentSettings = $hasOverride ? $device->menu_overrides : $globalSettings;
 
-        return view('hotel_admin.devices.menus', compact('hotel', 'device', 'defaultMenus', 'currentSettings', 'hasOverride', 'globalSettings'));
+        return view('hotel_admin.devices.menus', compact('hotel', 'device', 'catalog', 'currentSettings', 'hasOverride', 'globalSettings'));
     }
 
     /**
@@ -238,32 +238,46 @@ class DeviceController extends Controller
      */
     public function updateRoomMenus(Request $request, int $id)
     {
-        $hotel = auth()->guard('hotel_admin')->user();
-        if (!$hotel) {
-            return redirect()->route('hotel.login');
-        }
+        try {
+            $hotel = auth()->guard('hotel_admin')->user();
+            if (!$hotel) {
+                return redirect()->route('hotel.login');
+            }
 
-        $device = $hotel->connectedDevices()->findOrFail($id);
-        $defaultMenus = \App\Services\MenuResolverService::getDefaultMenus();
-        $inputSettings = $request->input('menus', []);
+            $device = $hotel->connectedDevices()->findOrFail($id);
+            $catalog = \App\Services\MenuResolverService::getItemCatalog();
+            $inputSettings = $request->input('menus', []);
 
-        $formattedSettings = [];
-        foreach ($defaultMenus as $menu) {
-            $formattedSettings[$menu['id']] = isset($inputSettings[$menu['id']]) ? 'show' : 'hide';
-        }
+            $formattedSettings = [];
+            foreach ($catalog as $itemId => $meta) {
+                $formattedSettings[$itemId] = isset($inputSettings[$itemId]) ? 'show' : 'hide';
+            }
 
-        $device->update([
-            'menu_overrides' => $formattedSettings,
-        ]);
-
-        if ($request->expectsJson() || $request->ajax()) {
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Room ' . $device->room_no . ' Menu configuration synced in real-time!'
+            $device->update([
+                'menu_overrides' => $formattedSettings,
             ]);
-        }
 
-        return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration saved.');
+            try {
+                event(new \App\Events\TvConfigUpdatedEvent($hotel->id, 'MENU', $device->room_no, ['action' => 'update']));
+            } catch (\Throwable $ex) {
+                \Illuminate\Support\Facades\Log::warning('TvConfigUpdatedEvent failed: ' . $ex->getMessage());
+            }
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Room ' . $device->room_no . ' Menu configuration synced in real-time!'
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Room ' . $device->room_no . ' Menu configuration saved.');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('DeviceController@updateRoomMenus Error: ' . $e->getMessage());
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json(['status' => 'error', 'message' => 'Failed to save: ' . $e->getMessage()], 500);
+            }
+            return back()->with('error', 'Failed to save: ' . $e->getMessage());
+        }
     }
 
     /**

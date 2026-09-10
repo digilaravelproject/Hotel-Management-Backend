@@ -1,19 +1,26 @@
-@extends('layouts.hotel_admin')
+@extends('layouts.super_admin')
 
-@section('title', 'Manage TV Menus - Hotel Admin')
-@section('page_title', 'Smart TV Menu & Navigation Builder')
+@section('title', 'Manage TV Menus - ' . $hotel->hotel_name)
+@section('page_title', 'Smart TV Menu Builder - ' . $hotel->hotel_name)
 
 @section('content')
 <div class="max-w-6xl mx-auto space-y-6">
-    <!-- Header Banner -->
+    <!-- Breadcrumb & Hotel Overview Card -->
     <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shadow-xs shrink-0">
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-600 shadow-xs shrink-0">
                 <i class="fa-solid fa-list-check text-xl"></i>
             </div>
             <div class="space-y-0.5">
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Smart TV Navigation & Menu Builder</h3>
-                <p class="text-xs text-slate-500 font-medium">Reorder, group, hide, or extract menus. Syncs directly with Smart TV home screens in real-time.</p>
+                <div class="flex items-center space-x-2">
+                    <a href="{{ route('super-admin.hotels.index') }}" class="text-xs font-bold text-slate-400 hover:text-slate-600 transition-colors">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Hotels
+                    </a>
+                    <span class="text-slate-300">/</span>
+                    <span class="text-xs font-bold text-slate-600">{{ $hotel->hotel_name }}</span>
+                </div>
+                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">{{ $hotel->hotel_name }} — TV Menus</h3>
+                <p class="text-xs text-slate-500 font-medium">License Key: <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-indigo-600">{{ $hotel->license_key ?? 'N/A' }}</code> &bull; Rooms: {{ $hotel->room_count }}</p>
             </div>
         </div>
 
@@ -30,12 +37,12 @@
     </div>
 
     <!-- Instructions / Tips Bar -->
-    <div class="bg-gradient-to-r from-indigo-50/60 via-purple-50/40 to-slate-50 border border-indigo-100/80 rounded-2xl p-4 text-xs text-slate-600 flex items-center justify-between gap-4">
+    <div class="bg-gradient-to-r from-amber-50/60 via-indigo-50/40 to-slate-50 border border-amber-200/60 rounded-2xl p-4 text-xs text-slate-600 flex items-center justify-between gap-4">
         <div class="flex items-center space-x-2.5">
-            <i class="fa-solid fa-circle-info text-indigo-600 text-sm shrink-0"></i>
-            <span><strong>Drag & Drop:</strong> Drag items up/down to reorder, or drag items in/out of groups (e.g. move <em>Room Info</em> to top level). Use the switches to show or hide.</span>
+            <i class="fa-solid fa-circle-info text-amber-600 text-sm shrink-0"></i>
+            <span><strong>Super Admin Override:</strong> Customize this hotel's TV home screen navigation structure. Reorder, group, hide, or extract menus as needed.</span>
         </div>
-        <span class="px-2.5 py-1 rounded-full bg-white border border-indigo-200 text-indigo-700 text-[10px] font-bold uppercase shrink-0">Live Real-Time Sync</span>
+        <span class="px-2.5 py-1 rounded-full bg-white border border-amber-200 text-amber-700 text-[10px] font-bold uppercase shrink-0">Real-Time Sync</span>
     </div>
 
     <!-- Menu Builder Area -->
@@ -70,7 +77,7 @@
                             <div class="flex items-center space-x-4">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isShown ? 'checked' : '' }}>
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                                 </label>
                                 <span class="status-badge text-[11px] font-bold {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                     {{ $isShown ? 'Visible' : 'Hidden' }}
@@ -102,7 +109,7 @@
                                         </button>
                                         <label class="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isSubShown ? 'checked' : '' }}>
-                                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                                            <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
                                         </label>
                                         <span class="status-badge text-[10px] font-bold {{ $isSubShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                             {{ $isSubShown ? 'Visible' : 'Hidden' }}
@@ -138,7 +145,7 @@
 
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isShown ? 'checked' : '' }}>
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                             </label>
                             <span class="status-badge text-[11px] font-bold {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                 {{ $isShown ? 'Visible' : 'Hidden' }}
@@ -153,13 +160,13 @@
     <!-- Floating / Sticky Save Bar -->
     <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex items-center justify-between sticky bottom-6 z-20">
         <div class="text-xs text-slate-500 font-medium">
-            <i class="fa-solid fa-cloud-arrow-up text-indigo-600 mr-1.5"></i> Changes will sync instantly to all connected hotel TVs.
+            <i class="fa-solid fa-cloud-arrow-up text-rose-600 mr-1.5"></i> Changes will sync instantly to all TVs assigned to <strong>{{ $hotel->hotel_name }}</strong>.
         </div>
         <div class="flex items-center space-x-3">
-            <a href="{{ route('hotel.dashboard') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-            <button type="button" id="saveMenuBtn" class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+            <a href="{{ route('super-admin.hotels.index') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
+            <button type="button" id="saveMenuBtn" class="px-8 py-3 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
-                <span id="saveBtnText">Save & Sync TV Menus</span>
+                <span id="saveBtnText">Save & Sync Hotel TV Menus</span>
             </button>
         </div>
     </div>
@@ -170,12 +177,12 @@
     <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] shadow-2xl flex flex-col overflow-hidden border border-slate-200">
         <div class="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold">
+                <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm font-bold">
                     <i class="fa-solid fa-tv"></i>
                 </div>
                 <div>
                     <h4 class="text-sm font-extrabold text-slate-900">TV JSON Payload (window.MENU_DATA)</h4>
-                    <p class="text-[11px] text-slate-500">Live preview of the exact menu tree that will be received by TVs.</p>
+                    <p class="text-[11px] text-slate-500">Live preview of the exact menu tree for {{ $hotel->hotel_name }}.</p>
                 </div>
             </div>
             <button type="button" onclick="closeJsonModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition-colors">
@@ -193,8 +200,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 <script>
     const itemCatalog = @json($itemCatalog);
-    const saveUrl = "{{ url('/hotel/menus') }}";
-    const resetUrl = "{{ route('hotel.menus.reset') }}";
+    const saveUrl = "{{ url('/super-admin/hotels/' . $hotel->id . '/menus') }}";
+    const resetUrl = "{{ route('super-admin.hotels.menus.reset', $hotel->id) }}";
     const csrfToken = "{{ csrf_token() }}";
 
     // Initialize Sortable on Root List
@@ -207,7 +214,7 @@
         },
         handle: '.drag-handle',
         animation: 180,
-        ghostClass: 'bg-indigo-50/80',
+        ghostClass: 'bg-rose-50/80',
         onEnd: updateDomState
     });
 
@@ -221,7 +228,7 @@
             },
             handle: '.drag-handle',
             animation: 180,
-            ghostClass: 'bg-indigo-50/80',
+            ghostClass: 'bg-rose-50/80',
             onEnd: updateDomState
         });
     });
@@ -243,7 +250,6 @@
         if (btn) {
             const subItem = btn.closest('.sub-item');
             if (subItem) {
-                // Convert to standalone card format and append to root list
                 const id = subItem.dataset.id;
                 const isChecked = subItem.querySelector('.node-status-checkbox').checked;
                 const meta = itemCatalog[id] || { name: id };
@@ -273,7 +279,7 @@
                         </select>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''}>
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-600"></div>
                         </label>
                         <span class="status-badge text-[11px] font-bold ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
                             ${isChecked ? 'Visible' : 'Hidden'}
@@ -324,7 +330,7 @@
                             </button>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''}>
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
                             </label>
                             <span class="status-badge text-[10px] font-bold ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
                                 ${isChecked ? 'Visible' : 'Hidden'}
@@ -339,7 +345,6 @@
         }
     });
 
-    // Serialize DOM tree into exact window.MENU_DATA JSON
     function buildMenuHierarchy() {
         const tree = [];
         const rootNodes = rootEl.children;
@@ -385,11 +390,9 @@
         return tree;
     }
 
-    function updateDomState() {
-        // Can be used for re-indexing or visual state refresh
-    }
+    function updateDomState() {}
 
-    // Save Menus via AJAX
+    // Save Menus
     document.getElementById('saveMenuBtn').addEventListener('click', function() {
         const hierarchy = buildMenuHierarchy();
         const btn = document.getElementById('saveMenuBtn');
@@ -415,7 +418,7 @@
             if (data.status === 'success') {
                 Swal.fire({
                     icon: 'success',
-                    title: 'TV Menus Synced!',
+                    title: 'Hotel TV Menus Synced!',
                     text: data.message,
                     timer: 2500,
                     showConfirmButton: false
@@ -442,8 +445,8 @@
     // Reset to Default
     document.getElementById('resetDefaultBtn').addEventListener('click', function() {
         Swal.fire({
-            title: 'Reset TV Menus?',
-            text: 'This will restore the standard default menu ordering, grouping, and icons.',
+            title: 'Reset Hotel TV Menus?',
+            text: 'This will restore the standard default menu ordering, grouping, and icons for this hotel.',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e11d48',

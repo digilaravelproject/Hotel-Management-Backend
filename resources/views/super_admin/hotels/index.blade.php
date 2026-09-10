@@ -95,6 +95,9 @@
                                     <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="p-2 rounded-lg border border-slate-200 text-indigo-600 hover:bg-indigo-50 transition-colors" title="Manage Amenities">
                                         <i class="fa-solid fa-spa"></i>
                                     </a>
+                                    <a href="{{ route('super-admin.hotels.menus', $hotel->id) }}" class="p-2 rounded-lg border border-slate-200 text-amber-600 hover:bg-amber-50 transition-colors" title="Manage TV Menus">
+                                        <i class="fa-solid fa-list-check"></i>
+                                    </a>
                                     <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="p-2 rounded-lg border border-slate-200 text-emerald-600 hover:bg-emerald-50 transition-colors" title="View TVs">
                                         <i class="fa-solid fa-tv"></i>
                                     </a>

@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\HotelAdmin;
+namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\HotelAdmin;
 use App\Services\MenuResolverService;
 use App\Events\TvConfigUpdatedEvent;
 use Illuminate\Support\Facades\Log;
@@ -18,40 +19,34 @@ class MenuController extends Controller
     }
 
     /**
-     * Display Global Menu Hierarchy & Visibility settings for Hotel Admin.
+     * Show the Menu Hierarchy & Visibility builder for a specific hotel.
      */
-    public function index()
+    public function edit(int $hotelId)
     {
         try {
-            $hotel = auth()->guard('hotel_admin')->user();
-            if (!$hotel) {
-                return redirect()->route('hotel.login');
-            }
-
+            $hotel = HotelAdmin::findOrFail($hotelId);
             $currentTree = $this->menuResolver->resolveTree($hotel->global_menu_settings ?? []);
             $defaultTree = MenuResolverService::getDefaultMenus();
             $itemCatalog = MenuResolverService::getItemCatalog();
 
-            return view('hotel_admin.menus.index', compact('hotel', 'currentTree', 'defaultTree', 'itemCatalog'));
+            return view('super_admin.hotels.menus', compact('hotel', 'currentTree', 'defaultTree', 'itemCatalog'));
         } catch (\Throwable $e) {
-            Log::error('HotelAdmin\MenuController@index Error: ' . $e->getMessage(), [
+            Log::error('SuperAdmin\MenuController@edit Error: ' . $e->getMessage(), [
+                'hotel_id' => $hotelId,
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return back()->with('error', 'Unable to load menu configuration: ' . $e->getMessage());
+            return redirect()->route('super-admin.hotels.index')->with('error', 'Unable to load hotel menus: ' . $e->getMessage());
         }
     }
 
     /**
-     * Update Global Menu Hierarchy & Visibility settings.
+     * Update Menu Hierarchy & Visibility for a specific hotel.
      */
-    public function update(Request $request)
+    public function update(Request $request, int $hotelId)
     {
         try {
-            $hotel = auth()->guard('hotel_admin')->user();
-            if (!$hotel) {
-                return redirect()->route('hotel.login');
-            }
+            $hotel = HotelAdmin::findOrFail($hotelId);
 
             $rawMenus = $request->input('menus_hierarchy');
             if (is_string($rawMenus)) {
@@ -72,49 +67,45 @@ class MenuController extends Controller
                 'global_menu_settings' => $sanitizedTree,
             ]);
 
-            // Dispatch real-time TV update event
             try {
                 event(new TvConfigUpdatedEvent($hotel->id, 'MENU', null, ['action' => 'update']));
             } catch (\Throwable $eventEx) {
-                Log::warning('TvConfigUpdatedEvent dispatch failed for Menu: ' . $eventEx->getMessage());
+                Log::warning('TvConfigUpdatedEvent dispatch failed: ' . $eventEx->getMessage());
             }
 
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'Global TV Menu order & visibility updated & synced in real-time!',
+                    'message' => 'Hotel TV Menu hierarchy updated & synced in real-time!',
                     'data' => $sanitizedTree,
                 ]);
             }
 
-            return redirect()->back()->with('success', 'Global TV Menu settings updated successfully.');
+            return redirect()->back()->with('success', 'Hotel TV Menu hierarchy updated successfully.');
         } catch (\Throwable $e) {
-            Log::error('HotelAdmin\MenuController@update Error: ' . $e->getMessage(), [
+            Log::error('SuperAdmin\MenuController@update Error: ' . $e->getMessage(), [
+                'hotel_id' => $hotelId,
                 'trace' => $e->getTraceAsString(),
             ]);
 
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Failed to update menu settings: ' . $e->getMessage(),
+                    'message' => 'Failed to update hotel menus: ' . $e->getMessage(),
                 ], 500);
             }
 
-            return back()->with('error', 'Failed to update menu settings: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update hotel menus: ' . $e->getMessage());
         }
     }
 
     /**
-     * Reset Global TV Menus to the default system hierarchy.
+     * Reset hotel menus back to system default.
      */
-    public function reset(Request $request)
+    public function reset(Request $request, int $hotelId)
     {
         try {
-            $hotel = auth()->guard('hotel_admin')->user();
-            if (!$hotel) {
-                return redirect()->route('hotel.login');
-            }
-
+            $hotel = HotelAdmin::findOrFail($hotelId);
             $hotel->update([
                 'global_menu_settings' => null,
             ]);
@@ -122,20 +113,21 @@ class MenuController extends Controller
             try {
                 event(new TvConfigUpdatedEvent($hotel->id, 'MENU', null, ['action' => 'reset']));
             } catch (\Throwable $eventEx) {
-                Log::warning('TvConfigUpdatedEvent dispatch failed on Menu reset: ' . $eventEx->getMessage());
+                Log::warning('TvConfigUpdatedEvent dispatch failed: ' . $eventEx->getMessage());
             }
 
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'success',
-                    'message' => 'TV Menu hierarchy reset to default configuration!',
+                    'message' => 'Hotel menus reset to system default!',
                     'data' => MenuResolverService::getDefaultMenus(),
                 ]);
             }
 
-            return redirect()->back()->with('success', 'TV Menus reset to default successfully.');
+            return redirect()->back()->with('success', 'Hotel menus reset to system default successfully.');
         } catch (\Throwable $e) {
-            Log::error('HotelAdmin\MenuController@reset Error: ' . $e->getMessage(), [
+            Log::error('SuperAdmin\MenuController@reset Error: ' . $e->getMessage(), [
+                'hotel_id' => $hotelId,
                 'trace' => $e->getTraceAsString(),
             ]);
 

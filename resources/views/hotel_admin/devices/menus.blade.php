@@ -45,17 +45,17 @@
             @csrf
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($defaultMenus as $menu)
+                @foreach($catalog as $menuId => $menu)
                     @php
-                        $isShown = !isset($currentSettings[$menu['id']]) || $currentSettings[$menu['id']] !== 'hide';
+                        $isShown = !isset($currentSettings[$menuId]) || $currentSettings[$menuId] !== 'hide';
                     @endphp
                     <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between">
                         <div>
                             <h4 class="text-xs font-bold text-slate-800">{{ $menu['name'] }}</h4>
-                            <span class="text-[10px] font-mono text-slate-400">id: {{ $menu['id'] }}</span>
+                            <span class="text-[10px] font-mono text-slate-400">id: {{ $menuId }}</span>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" name="menus[{{ $menu['id'] }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
+                            <input type="checkbox" name="menus[{{ $menuId }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
                             <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                         </label>
                     </div>

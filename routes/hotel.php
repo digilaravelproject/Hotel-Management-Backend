@@ -82,6 +82,7 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     // Global Manage Menus
     Route::get('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'index'])->name('hotel.menus.index');
     Route::post('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'update']);
+    Route::post('/hotel/menus/reset', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'reset'])->name('hotel.menus.reset');
 
     // Guest Management CRUD
     Route::post('/hotel/guests/{id}/checkout', [HotelGuestController::class, 'checkout'])->name('hotel.guests.checkout');

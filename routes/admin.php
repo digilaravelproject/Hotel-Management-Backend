@@ -39,6 +39,9 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     // Hotels CRUD and Status Toggles
     Route::get('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');
     Route::post('/hotels/{id}/toggle-approval', [SuperHotelController::class, 'toggleApproval'])->name('hotels.toggle-approval');
+    Route::get('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'edit'])->name('hotels.menus');
+    Route::post('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'update']);
+    Route::post('/hotels/{id}/menus/reset', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'reset'])->name('hotels.menus.reset');
     Route::resource('hotels', SuperHotelController::class);
 
     // Amenities management for Super Admin
