@@ -48,6 +48,10 @@ class TvConfigObserver
             // Global APK / Template version change
             event(new TvConfigUpdatedEvent(null, 'TEMPLATE', null, ['action' => $action]));
         } elseif ($model instanceof HotelAdmin) {
+            // Ignore if only theme changed (handled explicitly with TEMPLATE scope)
+            if ($model->wasChanged('selected_theme_id') && count($model->getChanges()) <= 2) {
+                return;
+            }
             // Hotel profile / media / configuration change
             event(new TvConfigUpdatedEvent($model->id, 'HOTEL_INFO', null, ['action' => $action]));
         } elseif ($model instanceof Guest) {

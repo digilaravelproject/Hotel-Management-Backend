@@ -54,14 +54,25 @@ class FirebaseFirestoreService
         if (is_string($value)) {
             return ['stringValue' => $value];
         }
+        if (is_object($value)) {
+            $array = (array) $value;
+            $fields = [];
+            foreach ($array as $k => $v) {
+                $fields[(string) $k] = $this->formatFirestoreValue($v);
+            }
+            return ['mapValue' => ['fields' => (object) $fields]];
+        }
         if (is_array($value)) {
+            if (empty($value)) {
+                return ['arrayValue' => (object) []];
+            }
             // Check if associative array (map) or sequential array (list)
-            if (array_keys($value) !== range(0, count($value) - 1)) {
+            if (!array_is_list($value)) {
                 $fields = [];
                 foreach ($value as $k => $v) {
                     $fields[(string) $k] = $this->formatFirestoreValue($v);
                 }
-                return ['mapValue' => ['fields' => $fields]];
+                return ['mapValue' => ['fields' => (object) $fields]];
             } else {
                 $values = [];
                 foreach ($value as $v) {
@@ -107,12 +118,21 @@ class FirebaseFirestoreService
         }
 
         $body = [
-            'fields' => $fields,
+            'fields' => (object) $fields,
         ];
 
-        $response = Http::withToken($accessToken)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->patch($url, $body);
+        try {
+            $response = Http::timeout(4)
+                ->withToken($accessToken)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->patch($url, $body);
+        } catch (\Throwable $e) {
+            Log::error("Failed to connect to Firestore ({$collection}/{$documentId}): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Firestore connection error: ' . $e->getMessage(),
+            ];
+        }
 
         if ($response->successful()) {
             Log::info("Firestore document successfully synced: {$collection}/{$documentId}");
@@ -160,7 +180,15 @@ class FirebaseFirestoreService
         $path = trim($collection, '/') . '/' . trim($documentId, '/');
         $url = "https://firestore.googleapis.com/v1/projects/{$projectId}/databases/(default)/documents/{$path}";
 
-        $response = Http::withToken($accessToken)->delete($url);
+        try {
+            $response = Http::timeout(4)->withToken($accessToken)->delete($url);
+        } catch (\Throwable $e) {
+            Log::error("Failed to delete Firestore document ({$path}): " . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Firestore connection error: ' . $e->getMessage(),
+            ];
+        }
 
         if ($response->successful()) {
             Log::info("Firestore document successfully deleted: {$path}");

@@ -77,10 +77,15 @@ class FirebaseFcmService
                 return null;
             }
 
-            $response = Http::asForm()->post('https://oauth2.googleapis.com/token', [
-                'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-                'assertion' => $jwt,
-            ]);
+            try {
+                $response = Http::timeout(4)->asForm()->post('https://oauth2.googleapis.com/token', [
+                    'grant_type' => 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+                    'assertion' => $jwt,
+                ]);
+            } catch (\Throwable $e) {
+                Log::error('Exception requesting Google OAuth token for FCM: ' . $e->getMessage());
+                return null;
+            }
 
             if ($response->successful()) {
                 return $response->json('access_token');
@@ -176,9 +181,15 @@ class FirebaseFcmService
             ]),
         ];
 
-        $response = Http::withToken($accessToken)
-            ->withHeaders(['Content-Type' => 'application/json'])
-            ->post($url, $body);
+        try {
+            $response = Http::timeout(4)
+                ->withToken($accessToken)
+                ->withHeaders(['Content-Type' => 'application/json'])
+                ->post($url, $body);
+        } catch (\Throwable $e) {
+            Log::error('Exception sending FCM message: ' . $e->getMessage(), ['target' => $target]);
+            return false;
+        }
 
         if ($response->successful()) {
             Log::info('FCM Silent Data Push sent successfully', ['target' => $target, 'data' => $stringData]);

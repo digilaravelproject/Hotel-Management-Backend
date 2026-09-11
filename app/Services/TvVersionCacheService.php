@@ -52,7 +52,7 @@ class TvVersionCacheService
     /**
      * Clear all check-version cache keys ONLY for the specified hotel.
      */
-    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null): void
+    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null, bool $dispatchFcm = false): void
     {
         $indexKey = "tv_cache_index_hotel_{$hotelId}";
         $trackedKeys = Cache::get($indexKey, []);
@@ -63,8 +63,10 @@ class TvVersionCacheService
 
         Cache::forget($indexKey);
 
-        // Dispatch FCM Real-Time Data Push Event
-        event(new \App\Events\TvConfigUpdatedEvent($hotelId, $scope, $roomNo));
+        // Only dispatch event if explicitly requested to prevent duplicate cascading event loops
+        if ($dispatchFcm) {
+            event(new \App\Events\TvConfigUpdatedEvent($hotelId, $scope, $roomNo));
+        }
     }
 
     /**

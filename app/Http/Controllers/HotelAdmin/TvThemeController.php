@@ -63,10 +63,14 @@ class TvThemeController extends Controller
         TvVersionCacheService::clearHotelCache($hotel->id);
 
         // Dispatch domain event to send Firebase FCM update to all room TVs in this hotel
-        event(new TvConfigUpdatedEvent($hotel->id, 'TEMPLATE', null, [
-            'action' => 'theme_switched',
-            'theme_id' => $themeId,
-        ]));
+        try {
+            event(new TvConfigUpdatedEvent($hotel->id, 'TEMPLATE', null, [
+                'action' => 'theme_switched',
+                'theme_id' => $themeId,
+            ]));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('TvConfigUpdatedEvent dispatch failed on theme select: ' . $e->getMessage());
+        }
 
         return back()->with('success', "TV Theme #{$themeId} activated successfully! Connected TVs in your hotel will update automatically.");
     }

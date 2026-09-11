@@ -33,6 +33,12 @@ class SendFcmTvSyncNotification
      */
     public function handle(TvConfigUpdatedEvent $event): void
     {
+        // If running in PHP-FPM web request, finish the HTTP response to the browser immediately
+        // so the user never experiences 504 Gateway Time-out while background sync continues.
+        if (function_exists('fastcgi_finish_request') && !app()->runningInConsole()) {
+            fastcgi_finish_request();
+        }
+
         $dataPayload = array_merge([
             'scope' => $event->scope,
             'hotel_id' => (string) ($event->hotelId ?? ''),
@@ -99,17 +105,21 @@ class SendFcmTvSyncNotification
      */
     protected function syncDeviceToFirestore(HotelAdmin $hotel, ConnectedDevice $device, string $scope): void
     {
-        $resourceArray = (new TvLoginResource([
-            'device' => $device,
-            'hotel' => $hotel,
-            'message' => 'Realtime Firestore Device Config Update',
-        ]))->resolve(request());
+        try {
+            $resourceArray = (new TvLoginResource([
+                'device' => $device,
+                'hotel' => $hotel,
+                'message' => 'Realtime Firestore Device Config Update',
+            ]))->resolve(request());
 
-        $collectionPath = 'hotels/hotel_' . $hotel->id . '/rooms';
-        $documentId = 'device_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->device_id);
+            $collectionPath = 'hotels/hotel_' . $hotel->id . '/rooms';
+            $documentId = 'device_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->device_id);
 
-        $this->firestoreService->syncDocument($collectionPath, $documentId, [
-            'data' => $resourceArray['data'] ?? [],
-        ]);
+            $this->firestoreService->syncDocument($collectionPath, $documentId, [
+                'data' => $resourceArray['data'] ?? [],
+            ]);
+        } catch (\Throwable $e) {
+            Log::error("Failed to sync room device to Firestore ({$device->device_id}): " . $e->getMessage());
+        }
     }
 }
