@@ -17,3 +17,8 @@ use App\Http\Controllers\LandingPageController;
 // Public landing and registration routes
 Route::get('/', [LandingPageController::class, 'index'])->name('landing');
 Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
+
+// Information & Support Pages
+Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
+Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
+Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');

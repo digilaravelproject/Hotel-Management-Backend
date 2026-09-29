@@ -29,6 +29,7 @@
                 <a href="#social-proof" class="hover:text-indigo-600 transition-colors">Hospitality Partners</a>
                 <a href="#plans" class="hover:text-indigo-600 transition-colors">Pricing & Plans</a>
                 <a href="#faq" class="hover:text-indigo-600 transition-colors">FAQ</a>
+                <a href="{{ route('contact-us') }}" class="hover:text-indigo-600 transition-colors">Contact</a>
             </nav>
 
             <!-- Status Flash notifications -->
@@ -400,10 +401,10 @@
                 <div class="space-y-4">
                     <h4 class="text-xs font-bold text-white uppercase tracking-widest">Company</h4>
                     <ul class="space-y-3">
-                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">About Us</a></li>
+                        <li><a href="#features" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">About Features</a></li>
                         <li><a href="#social-proof" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Hospitality Partners</a></li>
-                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
-                        <li><a href="#" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Terms of Service</a></li>
+                        <li><a href="{{ route('contact-us') }}" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Contact Us</a></li>
+                        <li><a href="{{ route('privacy-policy') }}" class="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Privacy Policy</a></li>
                     </ul>
                 </div>
 
@@ -436,9 +437,8 @@
             <div class="flex flex-col md:flex-row items-center justify-between pt-6 gap-4">
                 <p class="text-xs text-slate-500 font-medium">© {{ date('Y') }} HotelTV Management System. All rights reserved.</p>
                 <div class="flex items-center space-x-6 text-xs text-slate-500">
-                    <a href="#" class="hover:text-slate-300 transition-colors">Privacy</a>
-                    <a href="#" class="hover:text-slate-300 transition-colors">Terms</a>
-                    <a href="#" class="hover:text-slate-300 transition-colors">Cookies</a>
+                    <a href="{{ route('privacy-policy') }}" class="hover:text-slate-300 transition-colors">Privacy</a>
+                    <a href="{{ route('contact-us') }}" class="hover:text-slate-300 transition-colors">Contact</a>
                 </div>
             </div>
         </div>
