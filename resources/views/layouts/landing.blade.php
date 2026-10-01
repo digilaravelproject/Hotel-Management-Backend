@@ -20,7 +20,7 @@
     </style>
     @yield('styles')
 </head>
-<body class="h-full text-slate-800 bg-slate-50">
+<body class="h-full text-slate-100 bg-[#0A0D14] selection:bg-[#E5A853] selection:text-slate-950">
 
     <div class="min-h-screen flex flex-col">
         @yield('content')

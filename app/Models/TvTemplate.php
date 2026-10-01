@@ -13,6 +13,7 @@ class TvTemplate extends Model
         'theme_name',
         'version',
         'file_path',
+        'extracted_path',
         'preview_image',
         'is_active',
     ];

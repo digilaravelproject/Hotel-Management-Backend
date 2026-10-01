@@ -3,66 +3,113 @@
 @section('title', 'PAX TV - Luxury Hotel Smart TV OS & Guest Experience Platform')
 
 @section('styles')
-<!-- Luxury Typography: Cormorant Garamond & Playfair Display -->
+<!-- Luxury Typography: Cormorant Garamond, Playfair Display, Cinzel, Plus Jakarta Sans -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-    /* Exact Color Tokens from Reference */
+    /* Direct Font Import Guarantee */
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+    /* Exact Color Tokens from Reference Screenshot */
     :root {
-        --color-gold: #C5A880;
-        --color-gold-hover: #D8BA93;
-        --color-gold-dark: #A07F54;
+        --color-gold: #E5A853;
+        --color-gold-hover: #F2B660;
+        --color-gold-light: #F7D59E;
+        --color-gold-dark: #B88035;
         --color-gold-badge: #F4EFE6;
         --color-gold-border: #E8DCCB;
         --color-bg-dark: #0A0D14;
         --color-bg-dark-card: #0F131C;
         --color-bg-cream: #FAF8F5;
-        --color-text-gold: #B89355;
+        --color-text-gold: #E5A853;
     }
 
     .font-serif-lux {
-        font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+        font-family: 'Playfair Display', 'Cormorant Garamond', 'Cinzel', Georgia, serif !important;
     }
     .font-sans-lux {
-        font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
     }
 
-    /* Exact Pill Button from Screenshot */
+    /* Exact Warm Gold Pill Button from Screenshot */
     .btn-gold-pill {
-        background-color: #C5A880;
-        color: #11141B;
-        font-weight: 700;
+        background-color: #E5A853;
+        color: #111111;
+        font-weight: 600;
         border-radius: 9999px;
-        transition: all 0.2s ease-in-out;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 15px rgba(229, 168, 83, 0.25);
     }
     .btn-gold-pill:hover {
-        background-color: #D6B993;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(197, 168, 128, 0.35);
+        background-color: #F2B660;
+        transform: translateY(-1.5px);
+        box-shadow: 0 8px 24px rgba(229, 168, 83, 0.4);
     }
 
+    /* Glass Pill Button (Watch Video) from Screenshot */
     .btn-glass-pill {
-        background-color: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        background-color: rgba(10, 15, 25, 0.45);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.28);
         color: #FFFFFF;
+        font-weight: 500;
         border-radius: 9999px;
-        transition: all 0.2s ease-in-out;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .btn-glass-pill:hover {
-        background-color: rgba(255, 255, 255, 0.12);
+        background-color: rgba(255, 255, 255, 0.15);
         border-color: rgba(255, 255, 255, 0.7);
+        transform: translateY(-1.5px);
     }
 
-    /* Reference TV Mockup Hardware Shadow */
-    .tv-screen-chassis {
-        background: #080A0F;
-        border: 2px solid #232732;
-        box-shadow: 0 35px 80px -15px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.08);
+    /* 3D Hardware Perspective for Smart TV Setup (Enhanced Cinematic Angle) */
+    .tv-perspective-stage {
+        perspective: 900px;
+        perspective-origin: 85% 45%;
     }
 
-    /* Icon Box styling matching screenshot */
+    .tv-tilted-rig {
+        transform-style: preserve-3d;
+        transform: rotateY(-27deg) rotateX(3.5deg) rotateZ(-1.5deg);
+        transform-origin: 90% 50%;
+        transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .tv-tilted-rig:hover {
+        transform: rotateY(-21deg) rotateX(2.5deg) rotateZ(-1deg);
+    }
+
+    /* Ultra-realistic TV Hardware Frame with 3D Depth & Rim Highlight */
+    .tv-screen-chassis-3d {
+        background: #080a0f;
+        border: 2px solid #222938;
+        border-right: 7px solid #333f57;
+        border-bottom: 5px solid #18202d;
+        border-radius: 1.25rem;
+        box-shadow: 
+            -35px 40px 80px -10px rgba(0, 0, 0, 0.98),
+            -15px 18px 35px rgba(0, 0, 0, 0.9),
+            0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    /* Wooden TV Media Console Cabinet in matching 3D */
+    .credenza-console-3d {
+        background: linear-gradient(180deg, #2c1e15 0%, #150e09 100%);
+        border-top: 2px solid #543b2a;
+        border-right: 6px solid #664834;
+        border-bottom: 2px solid #100b07;
+        box-shadow: -30px 35px 70px rgba(0, 0, 0, 0.95);
+    }
+
+    /* Wood Paneling Behind TV */
+    .wood-slat-backdrop {
+        background: repeating-linear-gradient(90deg, #241812 0px, #241812 18px, #1a110c 18px, #1a110c 24px);
+    }
+
+    /* Icon Box styling */
     .icon-box-gold {
         background-color: #F5EFE6;
         border: 1px solid #E6D8C4;
@@ -72,56 +119,68 @@
 @endsection
 
 @section('content')
-<div class="relative bg-[#0A0D14] text-slate-100 font-sans-lux min-h-screen selection:bg-[#C5A880] selection:text-slate-950">
+<div class="relative bg-[#0A0D14] text-slate-100 font-sans-lux min-h-screen selection:bg-[#E5A853] selection:text-slate-950">
 
     <!-- ========================================================================= -->
-    <!-- 1. HERO SECTION (100% REPLICATED FROM REFERENCE ARTBOARD) -->
+    <!-- 1. HERO SECTION (EXACT MATCH TO REFERENCE SCREENSHOT) -->
     <!-- ========================================================================= -->
     <div class="relative min-h-[95vh] lg:min-h-screen flex flex-col justify-between overflow-hidden">
         
-        <!-- Luxury Hotel Suite Room Background (Ocean Beach Sunset Through Panoramic Window) -->
+        <!-- Luxury Hotel Suite Sunset Panoramic Room Background -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=2400&q=90" 
-                 alt="Luxury Suite with Ocean View" 
-                 class="w-full h-full object-cover object-center filter brightness-[0.45] contrast-[1.08]">
-            <!-- Dark Gradient Vignette for Readability -->
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0D14] via-[#0A0D14]/40 to-[#0A0D14]/75"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-[#0A0D14]/90 via-[#0A0D14]/50 to-transparent"></div>
+            <img src="{{ asset('images/landing/hero-suite-sunset.jpg') }}" 
+                 alt="Luxury Hotel Penthouse Suite Sunset" 
+                 class="w-full h-full object-cover object-center filter brightness-[0.52] contrast-[1.05]">
+            <!-- Subtle Vignette & Dark Overlay for Crisp Contrast -->
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0A0D14] via-transparent to-[#0A0D14]/70"></div>
+            <div class="absolute inset-0 bg-gradient-to-r from-[#0A0D14]/90 via-[#0A0D14]/40 to-black/30"></div>
         </div>
 
         <!-- ========================================================================= -->
-        <!-- HEADER NAVBAR (MATCHING REFERENCE EXACTLY) -->
+        <!-- HEADER NAVBAR (EXACT MATCH: LOGO, CENTER LINKS, REQUEST DEMO BUTTON) -->
         <!-- ========================================================================= -->
-        <header class="relative z-50 px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#0A0D14]/40">
+        <header class="relative z-50 px-6 lg:px-16 pt-5 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 
-                <!-- Brand Logo: 8-Point Faceted Golden Crest + PAX TV -->
-                <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                    <div class="w-8 h-8 flex items-center justify-center text-[#C5A880] transition-transform duration-300 group-hover:scale-105">
-                        <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
-                            <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
+                <!-- Brand Logo: Golden Rosette Crest + TAJ in Serif Typography -->
+                <a href="{{ route('landing') }}" class="flex flex-col items-center group cursor-pointer">
+                    <!-- Intricate Golden Sacred Geometry Rosette Emblem -->
+                    <div class="w-8 h-8 text-[#E5A853] flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                        <svg class="w-7 h-7 fill-current drop-shadow-md" viewBox="0 0 40 40">
+                            <!-- Outer 8-point geometric rosette -->
+                            <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                            <!-- Inner concentric diamond flower -->
+                            <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                            <!-- Core faceted star -->
+                            <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
+                            <circle cx="20" cy="20" r="2.2" fill="#0A0D14"/>
                         </svg>
                     </div>
-                    <span class="font-serif-lux font-bold text-2xl tracking-[0.22em] text-white uppercase group-hover:text-[#E8DCCB] transition-colors">
-                        PAX<span class="text-[#C5A880] ml-1">TV</span>
+                    <!-- Brand Name -->
+                    <span class="font-serif-lux font-bold text-lg sm:text-xl tracking-[0.28em] text-[#E5A853] uppercase leading-none mt-1 group-hover:text-[#F2B660] transition-colors">
+                        TAJ
                     </span>
                 </a>
 
-                <!-- Centered Navigation Links (Exact Match: Home, Features, Solutions, Gallery, About, Contact) -->
-                <nav class="hidden md:flex items-center space-x-9 text-xs font-medium tracking-wider text-slate-300">
-                    <a href="#home" class="text-white border-b-2 border-[#C5A880] pb-1 hover:text-[#C5A880] transition-colors">Home</a>
-                    <a href="#features" class="hover:text-[#C5A880] transition-colors">Features</a>
-                    <a href="#solutions" class="hover:text-[#C5A880] transition-colors">Solutions</a>
-                    <a href="#gallery" class="hover:text-[#C5A880] transition-colors">Gallery</a>
-                    <a href="#about" class="hover:text-[#C5A880] transition-colors">About</a>
-                    <a href="{{ route('contact-us') }}" class="hover:text-[#C5A880] transition-colors">Contact</a>
+                <!-- Centered Navigation Links (Exact: Home, Features, Solutions, Gallery, About, Contact) -->
+                <nav class="hidden md:flex items-center space-x-9 text-xs font-medium tracking-wide">
+                    <!-- Home with Active Golden Underline -->
+                    <div class="relative py-1">
+                        <a href="#home" class="text-white hover:text-[#E5A853] transition-colors">Home</a>
+                        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-[#E5A853] rounded-full"></span>
+                    </div>
+                    <a href="#features" class="text-stone-200 hover:text-[#E5A853] transition-colors">Features</a>
+                    <a href="#solutions" class="text-stone-200 hover:text-[#E5A853] transition-colors">Solutions</a>
+                    <a href="#gallery" class="text-stone-200 hover:text-[#E5A853] transition-colors">Gallery</a>
+                    <a href="#about" class="text-stone-200 hover:text-[#E5A853] transition-colors">About</a>
+                    <a href="{{ route('contact-us') }}" class="text-stone-200 hover:text-[#E5A853] transition-colors">Contact</a>
                 </nav>
 
-                <!-- Right Action Button: Request Demo > -->
-                <div class="flex items-center space-x-4">
+                <!-- Right Action Button: Request Demo > (Warm Gold Pill) -->
+                <div class="flex items-center">
                     <button onclick="openRegisterModal()" class="px-6 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
                         <span>Request Demo</span>
-                        <span class="text-xs font-bold font-mono">›</span>
+                        <span class="text-sm font-bold font-mono">›</span>
                     </button>
                 </div>
 
@@ -129,146 +188,91 @@
         </header>
 
         <!-- ========================================================================= -->
-        <!-- HERO HEADLINE & GIANT SMART TV DISPLAY ON CONSOLE -->
+        <!-- HERO CONTENT: LEFT TYPOGRAPHY & RIGHT SMART TV CONSOLE -->
         <!-- ========================================================================= -->
-        <div id="home" class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 pt-8 pb-16 lg:py-14 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center w-full">
+        <div id="home" class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 pt-6 pb-16 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center w-full">
             
             <!-- Left Hero Content -->
             <div class="lg:col-span-5 space-y-6 text-left">
                 
-                <div class="text-[#C5A880] text-[11px] font-bold tracking-[0.25em] uppercase">
-                    PREMIUM HOTEL TV SOLUTION
+                <!-- Gold Overline Badge -->
+                <div class="text-[#E5A853] text-[11px] sm:text-xs font-semibold tracking-[0.25em] uppercase flex items-center space-x-2">
+                    <span>PREMIUM HOTEL TV SOLUTION</span>
                 </div>
 
-                <h1 class="font-serif-lux text-4xl sm:text-5xl lg:text-[3.9rem] font-medium tracking-tight text-white leading-[1.12]">
+                <!-- Editorial Headline (Exact wording & high contrast serif font) -->
+                <h1 class="font-serif-lux text-4xl sm:text-5xl lg:text-[4.15rem] font-normal tracking-tight text-white leading-[1.1]">
                     A Smarter<br>
                     Stay Experience
                 </h1>
 
-                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-md font-normal">
+                <!-- Subtitle / Paragraph -->
+                <p class="text-xs sm:text-sm text-stone-300 leading-relaxed max-w-md font-normal">
                     Transform every guest room into a personalized entertainment and hospitality hub with our advanced Hotel TV application.
                 </p>
 
                 <!-- Dual Action Buttons: Request Demo > & Watch Video -->
                 <div class="flex items-center space-x-4 pt-2">
+                    <!-- Primary Gold Pill -->
                     <button onclick="openRegisterModal()" class="px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
                         <span>Request Demo</span>
-                        <span class="text-xs font-bold font-mono">›</span>
+                        <span class="text-sm font-bold font-mono">›</span>
                     </button>
 
-                    <a href="#about" class="px-6 py-3 btn-glass-pill text-xs tracking-wider flex items-center space-x-2">
-                        <i class="fa-regular fa-circle-play text-sm text-[#C5A880]"></i>
+                    <!-- Secondary Glass Pill with Play Circle -->
+                    <a href="#about" class="px-6 py-3 btn-glass-pill text-xs tracking-wider flex items-center space-x-2.5">
+                        <i class="fa-regular fa-circle-play text-base text-white"></i>
                         <span>Watch Video</span>
                     </a>
                 </div>
 
             </div>
 
-            <!-- Right Hero Smart TV Mockup (Beachfront Resort Wallpaper on TV) -->
-            <div class="lg:col-span-7 relative">
+            <!-- Right Hero: Smart TV Display on Luxury Console in 3D Perspective -->
+            <div class="lg:col-span-7 relative tv-perspective-stage">
                 
-                <!-- Ambient Underglow -->
-                <div class="absolute -bottom-6 left-1/4 right-1/4 h-14 bg-[#C5A880]/20 blur-3xl rounded-full"></div>
+                <!-- Ambient Amber Underglow behind TV -->
+                <div class="absolute -inset-4 bg-[#E5A853]/15 blur-3xl rounded-3xl -z-10"></div>
 
-                <!-- TV Hardware Bezel Chassis -->
-                <div class="relative tv-screen-chassis p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl">
-                    
-                    <!-- Inside Screen Display Container -->
-                    <div class="relative rounded-xl sm:rounded-2xl overflow-hidden aspect-[16/9] bg-slate-950 flex flex-col justify-between p-4 sm:p-6 text-white border border-white/10 group">
+                <!-- 3D Tilted Hardware Rig (Exact match to reference angle) -->
+                <div class="tv-tilted-rig">
+
+                    <!-- TV Hardware Frame & Display Screen -->
+                    <div class="relative tv-screen-chassis-3d p-2 sm:p-2.5">
                         
-                        <!-- Beachfront Hotel Resort Exterior Wallpaper (Exact Match to Reference Screenshot) -->
-                        <div class="absolute inset-0 z-0">
-                            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1600&q=85" 
-                                 alt="Beachfront Grand Resort" 
-                                 class="w-full h-full object-cover filter brightness-[0.55] contrast-[1.1] group-hover:scale-105 transition-transform duration-700">
-                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-slate-950/70"></div>
-                        </div>
-
-                        <!-- Top TV Status Bar -->
-                        <div class="relative z-10 flex items-center justify-between text-[10px] sm:text-xs text-slate-200">
-                            <div class="space-y-0.5">
-                                <div class="font-bold text-sm sm:text-base text-white tracking-wider">13:23</div>
-                                <div class="text-[10px] text-slate-300">Friday, August 28</div>
-                            </div>
-
-                            <!-- Central PAX TV Crest Logo -->
-                            <div class="flex flex-col items-center">
-                                <svg class="w-5 h-5 fill-current text-[#C5A880]" viewBox="0 0 24 24">
-                                    <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
-                                </svg>
-                                <span class="font-serif-lux font-bold tracking-[0.2em] text-xs sm:text-sm text-[#E8DCCB] mt-0.5">PAX TV</span>
-                            </div>
-
-                            <div class="text-right space-y-0.5">
-                                <div class="font-bold text-xs sm:text-sm text-white">Room 1111</div>
-                                <div class="text-[10px] text-slate-300">Mumbai 28°C / 82°F</div>
-                            </div>
-                        </div>
-
-                        <!-- Central Greeting on Screen -->
-                        <div class="relative z-10 text-center my-auto py-2">
-                            <p class="font-serif-lux text-xl sm:text-2xl lg:text-3xl text-white font-normal drop-shadow-md">
-                                Good Afternoon, Guest
-                            </p>
-                        </div>
-
-                        <!-- Bottom 6 Round Gold Menu Icons (Live TV, Movies, Hotel Info, Services, Language, Flights) -->
-                        <div class="relative z-10 grid grid-cols-6 gap-2 sm:gap-4 max-w-xl mx-auto w-full pt-2">
+                        <!-- Inside TV Screen Display (16:9 Aspect Ratio) -->
+                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] bg-slate-950 border border-white/10 group select-none shadow-inner">
                             
-                            <!-- 1. Live TV -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880]/20 border border-[#C5A880]/60 flex items-center justify-center text-[#E8DCCB] group-hover/icon:bg-[#C5A880] group-hover/icon:text-slate-950 transition-all shadow-md">
-                                    <i class="fa-solid fa-tv text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-medium text-slate-200">Live TV</span>
-                            </div>
-
-                            <!-- 2. Movies -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880]/20 border border-[#C5A880]/60 flex items-center justify-center text-[#E8DCCB] group-hover/icon:bg-[#C5A880] group-hover/icon:text-slate-950 transition-all shadow-md">
-                                    <i class="fa-solid fa-film text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-medium text-slate-200">Movies</span>
-                            </div>
-
-                            <!-- 3. Hotel Info (Active Highlighted) -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880] text-slate-950 border border-[#C5A880] flex items-center justify-center shadow-lg shadow-[#C5A880]/30">
-                                    <i class="fa-solid fa-hotel text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-bold text-[#E8DCCB]">Hotel Info</span>
-                            </div>
-
-                            <!-- 4. Services -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880]/20 border border-[#C5A880]/60 flex items-center justify-center text-[#E8DCCB] group-hover/icon:bg-[#C5A880] group-hover/icon:text-slate-950 transition-all shadow-md">
-                                    <i class="fa-solid fa-bell-concierge text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-medium text-slate-200">Services</span>
-                            </div>
-
-                            <!-- 5. Language -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880]/20 border border-[#C5A880]/60 flex items-center justify-center text-[#E8DCCB] group-hover/icon:bg-[#C5A880] group-hover/icon:text-slate-950 transition-all shadow-md">
-                                    <i class="fa-solid fa-globe text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-medium text-slate-200">Language</span>
-                            </div>
-
-                            <!-- 6. Flights -->
-                            <div class="flex flex-col items-center space-y-1 cursor-pointer group/icon">
-                                <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-[#C5A880]/20 border border-[#C5A880]/60 flex items-center justify-center text-[#E8DCCB] group-hover/icon:bg-[#C5A880] group-hover/icon:text-slate-950 transition-all shadow-md">
-                                    <i class="fa-solid fa-plane-departure text-xs sm:text-sm"></i>
-                                </div>
-                                <span class="text-[9px] sm:text-[10px] font-medium text-slate-200">Flights</span>
-                            </div>
-
+                            <!-- User's Exact High-Res TV Screen Interface Image -->
+                            <img src="{{ asset('images/landing/tvscreen.png') }}" 
+                                 alt="Taj Hotel Smart TV OS Screen" 
+                                 class="w-full h-full object-cover filter brightness-[1.02] contrast-[1.03] group-hover:scale-[1.015] transition-transform duration-700">
+                            
+                            <!-- Realistic Glass Screen Reflection Overlays -->
+                            <div class="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/[0.03] to-white/[0.12]"></div>
+                            <div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_20px_rgba(0,0,0,0.6)]"></div>
                         </div>
 
+                        <!-- Sleek TV Base Stand resting on media console -->
+                        <div class="w-24 h-2 bg-gradient-to-b from-[#3a404d] to-[#12151b] mx-auto mt-1 rounded-b-xs shadow-md"></div>
                     </div>
 
-                    <!-- Sleek TV Base Stand on Console -->
-                    <div class="w-28 h-2 bg-gradient-to-b from-[#2B303C] to-[#161920] mx-auto mt-2 rounded-b-xs shadow-md"></div>
+                    <!-- Luxury Dark Walnut TV Credenza Cabinet with Warm Underglow -->
+                    <div class="relative mt-2 mx-auto w-full credenza-console-3d rounded-md p-2.5 sm:p-3 shadow-2xl">
+                        <!-- Warm Amber LED Strip Light -->
+                        <div class="h-[2px] w-full bg-gradient-to-r from-[#E5A853]/20 via-[#E5A853] to-[#E5A853]/20 shadow-[0_2px_14px_rgba(229,168,83,0.6)]"></div>
+                        <!-- Credenza Drawers / Wood Grain Front -->
+                        <div class="flex items-center justify-between pt-2 px-4 text-[10px] text-stone-500">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-1 bg-[#3a291e] rounded-full"></div>
+                                <div class="w-12 h-1 bg-[#3a291e] rounded-full"></div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-12 h-1 bg-[#3a291e] rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>

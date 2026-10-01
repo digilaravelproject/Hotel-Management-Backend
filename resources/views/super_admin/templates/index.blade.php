@@ -71,10 +71,24 @@
                         </div>
                     </div>
 
-                    <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="w-full py-2.5 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
-                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                        <span>Upload Update for Theme {{ $theme->theme_id }}</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2.5 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <span>Upload Update</span>
+                        </button>
+                        @if($latestBuild && $latestBuild->extracted_path)
+                            <a href="{{ route('super-admin.templates.preview', $latestBuild->id) }}" target="_blank"
+                               class="flex-1 py-2.5 rounded-xl border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-eye"></i>
+                                <span>Preview</span>
+                            </a>
+                        @else
+                            <span class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-400 font-bold text-xs flex items-center justify-center space-x-1.5 cursor-not-allowed" title="No preview available. Re-upload zip to generate.">
+                                <i class="fa-solid fa-eye-slash"></i>
+                                <span>No Preview</span>
+                            </span>
+                        @endif
+                    </div>
                 </div>
             @empty
                 <div class="col-span-full bg-white border border-slate-200/80 rounded-3xl p-8 text-center text-slate-400">
