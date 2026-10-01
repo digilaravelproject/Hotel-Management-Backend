@@ -283,52 +283,78 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- 2. FOUR FEATURES STRIP (100% REPLICATED FROM REFERENCE ARTBOARD) -->
+    <!-- 2. FOUR FEATURES STRIP (EXACT MATCH TO REFERENCE SCREENSHOT) -->
     <!-- ========================================================================= -->
-    <section id="features" class="relative z-20 bg-white text-slate-900 border-y border-stone-200 py-6 px-6 lg:px-16 shadow-xs">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+    <section id="features" class="relative z-20 bg-white text-stone-900 border-y border-stone-200 py-6 px-6 lg:px-12 shadow-xs">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-stone-200">
             
             <!-- Item 1: Customizable UI -->
-            <div class="flex items-center space-x-3.5 p-2">
-                <div class="w-11 h-11 rounded-xl icon-box-gold flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-sliders text-base"></i>
+            <div class="flex items-center space-x-3.5 py-3 sm:py-1 px-3 lg:px-6 group">
+                <div class="w-12 h-12 rounded-full bg-[#FEF3E2] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    <!-- Crossed magic wand / tools with sparkles -->
+                    <svg class="w-6 h-6 text-[#C08237]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m14 10 7.5-7.5"/>
+                        <path d="m3 21 8.5-8.5"/>
+                        <circle cx="16.5" cy="4.5" r="0.5" fill="currentColor"/>
+                        <circle cx="4.5" cy="16.5" r="0.5" fill="currentColor"/>
+                        <path d="m9 3 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/>
+                        <path d="m17 13 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/>
+                    </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Customizable UI</h3>
-                    <p class="text-[11px] text-slate-500 leading-tight">Branded experience for your hotel</p>
+                    <h3 class="font-bold text-sm text-stone-900 leading-snug">Customizable UI</h3>
+                    <p class="text-xs text-stone-500 font-normal leading-tight mt-0.5">Branded experience for your hotel</p>
                 </div>
             </div>
 
             <!-- Item 2: Multi-Language -->
-            <div class="flex items-center space-x-3.5 p-2">
-                <div class="w-11 h-11 rounded-xl icon-box-gold flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-language text-base"></i>
+            <div class="flex items-center space-x-3.5 py-3 sm:py-1 px-3 lg:px-6 group">
+                <div class="w-12 h-12 rounded-full bg-[#FEF3E2] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    <!-- Overlapping speech bubbles with quote lines -->
+                    <svg class="w-6 h-6 text-[#C08237]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 9a2 2 0 0 1-2 2H6l-3 3V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v4z"/>
+                        <path d="M18 9h1a2 2 0 0 1 2 2v9l-3-3h-6a2 2 0 0 1-2-2v-1"/>
+                        <path d="M6 7h4"/>
+                    </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Multi-Language</h3>
-                    <p class="text-[11px] text-slate-500 leading-tight">Global guest support</p>
+                    <h3 class="font-bold text-sm text-stone-900 leading-snug">Multi-Language</h3>
+                    <p class="text-xs text-stone-500 font-normal leading-tight mt-0.5">Global guest support</p>
                 </div>
             </div>
 
             <!-- Item 3: Hotel Information -->
-            <div class="flex items-center space-x-3.5 p-2">
-                <div class="w-11 h-11 rounded-xl icon-box-gold flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-hotel text-base"></i>
+            <div class="flex items-center space-x-3.5 py-3 sm:py-1 px-3 lg:px-6 group">
+                <div class="w-12 h-12 rounded-full bg-[#FEF3E2] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    <!-- Classical hotel facade building with pediment & columns -->
+                    <svg class="w-6 h-6 text-[#C08237]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 21h18"/>
+                        <path d="M5 21V9l7-5 7 5v12"/>
+                        <path d="M9 10v2"/>
+                        <path d="M15 10v2"/>
+                        <path d="M9 14v2"/>
+                        <path d="M15 14v2"/>
+                        <path d="M11 21v-3a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v3"/>
+                    </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Hotel Information</h3>
-                    <p class="text-[11px] text-slate-500 leading-tight">Showcase amenities and services</p>
+                    <h3 class="font-bold text-sm text-stone-900 leading-snug">Hotel Information</h3>
+                    <p class="text-xs text-stone-500 font-normal leading-tight mt-0.5">Showcase amenities and services</p>
                 </div>
             </div>
 
             <!-- Item 4: Secure & Reliable -->
-            <div class="flex items-center space-x-3.5 p-2">
-                <div class="w-11 h-11 rounded-xl icon-box-gold flex items-center justify-center shrink-0">
-                    <i class="fa-solid fa-shield-halved text-base"></i>
+            <div class="flex items-center space-x-3.5 py-3 sm:py-1 px-3 lg:px-6 group">
+                <div class="w-12 h-12 rounded-full bg-[#FEF3E2] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105">
+                    <!-- Shield outline -->
+                    <svg class="w-6 h-6 text-[#C08237]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-xs sm:text-sm text-slate-900">Secure & Reliable</h3>
-                    <p class="text-[11px] text-slate-500 leading-tight">Built for performance and guest privacy</p>
+                    <h3 class="font-bold text-sm text-stone-900 leading-snug">Secure & Reliable</h3>
+                    <p class="text-xs text-stone-500 font-normal leading-tight mt-0.5">Built for performance and guest privacy.</p>
                 </div>
             </div>
 
