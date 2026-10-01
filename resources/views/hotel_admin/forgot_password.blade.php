@@ -67,17 +67,9 @@
     <header class="relative z-10 w-full px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#080B10]/60">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <div class="w-9 h-9 text-[#E5A853] flex items-center justify-center">
-                    <svg viewBox="0 0 40 40" class="w-full h-full" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                        <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                        <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
-                        <circle cx="20" cy="20" r="2.2" fill="#080B10"/>
-                    </svg>
-                </div>
-                <span class="font-serif-lux font-bold text-lg tracking-[0.22em] text-[#E5A853] uppercase leading-none mt-0.5">
-                    PAX TV
-                </span>
+                <img src="{{ asset('images/logo/logo.png') }}" 
+                     alt="PAX TV" 
+                     class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
 
             <a href="{{ route('hotel.login') }}" class="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#E5A853]/40 text-stone-200 hover:text-white text-xs font-medium tracking-wide transition-all inline-flex items-center space-x-2">
@@ -93,9 +85,9 @@
             <div class="absolute -top-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-[#E5A853] to-transparent"></div>
 
             <div class="text-center space-y-3">
-                <div class="w-14 h-14 rounded-2xl bg-[#E5A853]/15 border border-[#E5A853]/35 text-[#E5A853] flex items-center justify-center mx-auto shadow-lg shadow-[#E5A853]/10">
-                    <i class="fa-solid fa-key text-2xl"></i>
-                </div>
+                <img src="{{ asset('images/logo/logo.png') }}" 
+                     alt="PAX TV" 
+                     class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
                 <h1 class="font-serif-lux text-2xl font-medium text-white tracking-tight">Forgot Password?</h1>
                 <p class="text-xs text-stone-400 font-normal leading-relaxed">
                     Enter your registered property email address and we will dispatch a 6-digit OTP verification code.

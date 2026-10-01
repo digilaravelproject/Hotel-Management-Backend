@@ -142,24 +142,11 @@
         <header class="relative z-50 px-6 lg:px-16 pt-5 pb-4 bg-gradient-to-b from-black/80 via-black/40 to-transparent">
             <div class="max-w-7xl mx-auto flex items-center justify-between">
                 
-                <!-- Brand Logo: Golden Rosette Crest + TAJ in Serif Typography -->
-                <a href="{{ route('landing') }}" class="flex flex-col items-center group cursor-pointer">
-                    <!-- Intricate Golden Sacred Geometry Rosette Emblem -->
-                    <div class="w-8 h-8 text-[#E5A853] flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-                        <svg class="w-7 h-7 fill-current drop-shadow-md" viewBox="0 0 40 40">
-                            <!-- Outer 8-point geometric rosette -->
-                            <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                            <!-- Inner concentric diamond flower -->
-                            <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                            <!-- Core faceted star -->
-                            <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
-                            <circle cx="20" cy="20" r="2.2" fill="#0A0D14"/>
-                        </svg>
-                    </div>
-                    <!-- Brand Name -->
-                    <span class="font-serif-lux font-bold text-lg sm:text-xl tracking-[0.22em] text-[#E5A853] uppercase leading-none mt-1 group-hover:text-[#F2B660] transition-colors">
-                        PAX TV
-                    </span>
+                <!-- Brand Logo: Exact logo.png -->
+                <a href="{{ route('landing') }}" class="flex items-center space-x-3 group cursor-pointer">
+                    <img src="{{ asset('images/logo/logo.png') }}" 
+                         alt="PAX TV" 
+                         class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 </a>
 
                 <!-- Centered Navigation Links (Exact: Home, Features, Solutions, Gallery, About, Contact) -->
@@ -985,22 +972,12 @@
                 
                 <!-- Column 1: Brand Info (4 cols) -->
                 <div class="lg:col-span-4 space-y-4 text-left">
-                    <!-- Brand Logo: Golden Rosette on top + Brand Name -->
-                    <div class="flex flex-col items-start space-y-1.5">
-                        <!-- Intricate Golden Sacred Geometry Rosette Emblem -->
-                        <div class="w-8 h-8 text-[#E5A853]">
-                            <svg class="w-7 h-7 fill-current drop-shadow-md" viewBox="0 0 40 40">
-                                <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                                <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                                <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
-                                <circle cx="20" cy="20" r="2.2" fill="#080B10"/>
-                            </svg>
-                        </div>
-                        <!-- Brand Name (Serif tracking) -->
-                        <span class="font-serif-lux font-bold text-2xl tracking-[0.25em] text-[#E5A853] uppercase leading-none">
-                            PAX TV
-                        </span>
-                    </div>
+                    <!-- Brand Logo: Exact logo.png -->
+                    <a href="{{ route('landing') }}" class="inline-block group">
+                        <img src="{{ asset('images/logo/logo.png') }}" 
+                             alt="PAX TV" 
+                             class="h-11 sm:h-13 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    </a>
 
                     <!-- Tagline -->
                     <p class="text-xs sm:text-[13px] text-stone-400 leading-relaxed font-normal pt-1">

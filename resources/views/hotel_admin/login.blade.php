@@ -75,22 +75,12 @@
             
             <!-- Brand Logo -->
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 text-[#E5A853] flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
-                    <svg viewBox="0 0 40 40" class="w-full h-full drop-shadow-sm" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
-                        <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
-                        <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
-                        <circle cx="20" cy="20" r="2.2" fill="#080B10"/>
-                    </svg>
-                </div>
-                <div class="flex items-center space-x-2.5">
-                    <span class="font-serif-lux font-bold text-lg sm:text-xl tracking-[0.22em] text-[#E5A853] uppercase leading-none mt-0.5 group-hover:text-[#F2B660] transition-colors">
-                        PAX TV
-                    </span>
-                    <span class="hidden sm:inline-block px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#E5A853]/15 text-[#E5A853] border border-[#E5A853]/30">
-                        Hotel Portal
-                    </span>
-                </div>
+                <img src="{{ asset('images/logo/logo.png') }}" 
+                     alt="PAX TV" 
+                     class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#E5A853]/15 text-[#E5A853] border border-[#E5A853]/30">
+                    Hotel Portal
+                </span>
             </a>
 
             <!-- Return to Website Button -->
@@ -186,9 +176,9 @@
 
                     <!-- Card Header -->
                     <div class="text-center space-y-3">
-                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-b from-[#E5A853]/25 to-[#E5A853]/5 border border-[#E5A853]/40 flex items-center justify-center mx-auto shadow-lg shadow-[#E5A853]/10">
-                            <i class="fa-solid fa-hotel text-2xl text-[#E5A853]"></i>
-                        </div>
+                        <img src="{{ asset('images/logo/logo.png') }}" 
+                             alt="PAX TV" 
+                             class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
                         <h2 class="font-serif-lux text-2xl sm:text-3xl font-medium text-white tracking-tight">
                             Hotel Admin Portal
                         </h2>

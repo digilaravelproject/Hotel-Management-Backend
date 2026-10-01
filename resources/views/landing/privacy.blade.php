@@ -56,16 +56,11 @@
     <header class="relative z-50 px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#0A0D14]/80 sticky top-0">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
-            <!-- Brand Logo: 8-Point Faceted Golden Crest + PAX TV -->
+            <!-- Brand Logo -->
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <div class="w-8 h-8 flex items-center justify-center text-[#C5A880] transition-transform duration-300 group-hover:scale-105">
-                    <svg class="w-7 h-7 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
-                    </svg>
-                </div>
-                <span class="font-serif-lux font-bold text-2xl tracking-[0.22em] text-white uppercase group-hover:text-[#E8DCCB] transition-colors">
-                    PAX<span class="text-[#C5A880] ml-1">TV</span>
-                </span>
+                <img src="{{ asset('images/logo/logo.png') }}" 
+                     alt="PAX TV" 
+                     class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
 
             <!-- Navigation Links -->
@@ -355,14 +350,11 @@
                 
                 <!-- Column 1: Brand Info -->
                 <div class="space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-7 h-7 fill-current text-[#C5A880]" viewBox="0 0 24 24">
-                            <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
-                        </svg>
-                        <span class="font-serif-lux font-bold text-xl tracking-[0.22em] text-white">
-                            PAX<span class="text-[#C5A880]">TV</span>
-                        </span>
-                    </div>
+                    <a href="{{ route('landing') }}" class="inline-block group">
+                        <img src="{{ asset('images/logo/logo.png') }}" 
+                             alt="PAX TV" 
+                             class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
+                    </a>
 
                     <p class="text-xs text-slate-400 leading-relaxed font-normal">
                         Premium Hotel TV Solution.<br>
