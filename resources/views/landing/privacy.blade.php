@@ -73,7 +73,6 @@
                 <a href="{{ route('landing') }}" class="hover:text-[#C5A880] transition-colors">Home</a>
                 <a href="{{ route('landing') }}#features" class="hover:text-[#C5A880] transition-colors">Features</a>
                 <a href="{{ route('landing') }}#solutions" class="hover:text-[#C5A880] transition-colors">Solutions</a>
-                <a href="{{ route('landing') }}#gallery" class="hover:text-[#C5A880] transition-colors">Gallery</a>
                 <a href="{{ route('landing') }}#about" class="hover:text-[#C5A880] transition-colors">About</a>
                 <a href="{{ route('contact-us') }}" class="hover:text-[#C5A880] transition-colors">Contact</a>
             </nav>
@@ -83,6 +82,10 @@
                 <a href="{{ route('landing') }}" class="hidden sm:inline-flex items-center space-x-1.5 px-4 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-medium text-xs tracking-wider transition-all">
                     <i class="fa-solid fa-arrow-left text-[10px]"></i>
                     <span>Back to Home</span>
+                </a>
+                <a href="{{ route('hotel.login') }}" class="text-xs font-medium text-stone-200 hover:text-[#C5A880] flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#C5A880]/50 transition-all">
+                    <i class="fa-solid fa-hotel text-[11px] text-[#C5A880]"></i>
+                    <span>Hotel Login</span>
                 </a>
                 <a href="{{ route('contact-us') }}" class="px-6 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5">
                     <span>Contact Us</span>
@@ -387,7 +390,6 @@
                         <li><a href="{{ route('landing') }}" class="hover:text-[#C5A880] transition-colors">Home</a></li>
                         <li><a href="{{ route('landing') }}#features" class="hover:text-[#C5A880] transition-colors">Features</a></li>
                         <li><a href="{{ route('landing') }}#solutions" class="hover:text-[#C5A880] transition-colors">Solutions</a></li>
-                        <li><a href="{{ route('landing') }}#gallery" class="hover:text-[#C5A880] transition-colors">Gallery</a></li>
                         <li><a href="{{ route('landing') }}#about" class="hover:text-[#C5A880] transition-colors">About Us</a></li>
                         <li><a href="{{ route('contact-us') }}" class="hover:text-[#C5A880] transition-colors">Contact</a></li>
                     </ul>
@@ -425,7 +427,7 @@
                     </ul>
 
                     <div class="pt-2">
-                        <a href="{{ route('landing') }}#plans" class="w-full py-2.5 px-4 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-1">
+                        <a href="{{ route('landing') }}" class="w-full py-2.5 px-4 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-1">
                             <span>Request Demo</span>
                             <span class="text-xs font-bold font-mono">›</span>
                         </a>
@@ -437,6 +439,9 @@
             <!-- Bottom Copyright & Legal Links -->
             <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
                 <p>© {{ date('Y') }} PAX TV. All rights reserved.</p>
+                <p class="text-stone-400">
+                    Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#C5A880] hover:text-[#E5A853] font-medium transition-colors underline decoration-[#C5A880]/40 underline-offset-2 hover:decoration-[#E5A853]">Digi Emperor</a>
+                </p>
                 <div class="flex items-center space-x-6">
                     <a href="{{ route('privacy-policy') }}" class="text-[#C5A880] font-bold hover:underline">Privacy Policy</a>
                     <span class="text-slate-700">|</span>

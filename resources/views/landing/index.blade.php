@@ -157,8 +157,8 @@
                         </svg>
                     </div>
                     <!-- Brand Name -->
-                    <span class="font-serif-lux font-bold text-lg sm:text-xl tracking-[0.28em] text-[#E5A853] uppercase leading-none mt-1 group-hover:text-[#F2B660] transition-colors">
-                        TAJ
+                    <span class="font-serif-lux font-bold text-lg sm:text-xl tracking-[0.22em] text-[#E5A853] uppercase leading-none mt-1 group-hover:text-[#F2B660] transition-colors">
+                        PAX TV
                     </span>
                 </a>
 
@@ -171,14 +171,17 @@
                     </div>
                     <a href="#features" class="text-stone-200 hover:text-[#E5A853] transition-colors">Features</a>
                     <a href="#solutions" class="text-stone-200 hover:text-[#E5A853] transition-colors">Solutions</a>
-                    <a href="#gallery" class="text-stone-200 hover:text-[#E5A853] transition-colors">Gallery</a>
                     <a href="#about" class="text-stone-200 hover:text-[#E5A853] transition-colors">About</a>
                     <a href="{{ route('contact-us') }}" class="text-stone-200 hover:text-[#E5A853] transition-colors">Contact</a>
                 </nav>
 
-                <!-- Right Action Button: Request Demo > (Warm Gold Pill) -->
-                <div class="flex items-center">
-                    <button onclick="openRegisterModal()" class="px-6 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
+                <!-- Right Action Buttons: Hotel Login + Request Demo > -->
+                <div class="flex items-center space-x-3 sm:space-x-4">
+                    <a href="{{ route('hotel.login') }}" class="text-xs font-medium text-stone-200 hover:text-[#E5A853] flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#E5A853]/40 transition-all">
+                        <i class="fa-solid fa-hotel text-[11px] text-[#E5A853]"></i>
+                        <span>Hotel Login</span>
+                    </a>
+                    <button onclick="openRegisterModal()" class="px-5 sm:px-6 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
                         <span>Request Demo</span>
                         <span class="text-sm font-bold font-mono">›</span>
                     </button>
@@ -362,277 +365,443 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 3. ABOUT US SECTION (HAND HOLDING REMOTE POINTED AT TV) -->
+    <!-- 3. ABOUT US SECTION (EXACT MATCH TO REFERENCE SCREENSHOT) -->
     <!-- ========================================================================= -->
-    <section id="about" class="py-20 lg:py-24 px-6 lg:px-16 bg-white text-slate-900">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
-            <!-- Left: Hotel Suite with Remote Control in Hand (Exact Visual Match) -->
-            <div class="lg:col-span-6 relative">
-                <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-stone-200">
-                    <img src="https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=85" 
-                         alt="Hotel Guest Using Remote with PAX TV" 
-                         class="w-full h-[380px] sm:h-[440px] object-cover">
-                    
-                    <!-- Bottom Remote Badge matching screenshot -->
-                    <div class="absolute bottom-5 left-5 right-5 p-3.5 rounded-xl bg-slate-950/85 backdrop-blur-md border border-white/10 text-white flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-[#C5A880] text-slate-950 flex items-center justify-center">
-                                <i class="fa-solid fa-remote-control text-xs"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-slate-200">Seamless In-Room Experience</span>
-                        </div>
-                        <span class="text-[#C5A880] text-xs font-bold font-serif-lux uppercase tracking-widest">PAX TV</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Right: About Us Text Content -->
-            <div class="lg:col-span-6 space-y-5">
-                <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
-                    ABOUT US
-                </div>
-
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900 leading-[1.2]">
-                    Enhancing Hospitality<br>
-                    Through Smart Technology
-                </h2>
-
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
-                    We provide advanced Hotel TV solutions that combine entertainment, information and hospitality services into a single, easy-to-use application, designed to create memorable guest experiences.
-                </p>
-
-                <div class="pt-2">
-                    <button onclick="openRegisterModal()" class="px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
-                        <span>Learn More</span>
-                        <span class="text-xs font-bold font-mono">›</span>
-                    </button>
-                </div>
-            </div>
-
+    <section id="about" class="relative overflow-hidden bg-[#FBFBFA] text-stone-900 border-b border-stone-200 min-h-[500px] lg:min-h-[580px] xl:min-h-[620px] flex items-center">
+        
+        <!-- Panoramic Suite Background: PAX TV on Wood Slats with Remote (Left), Clean Wall (Center), Lounge Chair (Right) -->
+        <div class="absolute inset-0 z-0 pointer-events-none">
+            <img src="{{ asset('images/landing/about-suite-clean.jpg') }}" 
+                 alt="PAX TV Hotel Solution Experience" 
+                 class="w-full h-full object-cover object-left md:object-center">
         </div>
+
+        <!-- Section Content Grid Positioned on the Clean Wall Space -->
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 w-full py-16 lg:py-24">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left Space for TV, Backlight Wall & Hand holding Remote -->
+                <div class="hidden lg:block lg:col-span-5 xl:col-span-5"></div>
+
+                <!-- Center / Right: Exact Text & CTA with pristine contrast on clean wall -->
+                <div class="lg:col-span-7 xl:col-span-6 space-y-6 text-left pl-0 lg:pl-6">
+                    
+                    <!-- Overline Tag -->
+                    <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
+                        ABOUT US
+                    </div>
+
+                    <!-- Editorial Serif Headline (Playfair Display / Cinzel) -->
+                    <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] xl:text-[3rem] font-medium tracking-tight text-stone-900 leading-[1.18]">
+                        Enhancing Hospitality<br>
+                        Through Smart Technology
+                    </h2>
+
+                    <!-- Paragraph Description -->
+                    <p class="text-xs sm:text-sm text-stone-600 leading-relaxed font-normal max-w-xl">
+                        We provide advanced Hotel TV solutions that combine entertainment, information and hospitality services into a single, easy-to-use application, designed to create memorable guest experiences.
+                    </p>
+
+                    <!-- Primary Pill Button: Learn More > -->
+                    <div class="pt-2">
+                        <button onclick="openRegisterModal()" class="px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center space-x-2 cursor-pointer shadow-md hover:shadow-lg transition-shadow">
+                            <span>Learn More</span>
+                            <span class="text-sm font-bold font-mono">›</span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 4. MULTI-LANGUAGE SUPPORT (DARK SECTION WITH LANGUAGE MODAL SCREEN) -->
+    <!-- 4. OUR SOLUTIONS SECTION (EXACT MATCH TO REFERENCE SCREENSHOT) -->
     <!-- ========================================================================= -->
-    <section class="py-20 lg:py-24 px-6 lg:px-16 bg-[#0B0E14] text-white border-t border-white/10 relative overflow-hidden">
+    <section id="solutions" class="relative overflow-hidden bg-[#FAF9F6] text-stone-900 border-b border-stone-200 py-16 lg:py-24">
         
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <!-- Right Side Luxury Bedroom Suite Image with Soft Gradient Fade -->
+        <div class="absolute top-0 right-0 bottom-0 w-full lg:w-[48%] xl:w-[46%] pointer-events-none hidden lg:block overflow-hidden z-0">
+            <img src="{{ asset('images/landing/our-solutions-suite.jpg') }}" 
+                 alt="Luxury Hotel Suite Experience" 
+                 class="w-full h-full object-cover object-right">
+            <!-- Smooth left-side gradient blend into section cream background -->
+            <div class="absolute inset-y-0 left-0 w-36 xl:w-48 bg-gradient-to-r from-[#FAF9F6] via-[#FAF9F6]/85 to-transparent"></div>
+            <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#FAF9F6] to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#FAF9F6] to-transparent"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 w-full">
             
-            <!-- Left: Description and 3 Rows of Language Pills -->
-            <div class="lg:col-span-6 space-y-6">
-                <div class="text-[#C5A880] font-bold text-xs uppercase tracking-[0.25em]">
-                    GLOBAL GUEST EXPERIENCE
+            <!-- Section Header (Left-aligned) -->
+            <div class="max-w-xl mb-10 lg:mb-12">
+                <!-- Overline Badge -->
+                <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em] mb-2.5">
+                    TAILORED FOR YOUR HOTEL
                 </div>
 
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-white leading-tight">
-                    Multi-Language Support
+                <!-- Editorial Headline -->
+                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-stone-900 leading-tight mb-3">
+                    Our Solutions
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg">
-                    Cater to international guests with multiple language options and easy navigation.
+                <!-- Subtitle / Intro Description -->
+                <p class="text-xs sm:text-sm text-stone-600 leading-relaxed font-normal">
+                    A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.
                 </p>
-
-                <!-- Exact 3 Rows of Language Pills -->
-                <div class="space-y-2.5 pt-2 max-w-lg">
-                    <!-- Row 1 -->
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-4 py-1.5 rounded-lg btn-gold-pill text-xs font-bold shadow-xs">English</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">हिंदी</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">मराठी</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">ગુજરાતી</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">தமிழ்</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">తెలుగు</span>
-                    </div>
-
-                    <!-- Row 2 -->
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">संस्कृत</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">বাংলা</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">Français</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">Deutsch</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">Español</span>
-                    </div>
-
-                    <!-- Row 3 -->
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">Português</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">中文</span>
-                        <span class="px-4 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium hover:border-[#C5A880] transition-colors cursor-pointer">عربي</span>
-                    </div>
-                </div>
-
             </div>
 
-            <!-- Right: TV Displaying Exact Language Selection Dialog -->
-            <div class="lg:col-span-6">
-                <div class="tv-screen-chassis p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl">
-                    <div class="rounded-xl overflow-hidden aspect-[16/10] bg-slate-950 border border-white/10 p-5 flex flex-col justify-center relative">
-                        
-                        <div class="absolute inset-0 bg-cover bg-center filter brightness-[0.25]" 
-                             style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1000&q=80');"></div>
-
-                        <!-- Language Modal Card on TV Screen -->
-                        <div class="relative z-10 bg-slate-950/90 backdrop-blur-xl border border-white/15 rounded-xl p-4 sm:p-5 max-w-xs mx-auto w-full space-y-3 shadow-2xl">
-                            
-                            <div class="flex items-center space-x-2 border-b border-white/10 pb-2.5">
-                                <i class="fa-solid fa-globe text-[#C5A880] text-xs"></i>
-                                <div>
-                                    <div class="text-[11px] font-bold text-white uppercase tracking-wider">SELECT LANGUAGE</div>
-                                    <div class="text-[9px] text-slate-400">Choose your preferred language</div>
-                                </div>
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-2 text-xs">
-                                <div class="p-2 rounded-lg btn-gold-pill text-xs font-bold flex items-center justify-between shadow-xs">
-                                    <span>English</span>
-                                    <i class="fa-solid fa-check text-[9px]"></i>
-                                </div>
-                                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium">
-                                    हिंदी
-                                </div>
-                                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium">
-                                    मराठी
-                                </div>
-                                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium">
-                                    ગુજરાતી
-                                </div>
-                                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium">
-                                    বাংলা
-                                </div>
-                                <div class="p-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-xs font-medium">
-                                    தமிழ்
-                                </div>
-                            </div>
-
+            <!-- Solutions Cards Grid (3 Cards in a row, aligned with screenshot) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-5 xl:gap-6 max-w-full lg:max-w-[62%] xl:max-w-[60%]">
+                
+                <!-- Card 1: Hotel TV Application -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-100/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon Badge: Light warm peach with amber icon -->
+                        <div class="w-12 h-12 rounded-xl bg-[#FDE8C7]/90 flex items-center justify-center text-[#B87A2B] mb-5 shadow-xs">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <rect x="2" y="3" width="20" height="14" rx="2" stroke-linejoin="round"/>
+                                <path d="M8 21h8M12 17v4" stroke-linecap="round"/>
+                                <path d="M7 8h4M7 11h2" stroke-linecap="round"/>
+                                <circle cx="15.5" cy="9.5" r="1.5" fill="currentColor"/>
+                            </svg>
                         </div>
+                        
+                        <!-- Title -->
+                        <h3 class="text-base font-bold text-stone-900 tracking-tight leading-snug mb-1.5">
+                            Hotel TV Application
+                        </h3>
 
+                        <!-- Description -->
+                        <p class="text-xs text-stone-500 leading-relaxed font-normal mb-5">
+                            Custom branded interface with all essential features
+                        </p>
+                    </div>
+
+                    <!-- Button: Learn More › -->
+                    <div>
+                        <button onclick="openRegisterModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#FDE8C7] hover:bg-[#FCD8A2] text-stone-900 font-semibold text-xs transition-colors cursor-pointer shadow-xs">
+                            <span>Learn More</span>
+                            <span class="text-xs font-bold font-mono">›</span>
+                        </button>
                     </div>
                 </div>
+
+                <!-- Card 2: System Integration -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-100/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon Badge: Gear / Integration Network Hub -->
+                        <div class="w-12 h-12 rounded-xl bg-[#FDE8C7]/90 flex items-center justify-center text-[#B87A2B] mb-5 shadow-xs">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h3 class="text-base font-bold text-stone-900 tracking-tight leading-snug mb-1.5">
+                            System Integration
+                        </h3>
+
+                        <!-- Description -->
+                        <p class="text-xs text-stone-500 leading-relaxed font-normal mb-5">
+                            Integrate with hotel PMS, services and third-party apps
+                        </p>
+                    </div>
+
+                    <!-- Button: Learn More › -->
+                    <div>
+                        <button onclick="openRegisterModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#FDE8C7] hover:bg-[#FCD8A2] text-stone-900 font-semibold text-xs transition-colors cursor-pointer shadow-xs">
+                            <span>Learn More</span>
+                            <span class="text-xs font-bold font-mono">›</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Ongoing Support -->
+                <div class="bg-white rounded-2xl p-6 border border-stone-100/90 shadow-[0_4px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_25px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col justify-between">
+                    <div>
+                        <!-- Icon Badge: Ongoing Support / Circular Clock Refresh -->
+                        <div class="w-12 h-12 rounded-xl bg-[#FDE8C7]/90 flex items-center justify-center text-[#B87A2B] mb-5 shadow-xs">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.663 3.04097 17.0827 4.74751 18.8732" stroke-linecap="round"/>
+                                <polyline points="2 15 5 19 9 16" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h3 class="text-base font-bold text-stone-900 tracking-tight leading-snug mb-1.5">
+                            Ongoing Support
+                        </h3>
+
+                        <!-- Description -->
+                        <p class="text-xs text-stone-500 leading-relaxed font-normal mb-5">
+                            Dedicated support and regular updates for seamless operation
+                        </p>
+                    </div>
+
+                    <!-- Button: Learn More › -->
+                    <div>
+                        <button onclick="openRegisterModal()" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#FDE8C7] hover:bg-[#FCD8A2] text-stone-900 font-semibold text-xs transition-colors cursor-pointer shadow-xs">
+                            <span>Learn More</span>
+                            <span class="text-xs font-bold font-mono">›</span>
+                        </button>
+                    </div>
+                </div>
+
             </div>
 
         </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- 5. MULTI-LANGUAGE SUPPORT (EXACT MATCH TO REFERENCE SCREENSHOT) -->
+    <!-- ========================================================================= -->
+    <section id="features" class="relative overflow-hidden bg-[#0A0D14] text-white border-t border-white/10 min-h-[540px] lg:min-h-[620px] flex items-center">
+        
+        <!-- Panoramic Suite Background with TV Displaying Language Dialog, Lamp & Plant (Right) -->
+        <div class="absolute inset-0 z-0">
+            <img src="{{ asset('images/landing/multi-language-bg.jpg') }}" 
+                 alt="Hotel TV Multi-Language Interface" 
+                 class="w-full h-full object-cover object-right md:object-center filter brightness-[1.0] contrast-[1.03]">
+            <!-- Soft Charcoal Gradient on Left for Flawless Text & Pill Readability -->
+            <div class="absolute inset-0 bg-gradient-to-r from-[#080B10] via-[#080B10]/80 to-transparent hidden md:block w-full lg:w-[65%]"></div>
+            <div class="absolute inset-0 bg-[#080B10]/75 md:hidden"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 w-full py-16 lg:py-24">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                <!-- Left: Description and 3 Distinct Rows of Translucent Language Pills -->
+                <div class="lg:col-span-7 xl:col-span-6 space-y-6 text-left">
+                    
+                    <!-- Overline Badge -->
+                    <div class="text-[#E5A853] font-bold text-xs uppercase tracking-[0.25em]">
+                        GLOBAL GUEST EXPERIENCE
+                    </div>
+
+                    <!-- Editorial Serif Headline -->
+                    <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.85rem] font-medium tracking-tight text-white leading-tight">
+                        Multi-Language Support
+                    </h2>
+
+                    <!-- Paragraph Subtitle -->
+                    <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-md">
+                        Cater to international guests with multiple language options and easy navigation.
+                    </p>
+
+                    <!-- 3 Rows of Translucent Glass Language Pills (Clickable & Interactive) -->
+                    <div class="space-y-3 pt-2 max-w-lg" id="landingLanguageContainer">
+                        
+                        <!-- Row 1 -->
+                        <div class="flex flex-wrap gap-2.5">
+                            <!-- Active English Pill: Warm Golden Yellow -->
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-5 py-2 rounded-2xl bg-[#F5C368] text-stone-950 font-bold text-xs shadow-md border-transparent ring-2 ring-[#F5C368]/40 scale-105 cursor-pointer transition-all duration-200 active:scale-95">
+                                English
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                हिंदी
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                मराठी
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                ગુજરાતી
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                தமிழ்
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                తెలుగు
+                            </button>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="flex flex-wrap gap-2.5">
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                ಕನ್ನಡ
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                বাংলা
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                മലയാളം
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                Français
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                Deutsch
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                Español
+                            </button>
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="flex flex-wrap gap-2.5">
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                Português
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                中文
+                            </button>
+                            <button type="button" onclick="selectLandingLanguage(this)" 
+                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
+                                عربي
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Right Space: Let the TV with on-screen SELECT LANGUAGE dialog, bedside lamp and plant shine in full clarity -->
+                <div class="hidden lg:block lg:col-span-5 xl:col-span-6"></div>
+
+            </div>
+        </div>
+
     </section>
 
     <!-- ========================================================================= -->
     <!-- 5. HOTEL INFORMATION & SERVICES (WARM CREAM SECTION) -->
     <!-- ========================================================================= -->
-    <section class="py-20 lg:py-24 px-6 lg:px-16 bg-[#FAF8F5] text-slate-900 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <!-- ========================================================================= -->
+    <!-- 6. HOTEL INFORMATION & SERVICES (EXACT MATCH TO REFERENCE SCREENSHOT) -->
+    <!-- ========================================================================= -->
+    <section class="py-20 lg:py-24 px-6 lg:px-16 bg-[#FAF7F2] text-slate-900 border-t border-stone-200">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
             
-            <!-- Left: Description and 6 Tan Outlined Cards (Row 1: 4 cards, Row 2: 2 cards) -->
-            <div class="lg:col-span-6 space-y-6">
+            <!-- Left: Description and 6 Circular Peach Icon Badges (Row 1: 4, Row 2: 2) -->
+            <div class="lg:col-span-6 space-y-6 text-left">
+                <!-- Overline Tag -->
                 <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
                     EVERYTHING YOUR GUESTS NEED
                 </div>
 
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900 leading-tight">
+                <!-- Editorial Headline -->
+                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.85rem] font-medium tracking-tight text-slate-900 leading-tight">
                     Hotel Information & Services
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                <!-- Subtitle Description -->
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal max-w-lg">
                     Showcase hotel amenities, dining options, facilities and local attractions directly on the TV.
                 </p>
 
-                <!-- Service Cards Grid (Matching Exact Screenshot Layout) -->
-                <div class="space-y-3 pt-2">
+                <!-- Icon Badges (Exact 4 + 2 Layout Matching Screenshot) -->
+                <div class="space-y-6 pt-3">
                     
                     <!-- Row 1: 4 Items -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-hotel text-sm"></i>
+                    <div class="grid grid-cols-4 gap-3 sm:gap-4 max-w-md">
+                        
+                        <!-- 1. Hotel Information -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M3 21h18M6 18V7l6-4 6 4v11M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">Hotel Information</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                Hotel<br>Information
+                            </span>
                         </div>
 
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-utensils text-sm"></i>
+                        <!-- 2. Dining & Restaurants -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M18 2v8a2 2 0 0 1-2 2h-1M15 12v10M8 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V2M5 9v13M5 2v5M7 2v5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">Dining & Restaurants</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                Dining &<br>Restaurants
+                            </span>
                         </div>
 
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-map-location-dot text-sm"></i>
+                        <!-- 3. Local Attractions -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M12 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">Local Attractions</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                Local<br>Attractions
+                            </span>
                         </div>
 
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-bell-concierge text-sm"></i>
+                        <!-- 4. In-Room Services -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M12 3v3M4 14a8 8 0 0 1 16 0H4zM2 18h20" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">In-Room Services</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                In-Room<br>Services
+                            </span>
                         </div>
+
                     </div>
 
-                    <!-- Row 2: 2 Items -->
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-plane-departure text-sm"></i>
+                    <!-- Row 2: 2 Items (Left-aligned under first two) -->
+                    <div class="grid grid-cols-4 gap-3 sm:gap-4 max-w-md">
+                        
+                        <!-- 5. Flight Information -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">Flight Information</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                Flight<br>Information
+                            </span>
                         </div>
 
-                        <div class="p-3 rounded-xl bg-white border border-[#E5DAC8] flex flex-col items-center text-center space-y-2 shadow-xs">
-                            <div class="w-9 h-9 rounded-lg icon-box-gold flex items-center justify-center">
-                                <i class="fa-solid fa-compass text-sm"></i>
+                        <!-- 6. City Guide -->
+                        <div class="flex flex-col items-center text-center group cursor-pointer">
+                            <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                                <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                    <path d="M9 18l6-6-6-6M1 6v14l6-3 6 3 6-3 4 2V4l-4-2-6 3-6-3-6 3z" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
                             </div>
-                            <span class="text-[11px] font-bold text-slate-800 leading-tight">City Guide</span>
+                            <span class="text-xs font-semibold text-slate-800 text-center leading-tight">
+                                City Guide
+                            </span>
                         </div>
+
                     </div>
 
                 </div>
             </div>
 
-            <!-- Right: Smart TV Displaying Hotel Information Grid (Exact Match) -->
+            <!-- Right: Exact Luxury Hotel Suite Card with TV Displaying Hotel Information Interface -->
             <div class="lg:col-span-6">
-                <div class="tv-screen-chassis p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl">
-                    <div class="rounded-xl overflow-hidden aspect-[16/10] bg-slate-950 border border-white/10 p-5 flex flex-col justify-between text-white">
-                        
-                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                            <span class="font-serif-lux font-bold text-xs text-[#E8DCCB]">Hotel Information</span>
-                            <span class="text-[9px] text-slate-400 font-mono">Room 1111</span>
-                        </div>
-
-                        <!-- TV Screen 6 Grid Apps -->
-                        <div class="grid grid-cols-3 gap-2.5 my-auto">
-                            <div class="p-2.5 rounded-lg bg-white/10 border border-[#C5A880] flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-hotel text-[#C5A880] text-xs"></i>
-                                <span class="text-[9px] font-bold">About Hotel</span>
-                            </div>
-                            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-utensils text-slate-300 text-xs"></i>
-                                <span class="text-[9px] font-semibold">Dining</span>
-                            </div>
-                            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-spa text-slate-300 text-xs"></i>
-                                <span class="text-[9px] font-semibold">Facilities</span>
-                            </div>
-                            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-map-pin text-slate-300 text-xs"></i>
-                                <span class="text-[9px] font-semibold">Local Attractions</span>
-                            </div>
-                            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-bell-concierge text-slate-300 text-xs"></i>
-                                <span class="text-[9px] font-semibold">Services</span>
-                            </div>
-                            <div class="p-2.5 rounded-lg bg-white/5 border border-white/10 flex flex-col items-center text-center space-y-1">
-                                <i class="fa-solid fa-plane text-slate-300 text-xs"></i>
-                                <span class="text-[9px] font-semibold">Flights</span>
-                            </div>
-                        </div>
-
-                        <div class="text-[9px] text-slate-400 flex items-center justify-between">
-                            <span>PAX TV Guest Concierge</span>
-                            <span class="text-[#C5A880]">Select with remote</span>
-                        </div>
-
-                    </div>
+                <div class="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 group bg-stone-900">
+                    <img src="{{ asset('images/landing/hotel-info-tv-suite.jpg') }}" 
+                         alt="Hotel Information & Services Smart TV" 
+                         class="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-500">
                 </div>
             </div>
 
@@ -642,120 +811,112 @@
     <!-- ========================================================================= -->
     <!-- 6. LIVE TV & ENTERTAINMENT (EXACT 8 BROADCAST CHANNELS MATCH) -->
     <!-- ========================================================================= -->
+    <!-- ========================================================================= -->
+    <!-- 7. LIVE TV & ENTERTAINMENT (EXACT MATCH TO REFERENCE SCREENSHOT) -->
+    <!-- ========================================================================= -->
     <section class="py-20 lg:py-24 px-6 lg:px-16 bg-white text-slate-900 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
             
-            <!-- Left: Description and 5 Horizontal Feature Icons -->
-            <div class="lg:col-span-6 space-y-6">
+            <!-- Left: Description and 5 Circular Peach Icon Badges in 1 Row -->
+            <div class="lg:col-span-6 space-y-6 text-left">
+                <!-- Overline Badge -->
                 <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
                     NON-STOP ENTERTAINMENT
                 </div>
 
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900 leading-tight">
+                <!-- Editorial Headline -->
+                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.85rem] font-medium tracking-tight text-slate-900 leading-tight">
                     Live TV & Entertainment
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                <!-- Subtitle Description -->
+                <p class="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal max-w-lg">
                     Deliver seamless live TV, movies and guest entertainment with an intuitive interface.
                 </p>
 
-                <!-- Exact 5 Horizontal Feature Icons (Screenshot Match) -->
-                <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5 pt-2">
+                <!-- 5 Circular Peach Badges in One Horizontal Row (Screenshot Match) -->
+                <div class="grid grid-cols-5 gap-2 sm:gap-3 pt-3 max-w-xl">
                     
-                    <div class="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-200 flex flex-col items-center text-center space-y-1.5 shadow-2xs">
-                        <i class="fa-solid fa-tv text-[#A07F54] text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-800 leading-tight">Live TV Channels</span>
+                    <!-- 1. Live TV Channels -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <rect x="2" y="7" width="20" height="15" rx="2" stroke-linejoin="round"/>
+                                <polyline points="17 2 12 7 7 2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-semibold text-slate-800 text-center leading-tight">
+                            Live TV<br>Channels
+                        </span>
                     </div>
 
-                    <div class="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-200 flex flex-col items-center text-center space-y-1.5 shadow-2xs">
-                        <i class="fa-solid fa-film text-[#A07F54] text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-800 leading-tight">On-Demand Movies</span>
+                    <!-- 2. On-Demand Movies -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <rect x="2" y="2" width="20" height="20" rx="2.18" stroke-linejoin="round"/>
+                                <line x1="7" y1="2" x2="7" y2="22"/>
+                                <line x1="17" y1="2" x2="17" y2="22"/>
+                                <line x1="2" y1="12" x2="22" y2="12"/>
+                                <line x1="2" y1="7" x2="7" y2="7"/>
+                                <line x1="2" y1="17" x2="7" y2="17"/>
+                                <line x1="17" y1="17" x2="22" y2="17"/>
+                                <line x1="17" y1="7" x2="22" y2="7"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-semibold text-slate-800 text-center leading-tight">
+                            On-Demand<br>Movies
+                        </span>
                     </div>
 
-                    <div class="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-200 flex flex-col items-center text-center space-y-1.5 shadow-2xs">
-                        <i class="fa-solid fa-globe text-[#A07F54] text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-800 leading-tight">Web Applications</span>
+                    <!-- 3. Web Applications -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                                <rect x="14" y="14" width="7" height="7" rx="1"/>
+                                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-semibold text-slate-800 text-center leading-tight">
+                            Web<br>Applications
+                        </span>
                     </div>
 
-                    <div class="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-200 flex flex-col items-center text-center space-y-1.5 shadow-2xs">
-                        <i class="fa-solid fa-mobile-screen text-[#A07F54] text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-800 leading-tight">Screen Cast</span>
+                    <!-- 4. Screen Cast -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6M2 20h.01" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-semibold text-slate-800 text-center leading-tight">
+                            Screen<br>Cast
+                        </span>
                     </div>
 
-                    <div class="p-2.5 rounded-xl bg-[#FAF8F5] border border-stone-200 flex flex-col items-center text-center space-y-1.5 shadow-2xs col-span-2 sm:col-span-1">
-                        <i class="fa-regular fa-star text-[#A07F54] text-sm"></i>
-                        <span class="text-[10px] font-bold text-slate-800 leading-tight">Personalised Recommendations</span>
+                    <!-- 5. Personalised Recommendations -->
+                    <div class="flex flex-col items-center text-center group cursor-pointer">
+                        <div class="w-13 h-13 sm:w-15 sm:h-15 rounded-full bg-[#FDE8C7] flex items-center justify-center text-[#B87A2B] mb-2.5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <span class="text-[11px] sm:text-xs font-semibold text-slate-800 text-center leading-tight">
+                            Personalised<br>Recommendations
+                        </span>
                     </div>
 
                 </div>
             </div>
 
-            <!-- Right: Smart TV Displaying Exact 8 Channel Cards -->
+            <!-- Right: Exact Luxury Hotel Suite Card with TV Displaying 8 Live Broadcast Channels -->
             <div class="lg:col-span-6">
-                <div class="tv-screen-chassis p-2.5 sm:p-3 rounded-2xl sm:rounded-3xl shadow-2xl">
-                    <div class="rounded-xl overflow-hidden aspect-[16/10] bg-slate-950 border border-white/10 p-5 flex flex-col justify-between text-white">
-                        
-                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                            <span class="font-serif-lux font-bold text-xs text-[#E8DCCB]">Live TV</span>
-                            <span class="text-[9px] text-slate-400">Broadcast Channels</span>
-                        </div>
-
-                        <!-- 8 Channel Logos (BBC, ESPN, Nat Geo, StarPlus, HBO, SONY, Zee TV, Discovery) -->
-                        <div class="grid grid-cols-4 gap-2 my-auto">
-                            
-                            <!-- 1. BBC News -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#BB1919] border border-red-500/50 flex flex-col items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-extrabold text-[11px] text-white tracking-widest font-mono">BBC</span>
-                                <span class="text-[7px] font-bold text-white tracking-widest uppercase">NEWS</span>
-                            </div>
-
-                            <!-- 2. ESPN -->
-                            <div class="aspect-[16/10] rounded-lg bg-white border border-slate-200 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-extrabold text-[12px] italic text-[#CC0000] tracking-wider font-sans">ESPN</span>
-                            </div>
-
-                            <!-- 3. National Geographic -->
-                            <div class="aspect-[16/10] rounded-lg bg-black border border-amber-500/60 flex items-center justify-center p-1 text-center shadow-xs">
-                                <div class="border border-amber-400 px-1 py-0.5 text-[7px] font-bold text-white uppercase leading-none font-sans">
-                                    NATIONAL<br>GEOGRAPHIC
-                                </div>
-                            </div>
-
-                            <!-- 4. StarPlus -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#0C2340] border border-blue-400/40 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-bold text-[10px] text-white font-sans flex items-center space-x-0.5">
-                                    <span class="text-rose-500">★</span><span>StarPlus</span>
-                                </span>
-                            </div>
-
-                            <!-- 5. HBO -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#141414] border border-slate-700 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-black text-[12px] text-white tracking-widest font-serif">HBO</span>
-                            </div>
-
-                            <!-- 6. SONY -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#1B1B1B] border border-slate-700 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-bold text-[10px] text-white tracking-wider font-sans">SONY</span>
-                            </div>
-
-                            <!-- 7. Zee TV -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#110626] border border-purple-500/40 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-bold text-[10px] text-amber-400 font-sans">ZEE TV</span>
-                            </div>
-
-                            <!-- 8. Discovery -->
-                            <div class="aspect-[16/10] rounded-lg bg-[#0B2545] border border-cyan-500/40 flex items-center justify-center p-1.5 text-center shadow-xs">
-                                <span class="font-bold text-[9px] text-cyan-300 font-sans">Discovery</span>
-                            </div>
-
-                        </div>
-
-                        <div class="text-[9px] text-slate-400 flex items-center justify-between">
-                            <span>PAX TV Stream Engine</span>
-                            <span class="text-[#C5A880]">250+ HD Channels</span>
-                        </div>
-
-                    </div>
+                <div class="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 group bg-stone-900">
+                    <img src="{{ asset('images/landing/live-tv-channels-suite.jpg') }}" 
+                         alt="Live TV & Entertainment Broadcast Channels Smart TV" 
+                         class="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-500">
                 </div>
             </div>
 
@@ -763,375 +924,152 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 7. OUR SOLUTIONS (3 STACKED CARDS LEFT + LUXURY SUITE BEDROOM RIGHT) -->
+    <!-- 8. REQUEST A DEMO TODAY (DUSK RESORT ILLUMINATED BANNER - DEMO.SVG) -->
     <!-- ========================================================================= -->
-    <section id="solutions" class="py-20 lg:py-24 px-6 lg:px-16 bg-[#FAF8F5] text-slate-900 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto space-y-10">
-            
-            <div class="max-w-2xl space-y-2">
-                <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
-                    TAILORED FOR YOUR HOTEL
-                </div>
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900">
-                    Our Solutions
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-600 font-normal">
-                    A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.
-                </p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <!-- Left: 3 Stacked Cards (Matching Screenshot) -->
-                <div class="lg:col-span-6 space-y-3.5">
-                    
-                    <!-- Card 1 -->
-                    <div class="p-5 rounded-2xl bg-white border border-[#E5DAC8] hover:border-[#C5A880] transition-all shadow-2xs space-y-2">
-                        <div class="w-9 h-9 rounded-xl icon-box-gold flex items-center justify-center">
-                            <i class="fa-solid fa-tv text-sm"></i>
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-900">Hotel TV Application</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">Custom branded interface with all essential features</p>
-                        <a href="#plans" class="inline-flex items-center text-xs font-bold text-[#A07F54] hover:text-[#7A5A1E] pt-1">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold font-mono ml-1">›</span>
-                        </a>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="p-5 rounded-2xl bg-white border border-[#E5DAC8] hover:border-[#C5A880] transition-all shadow-2xs space-y-2">
-                        <div class="w-9 h-9 rounded-xl icon-box-gold flex items-center justify-center">
-                            <i class="fa-solid fa-gear text-sm"></i>
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-900">System Integration</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">Integrate with hotel PMS, services and third-party apps</p>
-                        <a href="#plans" class="inline-flex items-center text-xs font-bold text-[#A07F54] hover:text-[#7A5A1E] pt-1">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold font-mono ml-1">›</span>
-                        </a>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="p-5 rounded-2xl bg-white border border-[#E5DAC8] hover:border-[#C5A880] transition-all shadow-2xs space-y-2">
-                        <div class="w-9 h-9 rounded-xl icon-box-gold flex items-center justify-center">
-                            <i class="fa-solid fa-clock-rotate-left text-sm"></i>
-                        </div>
-                        <h3 class="font-bold text-sm text-slate-900">Ongoing Support</h3>
-                        <p class="text-xs text-slate-500 leading-relaxed">Dedicated support and regular updates for seamless operation</p>
-                        <a href="#plans" class="inline-flex items-center text-xs font-bold text-[#A07F54] hover:text-[#7A5A1E] pt-1">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold font-mono ml-1">›</span>
-                        </a>
-                    </div>
-
-                </div>
-
-                <!-- Right: Luxury Hotel Bedroom Suite Photo (Warm Ambient Headboard) -->
-                <div class="lg:col-span-6 h-full">
-                    <div class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-stone-200 h-[440px]">
-                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1200&q=85" 
-                             alt="Luxury Bedroom with Backlit Headboard" 
-                             class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent"></div>
-                        <div class="absolute bottom-5 left-5 text-white">
-                            <span class="text-[#E8DCCB] text-xs font-serif-lux font-bold uppercase tracking-wider">Premium Room Suites</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 8. GALLERY (REAL IMPLEMENTATIONS - 1 LARGE LEFT + 4 SMALL RIGHT) -->
-    <!-- ========================================================================= -->
-    <section id="gallery" class="py-20 lg:py-24 px-6 lg:px-16 bg-white text-slate-900 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto space-y-10">
-            
-            <div class="max-w-2xl space-y-2">
-                <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
-                    REAL IMPLEMENTATIONS
-                </div>
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900">
-                    Gallery
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-600 font-normal">
-                    See how our Hotel TV solution enhances guest experiences in premium properties worldwide.
-                </p>
-            </div>
-
-            <!-- Exact Mosaic Gallery Grid Matching Screenshot -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                
-                <!-- Large Image on Left -->
-                <div class="lg:col-span-6 relative rounded-2xl overflow-hidden shadow-md border border-stone-200 min-h-[320px] group">
-                    <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=85" 
-                         alt="Ocean Suite Implementation" 
-                         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent"></div>
-                    <span class="absolute bottom-4 left-4 text-xs font-bold text-white font-serif-lux">Oceanfront Penthouse</span>
-                </div>
-
-                <!-- 4 Smaller Rectangular Images on Right (2x2 Grid) -->
-                <div class="lg:col-span-6 grid grid-cols-2 gap-4">
-                    
-                    <div class="relative rounded-xl overflow-hidden shadow-xs border border-stone-200 h-38 group">
-                        <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80" 
-                             alt="Luxury Room TV" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-slate-950/30"></div>
-                        <span class="absolute bottom-2.5 left-2.5 text-[10px] font-bold text-white">Presidential Suite</span>
-                    </div>
-
-                    <div class="relative rounded-xl overflow-hidden shadow-xs border border-stone-200 h-38 group">
-                        <img src="https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=600&q=80" 
-                             alt="Penthouse Living Room" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-slate-950/30"></div>
-                        <span class="absolute bottom-2.5 left-2.5 text-[10px] font-bold text-white">Deluxe King</span>
-                    </div>
-
-                    <div class="relative rounded-xl overflow-hidden shadow-xs border border-stone-200 h-38 group">
-                        <img src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=600&q=80" 
-                             alt="Deluxe Room TV" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-slate-950/30"></div>
-                        <span class="absolute bottom-2.5 left-2.5 text-[10px] font-bold text-white">Boutique Suite</span>
-                    </div>
-
-                    <div class="relative rounded-xl overflow-hidden shadow-xs border border-stone-200 h-38 group">
-                        <img src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=600&q=80" 
-                             alt="Executive Lounge" 
-                             class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
-                        <div class="absolute inset-0 bg-slate-950/30"></div>
-                        <span class="absolute bottom-2.5 left-2.5 text-[10px] font-bold text-white">Executive Lounge</span>
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 9. PRICING & PLANS SECTION (DYNAMIC DATABASE PLANS PRESERVED) -->
-    <!-- ========================================================================= -->
-    <section id="plans" class="py-20 lg:py-24 px-6 lg:px-16 bg-[#FAF8F5] text-slate-900 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto space-y-14 text-center">
-            
-            <div class="space-y-2 max-w-2xl mx-auto">
-                <div class="text-[#A07F54] font-bold text-xs uppercase tracking-[0.25em]">
-                    FLEXIBLE SUBSCRIPTION
-                </div>
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-slate-900">
-                    Transparent Pricing for Properties of Any Scale
-                </h2>
-                <p class="text-xs sm:text-sm text-slate-500 font-normal">
-                    Choose a plan tailored to your room count. Instant licensing keys and central cloud control.
-                </p>
-            </div>
-
-            <!-- Dynamic Plans Loop from Database -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-                @foreach($plans as $plan)
-                    <div class="bg-white border rounded-2xl p-7 shadow-xs hover:shadow-xl transition-all flex flex-col justify-between space-y-6 relative {{ $plan->room_count === 50 ? 'border-2 border-[#C5A880] shadow-sm' : 'border-stone-200' }}">
-                        
-                        @if($plan->room_count === 50)
-                            <span class="absolute top-5 right-5 px-3 py-1 rounded-full btn-gold-pill text-slate-950 font-bold text-[10px] uppercase tracking-wider">
-                                Most Popular
-                            </span>
-                        @endif
-
-                        <div class="space-y-4">
-                            <div>
-                                <h3 class="font-serif-lux text-xl font-bold text-slate-900">{{ $plan->name }}</h3>
-                                <span class="inline-block mt-1 px-2.5 py-0.5 rounded-full bg-[#FAF6EE] text-[#A07F54] font-bold text-[10px] uppercase tracking-wider">
-                                    Up to {{ $plan->room_count }} Rooms
-                                </span>
-                            </div>
-
-                            <div class="text-3xl font-extrabold text-slate-900 font-serif-lux">
-                                ₹{{ number_format($plan->price, 0) }}<span class="text-xs text-slate-400 font-normal ml-1">/mo</span>
-                            </div>
-
-                            <ul class="space-y-2.5 text-xs text-slate-600 font-medium">
-                                <li class="flex items-center space-x-2">
-                                    <i class="fa-solid fa-circle-check text-[#C5A880]"></i>
-                                    <span>Authorize up to {{ $plan->room_count }} TVs</span>
-                                </li>
-                                <li class="flex items-center space-x-2">
-                                    <i class="fa-solid fa-circle-check text-[#C5A880]"></i>
-                                    <span>Instant 16-Digit License Key</span>
-                                </li>
-                                <li class="flex items-center space-x-2">
-                                    <i class="fa-solid fa-circle-check text-[#C5A880]"></i>
-                                    <span>Custom Hotel Logo & Branding</span>
-                                </li>
-                                @if($plan->room_count >= 50)
-                                    <li class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-circle-check text-[#C5A880]"></i>
-                                        <span>Cloud Multi-Theme Support</span>
-                                    </li>
-                                @endif
-                                @if($plan->room_count >= 100)
-                                    <li class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-circle-check text-[#C5A880]"></i>
-                                        <span>Dedicated Account Manager</span>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
-
-                        <button onclick="openRegisterModalWithPlan({{ $plan->id }}, {{ $plan->room_count }})" 
-                                class="w-full py-3 px-4 rounded-full font-bold text-xs tracking-wider uppercase transition-all {{ $plan->room_count === 50 ? 'btn-gold-pill shadow-sm' : 'bg-slate-100 hover:bg-slate-200 text-slate-800' }}">
-                            Select {{ $plan->name }}
-                        </button>
-                    </div>
-                @endforeach
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 10. REQUEST A DEMO TODAY (DUSK RESORT ILLUMINATED BANNER) -->
-    <!-- ========================================================================= -->
-    <section class="relative py-24 lg:py-28 px-6 lg:px-16 text-white overflow-hidden border-t border-white/10">
+    <section class="relative py-20 lg:py-24 xl:py-28 px-6 lg:px-16 text-white overflow-hidden border-t border-white/10">
         
-        <!-- Dusk Resort Hotel Background with Pool & Palms (Exact Screenshot Match) -->
+        <!-- Dusk Resort Hotel Background (Exact Match to Reference using demo.svg) -->
         <div class="absolute inset-0 z-0">
-            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=2000&q=85" 
-                 alt="Luxury Hotel at Dusk" 
-                 class="w-full h-full object-cover object-center filter brightness-[0.38] contrast-[1.1]">
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/70 to-slate-950/85"></div>
+            <img src="{{ asset('images/landing/demo.svg') }}" 
+                 onerror="this.onerror=null;this.src='{{ asset('images/landing/demo.jpg') }}';" 
+                 alt="Request a Demo - Luxury Beachfront Resort at Dusk" 
+                 class="w-full h-full object-cover object-center">
+            <!-- Smooth Gradient Overlay on left to guarantee crystal-clear text readability while keeping illuminated resort vivid on right -->
+            <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent"></div>
         </div>
 
         <div class="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
             
-            <div class="space-y-3.5 max-w-2xl text-left">
-                <div class="text-[#C5A880] font-bold text-[11px] uppercase tracking-[0.25em]">
+            <div class="space-y-4 max-w-2xl text-left">
+                <!-- Golden Overline Tag -->
+                <div class="text-[#E5A853] font-bold text-xs uppercase tracking-[0.25em]">
                     READY TO TRANSFORM YOUR GUEST EXPERIENCE?
                 </div>
 
-                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.75rem] font-medium tracking-tight text-white leading-tight">
+                <!-- Editorial Headline -->
+                <h2 class="font-serif-lux text-3xl sm:text-4xl lg:text-[2.85rem] font-medium tracking-tight text-white leading-tight">
                     Request a Demo Today
                 </h2>
 
-                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal max-w-lg">
+                <!-- Subtitle -->
+                <p class="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal max-w-lg">
                     Discover how our Hotel TV solution can add value to your property and delight your guests.
                 </p>
 
-                <!-- Dual Action Buttons -->
+                <!-- Dual Action Buttons (Exact Match to Reference Screenshot) -->
                 <div class="flex items-center space-x-4 pt-2">
-                    <button onclick="openRegisterModal()" class="px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer">
+                    <button onclick="openRegisterModal()" class="px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5 cursor-pointer shadow-md hover:shadow-lg transition-shadow">
                         <span>Request Demo</span>
                         <span class="text-xs font-bold font-mono">›</span>
                     </button>
 
-                    <a href="{{ route('contact-us') }}" class="px-7 py-3 btn-glass-pill text-xs tracking-wider">
+                    <a href="{{ route('contact-us') }}" class="px-7 py-3 rounded-full bg-black/60 hover:bg-black/85 text-white border border-white/35 text-xs font-semibold tracking-wider transition-colors backdrop-blur-xs">
                         Contact Us
                     </a>
                 </div>
             </div>
 
-            <!-- Minimalist Crest Seal on Right -->
-            <div class="hidden lg:flex flex-col items-center justify-center p-8 rounded-full border border-white/10 bg-white/5 backdrop-blur-md w-44 h-44 text-center space-y-2">
-                <svg class="w-8 h-8 fill-current text-[#C5A880]" viewBox="0 0 24 24">
-                    <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
-                </svg>
-                <span class="font-serif-lux font-bold text-sm tracking-widest text-[#E8DCCB]">PAX TV</span>
-            </div>
+            <!-- Open Space on Right to showcase the illuminated resort architecture -->
+            <div class="hidden lg:block lg:w-1/3"></div>
 
         </div>
     </section>
 
     <!-- ========================================================================= -->
-    <!-- 11. LUXURY DARK FOOTER (100% REPLICATED FROM REFERENCE ARTBOARD) -->
+    <!-- 11. LUXURY DARK FOOTER (EXACT MATCH TO REFERENCE SCREENSHOT) -->
     <!-- ========================================================================= -->
-    <footer class="bg-[#0A0D14] text-white border-t border-white/10 pt-16 pb-12">
-        <div class="max-w-7xl mx-auto px-6 lg:px-16 space-y-12">
+    <footer class="bg-[#080B10] text-white border-t border-white/10 pt-16 pb-12">
+        <div class="max-w-7xl mx-auto px-6 lg:px-16">
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 items-start">
                 
-                <!-- Column 1: Brand Info -->
-                <div class="space-y-4">
-                    <div class="flex items-center space-x-3">
-                        <svg class="w-7 h-7 fill-current text-[#C5A880]" viewBox="0 0 24 24">
-                            <path d="M12 1L14.4 7.2L20.8 5.6L18 11.6L23 15.2L16.8 17.2L16 23.6L12 18.8L8 23.6L7.2 17.2L1 15.2L6 11.6L3.2 5.6L9.6 7.2L12 1Z"/>
-                        </svg>
-                        <span class="font-serif-lux font-bold text-xl tracking-[0.22em] text-white">
-                            PAX<span class="text-[#C5A880]">TV</span>
+                <!-- Column 1: Brand Info (4 cols) -->
+                <div class="lg:col-span-4 space-y-4 text-left">
+                    <!-- Brand Logo: Golden Rosette on top + Brand Name -->
+                    <div class="flex flex-col items-start space-y-1.5">
+                        <!-- Intricate Golden Sacred Geometry Rosette Emblem -->
+                        <div class="w-8 h-8 text-[#E5A853]">
+                            <svg class="w-7 h-7 fill-current drop-shadow-md" viewBox="0 0 40 40">
+                                <polygon points="20,1 25,12 36,9 31,20 39,28 28,31 25,39 20,31 15,39 12,31 1,28 9,20 4,9 15,12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                                <polygon points="20,7 28,20 20,33 12,20" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                                <polygon points="20,13 24,20 20,27 16,20" fill="currentColor"/>
+                                <circle cx="20" cy="20" r="2.2" fill="#080B10"/>
+                            </svg>
+                        </div>
+                        <!-- Brand Name (Serif tracking) -->
+                        <span class="font-serif-lux font-bold text-2xl tracking-[0.25em] text-[#E5A853] uppercase leading-none">
+                            PAX TV
                         </span>
                     </div>
 
-                    <p class="text-xs text-slate-400 leading-relaxed font-normal">
-                        Premium Hotel TV Solution.<br>
-                        For a Smarter Stay Experience.
+                    <!-- Tagline -->
+                    <p class="text-xs sm:text-[13px] text-stone-400 leading-relaxed font-normal pt-1">
+                        Premium Hotel TV Solution<br>
+                        for a Smarter Stay Experience.
                     </p>
 
-                    <!-- Social Icons -->
-                    <div class="flex items-center space-x-2.5 pt-1">
-                        <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#C5A880] hover:text-slate-950 border border-white/10 flex items-center justify-center text-slate-400 transition-all">
-                            <i class="fa-brands fa-linkedin-in text-xs"></i>
+                    <!-- Flat Social Icons (No Box - Exact Screenshot Match) -->
+                    <div class="flex items-center space-x-5 pt-2 text-stone-300">
+                        <a href="#" class="hover:text-[#E5A853] transition-colors">
+                            <i class="fa-brands fa-linkedin-in text-base"></i>
                         </a>
-                        <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#C5A880] hover:text-slate-950 border border-white/10 flex items-center justify-center text-slate-400 transition-all">
-                            <i class="fa-brands fa-youtube text-xs"></i>
+                        <a href="#" class="hover:text-[#E5A853] transition-colors">
+                            <i class="fa-brands fa-youtube text-base"></i>
                         </a>
-                        <a href="#" class="w-8 h-8 rounded-lg bg-white/5 hover:bg-[#C5A880] hover:text-slate-950 border border-white/10 flex items-center justify-center text-slate-400 transition-all">
-                            <i class="fa-brands fa-instagram text-xs"></i>
+                        <a href="#" class="hover:text-[#E5A853] transition-colors">
+                            <i class="fa-brands fa-instagram text-base"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Column 2: Quick Links (Exact Match) -->
-                <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Quick Links</h4>
-                    <ul class="space-y-2.5 text-xs text-slate-400">
-                        <li><a href="#home" class="hover:text-[#C5A880] transition-colors">Home</a></li>
-                        <li><a href="#features" class="hover:text-[#C5A880] transition-colors">Features</a></li>
-                        <li><a href="#solutions" class="hover:text-[#C5A880] transition-colors">Solutions</a></li>
-                        <li><a href="#gallery" class="hover:text-[#C5A880] transition-colors">Gallery</a></li>
-                        <li><a href="#about" class="hover:text-[#C5A880] transition-colors">About Us</a></li>
-                        <li><a href="{{ route('contact-us') }}" class="hover:text-[#C5A880] transition-colors">Contact</a></li>
+                <!-- Column 2: Quick Links (2.5 cols) -->
+                <div class="lg:col-span-2 space-y-3.5 text-left">
+                    <h4 class="text-sm font-bold text-white tracking-wide">Quick Links</h4>
+                    <ul class="space-y-2 text-xs sm:text-[13px] text-stone-400 font-normal">
+                        <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
+                        <li><a href="#solutions" class="hover:text-white transition-colors">Solutions</a></li>
+                        <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
+                        <li><a href="{{ route('hotel.login') }}" class="text-[#E5A853] hover:text-[#F2B660] font-medium transition-colors">Hotel Login</a></li>
+                        <li><a href="{{ route('contact-us') }}" class="hover:text-white transition-colors">Contact</a></li>
                     </ul>
                 </div>
 
-                <!-- Column 3: Our Solutions (Exact Match) -->
-                <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Our Solutions</h4>
-                    <ul class="space-y-2.5 text-xs text-slate-400">
-                        <li><a href="#solutions" class="hover:text-[#C5A880] transition-colors">Hotel TV Application</a></li>
-                        <li><a href="#solutions" class="hover:text-[#C5A880] transition-colors">System Integration</a></li>
-                        <li><a href="#features" class="hover:text-[#C5A880] transition-colors">Multi-Language Support</a></li>
-                        <li><a href="#features" class="hover:text-[#C5A880] transition-colors">Hotel Information</a></li>
-                        <li><a href="#features" class="hover:text-[#C5A880] transition-colors">Live TV & Entertainment</a></li>
-                        <li><a href="#features" class="hover:text-[#C5A880] transition-colors">Guest Services</a></li>
+                <!-- Column 3: Our Solutions (3 cols) -->
+                <div class="lg:col-span-3 space-y-3.5 text-left">
+                    <h4 class="text-sm font-bold text-white tracking-wide">Our Solutions</h4>
+                    <ul class="space-y-2 text-xs sm:text-[13px] text-stone-400 font-normal">
+                        <li><a href="#solutions" class="hover:text-white transition-colors">Hotel TV Application</a></li>
+                        <li><a href="#solutions" class="hover:text-white transition-colors">System Integration</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Multi-Language Support</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Hotel Information</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Live TV & Entertainment</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">Guest Services</a></li>
                     </ul>
                 </div>
 
-                <!-- Column 4: Contact Us (Exact Match) -->
-                <div class="space-y-4">
-                    <h4 class="text-xs font-bold text-white uppercase tracking-wider">Contact Us</h4>
-                    <ul class="space-y-2.5 text-xs text-slate-400">
-                        <li class="flex items-center space-x-2">
-                            <i class="fa-solid fa-location-dot text-[#C5A880] text-xs"></i>
+                <!-- Column 4: Contact Us (3.5 cols) -->
+                <div class="lg:col-span-3 space-y-3.5 text-left">
+                    <h4 class="text-sm font-bold text-white tracking-wide">Contact Us</h4>
+                    <ul class="space-y-2.5 text-xs sm:text-[13px] text-stone-300 font-normal">
+                        <li class="flex items-center space-x-3">
+                            <i class="fa-solid fa-location-dot text-sm text-stone-400 w-4"></i>
                             <span>Mumbai, India</span>
                         </li>
-                        <li class="flex items-center space-x-2">
-                            <i class="fa-solid fa-phone text-[#C5A880] text-xs"></i>
+                        <li class="flex items-center space-x-3">
+                            <i class="fa-solid fa-phone text-sm text-stone-400 w-4"></i>
                             <a href="tel:+919876543210" class="hover:text-white transition-colors">+91 98765 43210</a>
                         </li>
-                        <li class="flex items-center space-x-2">
-                            <i class="fa-solid fa-envelope text-[#C5A880] text-xs"></i>
-                            <a href="mailto:info@paxtvnetwork.com" class="hover:text-white transition-colors">info@paxtvnetwork.com</a>
+                        <li class="flex items-center space-x-3">
+                            <i class="fa-regular fa-envelope text-sm text-stone-400 w-4"></i>
+                            <a href="mailto:info@paxtv.com" class="hover:text-white transition-colors">info@paxtv.com</a>
                         </li>
                     </ul>
 
-                    <div class="pt-2">
-                        <button onclick="openRegisterModal()" class="w-full py-2.5 px-4 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-1 cursor-pointer">
+                    <!-- Wide Golden Pill: Request Demo › (Exact Match) -->
+                    <div class="pt-3">
+                        <button onclick="openRegisterModal()" 
+                                class="w-full sm:w-auto px-8 py-3 rounded-full bg-[#F5C368] hover:bg-[#F2BA55] text-stone-950 font-bold text-xs tracking-wider flex items-center justify-center space-x-1.5 shadow-md cursor-pointer transition-colors">
                             <span>Request Demo</span>
                             <span class="text-xs font-bold font-mono">›</span>
                         </button>
@@ -1141,12 +1079,15 @@
             </div>
 
             <!-- Bottom Copyright & Legal Links -->
-            <div class="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+            <div class="mt-12 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
                 <p>© {{ date('Y') }} PAX TV. All rights reserved.</p>
-                <div class="flex items-center space-x-6">
-                    <a href="{{ route('privacy-policy') }}" class="hover:text-[#C5A880] transition-colors">Privacy Policy</a>
-                    <span class="text-slate-700">|</span>
-                    <a href="#" class="hover:text-[#C5A880] transition-colors">Terms of Service</a>
+                <p class="text-stone-400">
+                    Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#E5A853] hover:text-[#F2B660] font-medium transition-colors underline decoration-[#E5A853]/40 underline-offset-2 hover:decoration-[#F2B660]">Digi Emperor</a>
+                </p>
+                <div class="flex items-center space-x-5">
+                    <a href="{{ route('privacy-policy') }}" class="hover:text-stone-300 transition-colors">Privacy Policy</a>
+                    <span class="text-stone-700">|</span>
+                    <a href="#" class="hover:text-stone-300 transition-colors">Terms of Service</a>
                 </div>
             </div>
 
@@ -1316,7 +1257,18 @@
                 suggestedPlanBox.classList.remove('hidden');
             }
         })
-        .catch(err => console.error('Plan Suggestion Error:', err));
+    }
+
+    function selectLandingLanguage(btn) {
+        if (!btn) return;
+        const allPills = document.querySelectorAll('#landingLanguageContainer .lang-pill');
+        allPills.forEach(p => {
+            p.classList.remove('bg-[#F5C368]', 'text-stone-950', 'font-bold', 'shadow-md', 'border-transparent', 'ring-2', 'ring-[#F5C368]/40', 'scale-105');
+            p.classList.add('bg-white/10', 'border', 'border-white/20', 'text-white', 'font-medium', 'scale-100');
+        });
+
+        btn.classList.remove('bg-white/10', 'border', 'border-white/20', 'text-white', 'font-medium', 'scale-100');
+        btn.classList.add('bg-[#F5C368]', 'text-stone-950', 'font-bold', 'shadow-md', 'border-transparent', 'ring-2', 'ring-[#F5C368]/40', 'scale-105');
     }
 </script>
 @endsection
