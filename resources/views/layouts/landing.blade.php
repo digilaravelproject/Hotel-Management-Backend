@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-50 font-sans antialiased selection:bg-indigo-600 selection:text-white">
+<html lang="en" class="h-full scroll-smooth bg-slate-50 font-sans antialiased selection:bg-[#E5A853] selection:text-slate-950">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
