@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Super Admin Login - HotelTV')
+@section('title', 'Super Admin Login - ' . app_name())
 
 @section('content')
 <div class="min-h-screen flex items-center justify-center p-4 bg-slate-950 text-slate-100 relative overflow-hidden">
@@ -9,10 +9,10 @@
 
     <div class="w-full max-w-md bg-slate-900/90 backdrop-blur-2xl border border-slate-800 rounded-3xl p-8 shadow-2xl shadow-rose-950/40 space-y-6 relative z-10">
         <div class="text-center space-y-3">
-            <div class="w-14 h-14 bg-gradient-to-tr from-rose-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-lg shadow-rose-500/30">
-                <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
+            <div class="flex items-center justify-center mx-auto mb-2">
+                <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-10 max-w-[200px] object-contain">
             </div>
-            <h1 class="text-2xl font-extrabold text-white tracking-tight">Super Admin Portal</h1>
+            <h1 class="text-xl font-extrabold text-white tracking-tight">Super Admin Portal</h1>
             <p class="text-xs text-slate-400">Master platform access and system control</p>
         </div>
 

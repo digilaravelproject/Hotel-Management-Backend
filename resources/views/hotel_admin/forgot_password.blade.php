@@ -67,8 +67,8 @@
     <header class="relative z-10 w-full px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#080B10]/60">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <img src="{{ asset('images/logo/logo.png') }}" 
-                     alt="PAX TV" 
+                <img src="{{ app_logo_url() }}" 
+                     alt="{{ app_name() }}" 
                      class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
 
@@ -85,8 +85,8 @@
             <div class="absolute -top-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-[#E5A853] to-transparent"></div>
 
             <div class="text-center space-y-3">
-                <img src="{{ asset('images/logo/logo.png') }}" 
-                     alt="PAX TV" 
+                <img src="{{ app_logo_url() }}" 
+                     alt="{{ app_name() }}" 
                      class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
                 <h1 class="font-serif-lux text-2xl font-medium text-white tracking-tight">Forgot Password?</h1>
                 <p class="text-xs text-stone-400 font-normal leading-relaxed">

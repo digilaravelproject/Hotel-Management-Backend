@@ -8,6 +8,7 @@ use App\Http\Controllers\SuperAdmin\PlanController as SuperPlanController;
 use App\Http\Controllers\SuperAdmin\AmenityController as SuperAmenityController;
 use App\Http\Controllers\SuperAdmin\DeviceController as SuperDeviceController;
 use App\Http\Controllers\SuperAdmin\TemplateController as SuperTemplateController;
+use App\Http\Controllers\SuperAdmin\UserController as SuperUserController;
 
 use App\Http\Controllers\SuperAdmin\FirebaseSettingsController as SuperFirebaseSettingsController;
 
@@ -54,6 +55,10 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('/plans/{id}/toggle-status', [SuperPlanController::class, 'toggleStatus'])->name('plans.toggle-status');
     Route::resource('plans', SuperPlanController::class)->except(['show']);
 
+    // User Management & Roles/Permissions
+    Route::match(['get', 'post'], 'users/{id}/toggle-status', [SuperUserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::resource('users', SuperUserController::class);
+
     // Connected Devices
     Route::resource('devices', SuperDeviceController::class)->only(['index', 'destroy']);
 
@@ -79,4 +84,9 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::post('firebase-settings', [SuperFirebaseSettingsController::class, 'update'])->name('firebase-settings.update');
     Route::post('firebase-settings/test-push', [SuperFirebaseSettingsController::class, 'testPush'])->name('firebase-settings.test-push');
     Route::post('firebase-settings/test-firestore', [SuperFirebaseSettingsController::class, 'testFirestore'])->name('firebase-settings.test-firestore');
+
+    // Application & System Branding Settings
+    Route::get('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'index'])->name('settings.index');
+    Route::post('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'update'])->name('settings.update');
 });
+

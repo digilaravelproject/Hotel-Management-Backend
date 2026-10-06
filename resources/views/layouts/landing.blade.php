@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'HotelTV Platform')</title>
+    <title>@yield('title', app_name() . ' - Smart Hotel Platform')</title>
 
-    <!-- Favicon from Logo -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    <!-- Dynamic Application Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ app_favicon_url() }}">
+    <link rel="shortcut icon" href="{{ app_favicon_url() }}">
+    <link rel="apple-touch-icon" href="{{ app_favicon_url() }}">
 
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

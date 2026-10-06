@@ -22,3 +22,8 @@ Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPla
 Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
 Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
 Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
+
+// Fallback login route name
+Route::get('/login', function () {
+    return redirect()->route('distributor.login');
+})->name('login');

@@ -300,8 +300,8 @@
                 
                 <!-- Brand Logo -->
                 <a href="{{ route('landing') }}" class="flex items-center space-x-2.5 group cursor-pointer shrink-0">
-                    <img src="{{ asset('images/logo/logo.png') }}" 
-                         alt="PAX TV" 
+                    <img src="{{ app_logo_url() }}" 
+                         alt="{{ app_name() }}" 
                          class="h-8 sm:h-10 lg:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 </a>
 
@@ -1095,8 +1095,8 @@
                 <!-- Column 1: Brand Info (4 cols) -->
                 <div class="sm:col-span-2 lg:col-span-4 space-y-3.5 text-left">
                     <a href="{{ route('landing') }}" class="inline-block group">
-                        <img src="{{ asset('images/logo/logo.png') }}" 
-                             alt="PAX TV" 
+                        <img src="{{ app_logo_url() }}" 
+                             alt="{{ app_name() }}" 
                              class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     </a>
 
@@ -1158,7 +1158,7 @@
                         </li>
                         <li class="flex items-center space-x-3">
                             <i class="fa-regular fa-envelope text-sm text-[#DFBA58] w-4 shrink-0"></i>
-                            <a href="mailto:info@paxtv.com" class="hover:text-white transition-colors">info@paxtv.com</a>
+                            <a href="mailto:{{ app_setting('contact_email', 'info@paxtv.com') }}" class="hover:text-white transition-colors">{{ app_setting('contact_email', 'info@paxtv.com') }}</a>
                         </li>
                     </ul>
 
@@ -1175,7 +1175,7 @@
 
             <!-- Bottom Copyright & Legal Links -->
             <div class="mt-8 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-3">
-                <p>© {{ date('Y') }} PAX TV. All rights reserved.</p>
+                <p>{{ app_setting('footer_text', '© ' . date('Y') . ' ' . app_name() . '. All rights reserved.') }}</p>
                 <p class="text-stone-400">
                     Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#DFBA58] hover:text-[#EBC66B] font-medium transition-colors underline decoration-[#DFBA58]/40 underline-offset-2 hover:decoration-[#EBC66B]">Digi Emperor</a>
                 </p>

@@ -75,8 +75,8 @@
             
             <!-- Brand Logo -->
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <img src="{{ asset('images/logo/logo.png') }}" 
-                     alt="PAX TV" 
+                <img src="{{ app_logo_url() }}" 
+                     alt="{{ app_name() }}" 
                      class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                 <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#E5A853]/15 text-[#E5A853] border border-[#E5A853]/30">
                     Hotel Portal
@@ -176,8 +176,8 @@
 
                     <!-- Card Header -->
                     <div class="text-center space-y-3">
-                        <img src="{{ asset('images/logo/logo.png') }}" 
-                             alt="PAX TV" 
+                        <img src="{{ app_logo_url() }}" 
+                             alt="{{ app_name() }}" 
                              class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
                         <h2 class="font-serif-lux text-2xl sm:text-3xl font-medium text-white tracking-tight">
                             Hotel Admin Portal

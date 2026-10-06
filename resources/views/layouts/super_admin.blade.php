@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Super Admin Control Center') - HotelTV</title>
+    <title>@yield('title', 'Super Admin Control Center') - {{ app_setting('app_name', 'DigiHotel') }}</title>
 
-    <!-- Favicon from Logo -->
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}">
-    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
+    <!-- Dynamic Application Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ app_favicon_url() }}">
+    <link rel="shortcut icon" href="{{ app_favicon_url() }}">
+    <link rel="apple-touch-icon" href="{{ app_favicon_url() }}">
 
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -38,12 +37,9 @@
         <aside id="sidebar" class="w-64 bg-slate-950 text-slate-300 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-slate-800 shadow-2xl">
             <!-- Sidebar Header -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-slate-800/80">
-                <div class="flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-rose-600 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-rose-500/20">
-                        <i class="fa-solid fa-shield-halved text-lg"></i>
-                    </div>
-                    <span class="text-xl font-extrabold text-white tracking-tight">Super<span class="text-rose-500">Admin</span></span>
-                </div>
+                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center space-x-3 overflow-hidden">
+                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-8 max-w-[150px] object-contain">
+                </a>
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
@@ -70,6 +66,10 @@
                     <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
                     <span>Hotels Directory</span>
                 </a>
+                <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-users-gear text-base w-5 text-center"></i>
+                    <span>Users & Permissions</span>
+                </a>
                 <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-layer-group text-base w-5 text-center"></i>
                     <span>Subscription Plans</span>
@@ -89,6 +89,10 @@
                 <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-fire text-base w-5 text-center text-amber-500"></i>
                     <span>FCM Config & Realtime</span>
+                </a>
+                <a href="{{ route('super-admin.settings.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.settings.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-sliders text-base w-5 text-center text-rose-400"></i>
+                    <span>System & Branding</span>
                 </a>
                 <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.profile') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-user-gear text-base w-5 text-center"></i>
@@ -119,10 +123,23 @@
                     <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">@yield('page_title', 'Super Admin Center')</h1>
                 </div>
 
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('super-admin.profile') }}" class="inline-flex items-center space-x-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-full transition-all">
+                <div class="flex items-center space-x-2.5 sm:space-x-3">
+                    <!-- Live Website Link -->
+                    <a href="{{ route('landing') }}" target="_blank" title="View Live Website" class="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 hover:text-slate-900 px-3 py-2 rounded-xl transition-all">
+                        <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-slate-400"></i>
+                        <span>Live Website</span>
+                    </a>
+
+                    <!-- Branding & System Settings Quick Action -->
+                    <a href="{{ route('super-admin.settings.index') }}" title="Application Branding & Settings" class="inline-flex items-center space-x-1.5 text-xs font-bold {{ Request::routeIs('super-admin.settings.*') ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/20' : 'text-slate-700 bg-slate-100 hover:bg-rose-50 hover:text-rose-600' }} px-3.5 py-2 rounded-xl transition-all">
+                        <i class="fa-solid fa-sliders {{ Request::routeIs('super-admin.settings.*') ? 'text-white' : 'text-rose-500' }}"></i>
+                        <span>Branding</span>
+                    </a>
+
+                    <!-- Super Admin Profile Badge -->
+                    <a href="{{ route('super-admin.profile') }}" class="inline-flex items-center space-x-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 px-3.5 py-2 rounded-xl transition-all">
                         <i class="fa-solid fa-user-shield text-rose-600"></i>
-                        <span>{{ Auth::guard('super_admin')->user()->email ?? 'Super Admin' }}</span>
+                        <span class="hidden md:inline">{{ Auth::guard('super_admin')->user()->email ?? 'Super Admin' }}</span>
                     </a>
                 </div>
             </header>

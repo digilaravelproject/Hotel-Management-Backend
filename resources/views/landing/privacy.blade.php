@@ -58,8 +58,8 @@
             
             <!-- Brand Logo -->
             <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <img src="{{ asset('images/logo/logo.png') }}" 
-                     alt="PAX TV" 
+                <img src="{{ app_logo_url() }}" 
+                     alt="{{ app_name() }}" 
                      class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
             </a>
 
@@ -351,8 +351,8 @@
                 <!-- Column 1: Brand Info -->
                 <div class="space-y-4">
                     <a href="{{ route('landing') }}" class="inline-block group">
-                        <img src="{{ asset('images/logo/logo.png') }}" 
-                             alt="PAX TV" 
+                        <img src="{{ app_logo_url() }}" 
+                             alt="{{ app_name() }}" 
                              class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
                     </a>
 

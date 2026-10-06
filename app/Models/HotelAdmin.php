@@ -17,6 +17,7 @@ class HotelAdmin extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'distributor_id',
         'owner_name',
         'email',
         'password',
@@ -128,5 +129,21 @@ class HotelAdmin extends Authenticatable
     public function getAllowedDeviceLimitAttribute()
     {
         return $this->room_count;
+    }
+
+    /**
+     * Get the distributor who registered this hotel.
+     */
+    public function distributor()
+    {
+        return $this->belongsTo(User::class, 'distributor_id');
+    }
+
+    /**
+     * Get distributor sales records for this hotel.
+     */
+    public function distributorSales()
+    {
+        return $this->hasMany(DistributorSale::class, 'hotel_id');
     }
 }

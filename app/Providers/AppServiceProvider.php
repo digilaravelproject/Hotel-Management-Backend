@@ -36,5 +36,14 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\OurCity::observe(\App\Observers\TvConfigObserver::class);
         \App\Models\Guest::observe(\App\Observers\TvConfigObserver::class);
         \App\Models\TvTemplate::observe(\App\Observers\TvConfigObserver::class);
+
+        // Share App Settings across all blade views
+        \Illuminate\Support\Facades\View::composer('*', function ($view) {
+            try {
+                $view->with('appSetting', \App\Models\AppSetting::getSettings());
+            } catch (\Throwable $e) {
+                // Graceful fallback if database/table not ready
+            }
+        });
     }
 }

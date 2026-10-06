@@ -3,36 +3,34 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
-use App\Models\HotelAdmin;
-use App\Models\Plan;
+use App\Services\DashboardService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class DashboardController extends Controller
 {
     /**
-     * Show the Super Admin Dashboard.
+     * Inject reusable service layer.
      */
-    public function index()
+    public function __construct(
+        protected DashboardService $dashboardService
+    ) {}
+
+    /**
+     * Show the Super Admin Control Dashboard.
+     */
+    public function index(Request $request)
     {
-        $totalHotels = HotelAdmin::count();
-        $activeHotels = HotelAdmin::where('status', true)->where('approval_status', 'approved')->count();
-        $pendingApprovals = HotelAdmin::where('approval_status', 'pending')->count();
-        
-        // Calculate estimated monthly revenue from active paid hotels
-        $monthlyRevenue = HotelAdmin::where('payment_status', 'paid')
-            ->join('plans', 'hotel_admins.plan_id', '=', 'plans.id')
-            ->sum('plans.price');
+        $dashboardData = $this->dashboardService->getSuperAdminDashboardData($request->all());
 
-        $totalPlans = Plan::count();
-        $recentHotels = HotelAdmin::with('plan')->orderBy('created_at', 'desc')->limit(5)->get();
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $dashboardData,
+            ]);
+        }
 
-        return view('super_admin.dashboard', compact(
-            'totalHotels',
-            'activeHotels',
-            'pendingApprovals',
-            'monthlyRevenue',
-            'totalPlans',
-            'recentHotels'
-        ));
+        return view('super_admin.dashboard', $dashboardData);
     }
 
     /**
@@ -47,7 +45,7 @@ class DashboardController extends Controller
     /**
      * Update the authenticated Super Admin profile.
      */
-    public function updateProfile(\Illuminate\Http\Request $request)
+    public function updateProfile(Request $request)
     {
         $admin = auth()->guard('super_admin')->user();
 
@@ -58,10 +56,11 @@ class DashboardController extends Controller
 
         $admin->email = $request->email;
         if ($request->filled('password')) {
-            $admin->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $admin->password = Hash::make($request->password);
         }
         $admin->save();
 
-        return redirect()->route('super-admin.profile')->with('success', 'Super Admin profile credentials updated successfully!');
+        return redirect()->route('super-admin.profile')
+                         ->with('success', 'Super Admin profile credentials updated successfully!');
     }
 }
