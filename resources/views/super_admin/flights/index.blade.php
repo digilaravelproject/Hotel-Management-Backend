@@ -5,41 +5,41 @@
 @section('content')
 <div class="space-y-8">
     <!-- Top Stats Row -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl font-bold">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xl font-bold shrink-0">
                 <i class="fa-solid fa-plane-departure"></i>
             </div>
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Airports</p>
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Total Airports</p>
                 <h3 class="text-2xl font-black text-slate-800">{{ $totalAirports }}</h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold">
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl font-bold shrink-0">
                 <i class="fa-solid fa-cloud-arrow-down"></i>
             </div>
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Provider</p>
-                <h3 class="text-xl font-black text-slate-800 uppercase">{{ $setting->provider ?? 'AirLabs' }}</h3>
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Active Provider</p>
+                <h3 class="text-xl font-black text-slate-800 uppercase truncate">{{ $setting->provider ?? 'AirLabs' }}</h3>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
+        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-slate-200/80 shadow-xs flex items-center space-x-4 sm:col-span-2 lg:col-span-1">
+            <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold shrink-0">
                 <i class="fa-solid fa-database"></i>
             </div>
-            <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cache TTL</p>
+            <div class="min-w-0">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Cache TTL</p>
                 <h3 class="text-xl font-black text-slate-800">{{ $setting->cache_ttl_minutes ?? 30 }} Mins</h3>
             </div>
         </div>
     </div>
 
     <!-- API Settings Configuration Card -->
-    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs relative z-20">
+        <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
                 <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
                     <i class="fa-solid fa-key text-rose-600"></i>
@@ -47,15 +47,17 @@
                 </h2>
                 <p class="text-xs text-slate-500 mt-1">Configure your 3rd-party commercial flight tracking API credentials.</p>
             </div>
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ ($setting->is_active ?? true) ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
-                <span class="w-2 h-2 rounded-full mr-2 {{ ($setting->is_active ?? true) ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
-                {{ ($setting->is_active ?? true) ? 'API Enabled' : 'Disabled (Mock Fallback Active)' }}
-            </span>
+            <div class="self-start sm:self-auto">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ ($setting->is_active ?? true) ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
+                    <span class="w-2 h-2 rounded-full mr-2 {{ ($setting->is_active ?? true) ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
+                    {{ ($setting->is_active ?? true) ? 'API Enabled' : 'Disabled (Mock Fallback Active)' }}
+                </span>
+            </div>
         </div>
 
-        <form action="{{ route('super-admin.flights.settings.update') }}" method="POST" class="p-6 space-y-6">
+        <form action="{{ route('super-admin.flights.settings.update') }}" method="POST" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Flight API Provider Custom Dropdown -->
                 <div class="relative" id="providerDropdownWrapper">
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Flight API Provider</label>
@@ -171,12 +173,12 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
-                <label class="inline-flex items-center cursor-pointer space-x-3">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
+                <label class="inline-flex items-center cursor-pointer space-x-3 select-none">
                     <input type="checkbox" name="is_active" value="1" {{ ($setting->is_active ?? true) ? 'checked' : '' }} class="rounded border-slate-300 text-rose-600 focus:ring-rose-500 h-4 w-4">
                     <span class="text-xs font-bold text-slate-700">Enable Live Flight API Fetching</span>
                 </label>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm transition-all shadow-md shadow-rose-600/20">
+                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-sm transition-all shadow-md shadow-rose-600/20 text-center">
                     Save API Configuration
                 </button>
             </div>
@@ -185,7 +187,7 @@
 
     <!-- Airports Master Catalog Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
                     <i class="fa-solid fa-plane-arrival text-sky-600"></i>
@@ -194,16 +196,63 @@
                 <p class="text-xs text-slate-500 mt-1">Airports available for hotels across all regions.</p>
             </div>
             
-            <div class="flex items-center space-x-3">
+            <div>
                 <!-- Add Airport Modal Trigger -->
-                <button onclick="document.getElementById('addAirportModal').classList.remove('hidden')" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center space-x-2">
+                <button onclick="openAddAirportModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add New Airport</span>
                 </button>
             </div>
         </div>
 
-        <div class="overflow-x-auto">
+        <!-- Mobile Card View (shown on screens < 768px) -->
+        <div class="md:hidden divide-y divide-slate-100">
+            @forelse($airports as $airport)
+                <div class="p-4 sm:p-5 flex flex-col space-y-3">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="font-mono font-black text-slate-900 bg-sky-50 text-sky-700 px-2.5 py-1 rounded-lg border border-sky-200 text-xs">{{ $airport->iata_code }}</span>
+                            @if($airport->icao_code)
+                                <span class="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ $airport->icao_code }}</span>
+                            @endif
+                        </div>
+                        @if($airport->status)
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Active
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span> Disabled
+                            </span>
+                        @endif
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">{{ $airport->name }}</h4>
+                        <p class="text-xs text-slate-500 mt-1">
+                            <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>
+                            <span class="font-semibold text-slate-700">{{ $airport->city }}</span>, {{ $airport->country }}
+                        </p>
+                    </div>
+
+                    <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100/60">
+                        <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" title="Force refresh live cache" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-bold transition-colors">
+                            <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+                            <span>Refresh Cache</span>
+                        </a>
+                        <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg {{ $airport->status ? 'bg-rose-50 text-rose-600 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100' }} text-xs font-bold transition-colors">
+                            <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-[11px]"></i>
+                            <span>{{ $airport->status ? 'Disable' : 'Enable' }}</span>
+                        </a>
+                    </div>
+                </div>
+            @empty
+                <div class="p-8 text-center text-slate-400 text-xs">No airports found in catalog.</div>
+            @endforelse
+        </div>
+
+        <!-- Desktop Table View (shown on md+ screens) -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full text-left text-sm text-slate-600">
                 <thead class="bg-slate-50 text-xs uppercase font-extrabold text-slate-400 border-b border-slate-100">
                     <tr>
@@ -257,7 +306,7 @@
         </div>
 
         @if($airports->hasPages())
-            <div class="p-6 border-t border-slate-100">
+            <div class="p-4 sm:p-6 border-t border-slate-100">
                 {{ $airports->links() }}
             </div>
         @endif
@@ -265,10 +314,17 @@
 </div>
 
 <!-- Add Airport Modal -->
-<div id="addAirportModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl border border-slate-100 relative">
-        <h3 class="text-lg font-extrabold text-slate-900 mb-2">Add Airport to Master Catalog</h3>
-        <p class="text-xs text-slate-500 mb-6">Enter new commercial airport details for hotel TV assignment.</p>
+<div id="addAirportModal" onclick="handleModalBackdropClick(event)" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl border border-slate-100 relative my-auto max-h-[90vh] overflow-y-auto">
+        <div class="flex items-start justify-between mb-4">
+            <div>
+                <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Add Airport to Master Catalog</h3>
+                <p class="text-xs text-slate-500 mt-1">Enter new commercial airport details for hotel TV assignment.</p>
+            </div>
+            <button type="button" onclick="closeAddAirportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
         
         <form action="{{ route('super-admin.flights.airports.store') }}" method="POST" class="space-y-4">
             @csrf
@@ -277,7 +333,7 @@
                 <input type="text" name="name" required placeholder="e.g. Pune International Airport" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">IATA Code (3 letters) *</label>
                     <input type="text" name="iata_code" maxlength="3" required placeholder="PNQ" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
@@ -288,7 +344,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">City *</label>
                     <input type="text" name="city" required placeholder="Pune" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500">
@@ -299,9 +355,9 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('addAirportModal').classList.add('hidden')" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50">Cancel</button>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20">Add Airport</button>
+            <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-100">
+                <button type="button" onclick="closeAddAirportModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 text-center">Cancel</button>
+                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20 text-center">Add Airport</button>
             </div>
         </form>
     </div>
@@ -426,8 +482,32 @@
                 if (chevron) chevron.style.transform = 'rotate(0deg)';
                 if (trigger) trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/20');
             }
+            closeAddAirportModal();
         }
     });
+
+    // Modal Management with background scroll lock
+    function openAddAirportModal() {
+        const modal = document.getElementById('addAirportModal');
+        if (modal) {
+            modal.classList.remove('hidden');
+            document.body.classList.add('overflow-hidden');
+        }
+    }
+
+    function closeAddAirportModal() {
+        const modal = document.getElementById('addAirportModal');
+        if (modal) {
+            modal.classList.add('hidden');
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    function handleModalBackdropClick(e) {
+        if (e.target && e.target.id === 'addAirportModal') {
+            closeAddAirportModal();
+        }
+    }
 
     // Set initial selection on load
     document.addEventListener('DOMContentLoaded', function () {
