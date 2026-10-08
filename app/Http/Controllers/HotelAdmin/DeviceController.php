@@ -20,7 +20,8 @@ class DeviceController extends Controller
             return redirect()->route('hotel.login');
         }
 
-        $query = $hotel->connectedDevices()->latest();
+        $hotel->loadMissing(['plan', 'distributor']);
+        $query = $hotel->connectedDevices()->with(['hotelAdmin.plan', 'hotelAdmin.distributor'])->latest();
 
         // Filter by room number if provided
         if ($request->filled('room_no')) {
@@ -57,11 +58,28 @@ class DeviceController extends Controller
     }
 
     /**
-     * Delete/Disconnect a device - Restrict to Super Admin only.
+     * Delete/Disconnect a device belonging to the authenticated hotel.
      */
     public function destroy(int $id)
     {
-        abort(403, 'Unauthorized. Only Super Admin has permission to remove or disconnect TV devices.');
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            abort(403, 'Unauthorized.');
+        }
+
+        // Strict authorization: Ensure device belongs only to this hotel
+        $device = $hotel->connectedDevices()->findOrFail($id);
+        $roomNo = $device->room_no;
+        $device->delete();
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Device for Room {$roomNo} disconnected successfully."
+            ]);
+        }
+
+        return redirect()->back()->with('success', "Device for Room {$roomNo} disconnected successfully.");
     }
 
     /**

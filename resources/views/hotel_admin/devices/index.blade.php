@@ -140,7 +140,11 @@
                                 'id' => $device->id,
                                 'room_no' => $device->room_no,
                                 'hotel_name' => $hotel->hotel_name ?? 'Hotel',
+                                'owner_name' => $hotel->owner_name ?? 'N/A',
                                 'license_key' => $hotel->license_key ?? 'N/A',
+                                'plan_name' => $hotel->plan->name ?? 'Standard Plan',
+                                'expiry_date' => $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('d M, Y') : ($hotel->plan_expires_at ? \Carbon\Carbon::parse($hotel->plan_expires_at)->format('d M, Y') : 'Active'),
+                                'distributor_name' => $hotel->distributor->name ?? 'Direct',
                                 'device_id' => $device->device_id,
                                 'mac_address' => $device->mac_address ?? 'N/A',
                                 'ip_address' => $device->ip_address ?? 'N/A',
@@ -148,6 +152,7 @@
                                 'model' => $device->model ?? '',
                                 'os_version' => $device->os_version ?? '',
                                 'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                                'disconnect_url' => route('hotel.devices.destroy', $device->id),
                             ];
                         @endphp
                         <tr class="hover:bg-slate-50/70 transition-colors">
@@ -158,7 +163,7 @@
                                 @if($activeGuest = $activeGuests->get($device->room_no))
                                     <div>
                                         <a href="{{ route('hotel.guests.index') }}?room={{ urlencode($device->room_no) }}" class="font-extrabold text-indigo-600 hover:underline">
-                                            Room {{ $device->room_no }}
+                                             Room {{ $device->room_no }}
                                         </a>
                                     </div>
                                     <span class="inline-flex items-center text-[11px] font-semibold text-emerald-600 mt-0.5">
@@ -206,10 +211,15 @@
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-center">
-                                <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 font-bold text-xs transition-all shadow-2xs">
-                                    <i class="fa-solid fa-eye text-indigo-500"></i>
-                                    <span>View</span>
-                                </button>
+                                <div class="inline-flex items-center space-x-1.5">
+                                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 font-bold text-xs transition-all shadow-2xs" title="View Details">
+                                        <i class="fa-solid fa-eye text-indigo-500"></i>
+                                        <span>View</span>
+                                    </button>
+                                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs transition-colors shadow-2xs" title="Disconnect TV">
+                                        <i class="fa-solid fa-power-off text-rose-500"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     @empty
@@ -236,7 +246,11 @@
                     'id' => $device->id,
                     'room_no' => $device->room_no,
                     'hotel_name' => $hotel->hotel_name ?? 'Hotel',
+                    'owner_name' => $hotel->owner_name ?? 'N/A',
                     'license_key' => $hotel->license_key ?? 'N/A',
+                    'plan_name' => $hotel->plan->name ?? 'Standard Plan',
+                    'expiry_date' => $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('d M, Y') : ($hotel->plan_expires_at ? \Carbon\Carbon::parse($hotel->plan_expires_at)->format('d M, Y') : 'Active'),
+                    'distributor_name' => $hotel->distributor->name ?? 'Direct',
                     'device_id' => $device->device_id,
                     'mac_address' => $device->mac_address ?? 'N/A',
                     'ip_address' => $device->ip_address ?? 'N/A',
@@ -244,6 +258,7 @@
                     'model' => $device->model ?? '',
                     'os_version' => $device->os_version ?? '',
                     'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                    'disconnect_url' => route('hotel.devices.destroy', $device->id),
                 ];
             @endphp
             <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
@@ -290,7 +305,7 @@
                     <span class="font-bold text-slate-400">ID:</span> {{ $device->device_id }}
                 </div>
 
-                <!-- Action Controls: Config OTT/Menus & Eye Button (No disconnect button) -->
+                <!-- Action Controls: Config OTT/Menus, Details & Disconnect -->
                 <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
                     <a href="{{ route('hotel.devices.ott', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
                         <i class="fa-solid fa-sliders text-[11px]"></i>
@@ -302,6 +317,9 @@
                     </a>
                     <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 font-bold text-xs flex items-center justify-center transition-all" title="View Details">
                         <i class="fa-solid fa-eye text-indigo-500"></i>
+                    </button>
+                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="py-2 px-3 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs flex items-center justify-center transition-colors" title="Disconnect TV">
+                        <i class="fa-solid fa-power-off text-rose-500"></i>
                     </button>
                 </div>
             </div>
@@ -336,13 +354,20 @@
                     <p id="modalSubtitle" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
                 </div>
             </div>
-            <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+            <!-- Top Actions: Disconnect button & Close button -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <button type="button" onclick="disconnectFromModal()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs" title="Disconnect this TV">
+                    <i class="fa-solid fa-power-off text-xs"></i>
+                    <span>Disconnect</span>
+                </button>
+                <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
         </div>
 
         <!-- License Key Highlight Box -->
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-2">
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-3">
             <div class="flex items-center justify-between">
                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 flex items-center space-x-1.5">
                     <i class="fa-solid fa-key text-[10px]"></i>
@@ -359,6 +384,35 @@
                     <span id="copyKeyText">Copy</span>
                 </button>
             </div>
+
+            <!-- Whose license key is this? Clear Hotel & License Identification -->
+            <div class="bg-white/90 rounded-xl p-3 border border-indigo-100 text-xs space-y-2">
+                <div class="flex items-center justify-between border-b border-indigo-50/80 pb-1.5">
+                    <span class="text-[11px] text-slate-500 font-semibold flex items-center">
+                        <i class="fa-solid fa-hotel text-indigo-500 mr-1.5 text-[11px]"></i> Assigned Hotel:
+                    </span>
+                    <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[220px]">---</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[10px]">
+                    <div>
+                        <span class="text-slate-400 font-medium">Owner / Contact:</span>
+                        <span id="modalKeyOwner" class="font-bold text-slate-800 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Plan:</span>
+                        <span id="modalKeyPlan" class="font-bold text-indigo-600 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Expiry:</span>
+                        <span id="modalKeyExpiry" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Distributor:</span>
+                        <span id="modalKeyDistributor" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                    </div>
+                </div>
+            </div>
+
             <p class="text-[10px] text-indigo-600/80 font-medium">Hotel license key used to authenticate connected Smart TVs in your property.</p>
         </div>
 
@@ -410,20 +464,30 @@
             </div>
         </div>
 
-        <!-- Note to Hotel Admin regarding device removal -->
-        <div class="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 text-amber-900 text-[11px] flex items-start space-x-2">
-            <i class="fa-solid fa-circle-info text-amber-500 text-xs mt-0.5 shrink-0"></i>
-            <p>To disconnect or transfer a TV device to a different hotel, please contact Super Admin support.</p>
+        <!-- Disconnect Device Guidance -->
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-slate-600 text-[11px] flex items-start space-x-2">
+            <i class="fa-solid fa-circle-info text-indigo-500 text-xs mt-0.5 shrink-0"></i>
+            <p>Disconnecting will unpair this TV immediately from the room. To reconnect, re-pair using the 8-digit code or hotel license key on screen.</p>
         </div>
 
         <!-- Modal Footer -->
-        <div class="pt-2 flex items-center justify-end space-x-2.5 border-t border-slate-100">
+        <div class="pt-2 flex items-center justify-between space-x-2.5 border-t border-slate-100">
+            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5">
+                <i class="fa-solid fa-power-off text-xs"></i>
+                <span>Disconnect TV</span>
+            </button>
             <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-colors">
                 Close
             </button>
         </div>
     </div>
 </div>
+
+<!-- Hidden Disconnect Form for Confirmation Execution -->
+<form id="disconnectDeviceForm" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
 
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
@@ -580,10 +644,21 @@
         }
     }
 
+    let currentModalDevice = null;
+
     // Modal Details functions
     function showDeviceDetails(device) {
+        currentModalDevice = device;
         document.getElementById('modalSubtitle').innerText = 'Room ' + device.room_no + ' • ' + device.hotel_name;
         document.getElementById('modalLicenseKey').innerText = device.license_key || 'N/A';
+        
+        // Ownership details for key
+        document.getElementById('modalKeyHotelName').innerText = device.hotel_name || 'N/A';
+        document.getElementById('modalKeyOwner').innerText = device.owner_name || 'N/A';
+        document.getElementById('modalKeyPlan').innerText = device.plan_name || 'Standard Plan';
+        document.getElementById('modalKeyExpiry').innerText = device.expiry_date || 'Active';
+        document.getElementById('modalKeyDistributor').innerText = device.distributor_name || 'Direct';
+
         document.getElementById('modalHotelName').innerText = device.hotel_name || 'N/A';
         document.getElementById('modalRoomNo').innerText = 'Room ' + device.room_no;
         document.getElementById('modalDeviceId').innerText = device.device_id || 'N/A';
@@ -601,6 +676,44 @@
         document.getElementById('copyKeyText').innerText = 'Copy';
 
         document.getElementById('deviceDetailsModal').classList.remove('hidden');
+    }
+
+    function disconnectFromModal() {
+        if (!currentModalDevice || !currentModalDevice.disconnect_url) return;
+        const deviceLabel = 'Room ' + currentModalDevice.room_no;
+        confirmDisconnect(currentModalDevice.disconnect_url, deviceLabel);
+    }
+
+    function confirmDisconnect(actionUrl, deviceLabel) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Disconnect Device?',
+                text: 'Are you sure you want to disconnect ' + deviceLabel + '? The TV will need to be re-paired to reconnect.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#e11d48',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Yes, Disconnect',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-xl font-bold text-xs px-5 py-2.5',
+                    cancelButton: 'rounded-xl font-bold text-xs px-5 py-2.5'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('disconnectDeviceForm');
+                    form.action = actionUrl;
+                    form.submit();
+                }
+            });
+        } else {
+            if (confirm('Disconnect ' + deviceLabel + '? The TV will need to be re-paired to reconnect.')) {
+                const form = document.getElementById('disconnectDeviceForm');
+                form.action = actionUrl;
+                form.submit();
+            }
+        }
     }
 
     function closeDeviceDetailsModal() {

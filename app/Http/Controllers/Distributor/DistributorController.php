@@ -191,18 +191,25 @@ class DistributorController extends Controller
     }
 
     /**
-     * List connected TV devices for hotels registered by this distributor (View Only).
+     * List connected TV devices for hotels registered by this distributor.
      */
     public function devices(Request $request)
     {
         $user = auth()->user();
-        $hotelIds = $user->hotels()->pluck('id');
+        $isSuperAdmin = $user->hasRole('super_admin');
+        $hotelsQuery = $isSuperAdmin ? HotelAdmin::query() : $user->hotels();
+        $hotelIds = $hotelsQuery->pluck('id');
 
         $query = ConnectedDevice::whereIn('hotel_admin_id', $hotelIds)
-            ->with(['hotelAdmin.plan']);
+            ->with(['hotelAdmin.plan', 'hotelAdmin.distributor']);
 
         if ($request->filled('hotel_id')) {
-            $query->where('hotel_admin_id', $request->input('hotel_id'));
+            $hotelId = (int) $request->input('hotel_id');
+            // Strict authorization check: Only allowed if the hotel belongs to this distributor
+            if (!$hotelIds->contains($hotelId)) {
+                abort(403, 'Unauthorized. You do not have access to TV devices for this hotel.');
+            }
+            $query->where('hotel_admin_id', $hotelId);
         }
 
         if ($request->filled('search')) {
@@ -222,8 +229,8 @@ class DistributorController extends Controller
         }
 
         $devices = $query->latest()->paginate(15)->withQueryString();
-        $hotels = $user->hotels()->orderBy('hotel_name')->get();
-        $selectedHotel = $request->filled('hotel_id') ? $hotels->firstWhere('id', $request->input('hotel_id')) : null;
+        $hotels = $hotelsQuery->orderBy('hotel_name')->get();
+        $selectedHotel = $request->filled('hotel_id') ? $hotels->firstWhere('id', (int) $request->input('hotel_id')) : null;
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -233,5 +240,29 @@ class DistributorController extends Controller
         }
 
         return view('distributor.devices.index', compact('devices', 'hotels', 'selectedHotel'));
+    }
+
+    /**
+     * Disconnect a device belonging to a hotel onboarded by this distributor.
+     */
+    public function destroyDevice(int $id)
+    {
+        $user = auth()->user();
+        $isSuperAdmin = $user->hasRole('super_admin');
+        $hotelIds = $isSuperAdmin ? HotelAdmin::pluck('id') : $user->hotels()->pluck('id');
+
+        // Strict authorization: Ensure device belongs to a hotel managed by this distributor
+        $device = ConnectedDevice::whereIn('hotel_admin_id', $hotelIds)->findOrFail($id);
+        $roomNo = $device->room_no;
+        $device->delete();
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Device for Room {$roomNo} disconnected successfully."
+            ]);
+        }
+
+        return redirect()->back()->with('success', "Device for Room {$roomNo} disconnected successfully.");
     }
 }

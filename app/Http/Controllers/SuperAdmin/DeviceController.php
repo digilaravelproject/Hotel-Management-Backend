@@ -15,7 +15,7 @@ class DeviceController extends Controller
     public function index(Request $request)
     {
         $hotelId = $request->query('hotel_id');
-        $query = ConnectedDevice::with('hotelAdmin.plan');
+        $query = ConnectedDevice::with(['hotelAdmin.plan', 'hotelAdmin.distributor']);
 
         if ($hotelId) {
             $query->where('hotel_admin_id', $hotelId);
@@ -49,9 +49,18 @@ class DeviceController extends Controller
      */
     public function destroy(int $id)
     {
-        $device = ConnectedDevice::findOrFail($id);
+        $device = ConnectedDevice::with('hotelAdmin')->findOrFail($id);
+        $roomNo = $device->room_no;
+        $hotelName = $device->hotelAdmin->hotel_name ?? 'Hotel';
         $device->delete();
 
-        return redirect()->back()->with('success', 'Device disconnected successfully.');
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => "Device for Room {$roomNo} ({$hotelName}) disconnected successfully."
+            ]);
+        }
+
+        return redirect()->back()->with('success', "Device for Room {$roomNo} ({$hotelName}) disconnected successfully.");
     }
 }

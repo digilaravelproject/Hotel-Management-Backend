@@ -92,6 +92,9 @@
                                 'hotel_name' => $device->hotelAdmin->hotel_name ?? 'N/A',
                                 'owner_name' => $device->hotelAdmin->owner_name ?? 'N/A',
                                 'license_key' => $device->hotelAdmin->license_key ?? 'N/A',
+                                'plan_name' => $device->hotelAdmin->plan->name ?? 'Standard Plan',
+                                'expiry_date' => $device->hotelAdmin->expiry_date ? \Carbon\Carbon::parse($device->hotelAdmin->expiry_date)->format('d M, Y') : ($device->hotelAdmin->plan_expires_at ? \Carbon\Carbon::parse($device->hotelAdmin->plan_expires_at)->format('d M, Y') : 'Active'),
+                                'distributor_name' => $device->hotelAdmin->distributor->name ?? 'Direct (Admin)',
                                 'device_id' => $device->device_id,
                                 'mac_address' => $device->mac_address ?? 'N/A',
                                 'ip_address' => $device->ip_address ?? 'N/A',
@@ -99,6 +102,7 @@
                                 'model' => $device->model ?? '',
                                 'os_version' => $device->os_version ?? '',
                                 'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                                'disconnect_url' => route('super-admin.devices.destroy', $device->id),
                             ];
                         @endphp
                         <tr class="hover:bg-slate-50/70 transition-colors">
@@ -180,6 +184,9 @@
                     'hotel_name' => $device->hotelAdmin->hotel_name ?? 'N/A',
                     'owner_name' => $device->hotelAdmin->owner_name ?? 'N/A',
                     'license_key' => $device->hotelAdmin->license_key ?? 'N/A',
+                    'plan_name' => $device->hotelAdmin->plan->name ?? 'Standard Plan',
+                    'expiry_date' => $device->hotelAdmin->expiry_date ? \Carbon\Carbon::parse($device->hotelAdmin->expiry_date)->format('d M, Y') : ($device->hotelAdmin->plan_expires_at ? \Carbon\Carbon::parse($device->hotelAdmin->plan_expires_at)->format('d M, Y') : 'Active'),
+                    'distributor_name' => $device->hotelAdmin->distributor->name ?? 'Direct (Admin)',
                     'device_id' => $device->device_id,
                     'mac_address' => $device->mac_address ?? 'N/A',
                     'ip_address' => $device->ip_address ?? 'N/A',
@@ -187,6 +194,7 @@
                     'model' => $device->model ?? '',
                     'os_version' => $device->os_version ?? '',
                     'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                    'disconnect_url' => route('super-admin.devices.destroy', $device->id),
                 ];
             @endphp
             <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
@@ -275,13 +283,20 @@
                     <p id="modalSubtitle" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Hotel Details</p>
                 </div>
             </div>
-            <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                <i class="fa-solid fa-xmark text-lg"></i>
-            </button>
+            <!-- Top Actions: Disconnect button & Close button -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <button type="button" onclick="disconnectFromModal()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs" title="Disconnect this TV">
+                    <i class="fa-solid fa-power-off text-xs"></i>
+                    <span>Disconnect</span>
+                </button>
+                <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
         </div>
 
         <!-- License Key Highlight Box -->
-        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-2">
+        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-3">
             <div class="flex items-center justify-between">
                 <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 flex items-center space-x-1.5">
                     <i class="fa-solid fa-key text-[10px]"></i>
@@ -289,6 +304,7 @@
                 </span>
                 <span class="px-2 py-0.5 rounded-md bg-indigo-600/10 text-indigo-700 text-[10px] font-bold">Authorized</span>
             </div>
+            
             <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-indigo-200/60 shadow-2xs">
                 <span id="modalLicenseKey" class="font-mono font-black text-sm sm:text-base text-indigo-900 tracking-wide select-all truncate">
                     ---
@@ -298,6 +314,35 @@
                     <span id="copyKeyText">Copy</span>
                 </button>
             </div>
+
+            <!-- Whose license key is this? Clear Hotel & License Identification -->
+            <div class="bg-white/90 rounded-xl p-3 border border-indigo-100 text-xs space-y-2">
+                <div class="flex items-center justify-between border-b border-indigo-50/80 pb-1.5">
+                    <span class="text-[11px] text-slate-500 font-semibold flex items-center">
+                        <i class="fa-solid fa-hotel text-indigo-500 mr-1.5 text-[11px]"></i> Assigned Hotel:
+                    </span>
+                    <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[220px]">---</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-[10px]">
+                    <div>
+                        <span class="text-slate-400 font-medium">Owner:</span>
+                        <span id="modalKeyOwner" class="font-bold text-slate-800 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Plan:</span>
+                        <span id="modalKeyPlan" class="font-bold text-indigo-600 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Expiry:</span>
+                        <span id="modalKeyExpiry" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 font-medium">Distributor:</span>
+                        <span id="modalKeyDistributor" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                    </div>
+                </div>
+            </div>
+
             <p class="text-[10px] text-indigo-600/80 font-medium">Use this license key when pairing or re-authorizing TV screens in this hotel.</p>
         </div>
 
@@ -347,7 +392,11 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="pt-2 flex items-center justify-end space-x-2.5 border-t border-slate-100">
+        <div class="pt-2 flex items-center justify-between space-x-2.5 border-t border-slate-100">
+            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5">
+                <i class="fa-solid fa-power-off text-xs"></i>
+                <span>Disconnect TV</span>
+            </button>
             <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-colors">
                 Close
             </button>
@@ -364,9 +413,20 @@
 
 @section('scripts')
 <script>
+    let currentModalDevice = null;
+
     function showDeviceDetails(device) {
+        currentModalDevice = device;
         document.getElementById('modalSubtitle').innerText = 'Room ' + device.room_no + ' • ' + device.hotel_name;
         document.getElementById('modalLicenseKey').innerText = device.license_key || 'N/A';
+        
+        // Ownership details for key
+        document.getElementById('modalKeyHotelName').innerText = device.hotel_name || 'N/A';
+        document.getElementById('modalKeyOwner').innerText = device.owner_name || 'N/A';
+        document.getElementById('modalKeyPlan').innerText = device.plan_name || 'Standard Plan';
+        document.getElementById('modalKeyExpiry').innerText = device.expiry_date || 'Active';
+        document.getElementById('modalKeyDistributor').innerText = device.distributor_name || 'Direct';
+
         document.getElementById('modalHotelName').innerText = device.hotel_name || 'N/A';
         document.getElementById('modalOwnerName').innerText = device.owner_name ? 'Owner: ' + device.owner_name : '';
         document.getElementById('modalRoomNo').innerText = 'Room ' + device.room_no;
@@ -430,6 +490,12 @@
                 btnElement.innerHTML = originalHtml;
             }, 1800);
         });
+    }
+
+    function disconnectFromModal() {
+        if (!currentModalDevice || !currentModalDevice.disconnect_url) return;
+        const deviceLabel = 'Room ' + currentModalDevice.room_no + ' (' + currentModalDevice.hotel_name + ')';
+        confirmDisconnect(currentModalDevice.disconnect_url, deviceLabel);
     }
 
     function confirmDisconnect(actionUrl, deviceLabel) {
