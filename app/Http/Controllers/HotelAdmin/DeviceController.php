@@ -4,6 +4,7 @@ namespace App\Http\Controllers\HotelAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use App\Models\ConnectedDevice;
 use App\Models\Guest;
 
@@ -58,6 +59,88 @@ class DeviceController extends Controller
     }
 
     /**
+     * Store / Register a new TV device directly for the hotel.
+     */
+    public function store(Request $request)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $request->validate([
+            'room_no' => 'required|string|max:50',
+            'brand' => 'nullable|string|max:100',
+            'model' => 'nullable|string|max:100',
+            'mac_address' => 'nullable|string|max:100',
+            'device_id' => 'nullable|string|max:100',
+            'ip_address' => 'nullable|string|max:45',
+        ]);
+
+        $roomNo = trim($request->room_no);
+
+        // Check Allowed Device Limit
+        $allowedLimit = $hotel->allowed_device_limit;
+        $currentCount = $hotel->connectedDevices()->count();
+
+        // Check if device already exists for this room in this hotel
+        $existingDevice = $hotel->connectedDevices()->where('room_no', $roomNo)->first();
+        if (!$existingDevice && $currentCount >= $allowedLimit) {
+            return response()->json([
+                'success' => false,
+                'message' => "Device limit reached ({$allowedLimit} TVs allowed for your subscription plan). Please upgrade plan."
+            ], 403);
+        }
+
+        // Generate clean unique device ID if not provided
+        $cleanRoomSlug = preg_replace('/[^A-Za-z0-9]/', '', $roomNo) ?: '101';
+        $deviceId = !empty($request->device_id) 
+            ? trim($request->device_id) 
+            : 'TV-' . strtoupper(Str::random(4)) . '-RM' . $cleanRoomSlug;
+
+        while (ConnectedDevice::where('device_id', $deviceId)->when($existingDevice, fn($q) => $q->where('id', '!=', $existingDevice->id))->exists()) {
+            $deviceId = 'TV-' . strtoupper(Str::random(6)) . '-RM' . $cleanRoomSlug;
+        }
+
+        // Generate MAC address if not provided
+        $macAddress = !empty($request->mac_address)
+            ? strtoupper(trim($request->mac_address))
+            : strtoupper(implode(':', str_split(bin2hex(random_bytes(6)), 2)));
+
+        if ($existingDevice) {
+            $existingDevice->update([
+                'brand' => $request->brand ?: ($existingDevice->brand ?: 'Smart TV'),
+                'model' => $request->model ?: ($existingDevice->model ?: 'Android TV'),
+                'mac_address' => !empty($request->mac_address) ? $macAddress : $existingDevice->mac_address,
+                'ip_address' => $request->ip_address ?: ($existingDevice->ip_address ?: request()->ip()),
+            ]);
+            $device = $existingDevice;
+            $msg = "Room {$roomNo} TV device updated successfully!";
+        } else {
+            $device = $hotel->connectedDevices()->create([
+                'room_no' => $roomNo,
+                'device_id' => $deviceId,
+                'mac_address' => $macAddress,
+                'brand' => $request->brand ?: 'Smart TV',
+                'model' => $request->model ?: 'Android TV',
+                'ip_address' => $request->ip_address ?: request()->ip(),
+                'api_token' => Str::random(80),
+            ]);
+            $msg = "Room {$roomNo} TV device connected and added successfully!";
+        }
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $msg,
+                'device' => $device,
+            ], 201);
+        }
+
+        return redirect()->route('hotel.devices.index')->with('success', $msg);
+    }
+
+    /**
      * Delete/Disconnect a device belonging to the authenticated hotel.
      */
     public function destroy(int $id)
@@ -98,12 +181,22 @@ class DeviceController extends Controller
         ]);
 
         $cleanCode = strtoupper(trim($request->pair_code));
-        $session = \App\Models\TvPairSession::where('pair_code', $cleanCode)
-            ->where('status', 'pending')
-            ->first();
+        $rawCode = str_replace(['-', ' '], '', $cleanCode);
+        $formattedCode = strlen($rawCode) === 8 ? substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4) : $cleanCode;
+
+        $session = \App\Models\TvPairSession::where(function($q) use ($cleanCode, $rawCode, $formattedCode) {
+            $q->where('pair_code', $cleanCode)
+              ->orWhere('pair_code', $rawCode)
+              ->orWhere('pair_code', $formattedCode);
+        })
+        ->where('status', 'pending')
+        ->first();
 
         if (!$session) {
-            return response()->json(['success' => false, 'message' => 'Invalid or expired 8-digit pair code. Please refresh TV code.'], 404);
+            return response()->json([
+                'success' => false, 
+                'message' => 'No active TV found with code "' . $cleanCode . '". Please verify the TV screen code or use "Quick Add TV" to register directly.'
+            ], 404);
         }
 
         if ($session->isExpired()) {

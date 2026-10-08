@@ -12,10 +12,15 @@
             <p class="text-xs text-slate-500 font-medium">Authorized and synchronized Smart TV devices across hotel rooms.</p>
         </div>
         
-        <div class="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-            <button type="button" onclick="openPairModal()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2 shrink-0">
-                <i class="fa-solid fa-qrcode text-sm"></i>
-                <span>Pair TV via 8-Digit Code</span>
+        <div class="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <button type="button" onclick="openAddDeviceModal('quick')" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2 shrink-0">
+                <i class="fa-solid fa-plus text-sm"></i>
+                <span>Add TV Device</span>
+            </button>
+
+            <button type="button" onclick="openAddDeviceModal('pair')" class="px-4 py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/90 text-slate-700 font-bold text-xs shadow-2xs transition-all flex items-center justify-center space-x-2 shrink-0">
+                <i class="fa-solid fa-qrcode text-indigo-600"></i>
+                <span>Pair TV Screen</span>
             </button>
 
             <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-100 min-w-[200px]">
