@@ -16,7 +16,8 @@ class DistributorController extends Controller
      * Inject reusable service layer.
      */
     public function __construct(
-        protected \App\Services\DashboardService $dashboardService
+        protected \App\Services\DashboardService $dashboardService,
+        protected \App\Services\HotelService $hotelService
     ) {}
 
     /**
@@ -99,65 +100,12 @@ class DistributorController extends Controller
     }
 
     /**
-     * Register a new hotel under this distributor.
+     * Register a new hotel under this distributor using HotelService.
      */
-    public function storeHotel(Request $request)
+    public function storeHotel(\App\Http\Requests\StoreHotelRequest $request)
     {
         $user = auth()->user();
-
-        $validated = $request->validate([
-            'hotel_name' => 'required|string|max:255',
-            'owner_name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:hotel_admins,email',
-            'password' => 'required|string|min:6',
-            'phone' => 'required|string|max:20',
-            'hotel_location' => 'required|string|max:255',
-            'city' => 'nullable|string|max:100',
-            'room_count' => 'required|integer|min:1|max:1000',
-            'plan_id' => 'nullable|exists:plans,id',
-        ]);
-
-        // Generate unique license key
-        do {
-            $licenseKey = 'DIST-' . strtoupper(Str::random(4)) . '-' . strtoupper(Str::random(4)) . '-' . strtoupper(Str::random(4));
-        } while (HotelAdmin::where('license_key', $licenseKey)->exists());
-
-        $plan = !empty($validated['plan_id']) ? Plan::find($validated['plan_id']) : null;
-        $now = now();
-        $expiry = $plan ? $now->copy()->addDays(30) : null;
-
-        $hotel = HotelAdmin::create([
-            'distributor_id' => $user->id,
-            'hotel_name' => $validated['hotel_name'],
-            'owner_name' => $validated['owner_name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'phone' => $validated['phone'],
-            'hotel_location' => $validated['hotel_location'],
-            'city' => $validated['city'] ?? $validated['hotel_location'],
-            'room_count' => $plan ? max($validated['room_count'], $plan->room_count) : $validated['room_count'],
-            'plan_id' => $plan ? $plan->id : null,
-            'license_key' => $licenseKey,
-            'approval_status' => 'approved',
-            'status' => true,
-            'payment_status' => $plan ? 'paid' : 'pending',
-            'purchase_date' => $plan ? $now : null,
-            'expiry_date' => $expiry,
-        ]);
-
-        // If a plan was selected during onboarding, record it in sales ledger
-        if ($plan) {
-            DistributorSale::create([
-                'distributor_id' => $user->id,
-                'hotel_id' => $hotel->id,
-                'plan_id' => $plan->id,
-                'amount' => $plan->price,
-                'payment_status' => 'completed',
-                'payment_method' => 'distributor_direct',
-                'license_key_issued' => $licenseKey,
-                'notes' => "Initial onboarding package: {$plan->name}",
-            ]);
-        }
+        $hotel = $this->hotelService->createHotelForDistributor($user->id, $request->validated());
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -168,7 +116,7 @@ class DistributorController extends Controller
         }
 
         return redirect()->route('distributor.hotels.index')
-                         ->with('success', "Hotel '{$hotel->hotel_name}' registered successfully! License Key: {$licenseKey}");
+                         ->with('success', "Hotel '{$hotel->hotel_name}' registered successfully! License Key: {$hotel->license_key}");
     }
 
     /**
@@ -209,64 +157,35 @@ class DistributorController extends Controller
     }
 
     /**
-     * Process package sale and update hotel license/validity.
+     * Process package sale and update hotel license/validity using HotelService.
      */
-    public function storeSale(Request $request)
+    public function storeSale(\App\Http\Requests\StoreDistributorSaleRequest $request)
     {
         $user = auth()->user();
-
-        $validated = $request->validate([
-            'hotel_id' => 'required|exists:hotel_admins,id',
-            'plan_id' => 'required|exists:plans,id',
-            'duration_months' => 'required|integer|in:1,3,6,12',
-            'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|string|max:50',
-            'notes' => 'nullable|string|max:500',
-        ]);
+        $validated = $request->validated();
 
         // Security check: ensure hotel belongs to authenticated distributor
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
         $plan = Plan::findOrFail($validated['plan_id']);
 
-        $durationDays = $validated['duration_months'] * 30;
-        $now = now();
-
-        // Calculate new expiry: if existing expiry is in the future, extend it; else start from now
-        $baseDate = ($hotel->expiry_date && $hotel->expiry_date > $now) ? $hotel->expiry_date : $now;
-        $newExpiry = $baseDate->copy()->addDays($durationDays);
-
-        // Update hotel plan details
-        $hotel->plan_id = $plan->id;
-        $hotel->payment_status = 'paid';
-        $hotel->purchase_date = $now;
-        $hotel->expiry_date = $newExpiry;
-        if ($plan->room_count > $hotel->room_count) {
-            $hotel->room_count = $plan->room_count;
-        }
-        $hotel->save();
-
-        // Record sale in ledger
-        $sale = DistributorSale::create([
-            'distributor_id' => $user->id,
-            'hotel_id' => $hotel->id,
-            'plan_id' => $plan->id,
-            'amount' => $validated['amount'],
-            'payment_status' => 'completed',
-            'payment_method' => $validated['payment_method'],
-            'license_key_issued' => $hotel->license_key,
-            'notes' => $validated['notes'] ?? "Package sale: {$plan->name} ({$validated['duration_months']} months)",
-        ]);
+        $result = $this->hotelService->assignPlanAndRecordSale(
+            $hotel,
+            $plan,
+            $validated['duration_months'],
+            $validated,
+            $user->id
+        );
 
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'message' => "Package '{$plan->name}' successfully sold to '{$hotel->hotel_name}'.",
-                'sale' => $sale->load(['hotel', 'plan']),
-                'new_expiry' => $newExpiry->format('Y-m-d'),
+                'sale' => $result['sale']->load(['hotel', 'plan']),
+                'new_expiry' => $result['new_expiry']->format('Y-m-d'),
             ], 201);
         }
 
         return redirect()->route('distributor.sales.index')
-                         ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}'! Valid until {$newExpiry->format('M d, Y')}.");
+                         ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}'! Valid until {$result['new_expiry']->format('M d, Y')}.");
     }
 }
