@@ -262,10 +262,10 @@
 </div>
 
 <!-- Reusable Device & License Details Modal -->
-<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4" onclick="closeDeviceModalOnBackdrop(event)">
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-150 overflow-hidden" onclick="event.stopPropagation()">
+<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4 sm:p-6 overflow-y-auto" onclick="closeDeviceModalOnBackdrop(event)">
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 my-auto flex flex-col max-h-[90vh] overflow-hidden" onclick="event.stopPropagation()">
         <!-- Modal Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0">
             <div class="flex items-center space-x-3 min-w-0">
                 <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold text-lg shrink-0">
                     <i class="fa-solid fa-tv"></i>
@@ -287,103 +287,106 @@
             </div>
         </div>
 
-        <!-- License Key Highlight Box -->
-        <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/40 border border-amber-200/80 space-y-3">
-            <div class="flex items-center justify-between">
-                <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center space-x-1.5">
-                    <i class="fa-solid fa-key text-[10px]"></i>
-                    <span>Hotel License Key</span>
-                </span>
-                <span class="px-2 py-0.5 rounded-md bg-amber-600/10 text-amber-800 text-[10px] font-bold">Authorized</span>
-            </div>
-            <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-amber-200/60 shadow-2xs">
-                <span id="modalLicenseKey" class="font-mono font-black text-sm sm:text-base text-amber-950 tracking-wide select-all truncate">
-                    ---
-                </span>
-                <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
-                    <i class="fa-solid fa-copy text-[11px]" id="copyKeyIcon"></i>
-                    <span id="copyKeyText">Copy</span>
-                </button>
-            </div>
-
-            <!-- Whose license key is this? Clear Hotel & License Identification -->
-            <div class="bg-white/90 rounded-xl p-3 border border-amber-100 text-xs space-y-2">
-                <div class="flex items-center justify-between border-b border-amber-100/80 pb-1.5">
-                    <span class="text-[11px] text-slate-500 font-semibold flex items-center">
-                        <i class="fa-solid fa-hotel text-amber-600 mr-1.5 text-[11px]"></i> Assigned Hotel:
+        <!-- Scrollable Modal Content -->
+        <div class="overflow-y-auto space-y-4 pr-1 py-1 -mr-1">
+            <!-- License Key Highlight Box -->
+            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/40 border border-amber-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-key text-[10px]"></i>
+                        <span>Hotel License Key</span>
                     </span>
-                    <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[220px]">---</span>
+                    <span class="px-2 py-0.5 rounded-md bg-amber-600/10 text-amber-800 text-[10px] font-bold">Authorized</span>
                 </div>
-                <div class="grid grid-cols-2 gap-2 text-[10px]">
-                    <div>
-                        <span class="text-slate-400 font-medium">Owner / Contact:</span>
-                        <span id="modalKeyOwner" class="font-bold text-slate-800 ml-1 truncate">---</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-400 font-medium">Plan:</span>
-                        <span id="modalKeyPlan" class="font-bold text-amber-700 ml-1 truncate">---</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-400 font-medium">Expiry:</span>
-                        <span id="modalKeyExpiry" class="font-bold text-slate-700 ml-1 truncate">---</span>
-                    </div>
-                    <div>
-                        <span class="text-slate-400 font-medium">Distributor:</span>
-                        <span id="modalKeyDistributor" class="font-bold text-slate-700 ml-1 truncate">---</span>
-                    </div>
-                </div>
-            </div>
-
-            <p class="text-[10px] text-amber-700 font-medium">Use this license key when pairing or authorizing TV screens in this hotel.</p>
-        </div>
-
-        <!-- Device Technical Specs Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Hotel Name</div>
-                <div id="modalHotelName" class="font-extrabold text-slate-900 truncate">---</div>
-                <div id="modalOwnerName" class="text-[10px] text-slate-500 font-medium truncate">---</div>
-            </div>
-
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Room Number</div>
-                <div id="modalRoomNo" class="font-extrabold text-amber-700">---</div>
-                <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>Status: Connected</span>
-                </div>
-            </div>
-
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Device Unique ID</div>
-                <div class="flex items-center justify-between gap-2">
-                    <div id="modalDeviceId" class="font-mono font-bold text-slate-800 text-[11px] truncate select-all">---</div>
-                    <button type="button" onclick="copyToClipboard(document.getElementById('modalDeviceId').innerText, this)" class="text-slate-400 hover:text-slate-700 text-xs shrink-0 p-1" title="Copy Device ID">
-                        <i class="fa-solid fa-copy"></i>
+                <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-amber-200/60 shadow-2xs">
+                    <span id="modalLicenseKey" class="font-mono font-black text-sm sm:text-base text-amber-950 tracking-wide select-all truncate">
+                        ---
+                    </span>
+                    <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
+                        <i class="fa-solid fa-copy text-[11px]" id="copyKeyIcon"></i>
+                        <span id="copyKeyText">Copy</span>
                     </button>
                 </div>
+
+                <!-- Whose license key is this? Clear Hotel & License Identification -->
+                <div class="bg-white/90 rounded-xl p-3 border border-amber-100 text-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-amber-100/80 pb-1.5">
+                        <span class="text-[11px] text-slate-500 font-semibold flex items-center">
+                            <i class="fa-solid fa-hotel text-amber-600 mr-1.5 text-[11px]"></i> Assigned Hotel:
+                        </span>
+                        <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[220px]">---</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 text-[10px]">
+                        <div>
+                            <span class="text-slate-400 font-medium">Owner / Contact:</span>
+                            <span id="modalKeyOwner" class="font-bold text-slate-800 ml-1 truncate">---</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium">Plan:</span>
+                            <span id="modalKeyPlan" class="font-bold text-amber-700 ml-1 truncate">---</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium">Expiry:</span>
+                            <span id="modalKeyExpiry" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium">Distributor:</span>
+                            <span id="modalKeyDistributor" class="font-bold text-slate-700 ml-1 truncate">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-[10px] text-amber-700 font-medium">Use this license key when pairing or authorizing TV screens in this hotel.</p>
             </div>
 
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Hardware / Model</div>
-                <div id="modalHardware" class="font-bold text-slate-800 truncate">---</div>
-                <div id="modalOsVersion" class="text-[10px] text-slate-500 font-semibold">---</div>
-            </div>
+            <!-- Device Technical Specs Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Hotel Name</div>
+                    <div id="modalHotelName" class="font-extrabold text-slate-900 truncate">---</div>
+                    <div id="modalOwnerName" class="text-[10px] text-slate-500 font-medium truncate">---</div>
+                </div>
 
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Network Info</div>
-                <div id="modalIpAddress" class="font-mono text-slate-700 font-semibold text-[11px]">IP: ---</div>
-                <div id="modalMacAddress" class="font-mono text-[10px] text-slate-400">MAC: ---</div>
-            </div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Room Number</div>
+                    <div id="modalRoomNo" class="font-extrabold text-amber-700">---</div>
+                    <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span>Status: Connected</span>
+                    </div>
+                </div>
 
-            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
-                <div class="text-[10px] uppercase font-bold text-slate-400">Connection Timestamp</div>
-                <div id="modalConnectedAt" class="font-semibold text-slate-700 text-[11px]">---</div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Device Unique ID</div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div id="modalDeviceId" class="font-mono font-bold text-slate-800 text-[11px] truncate select-all">---</div>
+                        <button type="button" onclick="copyToClipboard(document.getElementById('modalDeviceId').innerText, this)" class="text-slate-400 hover:text-slate-700 text-xs shrink-0 p-1" title="Copy Device ID">
+                            <i class="fa-solid fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Hardware / Model</div>
+                    <div id="modalHardware" class="font-bold text-slate-800 truncate">---</div>
+                    <div id="modalOsVersion" class="text-[10px] text-slate-500 font-semibold">---</div>
+                </div>
+
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Network Info</div>
+                    <div id="modalIpAddress" class="font-mono text-slate-700 font-semibold text-[11px]">IP: ---</div>
+                    <div id="modalMacAddress" class="font-mono text-[10px] text-slate-400">MAC: ---</div>
+                </div>
+
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Connection Timestamp</div>
+                    <div id="modalConnectedAt" class="font-semibold text-slate-700 text-[11px]">---</div>
+                </div>
             </div>
         </div>
 
         <!-- Modal Footer -->
-        <div class="pt-2 flex items-center justify-between space-x-2.5 border-t border-slate-100">
+        <div class="pt-3 flex items-center justify-between space-x-2.5 border-t border-slate-100 shrink-0">
             <button type="button" onclick="disconnectFromModal()" class="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5">
                 <i class="fa-solid fa-power-off text-xs"></i>
                 <span>Disconnect TV</span>
@@ -435,11 +438,16 @@
         document.getElementById('copyKeyIcon').className = 'fa-solid fa-copy text-[11px]';
         document.getElementById('copyKeyText').innerText = 'Copy';
 
+        // Lock background scroll and open modal
+        document.body.style.overflow = 'hidden';
+        document.body.classList.add('overflow-hidden');
         document.getElementById('deviceDetailsModal').classList.remove('hidden');
     }
 
     function closeDeviceDetailsModal() {
         document.getElementById('deviceDetailsModal').classList.add('hidden');
+        document.body.style.overflow = '';
+        document.body.classList.remove('overflow-hidden');
     }
 
     function closeDeviceModalOnBackdrop(event) {
