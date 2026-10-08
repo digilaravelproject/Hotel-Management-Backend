@@ -145,7 +145,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+            <main class="flex-1 p-4 sm:p-6 lg:p-6 xl:p-8 max-w-7xl w-full mx-auto">
                 @if(session('success'))
                     <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2 shadow-sm">
                         <i class="fa-solid fa-circle-check text-emerald-500 text-base"></i>

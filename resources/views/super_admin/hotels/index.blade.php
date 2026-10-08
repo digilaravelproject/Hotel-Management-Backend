@@ -129,20 +129,20 @@
             </a>
         </div>
     @else
-        <!-- DESKTOP VIEW: High-density responsive table (hidden on screens < 1024px) -->
-        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
-            <div class="overflow-x-auto">
+        <!-- DESKTOP / TABLET VIEW: High-density responsive table with 3-dot Action Menu -->
+        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-3xl shadow-xs overflow-visible">
+            <div class="overflow-visible">
                 <table class="w-full text-left text-xs text-slate-700">
-                    <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                    <thead class="bg-slate-50/90 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px] xl:text-[11px]">
                         <tr>
-                            <th class="px-5 py-4">Hotel Client</th>
-                            <th class="px-5 py-4">Owner & Contact</th>
-                            <th class="px-5 py-4">Plan & Capacity</th>
-                            <th class="px-5 py-4">License Key</th>
-                            <th class="px-4 py-4 text-center">Payment</th>
-                            <th class="px-4 py-4 text-center">Live Status</th>
-                            <th class="px-4 py-4 text-center">Approval</th>
-                            <th class="px-5 py-4 text-center">Actions</th>
+                            <th class="px-3 py-3 xl:px-4 xl:py-3.5">Hotel Client</th>
+                            <th class="px-3 py-3 xl:px-4 xl:py-3.5">Owner & Contact</th>
+                            <th class="px-2.5 py-3 xl:px-3 xl:py-3.5">Plan & Capacity</th>
+                            <th class="px-2.5 py-3 xl:px-3 xl:py-3.5">License Key</th>
+                            <th class="px-2 py-3 xl:px-2.5 xl:py-3.5 text-center">Payment</th>
+                            <th class="px-2 py-3 xl:px-2.5 xl:py-3.5 text-center">Status</th>
+                            <th class="px-2.5 py-3 xl:px-3 xl:py-3.5 text-center">Approval</th>
+                            <th class="px-2.5 py-3 xl:px-3 xl:py-3.5 text-center w-12">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" id="desktopHotelTableBody">
@@ -158,26 +158,26 @@
                                 data-approval="{{ $hotel->approval_status }}"
                                 data-payment="{{ $hotel->payment_status }}">
                                 <!-- 1. Hotel Client -->
-                                <td class="px-5 py-4">
-                                    <div class="flex items-center space-x-3">
-                                        <div class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                                <td class="px-3 py-3 xl:px-4 xl:py-3.5">
+                                    <div class="flex items-center space-x-2.5">
+                                        <div class="w-8 h-8 xl:w-9 xl:h-9 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
                                             @if($hotel->hotel_logo)
                                                 <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-cover">
                                             @else
-                                                <i class="fa-solid fa-hotel text-slate-400 text-sm"></i>
+                                                <i class="fa-solid fa-hotel text-slate-400 text-xs"></i>
                                             @endif
                                         </div>
-                                        <div class="min-w-0 max-w-[200px]">
-                                            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-sm hover:text-rose-600 transition-colors truncate block">
+                                        <div class="min-w-0 max-w-[120px] xl:max-w-[170px]">
+                                            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-xs hover:text-rose-600 transition-colors truncate block" title="{{ $hotel->hotel_name }}">
                                                 {{ $hotel->hotel_name }}
                                             </a>
-                                            <div class="text-[11px] text-slate-400 font-medium truncate flex items-center">
-                                                <i class="fa-solid fa-location-dot mr-1 text-slate-400 text-[10px]"></i>
-                                                <span>{{ $hotel->city ?? $hotel->hotel_location }}</span>
+                                            <div class="text-[10px] text-slate-400 font-medium truncate flex items-center mt-0.5">
+                                                <i class="fa-solid fa-location-dot mr-1 text-slate-400 text-[9px]"></i>
+                                                <span class="truncate">{{ $hotel->city ?? $hotel->hotel_location }}</span>
                                             </div>
                                             @if($hotel->distributor)
-                                                <span class="inline-flex items-center text-[10px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-md mt-0.5" title="Onboarded by distributor">
-                                                    <i class="fa-solid fa-handshake mr-1 text-[9px]"></i> {{ $hotel->distributor->name }}
+                                                <span class="inline-flex items-center text-[9px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded mt-0.5 truncate max-w-[110px]" title="Distributor: {{ $hotel->distributor->name }}">
+                                                    <i class="fa-solid fa-handshake mr-1 text-[8px]"></i> {{ Str::limit($hotel->distributor->name, 10) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -185,114 +185,132 @@
                                 </td>
 
                                 <!-- 2. Owner & Contact -->
-                                <td class="px-5 py-4 space-y-0.5">
-                                    <div class="font-bold text-slate-800">{{ $hotel->owner_name }}</div>
-                                    <div class="text-[11px] text-slate-500 font-mono">
-                                        <a href="mailto:{{ $hotel->email }}" class="hover:text-rose-600 transition-colors">{{ $hotel->email }}</a>
+                                <td class="px-3 py-3 xl:px-4 xl:py-3.5 space-y-0.5">
+                                    <div class="font-bold text-slate-800 text-xs truncate max-w-[110px] xl:max-w-[130px]">{{ $hotel->owner_name }}</div>
+                                    <div class="text-[10px] text-slate-500 font-mono truncate max-w-[110px] xl:max-w-[130px]">
+                                        <a href="mailto:{{ $hotel->email }}" class="hover:text-rose-600 transition-colors" title="{{ $hotel->email }}">{{ $hotel->email }}</a>
                                     </div>
-                                    <div class="text-[11px] text-slate-500">
+                                    <div class="text-[10px] text-slate-500">
                                         <a href="tel:{{ $hotel->phone }}" class="hover:text-rose-600 transition-colors flex items-center">
-                                            <i class="fa-solid fa-phone mr-1 text-[10px] text-slate-400"></i>{{ $hotel->phone }}
+                                            <i class="fa-solid fa-phone mr-1 text-[8px] text-slate-400"></i>{{ $hotel->phone }}
                                         </a>
                                     </div>
                                 </td>
 
                                 <!-- 3. Plan & Capacity -->
-                                <td class="px-5 py-4">
-                                    <div class="flex items-center space-x-1.5">
-                                        <span class="font-extrabold text-slate-900 text-xs">{{ $hotel->room_count }} Rooms</span>
+                                <td class="px-2.5 py-3 xl:px-3 xl:py-3.5">
+                                    <div class="font-extrabold text-slate-900 text-xs whitespace-nowrap">{{ $hotel->room_count }} Rooms</div>
+                                    <div class="flex items-center space-x-1 mt-0.5">
                                         @if($hotel->plan)
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-50 text-rose-600 border border-rose-200">
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-50 text-rose-600 border border-rose-200 truncate max-w-[85px]">
                                                 {{ $hotel->plan->name }}
                                             </span>
                                         @else
-                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-medium bg-slate-100 text-slate-500">
-                                                Trial / Custom
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-100 text-slate-500">
+                                                Trial
                                             </span>
                                         @endif
                                     </div>
-                                    <div class="text-[11px] text-slate-400 mt-1 flex items-center space-x-1">
-                                        <i class="fa-solid fa-tv text-slate-400 text-[10px]"></i>
-                                        <span>{{ $deviceCount }} of {{ $hotel->room_count }} TVs paired</span>
+                                    <div class="text-[10px] text-slate-400 mt-0.5 flex items-center whitespace-nowrap">
+                                        <i class="fa-solid fa-tv text-[8px] mr-1 text-slate-400"></i>{{ $deviceCount }} paired
                                     </div>
                                 </td>
 
                                 <!-- 4. License Key -->
-                                <td class="px-5 py-4">
+                                <td class="px-2.5 py-3 xl:px-3 xl:py-3.5">
                                     @if($hotel->license_key)
-                                        <div class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-slate-100/80 border border-slate-200 text-slate-800 font-mono text-[11px]">
-                                            <span class="tracking-wide select-all">{{ $hotel->license_key }}</span>
-                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-rose-600 transition-colors p-0.5" title="Copy License Key">
-                                                <i class="fa-regular fa-copy text-[11px]"></i>
+                                        <div class="inline-flex items-center space-x-1 px-1.5 xl:px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-slate-800 font-mono text-[10px]">
+                                            <span class="tracking-tight select-all truncate max-w-[70px] xl:max-w-[85px]">{{ $hotel->license_key }}</span>
+                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-rose-600 transition-colors p-0.5" title="Copy Key">
+                                                <i class="fa-regular fa-copy text-[10px]"></i>
                                             </button>
                                         </div>
                                     @else
-                                        <span class="text-slate-400 italic text-xs">Not Generated</span>
+                                        <span class="text-slate-400 italic text-[10px]">N/A</span>
                                     @endif
                                 </td>
 
                                 <!-- 5. Payment Status -->
-                                <td class="px-4 py-4 text-center">
+                                <td class="px-2 py-3 xl:px-2.5 xl:py-3.5 text-center whitespace-nowrap">
                                     @if($hotel->payment_status === 'paid')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] uppercase tracking-wider">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Paid
+                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span> Paid
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px] uppercase tracking-wider">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span> Pending
+                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1"></span> Unpaid
                                         </span>
                                     @endif
                                 </td>
 
                                 <!-- 6. Live Status Toggle -->
-                                <td class="px-4 py-4 text-center">
+                                <td class="px-2 py-3 xl:px-2.5 xl:py-3.5 text-center">
                                     <label class="relative inline-flex items-center cursor-pointer" title="Toggle active status">
                                         <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
-                                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
+                                        <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-rose-600"></div>
                                     </label>
                                 </td>
 
                                 <!-- 7. Approval Status -->
-                                <td class="px-4 py-4 text-center">
+                                <td class="px-2.5 py-3 xl:px-3 xl:py-3.5 text-center">
                                     <select onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" 
-                                            class="approval-select px-2.5 py-1.5 rounded-xl border text-xs font-bold focus:outline-none transition-all {{ $hotel->approval_status === 'approved' ? 'approval-select-approved' : ($hotel->approval_status === 'pending' ? 'approval-select-pending' : 'approval-select-disapproved') }}">
+                                            class="approval-select px-1.5 xl:px-2 py-1 rounded-lg border text-[10px] xl:text-[11px] font-bold focus:outline-none transition-all {{ $hotel->approval_status === 'approved' ? 'approval-select-approved' : ($hotel->approval_status === 'pending' ? 'approval-select-pending' : 'approval-select-disapproved') }}">
                                         <option value="approved" {{ $hotel->approval_status == 'approved' ? 'selected' : '' }}>Approved</option>
                                         <option value="pending" {{ $hotel->approval_status == 'pending' ? 'selected' : '' }}>Pending</option>
                                         <option value="disapproved" {{ $hotel->approval_status == 'disapproved' ? 'selected' : '' }}>Disapproved</option>
                                     </select>
                                 </td>
 
-                                <!-- 8. Action Buttons -->
-                                <td class="px-5 py-4 text-center">
-                                    <div class="inline-flex items-center space-x-1">
-                                        <!-- Amenities -->
-                                        <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="w-8 h-8 rounded-lg border border-slate-200 text-indigo-600 hover:bg-indigo-50 flex items-center justify-center transition-colors" title="Manage Amenities">
-                                            <i class="fa-solid fa-spa text-xs"></i>
-                                        </a>
-                                        <!-- TV Menus -->
-                                        <a href="{{ route('super-admin.hotels.menus', $hotel->id) }}" class="w-8 h-8 rounded-lg border border-slate-200 text-amber-600 hover:bg-amber-50 flex items-center justify-center transition-colors" title="Manage TV Menus">
-                                            <i class="fa-solid fa-list-check text-xs"></i>
-                                        </a>
-                                        <!-- TVs -->
-                                        <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="w-8 h-8 rounded-lg border border-slate-200 text-emerald-600 hover:bg-emerald-50 flex items-center justify-center transition-colors" title="View Connected TVs">
-                                            <i class="fa-solid fa-tv text-xs"></i>
-                                        </a>
-                                        <!-- View Profile -->
-                                        <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="w-8 h-8 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors" title="View Profile">
-                                            <i class="fa-regular fa-eye text-xs"></i>
-                                        </a>
-                                        <!-- Edit -->
-                                        <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="w-8 h-8 rounded-lg border border-slate-200 text-violet-600 hover:bg-violet-50 flex items-center justify-center transition-colors" title="Edit Hotel">
-                                            <i class="fa-regular fa-pen-to-square text-xs"></i>
-                                        </a>
-                                        <!-- Delete -->
-                                        <form id="delete-form-{{ $hotel->id }}" action="{{ route('super-admin.hotels.destroy', $hotel->id) }}" method="POST" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="w-8 h-8 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-colors" title="Delete Hotel">
-                                                <i class="fa-regular fa-trash-can text-xs"></i>
-                                            </button>
-                                        </form>
+                                <!-- 8. 3-Dots Action Menu (Compact, No Horizontal Overflow) -->
+                                <td class="px-2.5 py-3 xl:px-3 xl:py-3.5 text-center relative">
+                                    <div class="relative inline-block text-left action-dropdown-container">
+                                        <button type="button" 
+                                                onclick="toggleActionMenu(event, {{ $hotel->id }})" 
+                                                class="action-menu-btn w-8 h-8 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
+                                                title="Actions">
+                                            <i class="fa-solid fa-ellipsis-vertical text-xs pointer-events-none"></i>
+                                        </button>
+
+                                        <!-- Floating Action Dropdown Menu -->
+                                        <div id="action-dropdown-{{ $hotel->id }}" 
+                                             class="action-menu-dropdown hidden absolute right-0 top-full mt-1.5 w-48 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 divide-y divide-slate-100 text-left">
+                                            <div class="py-1">
+                                                <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                                                    <i class="fa-regular fa-eye w-4 text-center text-slate-400"></i>
+                                                    <span>View Details</span>
+                                                </a>
+                                                <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">
+                                                    <i class="fa-regular fa-pen-to-square w-4 text-center text-violet-500"></i>
+                                                    <span>Edit Account</span>
+                                                </a>
+                                            </div>
+
+                                            <div class="py-1">
+                                                <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
+                                                    <i class="fa-solid fa-tv w-4 text-center text-emerald-500"></i>
+                                                    <span>Connected TVs ({{ $deviceCount }})</span>
+                                                </a>
+                                                <a href="{{ route('super-admin.hotels.menus', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 transition-colors">
+                                                    <i class="fa-solid fa-list-check w-4 text-center text-amber-500"></i>
+                                                    <span>TV Menus</span>
+                                                </a>
+                                                <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                                                    <i class="fa-solid fa-spa w-4 text-center text-indigo-500"></i>
+                                                    <span>Hotel Amenities</span>
+                                                </a>
+                                            </div>
+
+                                            <div class="py-1">
+                                                <form id="delete-form-{{ $hotel->id }}" action="{{ route('super-admin.hotels.destroy', $hotel->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="w-full flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left">
+                                                        <i class="fa-regular fa-trash-can w-4 text-center text-rose-500"></i>
+                                                        <span>Delete Vendor</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -497,6 +515,49 @@
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer);
             toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
+
+    // 0. Toggle 3-Dots Action Menu Dropdown with Smart Viewport Positioning
+    function toggleActionMenu(event, id) {
+        event.stopPropagation();
+        const dropdown = document.getElementById(`action-dropdown-${id}`);
+        if (!dropdown) return;
+        const isClosed = dropdown.classList.contains('hidden');
+
+        // Close any currently open menus
+        document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
+        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
+
+        if (isClosed) {
+            // Flip upwards if close to viewport bottom
+            const btn = event.currentTarget;
+            const rect = btn.getBoundingClientRect();
+            if (window.innerHeight - rect.bottom < 240) {
+                dropdown.classList.remove('top-full', 'mt-1.5');
+                dropdown.classList.add('bottom-full', 'mb-1.5');
+            } else {
+                dropdown.classList.remove('bottom-full', 'mb-1.5');
+                dropdown.classList.add('top-full', 'mt-1.5');
+            }
+            dropdown.classList.remove('hidden');
+            btn.closest('tr')?.classList.add('z-30', 'relative');
+        }
+    }
+
+    // Dismiss dropdown when clicking anywhere outside
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('.action-dropdown-container')) {
+            document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
+        }
+    });
+
+    // Dismiss dropdown on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
         }
     });
 
