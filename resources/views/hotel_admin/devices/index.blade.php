@@ -59,8 +59,8 @@
     </div>
 
     <!-- Pair TV Modal -->
-    <div id="pairModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4 sm:p-6 overflow-y-auto" onclick="closePairModalOnBackdrop(event)">
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200 my-auto max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div id="pairModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closePairModalOnBackdrop(event)">
+        <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 max-w-md w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200 max-h-[84vh] sm:max-h-[86vh] overflow-y-auto overscroll-contain" style="-webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
@@ -341,35 +341,35 @@
 </div>
 
 <!-- Reusable Device & License Details Modal -->
-<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4 sm:p-6 overflow-y-auto" onclick="closeDeviceModalOnBackdrop(event)">
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 my-auto flex flex-col max-h-[90vh] overflow-hidden" onclick="event.stopPropagation()">
+<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closeDeviceModalOnBackdrop(event)">
+    <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 flex flex-col max-h-[84vh] sm:max-h-[86vh] min-h-0 overflow-hidden" onclick="event.stopPropagation()">
         <!-- Modal Header -->
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4 shrink-0">
-            <div class="flex items-center space-x-3 min-w-0">
-                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg shrink-0">
+        <div class="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+            <div class="flex items-center space-x-3 min-w-0 pr-2">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
                     <i class="fa-solid fa-tv"></i>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-base font-extrabold text-slate-900 leading-tight">Device & License Details</h3>
-                    <p id="modalSubtitle" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
+                    <h3 class="text-sm sm:text-base font-extrabold text-slate-900 leading-tight truncate">Device & License Details</h3>
+                    <p id="modalSubtitle" class="text-[11px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
                 </div>
             </div>
-            <!-- Top Actions: Disconnect button & Close button -->
-            <div class="flex items-center space-x-2 shrink-0">
-                <button type="button" onclick="disconnectFromModal()" class="px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs" title="Disconnect this TV">
+            <!-- Top Actions: Disconnect button (desktop) & Close button -->
+            <div class="flex items-center space-x-1.5 shrink-0">
+                <button type="button" onclick="disconnectFromModal()" class="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all shadow-2xs" title="Disconnect this TV">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span>Disconnect</span>
                 </button>
-                <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button type="button" onclick="closeDeviceDetailsModal()" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors" title="Close">
+                    <i class="fa-solid fa-xmark text-base sm:text-lg"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Scrollable Modal Content -->
-        <div class="overflow-y-auto space-y-4 pr-1 py-1 -mr-1">
+        <!-- Scrollable Modal Content (touch scroll enabled) -->
+        <div class="px-4 py-4 sm:px-6 sm:py-5 overflow-y-auto overscroll-contain flex-1 min-h-0 space-y-3.5 sm:space-y-4" style="-webkit-overflow-scrolling: touch;">
             <!-- License Key Highlight Box -->
-            <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-3">
+            <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-2.5 sm:space-y-3">
                 <div class="flex items-center justify-between">
                     <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 flex items-center space-x-1.5">
                         <i class="fa-solid fa-key text-[10px]"></i>
@@ -378,7 +378,7 @@
                     <span class="px-2 py-0.5 rounded-md bg-indigo-600/10 text-indigo-700 text-[10px] font-bold">Authorized</span>
                 </div>
                 <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-indigo-200/60 shadow-2xs">
-                    <span id="modalLicenseKey" class="font-mono font-black text-sm sm:text-base text-indigo-900 tracking-wide select-all truncate">
+                    <span id="modalLicenseKey" class="font-mono font-black text-xs sm:text-base text-indigo-900 tracking-wide select-all truncate">
                         ---
                     </span>
                     <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
@@ -393,7 +393,7 @@
                         <span class="text-[11px] text-slate-500 font-semibold flex items-center">
                             <i class="fa-solid fa-hotel text-indigo-500 mr-1.5 text-[11px]"></i> Assigned Hotel:
                         </span>
-                        <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[220px]">---</span>
+                        <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[200px] sm:max-w-[240px]">---</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-[10px]">
                         <div>
@@ -415,11 +415,11 @@
                     </div>
                 </div>
 
-                <p class="text-[10px] text-indigo-600/80 font-medium">Hotel license key used to authenticate connected Smart TVs in your property.</p>
+                <p class="text-[10px] text-indigo-600/80 font-medium leading-relaxed">Hotel license key used to authenticate connected Smart TVs in your property.</p>
             </div>
 
             <!-- Device Technical Specs Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
                 <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Hotel Name</div>
                     <div id="modalHotelName" class="font-extrabold text-slate-900 truncate">---</div>
@@ -473,13 +473,13 @@
             </div>
         </div>
 
-        <!-- Modal Footer -->
-        <div class="pt-3 flex items-center justify-between space-x-2.5 border-t border-slate-100 shrink-0">
-            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5">
+        <!-- Modal Footer (Always visible and pinned) -->
+        <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 flex items-center justify-between space-x-2.5 shrink-0 bg-slate-50/80">
+            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs">
                 <i class="fa-solid fa-power-off text-xs"></i>
                 <span>Disconnect TV</span>
             </button>
-            <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-colors">
+            <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors shadow-2xs">
                 Close
             </button>
         </div>

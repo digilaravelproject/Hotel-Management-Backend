@@ -228,7 +228,7 @@ class DistributorController extends Controller
             });
         }
 
-        $devices = $query->latest()->paginate(15)->withQueryString();
+        $devices = $query->latest()->paginate(20)->withQueryString();
         $hotels = $hotelsQuery->orderBy('hotel_name')->get();
         $selectedHotel = $request->filled('hotel_id') ? $hotels->firstWhere('id', (int) $request->input('hotel_id')) : null;
 

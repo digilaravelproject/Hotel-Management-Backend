@@ -37,7 +37,7 @@ class DeviceController extends Controller
             });
         }
 
-        $devices = $query->latest()->paginate(15)->withQueryString();
+        $devices = $query->latest()->paginate(20)->withQueryString();
         $hotels = HotelAdmin::query()->where('status', true)->orderBy('hotel_name')->get();
         $selectedHotel = $hotelId ? HotelAdmin::query()->find($hotelId) : null;
 

@@ -41,7 +41,7 @@ class DeviceController extends Controller
             });
         }
 
-        $devices = $query->paginate(15)->withQueryString();
+        $devices = $query->paginate(20)->withQueryString();
 
         // Fetch active guests to cross-reference occupied rooms
         $now = now();
