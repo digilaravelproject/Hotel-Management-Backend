@@ -193,10 +193,43 @@ class DeviceController extends Controller
         ->first();
 
         if (!$session) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'No active TV found with code "' . $cleanCode . '". Please verify the TV screen code or use "Quick Add TV" to register directly.'
-            ], 404);
+            // No active TV session — auto-provision directly by pair_code as device ID
+            $roomNo = trim($request->room_no);
+            $allowedLimit = $hotel->allowed_device_limit;
+            $currentCount = $hotel->connectedDevices()->count();
+
+            $existingDevice = $hotel->connectedDevices()->where('room_no', $roomNo)->first();
+            if (!$existingDevice && $currentCount >= $allowedLimit) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Device limit reached ({$allowedLimit} TVs allowed). Please upgrade plan.",
+                ], 422);
+            }
+
+            $cleanRoomSlug = preg_replace('/[^A-Za-z0-9]/', '', $roomNo) ?: '101';
+            $deviceId = strtoupper(str_replace(['-', ' '], '', $rawCode)) ?: ('TV-' . strtoupper(Str::random(6)) . '-RM' . $cleanRoomSlug);
+
+            if ($existingDevice) {
+                // Update existing device for this room
+                $existingDevice->update([
+                    'device_id' => $deviceId,
+                ]);
+                $msg = "Room {$roomNo} TV reconnected successfully via code!";
+            } else {
+                // Create new device record
+                $hotel->connectedDevices()->create([
+                    'room_no'    => $roomNo,
+                    'device_id'  => $deviceId,
+                    'mac_address' => strtoupper(implode(':', str_split(bin2hex(random_bytes(6)), 2))),
+                    'brand'      => 'Smart TV',
+                    'model'      => 'Android TV',
+                    'ip_address' => $request->ip(),
+                    'api_token'  => Str::random(80),
+                ]);
+                $msg = "Room {$roomNo} TV connected and registered via pairing code!";
+            }
+
+            return response()->json(['success' => true, 'message' => $msg], 200);
         }
 
         if ($session->isExpired()) {

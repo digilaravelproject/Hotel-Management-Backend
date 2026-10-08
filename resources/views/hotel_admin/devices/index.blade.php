@@ -550,21 +550,25 @@
     @method('DELETE')
 </form>
 
-<script>
-    let html5QrCode = null;
-    let qrScriptLoaded = false;
+@endsection
 
-    function openAddDeviceModal(mode = 'quick') {
+@section('scripts')
+<script>
+    var html5QrCode = null;
+    var qrScriptLoaded = false;
+
+    window.openAddDeviceModal = function(mode) {
+        mode = mode || 'quick';
         document.body.style.overflow = 'hidden';
         document.body.classList.add('overflow-hidden');
         document.getElementById('pairModal').classList.remove('hidden');
         switchModalMode(mode);
-    }
+    };
 
     // Keep backwards compatibility for any openPairModal calls
-    function openPairModal() {
-        openAddDeviceModal('quick');
-    }
+    window.openPairModal = function() {
+        window.openAddDeviceModal('quick');
+    };
 
     function closePairModal() {
         stopScanner();
