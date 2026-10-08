@@ -143,7 +143,8 @@ class HotelAdminController extends Controller
     {
         $hotel = HotelAdmin::findOrFail($id);
         $plans = Plan::query()->where('status', '=', true)->get();
-        return view('super_admin.hotels.edit', compact('hotel', 'plans'));
+        $distributors = User::role('distributor')->where('status', true)->get();
+        return view('super_admin.hotels.edit', compact('hotel', 'plans', 'distributors'));
     }
 
     /**
@@ -159,8 +160,10 @@ class HotelAdminController extends Controller
             'phone' => 'required|string|max:20',
             'hotel_name' => 'required|string|max:255',
             'hotel_location' => 'required|string|max:255',
-            'room_count' => 'required|integer|min:1',
+            'city' => 'nullable|string|max:100',
+            'room_count' => 'nullable|integer|min:1',
             'plan_id' => 'nullable|exists:plans,id',
+            'distributor_id' => 'nullable|exists:users,id',
             'payment_status' => 'required|in:pending,paid',
             'approval_status' => 'required|in:pending,approved,disapproved',
             'description' => 'nullable|string|max:1000',
@@ -172,14 +175,26 @@ class HotelAdminController extends Controller
             'slider_images.*' => 'image|mimes:jpeg,png,jpg,webp|max:10240',
         ]);
 
+        $roomCount = $request->input('room_count');
+        if (!$roomCount) {
+            if ($request->plan_id) {
+                $selectedPlan = Plan::find($request->plan_id);
+                $roomCount = $selectedPlan ? $selectedPlan->room_count : ($hotel->room_count ?: 25);
+            } else {
+                $roomCount = $hotel->room_count ?: 25;
+            }
+        }
+
         $data = [
             'owner_name' => $request->owner_name,
             'email' => $request->email,
             'phone' => $request->phone,
             'hotel_name' => $request->hotel_name,
             'hotel_location' => $request->hotel_location,
-            'room_count' => $request->room_count,
+            'city' => $request->city,
+            'room_count' => $roomCount,
             'plan_id' => $request->plan_id,
+            'distributor_id' => $request->distributor_id,
             'payment_status' => $request->payment_status,
             'approval_status' => $request->approval_status,
             'description' => $request->description,
