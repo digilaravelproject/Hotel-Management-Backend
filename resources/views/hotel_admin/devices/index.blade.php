@@ -6,37 +6,60 @@
 @section('content')
 <div class="space-y-6">
     <!-- Info & License Card -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-1">
-            <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">TV Connection License Limit</h3>
+            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">TV Connection License Limit</h3>
             <p class="text-xs text-slate-500 font-medium">Authorized and synchronized Smart TV devices across hotel rooms.</p>
         </div>
         
-        <div class="w-full md:w-auto flex flex-col md:flex-row items-stretch md:items-center gap-4">
-            <button onclick="openPairModal()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2">
+        <div class="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
+            <button type="button" onclick="openPairModal()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center space-x-2 shrink-0">
                 <i class="fa-solid fa-qrcode text-sm"></i>
                 <span>Pair TV via 8-Digit Code</span>
             </button>
 
-            <div class="space-y-2">
+            <div class="space-y-2 bg-slate-50/80 p-3 rounded-2xl border border-slate-100 min-w-[200px]">
                 @php
                     $connectedCount = $devices->total();
                     $allowedLimit = $hotel->allowed_device_limit;
                     $percent = $allowedLimit > 0 ? min(100, ($connectedCount / $allowedLimit) * 100) : 0;
                 @endphp
-                <div class="text-xs font-semibold text-slate-600 flex items-center justify-between md:justify-end space-x-2">
-                    <span>TV Limit Usage:</span>
-                    <span class="text-sm font-extrabold text-indigo-600">{{ $connectedCount }}</span> / <strong class="text-slate-900">{{ $allowedLimit }} TVs</strong>
+                <div class="text-xs font-semibold text-slate-600 flex items-center justify-between space-x-2">
+                    <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Usage:</span>
+                    <div>
+                        <span class="text-sm font-extrabold text-indigo-600">{{ $connectedCount }}</span> / <strong class="text-slate-900">{{ $allowedLimit }} TVs</strong>
+                    </div>
                 </div>
-                <div class="w-full md:w-48 bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                <div class="w-full bg-slate-200/80 h-2 rounded-full overflow-hidden">
                     <div class="h-full bg-gradient-to-r from-indigo-500 to-violet-600 rounded-full transition-all duration-500" style="width: {{ $percent }}%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Filter & Search Bar -->
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs">
+        <form method="GET" action="{{ route('hotel.devices.index') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by room number, device ID, MAC, IP, brand..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400">
+                @if(request('search'))
+                    <a href="{{ route('hotel.devices.index') }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </a>
+                @endif
+            </div>
+            <div class="flex items-center gap-2">
+                <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition-colors flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-filter text-xs"></i>
+                    <span>Search</span>
+                </button>
+            </div>
+        </form>
+    </div>
+
     <!-- Pair TV Modal -->
-    <div id="pairModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-center justify-center hidden p-4">
+    <div id="pairModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4">
         <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 animate-in fade-in zoom-in duration-200">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center space-x-3">
@@ -95,27 +118,43 @@
         </div>
     </div>
 
-    <!-- Devices Table -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-sm">
+    <!-- Desktop & Tablet Devices Table (Note: Disconnect action removed) -->
+    <div class="hidden md:block bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-xs text-slate-700">
-                <thead class="bg-slate-50 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+                <thead class="bg-slate-50/90 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
                     <tr>
-                        <th class="px-6 py-4">#</th>
-                        <th class="px-6 py-4">Room No</th>
-                        <th class="px-6 py-4">Device ID</th>
-                        <th class="px-6 py-4">MAC Address</th>
-                        <th class="px-6 py-4">Hardware Info</th>
-                        <th class="px-6 py-4">IP Address</th>
-                        <th class="px-6 py-4">Connection Date</th>
-                        <th class="px-6 py-4 text-right">Actions</th>
+                        <th class="px-5 py-4 w-12 text-center">#</th>
+                        <th class="px-5 py-4">Room & Guest</th>
+                        <th class="px-5 py-4">Hardware & OS</th>
+                        <th class="px-5 py-4">Device & Network</th>
+                        <th class="px-5 py-4">Connected At</th>
+                        <th class="px-5 py-4 text-center">Room Config</th>
+                        <th class="px-5 py-4 text-center">Details</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($devices as $index => $device)
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="px-6 py-4 font-bold text-slate-400">{{ $devices->firstItem() + $index }}</td>
-                            <td class="px-6 py-4">
+                        @php
+                            $devicePayload = [
+                                'id' => $device->id,
+                                'room_no' => $device->room_no,
+                                'hotel_name' => $hotel->hotel_name ?? 'Hotel',
+                                'license_key' => $hotel->license_key ?? 'N/A',
+                                'device_id' => $device->device_id,
+                                'mac_address' => $device->mac_address ?? 'N/A',
+                                'ip_address' => $device->ip_address ?? 'N/A',
+                                'brand' => $device->brand ?? '',
+                                'model' => $device->model ?? '',
+                                'os_version' => $device->os_version ?? '',
+                                'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                            ];
+                        @endphp
+                        <tr class="hover:bg-slate-50/70 transition-colors">
+                            <td class="px-5 py-4 text-center font-bold text-slate-400">
+                                {{ $devices->firstItem() + $index }}
+                            </td>
+                            <td class="px-5 py-4">
                                 @if($activeGuest = $activeGuests->get($device->room_no))
                                     <div>
                                         <a href="{{ route('hotel.guests.index') }}?room={{ urlencode($device->room_no) }}" class="font-extrabold text-indigo-600 hover:underline">
@@ -126,44 +165,61 @@
                                         <i class="fa-solid fa-user mr-1 text-[9px]"></i> {{ $activeGuest->name }}
                                     </span>
                                 @else
-                                    <div class="font-bold text-slate-700">Room {{ $device->room_no }}</div>
+                                    <div class="font-extrabold text-slate-800">Room {{ $device->room_no }}</div>
                                     <span class="text-[11px] text-slate-400 italic">Vacant</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 font-mono font-medium text-slate-600">{{ $device->device_id }}</td>
-                            <td class="px-6 py-4 font-mono font-medium text-slate-500">{{ $device->mac_address }}</td>
-                            <td class="px-6 py-4">
+                            <td class="px-5 py-4">
                                 @if($device->brand || $device->model)
-                                    <div class="font-bold text-slate-800 capitalize">{{ $device->brand }} {{ $device->model }}</div>
-                                    @if($device->os_version)<span class="text-[10px] text-slate-400 font-medium">Android {{ $device->os_version }}</span>@endif
+                                    <div class="font-bold text-slate-800 capitalize flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-tv text-slate-400 text-[11px]"></i>
+                                        <span>{{ $device->brand }} {{ $device->model }}</span>
+                                    </div>
+                                    @if($device->os_version)
+                                        <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded">Android {{ $device->os_version }}</span>
+                                    @endif
                                 @else
-                                    <span class="text-slate-400 italic">Generic TV</span>
+                                    <span class="text-slate-400 italic">Smart TV Device</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 font-mono text-slate-500">{{ $device->ip_address ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 text-slate-500 font-medium">{{ $device->created_at->format('d M, Y H:i') }}</td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="inline-flex items-center space-x-2">
-                                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="px-3 py-1.5 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-[11px] transition-colors">
+                            <td class="px-5 py-4">
+                                <div class="font-mono text-[11px] font-bold text-slate-700 truncate max-w-[160px]" title="{{ $device->device_id }}">
+                                    {{ Str::limit($device->device_id, 16) }}
+                                </div>
+                                <div class="text-[10px] font-mono text-slate-400 flex items-center gap-2 mt-0.5">
+                                    @if($device->ip_address)<span>IP: {{ $device->ip_address }}</span>@endif
+                                    @if($device->mac_address)<span>MAC: {{ $device->mac_address }}</span>@endif
+                                </div>
+                            </td>
+                            <td class="px-5 py-4 text-slate-500 font-medium whitespace-nowrap">
+                                <div>{{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}</div>
+                                <div class="text-[10px] text-slate-400">{{ $device->created_at ? $device->created_at->format('h:i A') : '' }}</div>
+                            </td>
+                            <td class="px-5 py-4 text-center">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-[11px] transition-colors" title="Manage OTT Apps">
                                         <i class="fa-solid fa-sliders mr-1"></i> OTT
                                     </a>
-                                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="px-3 py-1.5 rounded-lg border border-violet-200 text-violet-600 hover:bg-violet-50 font-bold text-[11px] transition-colors">
+                                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-violet-200 text-violet-600 hover:bg-violet-50 font-bold text-[11px] transition-colors" title="Manage TV Menus">
                                         <i class="fa-solid fa-list-check mr-1"></i> Menus
                                     </a>
-                                    <form action="{{ route('hotel.devices.destroy', $device->id) }}" method="POST" onsubmit="return confirm('Disconnect this TV screen?');" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-[11px] transition-colors">
-                                            <i class="fa-solid fa-power-off mr-1"></i> Disconnect
-                                        </button>
-                                    </form>
                                 </div>
+                            </td>
+                            <td class="px-5 py-4 text-center">
+                                <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 font-bold text-xs transition-all shadow-2xs">
+                                    <i class="fa-solid fa-eye text-indigo-500"></i>
+                                    <span>View</span>
+                                </button>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-6 py-12 text-center text-slate-400 font-medium">
-                                No connected TVs found. Log in from your TV app to synchronize.
+                            <td colspan="7" class="px-6 py-14 text-center">
+                                <div class="w-14 h-14 mx-auto rounded-3xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-3">
+                                    <i class="fa-solid fa-tv"></i>
+                                </div>
+                                <h4 class="text-sm font-extrabold text-slate-800">No Connected TVs Found</h4>
+                                <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">Pair your TV screen using the 8-digit code to link room devices.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -172,8 +228,200 @@
         </div>
     </div>
 
+    <!-- Mobile Card View (No remove actions) -->
+    <div class="md:hidden space-y-3.5">
+        @forelse($devices as $index => $device)
+            @php
+                $devicePayload = [
+                    'id' => $device->id,
+                    'room_no' => $device->room_no,
+                    'hotel_name' => $hotel->hotel_name ?? 'Hotel',
+                    'license_key' => $hotel->license_key ?? 'N/A',
+                    'device_id' => $device->device_id,
+                    'mac_address' => $device->mac_address ?? 'N/A',
+                    'ip_address' => $device->ip_address ?? 'N/A',
+                    'brand' => $device->brand ?? '',
+                    'model' => $device->model ?? '',
+                    'os_version' => $device->os_version ?? '',
+                    'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
+                ];
+            @endphp
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+                <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
+                    <div class="min-w-0">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-indigo-50 border border-indigo-200/80 text-indigo-700 font-extrabold text-[11px] mb-1">
+                            <i class="fa-solid fa-door-closed mr-1 text-indigo-500 text-[10px]"></i>
+                            Room {{ $device->room_no }}
+                        </span>
+                        @if($activeGuest = $activeGuests->get($device->room_no))
+                            <div class="text-xs font-bold text-slate-900 truncate">
+                                <i class="fa-solid fa-user text-emerald-500 text-[10px] mr-1"></i> {{ $activeGuest->name }}
+                            </div>
+                        @else
+                            <div class="text-[11px] text-slate-400 italic">Vacant Room</div>
+                        @endif
+                    </div>
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 shrink-0">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Online
+                    </span>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <div class="bg-slate-50/80 rounded-xl p-2 border border-slate-100">
+                        <div class="text-[10px] uppercase font-bold text-slate-400">Hardware</div>
+                        <div class="font-bold text-slate-800 truncate mt-0.5">
+                            {{ $device->brand || $device->model ? trim($device->brand . ' ' . $device->model) : 'Smart TV' }}
+                        </div>
+                        @if($device->os_version)
+                            <div class="text-[9px] text-slate-500 font-semibold">Android {{ $device->os_version }}</div>
+                        @endif
+                    </div>
+
+                    <div class="bg-slate-50/80 rounded-xl p-2 border border-slate-100">
+                        <div class="text-[10px] uppercase font-bold text-slate-400">Connected</div>
+                        <div class="font-bold text-slate-800 truncate mt-0.5">
+                            {{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}
+                        </div>
+                        <div class="text-[9px] text-slate-400">{{ $device->created_at ? $device->created_at->format('h:i A') : '' }}</div>
+                    </div>
+                </div>
+
+                <div class="text-[10px] font-mono text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 truncate">
+                    <span class="font-bold text-slate-400">ID:</span> {{ $device->device_id }}
+                </div>
+
+                <!-- Action Controls: Config OTT/Menus & Eye Button (No disconnect button) -->
+                <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
+                        <i class="fa-solid fa-sliders text-[11px]"></i>
+                        <span>OTT</span>
+                    </a>
+                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-violet-200 text-violet-600 hover:bg-violet-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
+                        <i class="fa-solid fa-list-check text-[11px]"></i>
+                        <span>Menus</span>
+                    </a>
+                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 text-slate-700 hover:text-indigo-600 font-bold text-xs flex items-center justify-center transition-all" title="View Details">
+                        <i class="fa-solid fa-eye text-indigo-500"></i>
+                    </button>
+                </div>
+            </div>
+        @empty
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-8 text-center">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-xl mb-2">
+                    <i class="fa-solid fa-tv"></i>
+                </div>
+                <h4 class="text-xs font-extrabold text-slate-800">No TV Screens Found</h4>
+                <p class="text-[11px] text-slate-400 mt-1">Pair your TV screen with an 8-digit code to connect.</p>
+            </div>
+        @endforelse
+    </div>
+
+    <!-- Pagination -->
     <div class="pt-2">
         {{ $devices->links() }}
+    </div>
+</div>
+
+<!-- Reusable Device & License Details Modal -->
+<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-center justify-center hidden p-4" onclick="closeDeviceModalOnBackdrop(event)">
+    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-7 max-w-lg w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-150 overflow-hidden" onclick="event.stopPropagation()">
+        <!-- Modal Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center space-x-3 min-w-0">
+                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg shrink-0">
+                    <i class="fa-solid fa-tv"></i>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-base font-extrabold text-slate-900 leading-tight">Device & License Details</h3>
+                    <p id="modalSubtitle" class="text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeDeviceDetailsModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <!-- License Key Highlight Box -->
+        <div class="p-4 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-violet-50/60 to-purple-50/40 border border-indigo-200/80 space-y-2">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-key text-[10px]"></i>
+                    <span>Hotel License Key</span>
+                </span>
+                <span class="px-2 py-0.5 rounded-md bg-indigo-600/10 text-indigo-700 text-[10px] font-bold">Authorized</span>
+            </div>
+            <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-indigo-200/60 shadow-2xs">
+                <span id="modalLicenseKey" class="font-mono font-black text-sm sm:text-base text-indigo-900 tracking-wide select-all truncate">
+                    ---
+                </span>
+                <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-copy text-[11px]" id="copyKeyIcon"></i>
+                    <span id="copyKeyText">Copy</span>
+                </button>
+            </div>
+            <p class="text-[10px] text-indigo-600/80 font-medium">Hotel license key used to authenticate connected Smart TVs in your property.</p>
+        </div>
+
+        <!-- Device Technical Specs Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Hotel Name</div>
+                <div id="modalHotelName" class="font-extrabold text-slate-900 truncate">---</div>
+                <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>License Active</span>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Room Number</div>
+                <div id="modalRoomNo" class="font-extrabold text-indigo-600">---</div>
+                <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span>Status: Connected</span>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Device Unique ID</div>
+                <div class="flex items-center justify-between gap-2">
+                    <div id="modalDeviceId" class="font-mono font-bold text-slate-800 text-[11px] truncate select-all">---</div>
+                    <button type="button" onclick="copyToClipboard(document.getElementById('modalDeviceId').innerText, this)" class="text-slate-400 hover:text-slate-700 text-xs shrink-0 p-1" title="Copy Device ID">
+                        <i class="fa-solid fa-copy"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Hardware / Model</div>
+                <div id="modalHardware" class="font-bold text-slate-800 truncate">---</div>
+                <div id="modalOsVersion" class="text-[10px] text-slate-500 font-semibold">---</div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Network Info</div>
+                <div id="modalIpAddress" class="font-mono text-slate-700 font-semibold text-[11px]">IP: ---</div>
+                <div id="modalMacAddress" class="font-mono text-[10px] text-slate-400">MAC: ---</div>
+            </div>
+
+            <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                <div class="text-[10px] uppercase font-bold text-slate-400">Connection Timestamp</div>
+                <div id="modalConnectedAt" class="font-semibold text-slate-700 text-[11px]">---</div>
+            </div>
+        </div>
+
+        <!-- Note to Hotel Admin regarding device removal -->
+        <div class="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/60 text-amber-900 text-[11px] flex items-start space-x-2">
+            <i class="fa-solid fa-circle-info text-amber-500 text-xs mt-0.5 shrink-0"></i>
+            <p>To disconnect or transfer a TV device to a different hotel, please contact Super Admin support.</p>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="pt-2 flex items-center justify-end space-x-2.5 border-t border-slate-100">
+            <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-colors">
+                Close
+            </button>
+        </div>
     </div>
 </div>
 
@@ -229,18 +477,15 @@
                 let text = decodedText.trim();
                 let code = '';
 
-                // Robust URL / query string parser for extract 8-digit code
                 if (text.includes('code=')) {
                     code = text.split('code=')[1].split('&')[0].split('#')[0];
                 } else if (text.includes('/')) {
-                    // If QR is full URL like https://domain.com/pair/8F2A-9K3P or 8F2A9K3P
                     const parts = text.split('/');
                     code = parts[parts.length - 1];
                 } else {
                     code = text;
                 }
 
-                // Clean formatting to uppercase alphanumeric
                 code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
                 
                 if (code.length > 4) {
@@ -276,7 +521,6 @@
         }
     }
 
-    // Auto-format pair code input with hyphen e.g., ABCD-EFGH
     document.getElementById('pairCodeInput').addEventListener('input', function (e) {
         let val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
         if (val.length > 4) {
@@ -334,6 +578,73 @@
             submitBtn.disabled = false;
             submitBtn.innerText = 'Connect & Pair TV';
         }
+    }
+
+    // Modal Details functions
+    function showDeviceDetails(device) {
+        document.getElementById('modalSubtitle').innerText = 'Room ' + device.room_no + ' • ' + device.hotel_name;
+        document.getElementById('modalLicenseKey').innerText = device.license_key || 'N/A';
+        document.getElementById('modalHotelName').innerText = device.hotel_name || 'N/A';
+        document.getElementById('modalRoomNo').innerText = 'Room ' + device.room_no;
+        document.getElementById('modalDeviceId').innerText = device.device_id || 'N/A';
+        
+        const hw = (device.brand || '') + ' ' + (device.model || '');
+        document.getElementById('modalHardware').innerText = hw.trim() ? hw.trim() : 'Generic Smart TV';
+        document.getElementById('modalOsVersion').innerText = device.os_version ? 'Android ' + device.os_version : 'Android OS';
+        
+        document.getElementById('modalIpAddress').innerText = 'IP: ' + (device.ip_address || 'N/A');
+        document.getElementById('modalMacAddress').innerText = 'MAC: ' + (device.mac_address || 'N/A');
+        document.getElementById('modalConnectedAt').innerText = device.connected_at || 'N/A';
+
+        // Reset copy button state
+        document.getElementById('copyKeyIcon').className = 'fa-solid fa-copy text-[11px]';
+        document.getElementById('copyKeyText').innerText = 'Copy';
+
+        document.getElementById('deviceDetailsModal').classList.remove('hidden');
+    }
+
+    function closeDeviceDetailsModal() {
+        document.getElementById('deviceDetailsModal').classList.add('hidden');
+    }
+
+    function closeDeviceModalOnBackdrop(event) {
+        if (event.target.id === 'deviceDetailsModal') {
+            closeDeviceDetailsModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDeviceDetailsModal();
+        }
+    });
+
+    function copyLicenseKey() {
+        const key = document.getElementById('modalLicenseKey').innerText;
+        if (!key || key === 'N/A' || key === '---') return;
+
+        navigator.clipboard.writeText(key).then(() => {
+            const icon = document.getElementById('copyKeyIcon');
+            const text = document.getElementById('copyKeyText');
+            icon.className = 'fa-solid fa-check text-[11px]';
+            text.innerText = 'Copied!';
+
+            setTimeout(() => {
+                icon.className = 'fa-solid fa-copy text-[11px]';
+                text.innerText = 'Copy';
+            }, 2000);
+        });
+    }
+
+    function copyToClipboard(text, btnElement) {
+        if (!text || text === 'N/A' || text === '---') return;
+        navigator.clipboard.writeText(text).then(() => {
+            const originalHtml = btnElement.innerHTML;
+            btnElement.innerHTML = '<i class="fa-solid fa-check text-emerald-500"></i>';
+            setTimeout(() => {
+                btnElement.innerHTML = originalHtml;
+            }, 1800);
+        });
     }
 </script>
 @endsection

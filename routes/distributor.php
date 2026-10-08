@@ -30,4 +30,7 @@ Route::middleware(['auth:web', 'role:distributor|super_admin'])->prefix('distrib
     Route::get('sales', [DistributorController::class, 'sales'])->name('sales.index');
     Route::get('sales/create', [DistributorController::class, 'createSale'])->name('sales.create');
     Route::post('sales', [DistributorController::class, 'storeSale'])->name('sales.store');
+
+    // Connected devices (View Only - No remove/disconnect permissions)
+    Route::get('devices', [DistributorController::class, 'devices'])->name('devices.index');
 });

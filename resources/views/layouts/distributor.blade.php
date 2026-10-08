@@ -60,6 +60,10 @@
                     <i class="fa-solid fa-hotel text-base w-5 text-center"></i>
                     <span>My Hotels</span>
                 </a>
+                <a href="{{ route('distributor.devices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('distributor.devices.*') ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-tv text-base w-5 text-center"></i>
+                    <span>Connected TVs</span>
+                </a>
                 <a href="{{ route('distributor.hotels.create') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('distributor.hotels.create') ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-plus-circle text-base w-5 text-center"></i>
                     <span>Onboard Hotel</span>

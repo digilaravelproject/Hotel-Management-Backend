@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HotelAdmin;
 use App\Models\Plan;
 use App\Models\DistributorSale;
+use App\Models\ConnectedDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -187,5 +188,50 @@ class DistributorController extends Controller
 
         return redirect()->route('distributor.sales.index')
                          ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}'! Valid until {$result['new_expiry']->format('M d, Y')}.");
+    }
+
+    /**
+     * List connected TV devices for hotels registered by this distributor (View Only).
+     */
+    public function devices(Request $request)
+    {
+        $user = auth()->user();
+        $hotelIds = $user->hotels()->pluck('id');
+
+        $query = ConnectedDevice::whereIn('hotel_admin_id', $hotelIds)
+            ->with(['hotelAdmin.plan']);
+
+        if ($request->filled('hotel_id')) {
+            $query->where('hotel_admin_id', $request->input('hotel_id'));
+        }
+
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('room_no', 'like', "%{$search}%")
+                  ->orWhere('device_id', 'like', "%{$search}%")
+                  ->orWhere('mac_address', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('model', 'like', "%{$search}%")
+                  ->orWhereHas('hotelAdmin', function ($hq) use ($search) {
+                      $hq->where('hotel_name', 'like', "%{$search}%")
+                        ->orWhere('license_key', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        $devices = $query->latest()->paginate(15)->withQueryString();
+        $hotels = $user->hotels()->orderBy('hotel_name')->get();
+        $selectedHotel = $request->filled('hotel_id') ? $hotels->firstWhere('id', $request->input('hotel_id')) : null;
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'data' => $devices,
+            ]);
+        }
+
+        return view('distributor.devices.index', compact('devices', 'hotels', 'selectedHotel'));
     }
 }

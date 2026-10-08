@@ -72,7 +72,7 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::post('/hotel/devices/{id}/menus', [HotelDeviceController::class, 'updateRoomMenus']);
     Route::post('/hotel/devices/{id}/menus/reset', [HotelDeviceController::class, 'resetRoomMenus'])->name('hotel.devices.menus.reset');
     Route::post('/hotel/devices/pair', [HotelDeviceController::class, 'pairDeviceByCode'])->name('hotel.devices.pair');
-    Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'destroy'])->names('hotel.devices');
+    Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index'])->names('hotel.devices');
 
     // OTT Package & Global Settings
     Route::get('/hotel/package', [\App\Http\Controllers\HotelAdmin\OttController::class, 'myPackage'])->name('hotel.package');

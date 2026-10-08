@@ -27,7 +27,20 @@ class DeviceController extends Controller
             $query->where('room_no', $request->input('room_no'));
         }
 
-        $devices = $query->paginate(15);
+        // General search
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('room_no', 'like', "%{$search}%")
+                  ->orWhere('device_id', 'like', "%{$search}%")
+                  ->orWhere('mac_address', 'like', "%{$search}%")
+                  ->orWhere('ip_address', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('model', 'like', "%{$search}%");
+            });
+        }
+
+        $devices = $query->paginate(15)->withQueryString();
 
         // Fetch active guests to cross-reference occupied rooms
         $now = now();
@@ -44,20 +57,11 @@ class DeviceController extends Controller
     }
 
     /**
-     * Delete/Disconnect a device.
+     * Delete/Disconnect a device - Restrict to Super Admin only.
      */
     public function destroy(int $id)
     {
-        $hotel = auth()->guard('hotel_admin')->user();
-        
-        if (!$hotel) {
-            return redirect()->route('hotel.login');
-        }
-
-        $device = $hotel->connectedDevices()->findOrFail($id);
-        $device->delete();
-
-        return redirect()->back()->with('success', 'Device disconnected successfully.');
+        abort(403, 'Unauthorized. Only Super Admin has permission to remove or disconnect TV devices.');
     }
 
     /**
