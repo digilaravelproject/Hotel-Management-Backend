@@ -56,23 +56,118 @@
         <form action="{{ route('super-admin.flights.settings.update') }}" method="POST" class="p-6 space-y-6">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
+                <!-- Flight API Provider Custom Dropdown -->
+                <div class="relative" id="providerDropdownWrapper">
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Flight API Provider</label>
-                    <select name="provider" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
-                        <option value="airlabs" {{ ($setting->provider ?? '') === 'airlabs' ? 'selected' : '' }}>AirLabs API (Recommended - Airport Schedules)</option>
-                        <option value="aerodatabox" {{ ($setting->provider ?? '') === 'aerodatabox' ? 'selected' : '' }}>AeroDataBox (RapidAPI)</option>
-                        <option value="aviationstack" {{ ($setting->provider ?? '') === 'aviationstack' ? 'selected' : '' }}>AviationStack</option>
-                    </select>
+                    <input type="hidden" name="provider" id="input_provider" value="{{ $setting->provider ?? 'airlabs' }}">
+
+                    <!-- Trigger Button -->
+                    <button type="button" 
+                            id="providerDropdownTrigger" 
+                            onclick="toggleProviderDropdown(event)" 
+                            class="w-full flex items-center justify-between p-2.5 sm:p-3 bg-white border border-slate-200/90 hover:border-slate-300 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 rounded-2xl cursor-pointer shadow-2xs transition-all select-none text-left group">
+                        <div class="flex items-center space-x-3 min-w-0 pr-2">
+                            <div id="providerTriggerIcon" class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80 transition-colors">
+                                <i class="fa-solid fa-cloud-arrow-down text-base"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center space-x-2">
+                                    <span id="providerTriggerTitle" class="font-extrabold text-sm text-slate-900 truncate">
+                                        AirLabs API
+                                    </span>
+                                    <span id="providerTriggerBadge" class="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 font-extrabold text-[10px] shrink-0 border border-emerald-200/60">
+                                        Recommended
+                                    </span>
+                                </div>
+                                <p id="providerTriggerSubtitle" class="text-xs text-slate-500 font-medium truncate mt-0.5">
+                                    Airport schedules & flight status
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-center pl-2 text-slate-400 group-hover:text-slate-600 shrink-0">
+                            <i id="providerChevron" class="fa-solid fa-chevron-down text-xs transition-transform duration-200"></i>
+                        </div>
+                    </button>
+
+                    <!-- Floating Dropdown Menu -->
+                    <div id="providerDropdownMenu" class="hidden absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden p-2 space-y-1.5 transition-all">
+                        <!-- Option 1: AirLabs -->
+                        <div onclick="selectProvider('airlabs')" 
+                             id="opt_airlabs"
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                            <div class="flex items-center space-x-3 min-w-0 pr-2">
+                                <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+                                    <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-extrabold text-xs sm:text-sm text-slate-900">AirLabs API</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 font-extrabold text-[10px] border border-emerald-200/60">Recommended</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Direct airport schedules & live arrivals/departures</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-check text-rose-600 font-bold text-sm check-icon hidden"></i>
+                        </div>
+
+                        <!-- Option 2: AeroDataBox -->
+                        <div onclick="selectProvider('aerodatabox')" 
+                             id="opt_aerodatabox"
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                            <div class="flex items-center space-x-3 min-w-0 pr-2">
+                                <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100">
+                                    <i class="fa-solid fa-plane-departure text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-extrabold text-xs sm:text-sm text-slate-900">AeroDataBox</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-sky-100/80 text-sky-800 font-extrabold text-[10px] border border-sky-200/60">RapidAPI</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Commercial flight radar & global FIDS displays</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-check text-rose-600 font-bold text-sm check-icon hidden"></i>
+                        </div>
+
+                        <!-- Option 3: AviationStack -->
+                        <div onclick="selectProvider('aviationstack')" 
+                             id="opt_aviationstack"
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                            <div class="flex items-center space-x-3 min-w-0 pr-2">
+                                <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0 border border-violet-100">
+                                    <i class="fa-solid fa-tower-broadcast text-sm"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="font-extrabold text-xs sm:text-sm text-slate-900">AviationStack</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-violet-100/80 text-violet-800 font-extrabold text-[10px] border border-violet-200/60">REST API</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Global aviation routes & departure timetables</p>
+                                </div>
+                            </div>
+                            <i class="fa-solid fa-check text-rose-600 font-bold text-sm check-icon hidden"></i>
+                        </div>
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">API Access Key</label>
-                    <input type="text" name="api_key" value="{{ $setting->api_key ?? '' }}" placeholder="Enter provider API key (Leave empty for Dynamic Mock)" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-key text-xs"></i>
+                        </div>
+                        <input type="text" name="api_key" value="{{ $setting->api_key ?? '' }}" placeholder="Enter provider API key (Leave empty for Dynamic Mock)" class="w-full rounded-2xl border border-slate-200/90 pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-mono text-xs transition-all bg-white hover:border-slate-300">
+                    </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cache Duration (Minutes)</label>
-                    <input type="number" name="cache_ttl_minutes" min="5" max="1440" value="{{ $setting->cache_ttl_minutes ?? 30 }}" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                            <i class="fa-solid fa-clock text-xs"></i>
+                        </div>
+                        <input type="number" name="cache_ttl_minutes" min="5" max="1440" value="{{ $setting->cache_ttl_minutes ?? 30 }}" class="w-full rounded-2xl border border-slate-200/90 pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 font-bold text-slate-800 transition-all bg-white hover:border-slate-300">
+                    </div>
                 </div>
             </div>
 
@@ -211,4 +306,133 @@
         </form>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+    const providerMeta = {
+        airlabs: {
+            title: 'AirLabs API',
+            badge: 'Recommended',
+            badgeClass: 'bg-emerald-100/80 text-emerald-800 border-emerald-200/60',
+            subtitle: 'Airport schedules & live arrivals/departures',
+            icon: 'fa-solid fa-cloud-arrow-down',
+            iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100/80'
+        },
+        aerodatabox: {
+            title: 'AeroDataBox',
+            badge: 'RapidAPI',
+            badgeClass: 'bg-sky-100/80 text-sky-800 border-sky-200/60',
+            subtitle: 'Commercial flight radar & global FIDS displays',
+            icon: 'fa-solid fa-plane-departure',
+            iconBg: 'bg-sky-50 text-sky-600 border-sky-100/80'
+        },
+        aviationstack: {
+            title: 'AviationStack',
+            badge: 'REST API',
+            badgeClass: 'bg-violet-100/80 text-violet-800 border-violet-200/60',
+            subtitle: 'Global aviation routes & departure timetables',
+            icon: 'fa-solid fa-tower-broadcast',
+            iconBg: 'bg-violet-50 text-violet-600 border-violet-100/80'
+        }
+    };
+
+    function toggleProviderDropdown(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const menu = document.getElementById('providerDropdownMenu');
+        const chevron = document.getElementById('providerChevron');
+        const trigger = document.getElementById('providerDropdownTrigger');
+        const isOpen = !menu.classList.contains('hidden');
+
+        if (isOpen) {
+            menu.classList.add('hidden');
+            chevron.style.transform = 'rotate(0deg)';
+            trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/20');
+        } else {
+            menu.classList.remove('hidden');
+            chevron.style.transform = 'rotate(180deg)';
+            trigger.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/20');
+        }
+    }
+
+    function selectProvider(providerKey) {
+        const meta = providerMeta[providerKey];
+        if (!meta) return;
+
+        document.getElementById('input_provider').value = providerKey;
+        document.getElementById('providerTriggerTitle').innerText = meta.title;
+
+        const badge = document.getElementById('providerTriggerBadge');
+        badge.innerText = meta.badge;
+        badge.className = `px-2 py-0.5 rounded-md ${meta.badgeClass} font-extrabold text-[10px] shrink-0 border`;
+
+        document.getElementById('providerTriggerSubtitle').innerText = meta.subtitle;
+
+        const iconContainer = document.getElementById('providerTriggerIcon');
+        iconContainer.className = `w-10 h-10 rounded-xl ${meta.iconBg} flex items-center justify-center shrink-0 border transition-colors`;
+        iconContainer.innerHTML = `<i class="${meta.icon} text-base"></i>`;
+
+        // Update active checkmarks and highlights
+        document.querySelectorAll('.provider-opt').forEach(opt => {
+            opt.classList.remove('bg-rose-50/80', 'border-rose-200', 'shadow-2xs');
+            opt.classList.add('border-transparent');
+            const check = opt.querySelector('.check-icon');
+            if (check) check.classList.add('hidden');
+        });
+
+        const activeOpt = document.getElementById('opt_' + providerKey);
+        if (activeOpt) {
+            activeOpt.classList.remove('border-transparent');
+            activeOpt.classList.add('bg-rose-50/80', 'border-rose-200', 'shadow-2xs');
+            const check = activeOpt.querySelector('.check-icon');
+            if (check) check.classList.remove('hidden');
+        }
+
+        // Close menu
+        const menu = document.getElementById('providerDropdownMenu');
+        const chevron = document.getElementById('providerChevron');
+        const trigger = document.getElementById('providerDropdownTrigger');
+        menu.classList.add('hidden');
+        chevron.style.transform = 'rotate(0deg)';
+        trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/20');
+    }
+
+    // Close on outside click
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('providerDropdownWrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            const menu = document.getElementById('providerDropdownMenu');
+            const chevron = document.getElementById('providerChevron');
+            const trigger = document.getElementById('providerDropdownTrigger');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                if (trigger) trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/20');
+            }
+        }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            const menu = document.getElementById('providerDropdownMenu');
+            const chevron = document.getElementById('providerChevron');
+            const trigger = document.getElementById('providerDropdownTrigger');
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
+                if (trigger) trigger.classList.remove('border-rose-500', 'ring-2', 'ring-rose-500/20');
+            }
+        }
+    });
+
+    // Set initial selection on load
+    document.addEventListener('DOMContentLoaded', function () {
+        const current = document.getElementById('input_provider').value || 'airlabs';
+        selectProvider(current);
+    });
+</script>
 @endsection
