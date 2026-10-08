@@ -139,20 +139,20 @@
 
                             <!-- Floating Options Menu -->
                             <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 max-h-64 overflow-y-auto space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedPlanId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="None (Custom / Trial Package)">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedPlanId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="None (Custom / Trial Package)" data-active-class="bg-rose-50 text-rose-600 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <i class="fa-solid fa-ban text-[11px] text-slate-400"></i>
                                         <span>None (Custom / Trial Package)</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedPlanId) ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedPlanId) ? 'is-selected' : '' }}" style="display: {{ empty($selectedPlanId) ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
 
                                 @foreach($plans as $plan)
                                     @php
-                                        $isThisPlan = (string)$plan->id === (string)$selectedPlanId;
+                                        $isThisPlan = !empty($selectedPlanId) && ((string)$plan->id === (string)$selectedPlanId);
                                         $planText = $plan->name . ' • ₹' . number_format($plan->price, 0) . '/mo';
                                     @endphp
-                                    <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisPlan ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $plan->id }}" data-text="{{ $planText }}">
+                                    <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisPlan ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $plan->id }}" data-text="{{ $planText }}" data-active-class="bg-rose-50 text-rose-600 font-bold">
                                         <div class="flex flex-col">
                                             <span class="font-bold text-slate-800">{{ $plan->name }}</span>
                                             <span class="text-[11px] text-slate-400">Up to {{ $plan->room_count }} Rooms limit</span>
@@ -161,7 +161,7 @@
                                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-600 border border-rose-200">
                                                 ₹{{ number_format($plan->price, 0) }}/mo
                                             </span>
-                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisPlan ? '' : 'hidden' }}"></i>
+                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisPlan ? 'is-selected' : '' }}" style="display: {{ $isThisPlan ? 'inline-block' : 'none' }} !important;"></i>
                                         </div>
                                     </div>
                                 @endforeach
@@ -187,21 +187,21 @@
 
                             <!-- Floating Options Menu -->
                             <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 max-h-64 overflow-y-auto space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedDistId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="Direct Vendor (No Distributor Attached)">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedDistId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="Direct Vendor (No Distributor Attached)" data-active-class="bg-rose-50 text-rose-600 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <i class="fa-regular fa-building text-[11px] text-slate-400"></i>
                                         <span>Direct Vendor (No Distributor Attached)</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedDistId) ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedDistId) ? 'is-selected' : '' }}" style="display: {{ empty($selectedDistId) ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
 
                                 @if(isset($distributors))
                                     @foreach($distributors as $distributor)
                                         @php
-                                            $isThisDist = (string)$distributor->id === (string)$selectedDistId;
+                                            $isThisDist = !empty($selectedDistId) && ((string)$distributor->id === (string)$selectedDistId);
                                             $distText = $distributor->name . ' — ' . $distributor->email;
                                         @endphp
-                                        <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisDist ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $distributor->id }}" data-text="{{ $distText }}">
+                                        <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisDist ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $distributor->id }}" data-text="{{ $distText }}" data-active-class="bg-rose-50 text-rose-600 font-bold">
                                             <div class="flex items-center space-x-2.5">
                                                 <div class="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-[10px] font-bold">
                                                     {{ strtoupper(substr($distributor->name, 0, 1)) }}
@@ -211,7 +211,7 @@
                                                     <span class="text-[11px] text-slate-400 font-mono">{{ $distributor->email }}</span>
                                                 </div>
                                             </div>
-                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisDist ? '' : 'hidden' }}"></i>
+                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisDist ? 'is-selected' : '' }}" style="display: {{ $isThisDist ? 'inline-block' : 'none' }} !important;"></i>
                                         </div>
                                     @endforeach
                                 @endif
@@ -236,20 +236,20 @@
 
                             <!-- Floating Options Menu -->
                             <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'paid' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="paid" data-text="Paid (License Key Generated & Active)">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'paid' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="paid" data-text="Paid (License Key Generated & Active)" data-active-class="bg-emerald-50 text-emerald-700 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                                         <span>Paid (License Key Generated & Active)</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentPayment === 'paid' ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentPayment === 'paid' ? 'is-selected' : '' }}" style="display: {{ $currentPayment === 'paid' ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
 
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending (Awaiting Payment Confirmation)">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending (Awaiting Payment Confirmation)" data-active-class="bg-amber-50 text-amber-700 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                         <span>Pending (Awaiting Payment Confirmation)</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentPayment === 'pending' ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentPayment === 'pending' ? 'is-selected' : '' }}" style="display: {{ $currentPayment === 'pending' ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
                             </div>
                         </div>
@@ -275,28 +275,28 @@
 
                             <!-- Floating Options Menu -->
                             <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'approved' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="approved" data-text="Approved (Active immediately)">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'approved' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="approved" data-text="Approved (Active immediately)" data-active-class="bg-emerald-50 text-emerald-700 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                                         <span>Approved (Active immediately)</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentApproval === 'approved' ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentApproval === 'approved' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'approved' ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
 
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending Review">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending Review" data-active-class="bg-amber-50 text-amber-700 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                                         <span>Pending Review</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentApproval === 'pending' ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentApproval === 'pending' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'pending' ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
 
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'disapproved' ? 'bg-rose-50 text-rose-700 font-bold' : '' }}" data-value="disapproved" data-text="Disapproved">
+                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'disapproved' ? 'bg-rose-50 text-rose-700 font-bold' : '' }}" data-value="disapproved" data-text="Disapproved" data-active-class="bg-rose-50 text-rose-700 font-bold">
                                     <div class="flex items-center space-x-2">
                                         <span class="w-2 h-2 rounded-full bg-rose-500"></span>
                                         <span>Disapproved</span>
                                     </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $currentApproval === 'disapproved' ? '' : 'hidden' }}"></i>
+                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $currentApproval === 'disapproved' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'disapproved' ? 'inline-block' : 'none' }} !important;"></i>
                                 </div>
                             </div>
                         </div>
@@ -392,6 +392,15 @@
     </div>
 </div>
 
+<style>
+    .custom-select-box .check-indicator {
+        display: none !important;
+    }
+    .custom-select-box .check-indicator.is-selected {
+        display: inline-block !important;
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const dropdowns = document.querySelectorAll('.custom-select-box');
@@ -438,14 +447,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 label.textContent = txt;
 
                 items.forEach(opt => {
-                    opt.classList.remove('bg-rose-50', 'text-rose-600', 'font-bold', 'bg-emerald-50', 'text-emerald-700', 'bg-amber-50', 'text-amber-700');
+                    opt.classList.remove('bg-rose-50', 'text-rose-600', 'font-bold', 'bg-emerald-50', 'text-emerald-700', 'bg-amber-50', 'text-amber-700', 'text-rose-700');
                     const chk = opt.querySelector('.check-indicator');
-                    if (chk) chk.classList.add('hidden');
+                    if (chk) {
+                        chk.classList.remove('is-selected');
+                        chk.style.setProperty('display', 'none', 'important');
+                    }
                 });
 
-                this.classList.add('bg-rose-50', 'text-rose-600', 'font-bold');
+                const activeClasses = (this.getAttribute('data-active-class') || 'bg-rose-50 text-rose-600 font-bold').split(' ').filter(Boolean);
+                this.classList.add(...activeClasses);
                 const chk = this.querySelector('.check-indicator');
-                if (chk) chk.classList.remove('hidden');
+                if (chk) {
+                    chk.classList.add('is-selected');
+                    chk.style.setProperty('display', 'inline-block', 'important');
+                }
 
                 menu.classList.add('hidden');
                 trigger.classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-500');
