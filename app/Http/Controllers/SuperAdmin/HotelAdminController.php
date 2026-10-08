@@ -18,7 +18,7 @@ class HotelAdminController extends Controller
      */
     public function index()
     {
-        $hotels = HotelAdmin::with('plan')->orderBy('created_at', 'desc')->get();
+        $hotels = HotelAdmin::with(['plan', 'distributor', 'connectedDevices'])->orderBy('created_at', 'desc')->get();
         return view('super_admin.hotels.index', compact('hotels'));
     }
 
