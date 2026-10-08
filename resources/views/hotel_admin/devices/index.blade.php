@@ -63,63 +63,116 @@
         </form>
     </div>
 
-    <!-- Pair TV Modal -->
+    <!-- Add Device / Pair TV Modal -->
     <div id="pairModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closePairModalOnBackdrop(event)">
-        <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 max-w-md w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200 max-h-[84vh] sm:max-h-[86vh] overflow-y-auto overscroll-contain" style="-webkit-overflow-scrolling: touch;" onclick="event.stopPropagation()">
+        <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-5 sm:p-7 max-w-md w-full shadow-2xl space-y-5 animate-in fade-in zoom-in duration-150 max-h-[88vh] overflow-y-auto overscroll-contain" onclick="event.stopPropagation()">
             <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-lg">
                         <i class="fa-solid fa-tv"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-extrabold text-slate-900">Pair New TV Screen</h3>
-                        <p class="text-xs text-slate-500 font-medium">Enter 8-digit code shown on TV screen</p>
+                        <h3 class="text-base font-extrabold text-slate-900" id="deviceModalTitle">Add TV Device</h3>
+                        <p class="text-xs text-slate-500 font-medium" id="deviceModalSubtitle">Connect and provision room television</p>
                     </div>
                 </div>
-                <button onclick="closePairModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                <button onclick="closePairModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <!-- Tab Navigation for Manual Code vs Camera Scanner -->
+            <!-- Primary Mode Tabs: Quick Add vs 8-Digit Pairing -->
             <div class="flex items-center p-1 bg-slate-100 rounded-2xl">
-                <button type="button" id="tabManualBtn" onclick="switchPairTab('manual')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-keyboard"></i>
-                    <span>Enter Code</span>
+                <button type="button" id="tabQuickBtn" onclick="switchModalMode('quick')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-bolt text-amber-500"></i>
+                    <span>Quick Add TV</span>
                 </button>
-                <button type="button" id="tabScanBtn" onclick="switchPairTab('scan')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5">
-                    <i class="fa-solid fa-camera"></i>
-                    <span>Scan TV QR</span>
+                <button type="button" id="tabPairBtn" onclick="switchModalMode('pair')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-qrcode"></i>
+                    <span>Pair 8-Digit Code</span>
                 </button>
             </div>
 
-            <!-- Camera Scanner Box -->
-            <div id="qrScannerBox" class="hidden space-y-3 text-center">
-                <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-indigo-500/30 bg-slate-950 aspect-square flex items-center justify-center"></div>
-                <p class="text-[11px] text-slate-500 font-medium">Point your camera at the QR code displayed on TV screen</p>
-            </div>
-
-            <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
+            <!-- 1. Quick Add TV Form (Fast, direct provision without waiting for TV app) -->
+            <form id="quickAddForm" onsubmit="submitQuickAddForm(event)" class="space-y-4">
                 @csrf
-                <div id="pairCodeInputWrapper" class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-700">8-Digit Pairing Code (Shown on TV Screen)</label>
-                    <input type="text" id="pairCodeInput" required placeholder="e.g. 8F2A-9K3P" maxlength="10" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-extrabold text-lg tracking-widest text-indigo-600 uppercase focus:outline-none focus:border-indigo-500">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-700">Room Number <span class="text-rose-500">*</span></label>
+                    <input type="text" id="quickRoomNo" required placeholder="e.g. 101, 204, Suite-A" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500">
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-700">Assign Room Number</label>
-                    <input type="text" id="roomNoInput" required placeholder="e.g. 104" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:border-indigo-500">
+                    <label class="text-xs font-bold text-slate-700">TV Hardware / Brand</label>
+                    <select id="quickBrand" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-800 focus:outline-none focus:border-indigo-500">
+                        <option value="Smart TV">Smart TV (Android OS)</option>
+                        <option value="Samsung">Samsung TV (Tizen)</option>
+                        <option value="LG">LG Smart TV (webOS)</option>
+                        <option value="Sony">Sony Bravia TV</option>
+                        <option value="Xiaomi">Xiaomi / Mi TV</option>
+                        <option value="OnePlus">OnePlus TV</option>
+                        <option value="TCL">TCL Android TV</option>
+                        <option value="Other">Other Screen</option>
+                    </select>
                 </div>
 
-                <div id="pairFormAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-slate-700">Model / Serial (Optional)</label>
+                    <input type="text" id="quickModel" placeholder="e.g. 43-inch UHD 4K" class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:border-indigo-500">
+                </div>
+
+                <div id="quickFormAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
 
                 <div class="pt-2 flex items-center justify-end space-x-3">
                     <button type="button" onclick="closePairModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
-                    <button type="submit" id="pairSubmitBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center space-x-2">
-                        <span>Connect & Pair TV</span>
+                    <button type="submit" id="quickSubmitBtn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center space-x-2">
+                        <i class="fa-solid fa-bolt text-amber-300"></i>
+                        <span>Add TV Device</span>
                     </button>
                 </div>
             </form>
+
+            <!-- 2. Pair TV Form (With 8-Digit code) -->
+            <div id="pairModeWrapper" class="hidden space-y-4">
+                <!-- Sub Tab: Manual Code vs Camera Scanner -->
+                <div class="flex items-center p-1 bg-slate-100/80 rounded-xl text-[11px]">
+                    <button type="button" id="tabManualBtn" onclick="switchPairSubTab('manual')" class="flex-1 py-1.5 font-bold rounded-lg bg-white text-indigo-600 shadow-2xs transition-all flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-keyboard text-[10px]"></i>
+                        <span>Type Code</span>
+                    </button>
+                    <button type="button" id="tabScanBtn" onclick="switchPairSubTab('scan')" class="flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5">
+                        <i class="fa-solid fa-camera text-[10px]"></i>
+                        <span>Scan TV QR</span>
+                    </button>
+                </div>
+
+                <!-- Camera Scanner Box -->
+                <div id="qrScannerBox" class="hidden space-y-2 text-center">
+                    <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-indigo-500/30 bg-slate-950 aspect-square flex items-center justify-center"></div>
+                    <p class="text-[11px] text-slate-500 font-medium">Point your camera at the QR code displayed on TV screen</p>
+                </div>
+
+                <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
+                    @csrf
+                    <div id="pairCodeInputWrapper" class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700">8-Digit Pairing Code (Shown on TV Screen) <span class="text-rose-500">*</span></label>
+                        <input type="text" id="pairCodeInput" required placeholder="e.g. 8F2A-9K3P" maxlength="10" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-extrabold text-lg tracking-widest text-indigo-600 uppercase focus:outline-none focus:border-indigo-500">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700">Assign Room Number <span class="text-rose-500">*</span></label>
+                        <input type="text" id="roomNoInput" required placeholder="e.g. 104" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold focus:outline-none focus:border-indigo-500">
+                    </div>
+
+                    <div id="pairFormAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+                    <div class="pt-2 flex items-center justify-end space-x-3">
+                        <button type="button" onclick="closePairModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
+                        <button type="submit" id="pairSubmitBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center space-x-2">
+                            <span>Connect & Pair TV</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -497,21 +550,28 @@
     @method('DELETE')
 </form>
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <script>
     let html5QrCode = null;
+    let qrScriptLoaded = false;
 
-    function openPairModal() {
+    function openAddDeviceModal(mode = 'quick') {
         document.body.style.overflow = 'hidden';
         document.body.classList.add('overflow-hidden');
         document.getElementById('pairModal').classList.remove('hidden');
-        switchPairTab('manual');
+        switchModalMode(mode);
+    }
+
+    // Keep backwards compatibility for any openPairModal calls
+    function openPairModal() {
+        openAddDeviceModal('quick');
     }
 
     function closePairModal() {
         stopScanner();
         document.getElementById('pairModal').classList.add('hidden');
+        document.getElementById('quickFormAlert').classList.add('hidden');
         document.getElementById('pairFormAlert').classList.add('hidden');
+        document.getElementById('quickAddForm').reset();
         document.getElementById('pairForm').reset();
         document.body.style.overflow = '';
         document.body.classList.remove('overflow-hidden');
@@ -523,75 +583,126 @@
         }
     }
 
-    function switchPairTab(tab) {
+    function switchModalMode(mode) {
+        const quickBtn = document.getElementById('tabQuickBtn');
+        const pairBtn = document.getElementById('tabPairBtn');
+        const quickForm = document.getElementById('quickAddForm');
+        const pairWrapper = document.getElementById('pairModeWrapper');
+        const title = document.getElementById('deviceModalTitle');
+        const subtitle = document.getElementById('deviceModalSubtitle');
+
+        if (mode === 'pair') {
+            pairBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
+            quickBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            quickForm.classList.add('hidden');
+            pairWrapper.classList.remove('hidden');
+            title.innerText = 'Pair TV Screen';
+            subtitle.innerText = 'Connect TV via 8-digit screen code';
+            switchPairSubTab('manual');
+        } else {
+            quickBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
+            pairBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            pairWrapper.classList.add('hidden');
+            quickForm.classList.remove('hidden');
+            title.innerText = 'Add TV Device';
+            subtitle.innerText = 'Quick provision room television';
+            stopScanner();
+            setTimeout(() => {
+                document.getElementById('quickRoomNo')?.focus();
+            }, 50);
+        }
+    }
+
+    function switchPairSubTab(tab) {
         const manualBtn = document.getElementById('tabManualBtn');
         const scanBtn = document.getElementById('tabScanBtn');
         const qrBox = document.getElementById('qrScannerBox');
         const codeInputWrapper = document.getElementById('pairCodeInputWrapper');
 
         if (tab === 'scan') {
-            scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
-            manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-indigo-600 shadow-2xs transition-all flex items-center justify-center space-x-1.5';
+            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
             qrBox.classList.remove('hidden');
             codeInputWrapper.classList.add('hidden');
             startScanner();
         } else {
-            manualBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl bg-white text-indigo-600 shadow-sm transition-all flex items-center justify-center space-x-1.5';
-            scanBtn.className = 'flex-1 py-2 text-xs font-bold rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-indigo-600 shadow-2xs transition-all flex items-center justify-center space-x-1.5';
+            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
             qrBox.classList.add('hidden');
             codeInputWrapper.classList.remove('hidden');
             stopScanner();
-            document.getElementById('pairCodeInput').focus();
+            document.getElementById('pairCodeInput')?.focus();
         }
     }
 
-    function startScanner() {
-        if (html5QrCode && html5QrCode.isScanning) return;
-
-        html5QrCode = new Html5Qrcode("qrReader");
-        html5QrCode.start(
-            { facingMode: "environment" },
-            {
-                fps: 10,
-                qrbox: { width: 220, height: 220 }
-            },
-            (decodedText) => {
-                let text = decodedText.trim();
-                let code = '';
-
-                if (text.includes('code=')) {
-                    code = text.split('code=')[1].split('&')[0].split('#')[0];
-                } else if (text.includes('/')) {
-                    const parts = text.split('/');
-                    code = parts[parts.length - 1];
-                } else {
-                    code = text;
+    function ensureQrScriptLoaded(callback) {
+        if (typeof Html5Qrcode !== 'undefined') {
+            callback();
+            return;
+        }
+        if (qrScriptLoaded) {
+            let interval = setInterval(() => {
+                if (typeof Html5Qrcode !== 'undefined') {
+                    clearInterval(interval);
+                    callback();
                 }
-
-                code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-                
-                if (code.length > 4) {
-                    code = code.substring(0, 4) + '-' + code.substring(4, 8);
-                }
-
-                document.getElementById('pairCodeInput').value = code;
-                switchPairTab('manual');
-                document.getElementById('roomNoInput').focus();
-                
-                const alertBox = document.getElementById('pairFormAlert');
-                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800';
-                alertBox.innerText = 'QR Scanned Code: ' + code + '. Now assign room number to connect.';
-                alertBox.classList.remove('hidden');
-            },
-            (errorMessage) => {
-                // scanning errors ignored
-            }
-        ).catch((err) => {
-            console.error("Camera access failed:", err);
+            }, 50);
+            return;
+        }
+        qrScriptLoaded = true;
+        const script = document.createElement('script');
+        script.src = 'https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js';
+        script.onload = callback;
+        script.onerror = () => {
             const alertBox = document.getElementById('pairFormAlert');
-            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
-            alertBox.innerText = 'Camera access denied or unavailable. Please enter the 8-digit code manually.';
-            alertBox.classList.remove('hidden');
+            if (alertBox) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+                alertBox.innerText = 'Camera scanner script unavailable. Please enter code manually.';
+                alertBox.classList.remove('hidden');
+            }
+        };
+        document.head.appendChild(script);
+    }
+
+    function startScanner() {
+        ensureQrScriptLoaded(() => {
+            if (html5QrCode && html5QrCode.isScanning) return;
+
+            html5QrCode = new Html5Qrcode("qrReader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    let text = decodedText.trim();
+                    let code = '';
+                    if (text.includes('code=')) {
+                        code = text.split('code=')[1].split('&')[0].split('#')[0];
+                    } else if (text.includes('/')) {
+                        const parts = text.split('/');
+                        code = parts[parts.length - 1];
+                    } else {
+                        code = text;
+                    }
+                    code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                    if (code.length > 4) {
+                        code = code.substring(0, 4) + '-' + code.substring(4, 8);
+                    }
+                    document.getElementById('pairCodeInput').value = code;
+                    switchPairSubTab('manual');
+                    document.getElementById('roomNoInput').focus();
+                    
+                    const alertBox = document.getElementById('pairFormAlert');
+                    alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800';
+                    alertBox.innerText = 'QR Scanned Code: ' + code + '. Now assign room number to connect.';
+                    alertBox.classList.remove('hidden');
+                },
+                (errorMessage) => {}
+            ).catch((err) => {
+                const alertBox = document.getElementById('pairFormAlert');
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+                alertBox.innerText = 'Camera access denied or unavailable. Please enter code manually.';
+                alertBox.classList.remove('hidden');
+            });
         });
     }
 
@@ -603,7 +714,7 @@
         }
     }
 
-    document.getElementById('pairCodeInput').addEventListener('input', function (e) {
+    document.getElementById('pairCodeInput')?.addEventListener('input', function (e) {
         let val = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
         if (val.length > 4) {
             val = val.substring(0, 4) + '-' + val.substring(4, 8);
@@ -611,6 +722,61 @@
         e.target.value = val;
     });
 
+    // ⚡ Fast Quick Add Form Submission
+    async function submitQuickAddForm(event) {
+        event.preventDefault();
+        const roomNo = document.getElementById('quickRoomNo').value.trim();
+        const brand = document.getElementById('quickBrand').value;
+        const model = document.getElementById('quickModel').value.trim();
+        const alertBox = document.getElementById('quickFormAlert');
+        const submitBtn = document.getElementById('quickSubmitBtn');
+
+        alertBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Adding TV Device...';
+
+        try {
+            const response = await fetch("{{ route('hotel.devices.store') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    room_no: roomNo,
+                    brand: brand,
+                    model: model
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ' + data.message;
+                alertBox.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 400);
+            } else {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
+                alertBox.innerText = data.message || 'Failed to add TV device. Please check room number.';
+                alertBox.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-bolt text-amber-300 mr-2"></i> Add TV Device';
+            }
+        } catch (err) {
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
+            alertBox.innerText = 'Network error occurred. Please try again.';
+            alertBox.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-bolt text-amber-300 mr-2"></i> Add TV Device';
+        }
+    }
+
+    // 📱 Pair Screen Form Submission
     async function submitPairForm(event) {
         event.preventDefault();
         const code = document.getElementById('pairCodeInput').value.trim();
@@ -620,7 +786,7 @@
 
         alertBox.classList.add('hidden');
         submitBtn.disabled = true;
-        submitBtn.innerText = 'Pairing...';
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Connecting...';
 
         try {
             const response = await fetch("{{ route('hotel.devices.pair') }}", {
@@ -640,26 +806,45 @@
 
             if (response.ok && data.success) {
                 alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
-                alertBox.innerText = data.message;
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ' + data.message;
                 alertBox.classList.remove('hidden');
 
                 setTimeout(() => {
                     window.location.reload();
-                }, 1200);
+                }, 500);
             } else {
-                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
-                alertBox.innerText = data.message || 'Pairing failed. Please check the code.';
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 space-y-2';
+                let msgHtml = `<div>${data.message || 'Pairing failed. Please check the code.'}</div>`;
+                if (roomNo) {
+                    msgHtml += `
+                        <div class="pt-1 border-t border-rose-200/80">
+                            <button type="button" onclick="quickRegisterFromPair('${roomNo}')" class="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-bolt text-amber-300"></i>
+                                <span>Add Room ${roomNo} Directly Now</span>
+                            </button>
+                        </div>
+                    `;
+                }
+                alertBox.innerHTML = msgHtml;
                 alertBox.classList.remove('hidden');
                 submitBtn.disabled = false;
-                submitBtn.innerText = 'Connect & Pair TV';
+                submitBtn.innerHTML = '<span>Connect & Pair TV</span>';
             }
         } catch (err) {
             alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
             alertBox.innerText = 'Network error occurred. Please try again.';
             alertBox.classList.remove('hidden');
             submitBtn.disabled = false;
-            submitBtn.innerText = 'Connect & Pair TV';
+            submitBtn.innerHTML = '<span>Connect & Pair TV</span>';
         }
+    }
+
+    // Direct fallback from pair tab to instant quick registration
+    function quickRegisterFromPair(roomNo) {
+        switchModalMode('quick');
+        document.getElementById('quickRoomNo').value = roomNo;
+        const fakeEvent = new Event('submit', { cancelable: true });
+        submitQuickAddForm(fakeEvent);
     }
 
     let currentModalDevice = null;
