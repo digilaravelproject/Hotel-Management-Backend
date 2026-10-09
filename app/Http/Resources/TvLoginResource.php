@@ -113,11 +113,20 @@ class TvLoginResource extends JsonResource
 
         $roomInfoList = [];
         foreach ($roomInfos as $info) {
+            $rawSpecs = $info->specifications;
+            if (is_string($rawSpecs)) {
+                $decoded = json_decode($rawSpecs, true);
+                $rawSpecs = (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) 
+                    ? $decoded 
+                    : array_map('trim', explode(',', $rawSpecs));
+            }
+            $cleanSpecs = is_array($rawSpecs) ? array_values(array_filter($rawSpecs, fn($val) => !empty(trim((string)$val)))) : [];
+
             $roomInfoList[] = [
                 'sr_no' => (int) $info->sr_no,
                 'title' => $info->title,
                 'description' => $info->description ?? '',
-                'specifications' => is_array($info->specifications) ? $info->specifications : [],
+                'specifications' => $cleanSpecs,
                 'image_url' => $info->image ? asset($info->image) : null,
             ];
         }

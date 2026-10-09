@@ -138,6 +138,36 @@ class TvApiTest extends TestCase
         $versionResponse3->assertStatus(200);
         $versionResponse3->assertJsonPath('data.hotel.hotel_name', 'Updated Hotel Name');
 
+        // 9. Test RoomInfo Cache Invalidation and Specifications Serialization
+        $roomInfo = \App\Models\RoomInfo::create([
+            'hotel_admin_id' => $hotel->id,
+            'sr_no' => 1,
+            'title' => 'Deluxe King',
+            'description' => 'King bed room',
+            'specifications' => ['Wi-Fi', 'Balcony'],
+            'status' => true,
+        ]);
+
+        $versionResponse4 = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->getJson('/api/tv/template/check-version?version=2.0');
+
+        $versionResponse4->assertStatus(200);
+        $versionResponse4->assertJsonPath('data.room_info.0.title', 'Deluxe King');
+        $versionResponse4->assertJsonPath('data.room_info.0.specifications', ['Wi-Fi', 'Balcony']);
+
+        // Update specifications
+        $roomInfo->update([
+            'specifications' => ['4K TV', 'Jacuzzi', 'Ocean View'],
+        ]);
+
+        $versionResponse5 = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token,
+        ])->getJson('/api/tv/template/check-version?version=2.0');
+
+        $versionResponse5->assertStatus(200);
+        $versionResponse5->assertJsonPath('data.room_info.0.specifications', ['4K TV', 'Jacuzzi', 'Ocean View']);
+
         // Clean up dummy file
         @unlink(public_path($logoPath));
     }

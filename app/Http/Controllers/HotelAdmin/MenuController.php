@@ -72,9 +72,9 @@ class MenuController extends Controller
                 'global_menu_settings' => $sanitizedTree,
             ]);
 
-            // Dispatch real-time TV update event
+            // Clear cache and dispatch real-time TV update event
             try {
-                event(new TvConfigUpdatedEvent($hotel->id, 'MENU', null, ['action' => 'update']));
+                \App\Services\TvVersionCacheService::clearHotelCache($hotel->id, 'MENU');
             } catch (\Throwable $eventEx) {
                 Log::warning('TvConfigUpdatedEvent dispatch failed for Menu: ' . $eventEx->getMessage());
             }
@@ -120,7 +120,7 @@ class MenuController extends Controller
             ]);
 
             try {
-                event(new TvConfigUpdatedEvent($hotel->id, 'MENU', null, ['action' => 'reset']));
+                \App\Services\TvVersionCacheService::clearHotelCache($hotel->id, 'MENU');
             } catch (\Throwable $eventEx) {
                 Log::warning('TvConfigUpdatedEvent dispatch failed on Menu reset: ' . $eventEx->getMessage());
             }

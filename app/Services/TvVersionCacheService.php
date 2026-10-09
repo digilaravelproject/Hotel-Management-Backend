@@ -31,8 +31,8 @@ class TvVersionCacheService
         // Track key under hotel index list
         self::trackHotelKey($hotelId, $cacheKey);
 
-        // Remember forever until explicit model update invalidates the hotel cache
-        return Cache::rememberForever($cacheKey, $callback);
+        // Cache for 1 hour (3600s) or until explicit model update invalidates the hotel cache instantly
+        return Cache::remember($cacheKey, 3600, $callback);
     }
 
     /**
@@ -52,7 +52,7 @@ class TvVersionCacheService
     /**
      * Clear all check-version cache keys ONLY for the specified hotel.
      */
-    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null, bool $dispatchFcm = true): void
+    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null, bool $dispatchFcm = true, array $extraData = []): void
     {
         $indexKey = "tv_cache_index_hotel_{$hotelId}";
         $trackedKeys = Cache::get($indexKey, []);
@@ -65,7 +65,7 @@ class TvVersionCacheService
 
         // Dispatch realtime event so Firestore and FCM updates reach the TV
         if ($dispatchFcm) {
-            event(new \App\Events\TvConfigUpdatedEvent($hotelId, $scope, $roomNo));
+            event(new \App\Events\TvConfigUpdatedEvent($hotelId, $scope, $roomNo, $extraData));
         }
     }
 

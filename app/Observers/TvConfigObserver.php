@@ -46,26 +46,26 @@ class TvConfigObserver
     {
         if ($model instanceof TvTemplate) {
             // Global APK / Template version change
-            event(new TvConfigUpdatedEvent(null, 'TEMPLATE', null, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearAllHotelsCache();
         } elseif ($model instanceof HotelAdmin) {
             // Ignore if only theme changed (handled explicitly with TEMPLATE scope)
             if ($model->wasChanged('selected_theme_id') && count($model->getChanges()) <= 2) {
                 return;
             }
             // Hotel profile / media / configuration change
-            event(new TvConfigUpdatedEvent($model->id, 'HOTEL_INFO', null, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $model->id, 'HOTEL_INFO', null, true, ['action' => $action]);
         } elseif ($model instanceof Guest) {
             // Room guest check-in / check-out change
-            event(new TvConfigUpdatedEvent($model->hotel_id, 'GUEST', $model->room_number, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $model->hotel_id, 'GUEST', $model->room_number, true, ['action' => $action]);
         } elseif ($model instanceof Amenity) {
             // Hotel amenity list change
-            event(new TvConfigUpdatedEvent($model->hotel_admin_id, 'AMENITY', null, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $model->hotel_admin_id, 'AMENITY', null, true, ['action' => $action]);
         } elseif ($model instanceof \App\Models\RoomInfo) {
             // Hotel room info list change
-            event(new TvConfigUpdatedEvent($model->hotel_admin_id, 'ROOM_INFO', null, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $model->hotel_admin_id, 'ROOM_INFO', null, true, ['action' => $action]);
         } elseif ($model instanceof \App\Models\OurCity) {
             // Hotel our city / attractions change
-            event(new TvConfigUpdatedEvent($model->hotel_admin_id, 'OUR_CITY', null, ['action' => $action]));
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $model->hotel_admin_id, 'OUR_CITY', null, true, ['action' => $action]);
         }
     }
 }
