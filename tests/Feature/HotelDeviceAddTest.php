@@ -122,4 +122,85 @@ class HotelDeviceAddTest extends TestCase
             'device_id' => 'TV-PAIR-TEST-1',
         ]);
     }
+
+    public function test_invalid_pair_code_returns_404_and_does_not_create_device(): void
+    {
+        $response = $this->actingAs($this->hotel, 'hotel_admin')
+                         ->postJson(route('hotel.devices.pair'), [
+                             'pair_code' => 'INVALID99',
+                             'room_no' => '999',
+                         ]);
+
+        $response->assertStatus(404)
+                 ->assertJson([
+                     'success' => false,
+                 ]);
+
+        // Must NOT create any fake dummy device in the database!
+        $this->assertDatabaseMissing('connected_devices', [
+            'hotel_admin_id' => $this->hotel->id,
+            'room_no' => '999',
+        ]);
+    }
+
+    public function test_expired_pair_code_returns_410(): void
+    {
+        $session = TvPairSession::create([
+            'pair_code' => 'EXP1-CODE',
+            'device_id' => 'TV-EXP-1',
+            'mac_address' => '00:11:22:33:44:55',
+            'status' => 'pending',
+            'expires_at' => now()->subMinute(),
+        ]);
+
+        $response = $this->actingAs($this->hotel, 'hotel_admin')
+                         ->postJson(route('hotel.devices.pair'), [
+                             'pair_code' => 'EXP1-CODE',
+                             'room_no' => '301',
+                         ]);
+
+        $response->assertStatus(410)
+                 ->assertJson([
+                     'success' => false,
+                 ]);
+
+        $this->assertDatabaseMissing('connected_devices', [
+            'hotel_admin_id' => $this->hotel->id,
+            'room_no' => '301',
+        ]);
+    }
+
+    public function test_tv_pair_status_polling_remains_available_after_pair(): void
+    {
+        $session = TvPairSession::create([
+            'pair_code' => '9999-AAAA',
+            'device_id' => 'TV-TEST-RETRY',
+            'mac_address' => 'AA:BB:CC:DD:EE:00',
+            'status' => 'pending',
+            'expires_at' => now()->addMinutes(10),
+        ]);
+
+        // Hotel admin pairs the device
+        $pairResponse = $this->actingAs($this->hotel, 'hotel_admin')
+                             ->postJson(route('hotel.devices.pair'), [
+                                 'pair_code' => '9999-AAAA',
+                                 'room_no' => '404',
+                             ]);
+
+        $pairResponse->assertStatus(200);
+
+        // First TV poll: retrieves token and marks completed
+        $tvResponse1 = $this->postJson('/api/tv/pair-status', [
+            'pair_code' => '9999-AAAA',
+            'deviceId' => 'TV-TEST-RETRY',
+        ]);
+        $tvResponse1->assertStatus(200);
+
+        // Second TV poll (retry / network reconnect): still returns valid response instead of 404!
+        $tvResponse2 = $this->postJson('/api/tv/pair-status', [
+            'pair_code' => '9999-AAAA',
+            'deviceId' => 'TV-TEST-RETRY',
+        ]);
+        $tvResponse2->assertStatus(200);
+    }
 }

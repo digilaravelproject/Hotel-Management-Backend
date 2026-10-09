@@ -14,7 +14,7 @@ class ConnectedDeviceObserver
     {
         $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
         if ($hotelId) {
-            TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no);
+            TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no, true);
         }
     }
 

@@ -18,13 +18,27 @@ class TvPairController extends Controller
     public function generatePairCode(Request $request)
     {
         $request->validate([
-            'deviceId' => 'required|string',
-            'macAddress' => 'required|string',
+            'deviceId' => 'nullable|string',
+            'device_id' => 'nullable|string',
+            'macAddress' => 'nullable|string',
+            'mac_address' => 'nullable|string',
             'ipAddress' => 'nullable|string',
+            'ip_address' => 'nullable|string',
             'model' => 'nullable|string',
             'brand' => 'nullable|string',
             'osVersion' => 'nullable|string',
+            'os_version' => 'nullable|string',
         ]);
+
+        $deviceId = trim($request->input('deviceId') ?: $request->input('device_id', ''));
+        $macAddress = trim($request->input('macAddress') ?: $request->input('mac_address', ''));
+
+        if (empty($deviceId) || empty($macAddress)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'deviceId and macAddress are required to generate pairing code.',
+            ], 422);
+        }
 
         // Generate unique formatted 8-character code e.g. "8F2A-9K3P"
         do {
@@ -33,21 +47,21 @@ class TvPairController extends Controller
         } while (TvPairSession::where('pair_code', $pairCode)->where('status', 'pending')->exists());
 
         // Auto Cleanup: Delete all previous sessions (pending or expired) for this device_id
-        TvPairSession::where('device_id', $request->deviceId)->delete();
+        TvPairSession::where('device_id', $deviceId)->delete();
 
-        // Also cleanup any global expired sessions older than 5 minutes
+        // Also cleanup any global expired sessions
         TvPairSession::where('expires_at', '<', now())->delete();
 
-        $expiresAt = now()->addMinutes(5);
+        $expiresAt = now()->addMinutes(10);
 
         $session = TvPairSession::create([
             'pair_code' => $pairCode,
-            'device_id' => $request->deviceId,
-            'mac_address' => $request->macAddress,
-            'ip_address' => $request->ipAddress,
-            'model' => $request->model,
-            'brand' => $request->brand,
-            'os_version' => $request->osVersion,
+            'device_id' => $deviceId,
+            'mac_address' => $macAddress,
+            'ip_address' => $request->input('ipAddress') ?: $request->input('ip_address'),
+            'model' => $request->input('model'),
+            'brand' => $request->input('brand'),
+            'os_version' => $request->input('osVersion') ?: $request->input('os_version'),
             'status' => 'pending',
             'expires_at' => $expiresAt,
         ]);
@@ -70,12 +84,26 @@ class TvPairController extends Controller
     {
         $request->validate([
             'pair_code' => 'required|string',
-            'deviceId' => 'required|string',
+            'deviceId' => 'nullable|string',
+            'device_id' => 'nullable|string',
         ]);
 
-        $session = TvPairSession::where('pair_code', strtoupper(trim($request->pair_code)))
-            ->where('device_id', $request->deviceId)
-            ->first();
+        $deviceId = trim($request->input('deviceId') ?: $request->input('device_id', ''));
+        $cleanCode = strtoupper(trim($request->pair_code));
+        $rawCode = str_replace(['-', ' '], '', $cleanCode);
+        $formattedCode = strlen($rawCode) === 8 ? substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4) : $cleanCode;
+
+        $query = TvPairSession::where(function($q) use ($cleanCode, $rawCode, $formattedCode) {
+            $q->where('pair_code', $cleanCode)
+              ->orWhere('pair_code', $rawCode)
+              ->orWhere('pair_code', $formattedCode);
+        });
+
+        if (!empty($deviceId)) {
+            $query->where('device_id', $deviceId);
+        }
+
+        $session = $query->first();
 
         if (!$session) {
             return response()->json([
@@ -116,16 +144,11 @@ class TvPairController extends Controller
 
             $hotel->loadMissing('plan');
 
-            $response = new TvLoginResource([
+            return new TvLoginResource([
                 'device' => $device,
                 'hotel' => $hotel,
                 'message' => 'TV Paired and logged in successfully!'
             ]);
-
-            // Once login response is delivered to TV app, cleanup the temporary pairing session record
-            $session->delete();
-
-            return $response;
         }
 
         return response()->json([

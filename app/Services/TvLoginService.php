@@ -34,30 +34,46 @@ class TvLoginService
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
 
-        $token = Str::random(80);
+        // 3. Check if there's already an existing device assigned to this room in this hotel
+        $existingRoomDevice = $hotel->connectedDevices()->where('room_no', $data['room_no'])->first();
 
-        if (!$device) {
+        $token = Str::random(80);
+        $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? null;
+
+        if (!$device && $existingRoomDevice) {
+            // Room already has a device record (e.g. placeholder or previous TV).
+            // Re-bind the existing room record to this TV's hardware identifiers.
+            $existingRoomDevice->update([
+                'device_id'   => $data['deviceId'],
+                'mac_address' => $data['macAddress'],
+                'ip_address'  => $data['ipAddress'] ?? $existingRoomDevice->ip_address,
+                'model'       => $data['model'] ?? $existingRoomDevice->model,
+                'brand'       => $data['brand'] ?? $existingRoomDevice->brand,
+                'os_version'  => $data['osVersion'] ?? $existingRoomDevice->os_version,
+                'api_token'   => $token,
+                'fcm_token'   => $fcmToken ?? $existingRoomDevice->fcm_token,
+            ]);
+            $device = $existingRoomDevice;
+        } elseif (!$device) {
             // New Registration - Check Allowed Limit
             $allowedLimit = $hotel->allowed_device_limit;
             $currentCount = $hotel->connectedDevices()->count();
 
             if ($currentCount >= $allowedLimit) {
-                throw new HttpException(403, 'Device limit reached for this license');
+                throw new HttpException(403, "Device limit reached ({$allowedLimit} TVs allowed for your subscription plan).");
             }
-
-            $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? null;
 
             // Create new device record with API Token
             $device = $hotel->connectedDevices()->create([
-                'room_no' => $data['room_no'],
-                'device_id' => $data['deviceId'],
+                'room_no'     => $data['room_no'],
+                'device_id'   => $data['deviceId'],
                 'mac_address' => $data['macAddress'],
-                'ip_address' => $data['ipAddress'] ?? null,
-                'model' => $data['model'] ?? null,
-                'brand' => $data['brand'] ?? null,
-                'os_version' => $data['osVersion'] ?? null,
-                'api_token' => $token,
-                'fcm_token' => $fcmToken,
+                'ip_address'  => $data['ipAddress'] ?? null,
+                'model'       => $data['model'] ?? null,
+                'brand'       => $data['brand'] ?? null,
+                'os_version'  => $data['osVersion'] ?? null,
+                'api_token'   => $token,
+                'fcm_token'   => $fcmToken,
             ]);
         } else {
             // Existing Device - If hotel admin ID changes, check the limit for the new hotel admin
@@ -66,23 +82,23 @@ class TvLoginService
                 $currentCount = $hotel->connectedDevices()->count();
 
                 if ($currentCount >= $allowedLimit) {
-                    throw new HttpException(403, 'Device limit reached for this license');
+                    throw new HttpException(403, "Device limit reached ({$allowedLimit} TVs allowed for your subscription plan).");
                 }
             }
 
-            $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? $device->fcm_token;
+            $fcmToken = $fcmToken ?? $device->fcm_token;
 
             // Update dynamic details, hotel assignment, and MAC address
             $device->update([
                 'hotel_admin_id' => $hotel->id,
-                'room_no' => $data['room_no'],
-                'mac_address' => $data['macAddress'],
-                'ip_address' => $data['ipAddress'] ?? null,
-                'model' => $data['model'] ?? null,
-                'brand' => $data['brand'] ?? null,
-                'os_version' => $data['osVersion'] ?? null,
-                'api_token' => $token,
-                'fcm_token' => $fcmToken,
+                'room_no'        => $data['room_no'],
+                'mac_address'    => $data['macAddress'],
+                'ip_address'     => $data['ipAddress'] ?? null,
+                'model'          => $data['model'] ?? null,
+                'brand'          => $data['brand'] ?? null,
+                'os_version'     => $data['osVersion'] ?? null,
+                'api_token'      => $token,
+                'fcm_token'      => $fcmToken,
             ]);
         }
 

@@ -52,7 +52,7 @@ class TvVersionCacheService
     /**
      * Clear all check-version cache keys ONLY for the specified hotel.
      */
-    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null, bool $dispatchFcm = false): void
+    public static function clearHotelCache(int $hotelId, string $scope = 'ALL', ?string $roomNo = null, bool $dispatchFcm = true): void
     {
         $indexKey = "tv_cache_index_hotel_{$hotelId}";
         $trackedKeys = Cache::get($indexKey, []);
@@ -63,7 +63,7 @@ class TvVersionCacheService
 
         Cache::forget($indexKey);
 
-        // Only dispatch event if explicitly requested to prevent duplicate cascading event loops
+        // Dispatch realtime event so Firestore and FCM updates reach the TV
         if ($dispatchFcm) {
             event(new \App\Events\TvConfigUpdatedEvent($hotelId, $scope, $roomNo));
         }
