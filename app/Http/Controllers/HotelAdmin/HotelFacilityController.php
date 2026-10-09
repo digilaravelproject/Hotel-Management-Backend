@@ -15,22 +15,44 @@ class HotelFacilityController extends Controller
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $rawGallery = $hotel->hotel_gallery_images ?? [];
+        if (!$hotel) {
+            return redirect()->route('hotel.login');
+        }
 
-        $facilities = [];
+        $facilities = $this->getNormalizedGallery($hotel);
+
+        return view('hotel_admin.facilities.index', compact('facilities'));
+    }
+
+    /**
+     * Ensure all gallery items have persistent, stable IDs and consistent structure.
+     */
+    protected function getNormalizedGallery($hotel): array
+    {
+        $rawGallery = $hotel->hotel_gallery_images ?? [];
+        $gallery = [];
+        $modified = false;
+
         foreach ($rawGallery as $k => $item) {
             if (is_array($item)) {
-                $facilities[] = [
-                    'id' => $item['id'] ?? ('gal_' . uniqid()),
+                $hasId = !empty($item['id']);
+                $stableId = $hasId ? (string)$item['id'] : ('gal_' . ($k + 1) . '_' . substr(md5(json_encode($item) . $k), 0, 6));
+                if (!$hasId) {
+                    $modified = true;
+                }
+
+                $gallery[$k] = [
+                    'id' => $stableId,
                     'title' => $item['title'] ?? ('Hotel Facility #' . ($k + 1)),
                     'description' => $item['description'] ?? '',
-                    'features' => is_array($item['features'] ?? null) ? $item['features'] : [],
+                    'features' => is_array($item['features'] ?? null) ? array_values($item['features']) : [],
                     'image' => $item['image'] ?? '',
                     'created_at' => $item['created_at'] ?? now()->toIso8601String(),
                 ];
             } else {
-                $facilities[] = [
-                    'id' => 'gal_' . uniqid(),
+                $modified = true;
+                $gallery[$k] = [
+                    'id' => 'gal_' . ($k + 1) . '_' . substr(md5((string)$item . $k), 0, 6),
                     'title' => 'Hotel Facility #' . ($k + 1),
                     'description' => '',
                     'features' => [],
@@ -40,7 +62,11 @@ class HotelFacilityController extends Controller
             }
         }
 
-        return view('hotel_admin.facilities.index', compact('facilities'));
+        if ($modified) {
+            $hotel->update(['hotel_gallery_images' => array_values($gallery)]);
+        }
+
+        return $gallery;
     }
 
     /**
@@ -79,7 +105,7 @@ class HotelFacilityController extends Controller
             $features = array_slice($features, 0, 4);
         }
 
-        $gallery = $hotel->hotel_gallery_images ?? [];
+        $gallery = $this->getNormalizedGallery($hotel);
         if (count($gallery) >= 20) {
             return back()->with('error', 'Maximum limit of 20 hotel facilities reached.');
         }
@@ -126,7 +152,7 @@ class HotelFacilityController extends Controller
             'image.max' => 'The image file size must not exceed 5MB.',
         ]);
 
-        $gallery = $hotel->hotel_gallery_images ?? [];
+        $gallery = $this->getNormalizedGallery($hotel);
         $found = false;
 
         $features = [];
@@ -156,7 +182,7 @@ class HotelFacilityController extends Controller
                 }
 
                 $gallery[$key] = [
-                    'id' => is_array($item) && !empty($item['id']) ? $item['id'] : ('gal_' . uniqid()),
+                    'id' => is_array($item) && !empty($item['id']) ? $item['id'] : ('gal_' . ($key + 1)),
                     'title' => $request->title,
                     'description' => $request->description,
                     'features' => $features,
@@ -191,7 +217,7 @@ class HotelFacilityController extends Controller
     public function destroy($id)
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $gallery = $hotel->hotel_gallery_images ?? [];
+        $gallery = $this->getNormalizedGallery($hotel);
         $found = false;
 
         foreach ($gallery as $key => $item) {
@@ -224,26 +250,51 @@ class HotelFacilityController extends Controller
     }
 
     /**
-     * Helper to match a gallery item by any ID representation
+     * Helper to match a gallery item by any ID or index representation
      */
     private function matchGalleryItem($item, $key, $targetId): bool
     {
-        $targetId = (string) $targetId;
+        $targetId = trim((string) $targetId);
         $cleanTargetId = str_starts_with($targetId, 'gal_') ? substr($targetId, 4) : $targetId;
+        $numTargetId = ltrim($targetId, '#');
 
-        if ((string)$key === $targetId || (string)$key === $cleanTargetId || ('gal_' . $key) === $targetId) {
+        // 1. Match by 0-based index: 0, 1, 2
+        if ((string)$key === $targetId || (string)$key === $cleanTargetId || (string)$key === $numTargetId || ('gal_' . $key) === $targetId) {
             return true;
         }
 
-        $imagePath = is_array($item) ? ($item['image'] ?? '') : (string) $item;
-        $itemId = is_array($item) ? ($item['id'] ?? '') : '';
+        // 2. Match by 1-based index (e.g., #2, 2, gal_2)
+        $oneBased = (string)($key + 1);
+        if ($oneBased === $targetId || $oneBased === $cleanTargetId || $oneBased === $numTargetId || ('gal_' . $oneBased) === $targetId || ('#' . $oneBased) === $targetId) {
+            return true;
+        }
 
+        $itemId = is_array($item) ? (string)($item['id'] ?? '') : '';
+        $cleanItemId = str_starts_with($itemId, 'gal_') ? substr($itemId, 4) : $itemId;
+
+        // 3. Match by item ID
         if (!empty($itemId)) {
-            if ($itemId === $targetId || $itemId === $cleanTargetId || ('gal_' . $itemId) === $targetId) {
+            if ($itemId === $targetId || $itemId === $cleanTargetId || $itemId === $numTargetId || ('gal_' . $itemId) === $targetId) {
+                return true;
+            }
+            if ($cleanItemId === $cleanTargetId || $cleanItemId === $targetId || $cleanItemId === $numTargetId) {
                 return true;
             }
         }
 
+        // 4. Match by title (e.g. "Hotel Facility #2")
+        $itemTitle = is_array($item) ? (string)($item['title'] ?? '') : '';
+        if (!empty($itemTitle)) {
+            if (strcasecmp($itemTitle, $targetId) === 0) {
+                return true;
+            }
+            if (strcasecmp($itemTitle, 'Hotel Facility #' . $oneBased) === 0 && ($targetId === $oneBased || $targetId === '#' . $oneBased || $targetId === 'gal_' . $oneBased)) {
+                return true;
+            }
+        }
+
+        // 5. Match by image path or md5 hash
+        $imagePath = is_array($item) ? ($item['image'] ?? '') : (string) $item;
         if (!empty($imagePath)) {
             $hash = md5($imagePath);
             if ($hash === $targetId || $hash === $cleanTargetId || ('gal_' . $hash) === $targetId) {

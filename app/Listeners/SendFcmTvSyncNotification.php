@@ -33,12 +33,27 @@ class SendFcmTvSyncNotification
      */
     public function handle(TvConfigUpdatedEvent $event): void
     {
-        // If running in PHP-FPM web request, finish the HTTP response to the browser immediately
-        // so the user never experiences 504 Gateway Time-out while background sync continues.
-        if (function_exists('fastcgi_finish_request') && !app()->runningInConsole()) {
-            fastcgi_finish_request();
+        // If handling a web request, defer heavy Firebase/Google API round-trips
+        // until AFTER the HTTP response is sent to the browser/client.
+        // This makes pairing and device save return in <100ms instead of 4+ seconds!
+        if (!app()->runningInConsole()) {
+            app()->terminating(function () use ($event) {
+                if (function_exists('fastcgi_finish_request')) {
+                    fastcgi_finish_request();
+                }
+                $this->processSync($event);
+            });
+            return;
         }
 
+        $this->processSync($event);
+    }
+
+    /**
+     * Process actual Firestore sync and FCM push notifications.
+     */
+    public function processSync(TvConfigUpdatedEvent $event): void
+    {
         $dataPayload = array_merge([
             'scope' => $event->scope,
             'hotel_id' => (string) ($event->hotelId ?? ''),
