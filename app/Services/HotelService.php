@@ -61,8 +61,8 @@ class HotelService
             'status' => $data['status'] ?? true,
             'purchase_date' => $purchaseDate,
             'expiry_date' => $expiryDate,
-            'auto_renew' => filter_var($data['auto_renew'] ?? false, FILTER_VALIDATE_BOOLEAN),
-            'renewal_type' => !empty($data['auto_renew']) ? 'auto' : 'manual',
+            'auto_renew' => $autoRenew = filter_var($data['auto_renew'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'renewal_type' => $autoRenew ? 'auto' : 'manual',
         ];
 
         // Process Hotel Logo
