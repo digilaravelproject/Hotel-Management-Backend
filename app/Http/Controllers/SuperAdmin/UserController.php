@@ -83,6 +83,7 @@ class UserController extends Controller
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
             'status' => 'nullable|boolean',
+            'commission_percentage' => 'nullable|numeric|between:0,100',
         ]);
 
         $user = User::create([
@@ -91,6 +92,7 @@ class UserController extends Controller
             'phone' => $validated['phone'] ?? null,
             'password' => Hash::make($validated['password']),
             'status' => $request->has('status') ? $request->boolean('status') : true,
+            'commission_percentage' => array_key_exists('commission_percentage', $validated) && $validated['commission_percentage'] !== null && $validated['commission_percentage'] !== '' ? $validated['commission_percentage'] : null,
         ]);
 
         // Assign Spatie Roles
@@ -147,6 +149,7 @@ class UserController extends Controller
             'permissions' => 'nullable|array',
             'permissions.*' => 'exists:permissions,name',
             'status' => 'nullable|boolean',
+            'commission_percentage' => 'nullable|numeric|between:0,100',
         ]);
 
         $updateData = [
@@ -154,6 +157,7 @@ class UserController extends Controller
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'status' => $request->has('status') ? $request->boolean('status') : $user->status,
+            'commission_percentage' => array_key_exists('commission_percentage', $validated) && $validated['commission_percentage'] !== null && $validated['commission_percentage'] !== '' ? $validated['commission_percentage'] : null,
         ];
 
         if (!empty($validated['password'])) {

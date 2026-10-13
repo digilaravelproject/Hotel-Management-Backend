@@ -89,7 +89,7 @@ class HotelService
 
         // Record distributor sale if requested or in distributor flow
         if (!empty($data['record_distributor_sale']) && !empty($hotel->distributor_id) && $plan) {
-            DistributorSale::create([
+            $sale = DistributorSale::create([
                 'distributor_id' => $hotel->distributor_id,
                 'hotel_id' => $hotel->id,
                 'plan_id' => $plan->id,

@@ -67,20 +67,23 @@
             </div>
         </div>
 
-        <!-- Metric 4: Distributor Status -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <!-- Metric 4: Wallet Balance -->
+        @php
+            $dashWallet = auth()->user()->wallet;
+            $dashBalance = $dashWallet ? $dashWallet->available_balance : 0.00;
+        @endphp
+        <a href="{{ route('distributor.wallet.index') }}" class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between hover:border-amber-300 transition-all group">
             <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Account Standing</p>
-                <div class="text-base font-extrabold text-emerald-600 mt-2 flex items-center space-x-1.5">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span>Fully Verified</span>
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Wallet Balance</p>
+                <div class="text-3xl font-extrabold text-amber-600 mt-1">₹{{ number_format($dashBalance, 2) }}</div>
+                <div class="text-xs text-amber-700 font-bold mt-1 group-hover:underline">
+                    Rate: {{ auth()->user()->effective_commission_percentage }}% • Payout <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </div>
-                <div class="text-xs text-slate-400 font-mono mt-1">Distributor #{{ auth()->id() }}</div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center text-lg">
-                <i class="fa-solid fa-id-badge"></i>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-wallet"></i>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- Recent Hotels & Sales Grids -->

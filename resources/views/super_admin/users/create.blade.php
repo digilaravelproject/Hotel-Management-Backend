@@ -62,6 +62,17 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">
+                        Commission Override (%) <span class="text-slate-400 font-normal">(Optional)</span>
+                    </label>
+                    <div class="relative">
+                        <input type="number" step="0.01" min="0" max="100" name="commission_percentage" value="{{ old('commission_percentage') }}" placeholder="Leave empty for global default" class="w-full pl-3.5 pr-8 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <span class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs pointer-events-none">%</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 mt-1">Overrides the global default commission if this user is a distributor.</p>
+                </div>
+
+                <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Password <span class="text-rose-500">*</span></label>
                     <input type="password" name="password" required placeholder="Minimum 6 characters" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
                 </div>

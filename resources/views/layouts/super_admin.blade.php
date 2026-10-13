@@ -90,6 +90,24 @@
                     <i class="fa-solid fa-fire text-base w-5 text-center text-amber-500"></i>
                     <span>FCM Config & Realtime</span>
                 </a>
+                <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-money-bill-transfer text-base w-5 text-center text-emerald-400"></i>
+                        <span>Withdrawals</span>
+                    </div>
+                    @php
+                        $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
+                    @endphp
+                    @if($pendingWithdrawalsCount > 0)
+                        <span class="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-extrabold text-[10px] animate-pulse">
+                            {{ $pendingWithdrawalsCount }}
+                        </span>
+                    @endif
+                </a>
+                <a href="{{ route('super-admin.commissions.settings') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.commissions.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <i class="fa-solid fa-percent text-base w-5 text-center text-rose-400"></i>
+                    <span>Commission Setup</span>
+                </a>
                 <a href="{{ route('super-admin.settings.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('super-admin.settings.*') ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
                     <i class="fa-solid fa-sliders text-base w-5 text-center text-rose-400"></i>
                     <span>System & Branding</span>

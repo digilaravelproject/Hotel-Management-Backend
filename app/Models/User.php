@@ -26,6 +26,7 @@ class User extends Authenticatable
         'phone',
         'password',
         'status',
+        'commission_percentage',
     ];
 
     /**
@@ -42,6 +43,42 @@ class User extends Authenticatable
     public function distributorSales()
     {
         return $this->hasMany(DistributorSale::class, 'distributor_id');
+    }
+
+    /**
+     * Dedicated digital wallet for distributor.
+     */
+    public function wallet()
+    {
+        return $this->hasOne(DistributorWallet::class, 'distributor_id');
+    }
+
+    /**
+     * Distributor wallet transactions.
+     */
+    public function walletTransactions()
+    {
+        return $this->hasMany(DistributorWalletTransaction::class, 'distributor_id');
+    }
+
+    /**
+     * Distributor withdrawal requests.
+     */
+    public function withdrawalRequests()
+    {
+        return $this->hasMany(WithdrawalRequest::class, 'distributor_id');
+    }
+
+    /**
+     * Resolve effective commission percentage (individual override > global default).
+     */
+    public function getEffectiveCommissionPercentageAttribute(): float
+    {
+        if ($this->commission_percentage !== null) {
+            return (float) $this->commission_percentage;
+        }
+
+        return (float) CommissionSetting::getSetting()->default_percentage;
     }
 
     /**

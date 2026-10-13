@@ -76,6 +76,20 @@
                     <i class="fa-solid fa-box-open text-base w-5 text-center"></i>
                     <span>Sell Package</span>
                 </a>
+                <a href="{{ route('distributor.wallet.index') }}" class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('distributor.wallet.*') ? 'bg-amber-500 text-slate-950 font-bold shadow-lg shadow-amber-500/30' : 'text-slate-400 hover:text-white hover:bg-slate-900' }}">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-wallet text-base w-5 text-center"></i>
+                        <span>My Wallet</span>
+                    </div>
+                    @php
+                        $userWallet = auth()->user() ? auth()->user()->wallet : null;
+                    @endphp
+                    @if($userWallet && $userWallet->balance > 0)
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-extrabold text-[10px] border border-emerald-500/30">
+                            ₹{{ number_format($userWallet->balance, 0) }}
+                        </span>
+                    @endif
+                </a>
             </nav>
 
             <!-- Sign Out Button -->

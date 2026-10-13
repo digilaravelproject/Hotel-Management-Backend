@@ -88,5 +88,14 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     // Application & System Branding Settings
     Route::get('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'update'])->name('settings.update');
+
+    // Commission Settings (Global)
+    Route::get('commissions/settings', [\App\Http\Controllers\SuperAdmin\CommissionController::class, 'settings'])->name('commissions.settings');
+    Route::post('commissions/settings', [\App\Http\Controllers\SuperAdmin\CommissionController::class, 'updateSettings'])->name('commissions.settings.update');
+
+    // Distributor Withdrawal Requests Management
+    Route::get('withdrawals', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'index'])->name('withdrawals.index');
+    Route::post('withdrawals/{id}/approve', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'approve'])->name('withdrawals.approve');
+    Route::post('withdrawals/{id}/reject', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'reject'])->name('withdrawals.reject');
 });
 

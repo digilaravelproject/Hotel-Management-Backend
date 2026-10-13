@@ -34,4 +34,11 @@ Route::middleware(['auth:web', 'role:distributor|super_admin'])->prefix('distrib
     // Connected devices
     Route::get('devices', [DistributorController::class, 'devices'])->name('devices.index');
     Route::delete('devices/{id}', [DistributorController::class, 'destroyDevice'])->name('devices.destroy');
+
+    // Digital Wallet & Commissions
+    Route::get('wallet', [\App\Http\Controllers\Distributor\WalletController::class, 'index'])->name('wallet.index');
+    Route::get('wallet/transactions', [\App\Http\Controllers\Distributor\WalletController::class, 'transactions'])->name('wallet.transactions');
+    Route::get('wallet/withdrawals', [\App\Http\Controllers\Distributor\WalletController::class, 'withdrawals'])->name('wallet.withdrawals');
+    Route::post('wallet/withdraw', [\App\Http\Controllers\Distributor\WalletController::class, 'requestWithdrawal'])->name('wallet.withdraw');
 });
+
