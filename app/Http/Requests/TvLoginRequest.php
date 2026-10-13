@@ -24,14 +24,17 @@ class TvLoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'license_key' => 'required|string',
-            'room_no' => 'required|string|max:50',
+            'license_key' => 'required_without:demo_login|string|nullable',
+            'room_no' => 'required_without:demo_login|string|nullable|max:50',
             'deviceId' => 'required|string|max:100',
             'macAddress' => 'required|string|max:100',
             'ipAddress' => 'nullable|string|max:45',
             'model' => 'nullable|string|max:100',
             'brand' => 'nullable|string|max:100',
             'osVersion' => 'nullable|string|max:50',
+            'demo_login' => 'nullable|boolean',
+            'is_demo' => 'nullable|boolean',
+            'distributor_code' => 'nullable|string|max:50',
         ];
     }
 

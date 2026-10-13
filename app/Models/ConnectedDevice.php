@@ -21,11 +21,18 @@ class ConnectedDevice extends Model
         'fcm_token',
         'ott_overrides',
         'menu_overrides',
+        'is_demo',
+        'demo_expires_at',
+        'distributor_id',
+        'demo_status',
     ];
 
     protected $casts = [
         'ott_overrides' => 'array',
         'menu_overrides' => 'array',
+        'is_demo' => 'boolean',
+        'demo_expires_at' => 'datetime',
+        'demo_status' => 'string',
     ];
 
     /**

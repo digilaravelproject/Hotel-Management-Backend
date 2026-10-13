@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\TvTemplateController;
 */
 
 Route::post('/tv/login', [TvLoginController::class, 'login']);
+Route::post('/tv/demo-login', [TvLoginController::class, 'demoLogin']);
 Route::post('/tv/generate-pair-code', [\App\Http\Controllers\Api\TvPairController::class, 'generatePairCode']);
 Route::post('/tv/pair-status', [\App\Http\Controllers\Api\TvPairController::class, 'checkStatus']);
 

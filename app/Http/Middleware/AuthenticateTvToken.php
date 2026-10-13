@@ -34,6 +34,16 @@ class AuthenticateTvToken
             ], 401);
         }
 
+        // Real-time demo expiry check for isolated per-device trial locking
+        if ($device->is_demo && $device->demo_expires_at && now()->greaterThan($device->demo_expires_at)) {
+            $device->update(['demo_status' => 'expired']);
+            return response()->json([
+                'status' => false,
+                'error_code' => 'DEMO_EXPIRED',
+                'message' => 'Demo trial period has expired. Please purchase a license to continue.',
+            ], 403);
+        }
+
         // Attach the resolved device and hotel to the request
         $request->merge([
             'current_device' => $device,

@@ -10,6 +10,35 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class TvLoginService
 {
+    public function resolveDistributorFromCode(?string $code): ?int
+    {
+        if (empty($code)) {
+            return null;
+        }
+
+        // Direct user ID (e.g. 5)
+        if (is_numeric($code)) {
+            $user = \App\Models\User::find((int) $code);
+            return $user?->id;
+        }
+
+        // Prefix match e.g. DST-5, DIST-5
+        if (preg_match('/^(?:DIST|DST)[-_]?(\d+)$/i', $code, $matches)) {
+            $user = \App\Models\User::find((int) $matches[1]);
+            if ($user) {
+                return $user->id;
+            }
+        }
+
+        // Safe column check for custom referral code
+        if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'distributor_referral_code')) {
+            $user = \App\Models\User::where('distributor_referral_code', $code)->first();
+            return $user?->id;
+        }
+
+        return null;
+    }
+
     /**
      * Authenticate TV, manage limits/idempotency, and return the device and hotel models.
      *
@@ -19,6 +48,72 @@ class TvLoginService
      */
     public function authenticateTv(array $data): array
     {
+        // Demo login path: bind to Demo Showcase Hotel if device not yet registered
+        if (!empty($data['demo_login']) || !empty($data['is_demo'])) {
+            $demoHotel = HotelAdmin::where('license_key', 'DEMO-MASTER-SHOWCASE')->first();
+            if (!$demoHotel) {
+                throw new HttpException(403, 'Demo showcase hotel not configured');
+            }
+
+            // Hardware-lock anti-abuse: check if device already has a demo record by deviceId or macAddress
+            $existingDemoDevice = ConnectedDevice::query()
+                ->where('is_demo', true)
+                ->where(function ($q) use ($data) {
+                    $q->where('device_id', $data['deviceId']);
+                    if (!empty($data['macAddress'])) {
+                        $q->orWhere('mac_address', $data['macAddress']);
+                    }
+                })
+                ->first();
+
+            if ($existingDemoDevice) {
+                if ($existingDemoDevice->demo_status === 'expired' || ($existingDemoDevice->demo_expires_at && now()->greaterThan($existingDemoDevice->demo_expires_at))) {
+                    $existingDemoDevice->update(['demo_status' => 'expired']);
+                    throw new HttpException(403, 'Demo trial has already expired for this TV device. Please purchase a license.');
+                }
+                // Active existing demo device: refresh token
+                $token = Str::random(80);
+                $existingDemoDevice->update([
+                    'api_token' => $token,
+                    'mac_address' => $data['macAddress'] ?? $existingDemoDevice->mac_address,
+                    'ip_address' => $data['ipAddress'] ?? $existingDemoDevice->ip_address,
+                ]);
+                $daysLeft = $existingDemoDevice->demo_expires_at ? max(0, (int) ceil(now()->diffInHours($existingDemoDevice->demo_expires_at) / 24)) : 0;
+                return [
+                    'device' => $existingDemoDevice->fresh(),
+                    'hotel' => $demoHotel,
+                    'is_demo' => true,
+                    'days_left' => $daysLeft,
+                ];
+            }
+
+            // New demo device registration under Demo Showcase Hotel
+            $token = Str::random(80);
+            $device = ConnectedDevice::create([
+                'hotel_admin_id' => $demoHotel->id,
+                'room_no' => $data['room_no'] ?? 'DEMO-001',
+                'device_id' => $data['deviceId'],
+                'mac_address' => $data['macAddress'],
+                'ip_address' => $data['ipAddress'] ?? null,
+                'model' => $data['model'] ?? null,
+                'brand' => $data['brand'] ?? null,
+                'os_version' => $data['osVersion'] ?? null,
+                'api_token' => $token,
+                'is_demo' => true,
+                'demo_expires_at' => now()->addDays(7),
+                'demo_status' => 'active',
+                'distributor_id' => !empty($data['distributor_code']) ? $this->resolveDistributorFromCode($data['distributor_code']) : null,
+            ]);
+
+            return [
+                'device' => $device,
+                'hotel' => $demoHotel,
+                'is_demo' => true,
+                'days_left' => 7,
+            ];
+        }
+
+        // Standard authentication path below...
         // 1. Find the active and approved hotel admin by license key
         $hotel = HotelAdmin::query()
             ->with('plan')
@@ -33,6 +128,15 @@ class TvLoginService
 
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
+
+        // If device was previously in demo mode, convert it to paid
+        if ($device && $device->is_demo) {
+            $device->update([
+                'is_demo' => false,
+                'demo_expires_at' => null,
+                'demo_status' => 'converted',
+            ]);
+        }
 
         // 3. Check if there's already an existing device assigned to this room in this hotel
         $existingRoomDevice = $hotel->connectedDevices()->where('room_no', $data['room_no'])->first();

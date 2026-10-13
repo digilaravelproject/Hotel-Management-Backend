@@ -191,6 +191,9 @@ class TvLoginResource extends JsonResource
             'data' => [
                 'auth' => [
                     'token' => $device->api_token,
+                    'is_demo' => (bool) $device->is_demo,
+                    'demo_expires_at' => $device->demo_expires_at ? $device->demo_expires_at->toIso8601String() : null,
+                    'demo_days_left' => $device->is_demo && $device->demo_expires_at ? max(0, (int) ceil(now()->diffInHours($device->demo_expires_at) / 24)) : null,
                 ],
                 'template' => [
                     'template_id' => $latest ? (int) $latest->theme_id : $selectedThemeId,
