@@ -83,7 +83,7 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'name' => 'System Super Admin',
                 'phone' => '9876543210',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('12345678'),
                 'status' => true,
             ]
         );
@@ -95,7 +95,7 @@ class RolesAndPermissionsSeeder extends Seeder
             [
                 'name' => 'Apex Hospitality Distributors',
                 'phone' => '9876543211',
-                'password' => Hash::make('password123'),
+                'password' => Hash::make('12345678'),
                 'status' => true,
             ]
         );

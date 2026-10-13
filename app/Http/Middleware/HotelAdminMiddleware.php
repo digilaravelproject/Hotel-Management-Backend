@@ -31,10 +31,33 @@ class HotelAdminMiddleware
             return redirect()->route('landing')->with('error', 'Your account has been disapproved by the Super Admin.');
         }
 
-        // 3. Check Active Status
+        // 2. Check Active Status
         if (!$hotelAdmin->status) {
             Auth::guard('hotel_admin')->logout();
             return redirect()->route('landing')->with('error', 'Your account is currently inactive.');
+        }
+
+        // 3. Check Pending Payment (Pay Later state): Allow login & dashboard/subscription page, block other features
+        if ($hotelAdmin->payment_status !== 'paid') {
+            // Allow dashboard and subscription/payment routes
+            $allowedRoutes = [
+                'hotel.dashboard',
+                'hotel.subscribe',
+                'hotel.logout',
+            ];
+
+            $currentRoute = $request->route()?->getName();
+
+            if ($currentRoute && !in_array($currentRoute, $allowedRoutes)) {
+                if ($request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'error' => 'Payment required. Please complete your subscription payment to access this feature.'
+                    ], 403);
+                }
+                return redirect()->route('hotel.dashboard')
+                                 ->with('error', 'Please complete your subscription payment to unlock panel features.');
+            }
         }
 
         return $next($request);

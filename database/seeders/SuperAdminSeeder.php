@@ -17,7 +17,7 @@ class SuperAdminSeeder extends Seeder
         // Create Super Admin
         SuperAdmin::updateOrCreate(
             ['email' => 'admin@hotel.com'],
-            ['password' => Hash::make('Admin@123')]
+            ['password' => Hash::make('12345678')]
         );
 
         // Create Default Plans

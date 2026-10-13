@@ -61,6 +61,8 @@ class HotelService
             'status' => $data['status'] ?? true,
             'purchase_date' => $purchaseDate,
             'expiry_date' => $expiryDate,
+            'auto_renew' => filter_var($data['auto_renew'] ?? false, FILTER_VALIDATE_BOOLEAN),
+            'renewal_type' => !empty($data['auto_renew']) ? 'auto' : 'manual',
         ];
 
         // Process Hotel Logo
@@ -171,6 +173,11 @@ class HotelService
             $updateData['expiry_date'] = $data['expiry_date'];
         }
 
+        if (array_key_exists('auto_renew', $data)) {
+            $updateData['auto_renew'] = filter_var($data['auto_renew'], FILTER_VALIDATE_BOOLEAN);
+            $updateData['renewal_type'] = $updateData['auto_renew'] ? 'auto' : 'manual';
+        }
+
         // Logo replacement
         if ($logo) {
             if ($hotel->hotel_logo) {
@@ -262,6 +269,8 @@ class HotelService
             'payment_status' => 'paid',
             'purchase_date' => $now,
             'expiry_date' => $newExpiry,
+            'auto_renew' => $saleData['auto_renew'] ?? false,
+            'renewal_type' => ($saleData['auto_renew'] ?? false) ? 'auto' : 'manual',
             'room_count' => $this->resolveRoomCount($hotel->room_count, $plan, $hotel->room_count ?: 25),
         ]);
 

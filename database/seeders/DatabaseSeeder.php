@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             SuperAdminSeeder::class,
             RolesAndPermissionsSeeder::class,
             OttPlatformSeeder::class,
+            PaymentGatewaySeeder::class,
         ]);
     }
 }
