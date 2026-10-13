@@ -43,11 +43,11 @@ class IciciPaymentService
             : 'https://test.icicibank.com/api/v1';
 
         // Mock implementation safeguard if credentials are placeheld
-        if (empty($apiKey) || empty($merchantId)) {
-            // Return simulated order for development/testing
+        if (empty($apiKey) || empty($merchantId) || empty($apiSecret)) {
+            // Return simulated order for development/testing when gateway is enabled but credentials are mock placeholders
             return [
                 'success' => true,
-                'order_id' => 'ICICI_MOCK_' . time(),
+                'order_id' => $orderId,
                 'gateway_reference' => 'icici_ref_' . rand(100000, 999999),
                 'amount' => $amount,
                 'currency' => 'INR',
@@ -80,7 +80,7 @@ class IciciPaymentService
 
             throw new Exception("ICICI Gateway error: " . $response->body());
         } catch (Exception $e) {
-            throw new Exception("Failed to connect to ICICI Payment Gateway: " . $e->getMessage());
+            throw new Exception("Failed to connect to ICICI Payment Gateway: " . $e->getMessage(), 0, $e);
         }
     }
 
