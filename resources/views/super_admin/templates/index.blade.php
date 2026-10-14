@@ -46,8 +46,11 @@
                             <div>
                                 <div class="flex items-center space-x-2">
                                     <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">Theme ID: {{ $theme->theme_id }}</span>
-                                    @if($theme->theme_id == 1)
-                                        <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">Default</span>
+                                    @if($theme->theme_id == $defaultThemeId)
+                                        <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-300 flex items-center space-x-1">
+                                            <i class="fa-solid fa-star text-[8px] text-amber-500"></i>
+                                            <span>Default</span>
+                                        </span>
                                     @endif
                                 </div>
                                 <h4 class="font-extrabold text-slate-900 text-sm mt-0.5">{{ $theme->theme_name ?? ('Theme #' . $theme->theme_id) }}</h4>
@@ -71,22 +74,39 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center gap-2">
-                        <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2.5 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
-                            <i class="fa-solid fa-cloud-arrow-up"></i>
-                            <span>Upload Update</span>
-                        </button>
-                        @if($latestBuild && $latestBuild->extracted_path)
-                            <a href="{{ route('super-admin.templates.preview', $latestBuild->id) }}" target="_blank"
-                               class="flex-1 py-2.5 rounded-xl border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
-                                <i class="fa-solid fa-eye"></i>
-                                <span>Preview</span>
-                            </a>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Upload Update</span>
+                            </button>
+                            @if($latestBuild && $latestBuild->extracted_path)
+                                <a href="{{ route('super-admin.templates.preview', $latestBuild->id) }}" target="_blank"
+                                   class="flex-1 py-2 rounded-xl border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <i class="fa-solid fa-eye"></i>
+                                    <span>Preview</span>
+                                </a>
+                            @else
+                                <span class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-400 font-bold text-xs flex items-center justify-center space-x-1.5 cursor-not-allowed" title="No preview available. Re-upload zip to generate.">
+                                    <i class="fa-solid fa-eye-slash"></i>
+                                    <span>No Preview</span>
+                                </span>
+                            @endif
+                        </div>
+
+                        @if($theme->theme_id == $defaultThemeId)
+                            <div class="w-full py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-800 font-bold text-xs flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-circle-check text-amber-600"></i>
+                                <span>Default Theme for New Hotels</span>
+                            </div>
                         @else
-                            <span class="flex-1 py-2.5 rounded-xl border border-slate-200 text-slate-400 font-bold text-xs flex items-center justify-center space-x-1.5 cursor-not-allowed" title="No preview available. Re-upload zip to generate.">
-                                <i class="fa-solid fa-eye-slash"></i>
-                                <span>No Preview</span>
-                            </span>
+                            <form action="{{ route('super-admin.templates.set-default', $theme->theme_id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="w-full py-2 rounded-xl border border-slate-200 hover:border-amber-400 text-slate-600 hover:text-amber-700 hover:bg-amber-50/50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                    <i class="fa-regular fa-star"></i>
+                                    <span>Set as Global Default</span>
+                                </button>
+                            </form>
                         @endif
                     </div>
                 </div>

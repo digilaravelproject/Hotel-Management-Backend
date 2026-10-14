@@ -39,8 +39,10 @@ class HotelAdminController extends Controller
     {
         $plans = Plan::query()->where('status', '=', true)->get();
         $distributors = User::role('distributor')->where('status', true)->get();
+        $themes = \App\Models\TvTemplate::select('theme_id', 'theme_name')->orderBy('theme_id', 'asc')->get()->unique('theme_id')->values();
+        $defaultThemeId = (int) app_setting('default_theme_id', 1);
 
-        return view('super_admin.hotels.create', compact('plans', 'distributors'));
+        return view('super_admin.hotels.create', compact('plans', 'distributors', 'themes', 'defaultThemeId'));
     }
 
     /**
@@ -76,8 +78,10 @@ class HotelAdminController extends Controller
         $hotel = HotelAdmin::findOrFail($id);
         $plans = Plan::query()->where('status', '=', true)->get();
         $distributors = User::role('distributor')->where('status', true)->get();
+        $themes = \App\Models\TvTemplate::select('theme_id', 'theme_name')->orderBy('theme_id', 'asc')->get()->unique('theme_id')->values();
+        $defaultThemeId = (int) app_setting('default_theme_id', 1);
 
-        return view('super_admin.hotels.edit', compact('hotel', 'plans', 'distributors'));
+        return view('super_admin.hotels.edit', compact('hotel', 'plans', 'distributors', 'themes', 'defaultThemeId'));
     }
 
     /**

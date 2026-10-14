@@ -37,8 +37,9 @@ class TemplateController extends Controller
         // Calculate the next suggested theme ID
         $maxThemeId = TvTemplate::max('theme_id');
         $nextThemeId = $maxThemeId ? ((int) $maxThemeId + 1) : 1;
+        $defaultThemeId = (int) app_setting('default_theme_id', 1);
 
-        return view('super_admin.templates.index', compact('templates', 'existingThemes', 'nextThemeId'));
+        return view('super_admin.templates.index', compact('templates', 'existingThemes', 'nextThemeId', 'defaultThemeId'));
     }
 
     /**
@@ -243,5 +244,24 @@ class TemplateController extends Controller
         $previewUrl = url($template->extracted_path . '/index.html');
 
         return redirect($previewUrl);
+    }
+
+    /**
+     * Set a theme as the global default for all new hotels.
+     * Route: POST /super-admin/templates/{theme_id}/set-default
+     */
+    public function setDefaultTheme(int $themeId)
+    {
+        $themeExists = TvTemplate::where('theme_id', $themeId)->exists();
+        if (!$themeExists) {
+            return back()->with('error', "Theme #{$themeId} not found.");
+        }
+
+        $settings = \App\Models\AppSetting::getSettings();
+        $settings->default_theme_id = $themeId;
+        $settings->save();
+        \App\Models\AppSetting::flushSettingsCache();
+
+        return back()->with('success', "Theme #{$themeId} is now set as the Global Default Theme for all new hotels!");
     }
 }

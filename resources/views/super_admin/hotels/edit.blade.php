@@ -182,6 +182,27 @@
                             <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
                         </x-dropdown>
                     </div>
+
+                    <!-- 5. TV Interface Theme -->
+                    @php
+                        $selectedTheme = old('selected_theme_id', $hotel->selected_theme_id ?? ($defaultThemeId ?? 1));
+                    @endphp
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Assigned TV Theme <span class="text-rose-500">*</span></label>
+                        <x-dropdown name="selected_theme_id" required theme="sa">
+                            @if(isset($themes) && $themes->isNotEmpty())
+                                @foreach($themes as $th)
+                                    <option value="{{ $th->theme_id }}" {{ (int)$selectedTheme === (int)$th->theme_id ? 'selected' : '' }}>
+                                        Theme #{{ $th->theme_id }} - {{ $th->theme_name ?? 'Default Layout' }} {{ (int)$th->theme_id === (int)($defaultThemeId ?? 1) ? '(Default)' : '' }}
+                                    </option>
+                                @endforeach
+                            @else
+                                <option value="1" {{ (int)$selectedTheme === 1 ? 'selected' : '' }}>Theme #1 (Default Classic)</option>
+                                <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury)</option>
+                            @endif
+                        </x-dropdown>
+                        <p class="text-[11px] text-slate-400 mt-1">Smart TVs in this hotel will run this interface style.</p>
+                    </div>
                 </div>
 
                 <!-- Subscription Timelines -->

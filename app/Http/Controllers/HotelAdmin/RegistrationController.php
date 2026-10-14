@@ -158,6 +158,7 @@ class RegistrationController extends Controller
             'razorpay_order_id' => $request->razorpay_order_id,
             'razorpay_payment_id' => $paymentId,
             'license_key' => $licenseKey,
+            'selected_theme_id' => (int) app_setting('default_theme_id', 1),
             'approval_status' => 'pending',
             'status' => true,
             'purchase_date' => now(),

@@ -17,6 +17,11 @@ class AppSetting extends Model
         'footer_text',
         'contact_email',
         'contact_phone',
+        'default_theme_id',
+    ];
+
+    protected $casts = [
+        'default_theme_id' => 'integer',
     ];
 
     /**

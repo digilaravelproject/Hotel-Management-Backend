@@ -72,6 +72,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('templates', [SuperTemplateController::class, 'index'])->name('templates.index');
     Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');
     Route::post('templates/{id}/toggle-active', [SuperTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
+    Route::post('templates/{theme_id}/set-default', [SuperTemplateController::class, 'setDefaultTheme'])->name('templates.set-default');
     Route::get('templates/{id}/preview', [SuperTemplateController::class, 'preview'])->name('templates.preview');
 
     // Flight & Airport Management

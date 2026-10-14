@@ -31,6 +31,7 @@ abstract class BaseHotelRequest extends FormRequest
             'payment_status' => 'nullable|in:pending,paid',
             'approval_status' => 'nullable|in:pending,approved,disapproved',
             'description' => 'nullable|string|max:1000',
+            'selected_theme_id' => 'nullable|integer|min:1',
             'hotel_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:5120',
             'hotel_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
         ];

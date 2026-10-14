@@ -58,6 +58,7 @@ class HotelService
             'approval_status' => $data['approval_status'] ?? 'pending',
             'description' => $data['description'] ?? null,
             'license_key' => $licenseKey,
+            'selected_theme_id' => !empty($data['selected_theme_id']) ? (int) $data['selected_theme_id'] : (int) app_setting('default_theme_id', 1),
             'status' => $data['status'] ?? true,
             'purchase_date' => $purchaseDate,
             'expiry_date' => $expiryDate,
@@ -160,6 +161,10 @@ class HotelService
             'approval_status' => $data['approval_status'] ?? $hotel->approval_status,
             'description' => $data['description'] ?? $hotel->description,
         ];
+
+        if (!empty($data['selected_theme_id'])) {
+            $updateData['selected_theme_id'] = (int) $data['selected_theme_id'];
+        }
 
         if (!empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
