@@ -182,14 +182,6 @@
                             <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
                         </x-dropdown>
                     </div>
-                                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                                        <span>Disapproved</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $currentApproval === 'disapproved' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'disapproved' ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Subscription Timelines -->

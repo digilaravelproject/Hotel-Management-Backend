@@ -185,9 +185,15 @@ class TvLoginResource extends JsonResource
             }
         }
 
+        $now = now();
+
         return [
             'status' => true,
             'message' => $message,
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
             'data' => [
                 'auth' => [
                     'token' => $device->api_token,
@@ -214,8 +220,9 @@ class TvLoginResource extends JsonResource
                 ],
                 'hotel' => [
                     'hotel_name' => $hotel->hotel_name,
-                    'city' => $hotel->city,
+                    'city' => $hotel->city ?? $hotel->hotel_location ?? 'New Delhi',
                     'hotel_location' => $hotel->hotel_location,
+                    'timezone' => config('app.timezone', 'Asia/Kolkata'),
                     'description' => $hotel->description,
                     'owner_name' => $hotel->owner_name,
                     'email' => $hotel->email,

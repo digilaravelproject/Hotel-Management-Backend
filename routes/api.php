@@ -17,6 +17,9 @@ Route::post('/tv/pair-status', [\App\Http\Controllers\Api\TvPairController::clas
 
 Route::middleware('tv_token')->group(function () {
     Route::get('/tv/template/check-version', [TvTemplateController::class, 'checkVersion']);
+    Route::get('/tv/check-template-version', [TvTemplateController::class, 'checkVersion']);
+    Route::match(['get', 'post'], '/tv/heartbeat', [TvTemplateController::class, 'heartbeat']);
+    Route::match(['get', 'post'], '/tv/ping', [TvTemplateController::class, 'heartbeat']);
     Route::get('/tv/flights', [\App\Http\Controllers\Api\TvFlightController::class, 'getFlights']);
     Route::post('/tv/flights/refresh', [\App\Http\Controllers\Api\TvFlightController::class, 'refreshFlights']);
 });

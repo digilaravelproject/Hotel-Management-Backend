@@ -86,6 +86,70 @@ class TvTemplateController extends Controller
             }
         );
 
+        // Always inject dynamic real-time timestamp and timezone reference
+        $now = now();
+        $responseData['server_time'] = $now->toIso8601String();
+        $responseData['timestamp'] = (int) (microtime(true) * 1000);
+        $responseData['timezone'] = config('app.timezone', 'Asia/Kolkata');
+        $responseData['utc_offset_seconds'] = $now->offset;
+
+        if (isset($responseData['data']['hotel'])) {
+            $responseData['data']['hotel']['timezone'] = config('app.timezone', 'Asia/Kolkata');
+            if (empty($responseData['data']['hotel']['city'])) {
+                $responseData['data']['hotel']['city'] = $hotel->city ?? $hotel->hotel_location ?? 'New Delhi';
+            }
+        }
+
         return response()->json($responseData);
+    }
+
+    /**
+     * TV Device Heartbeat & Clock Sync.
+     */
+    public function heartbeat(Request $request)
+    {
+        $device = $request->input('current_device');
+        $hotel = $request->input('current_hotel');
+
+        if (!$device || !$hotel) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthenticated.'
+            ], 401);
+        }
+
+        // Dynamically update device telemetry if provided in ping
+        $updates = [];
+        if ($ip = $request->input('ip_address') ?? $request->ip()) {
+            $updates['ip_address'] = $ip;
+        }
+        if ($fcm = $request->input('fcm_token')) {
+            $updates['fcm_token'] = $fcm;
+        }
+        if (!empty($updates)) {
+            $device->update($updates);
+        }
+
+        $now = now();
+        return response()->json([
+            'status' => true,
+            'message' => 'Heartbeat acknowledged.',
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
+            'data' => [
+                'device_id' => $device->device_id,
+                'room_no' => $device->room_no,
+                'is_demo' => (bool) $device->is_demo,
+                'demo_expires_at' => $device->demo_expires_at ? $device->demo_expires_at->toIso8601String() : null,
+                'hotel' => [
+                    'hotel_name' => $hotel->hotel_name,
+                    'city' => $hotel->city ?? $hotel->hotel_location ?? 'New Delhi',
+                    'hotel_location' => $hotel->hotel_location,
+                    'timezone' => config('app.timezone', 'Asia/Kolkata'),
+                ]
+            ]
+        ]);
     }
 }

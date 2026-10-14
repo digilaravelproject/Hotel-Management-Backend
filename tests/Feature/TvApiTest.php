@@ -171,4 +171,109 @@ class TvApiTest extends TestCase
         // Clean up dummy file
         @unlink(public_path($logoPath));
     }
+
+    public function test_server_timestamp_and_timezone_are_present_in_tv_endpoints()
+    {
+        $plan = Plan::create([
+            'name' => 'Time Sync Plan',
+            'room_count' => 10,
+            'price' => '1999.00',
+            'status' => true,
+        ]);
+
+        $hotel = HotelAdmin::create([
+            'owner_name' => 'Time Test Owner',
+            'email' => 'time_test@hotel.com',
+            'password' => bcrypt('password123'),
+            'phone' => '9876543210',
+            'license_key' => 'TIME-TEST-KEY-001',
+            'hotel_name' => 'Time Test Grand',
+            'hotel_location' => 'Connaught Place, New Delhi',
+            'city' => 'New Delhi',
+            'room_count' => 10,
+            'plan_id' => $plan->id,
+            'payment_status' => 'paid',
+            'approval_status' => 'approved',
+            'status' => true,
+        ]);
+
+        $loginPayload = [
+            'license_key' => 'TIME-TEST-KEY-001',
+            'room_no' => '101',
+            'deviceId' => 'TIME_DEVICE_001',
+            'macAddress' => 'AA:11:22:33:44:55',
+        ];
+
+        // 1. Test POST /api/tv/login
+        $loginRes = $this->postJson('/api/tv/login', $loginPayload);
+        $loginRes->assertStatus(200);
+        $loginRes->assertJsonStructure([
+            'status',
+            'message',
+            'server_time',
+            'timestamp',
+            'timezone',
+            'utc_offset_seconds',
+            'data' => [
+                'hotel' => ['timezone', 'city', 'hotel_location'],
+            ]
+        ]);
+        $this->assertEquals('Asia/Kolkata', $loginRes->json('timezone'));
+        $this->assertEquals('Asia/Kolkata', $loginRes->json('data.hotel.timezone'));
+        $this->assertEquals('New Delhi', $loginRes->json('data.hotel.city'));
+        $this->assertIsInt($loginRes->json('timestamp'));
+        $this->assertEquals(19800, $loginRes->json('utc_offset_seconds'));
+        $token = $loginRes->json('data.auth.token');
+
+        // 2. Test GET /api/tv/template/check-version
+        $checkRes = $this->withToken($token)->getJson('/api/tv/template/check-version');
+        $checkRes->assertStatus(200);
+        $this->assertEquals('Asia/Kolkata', $checkRes->json('timezone'));
+        $this->assertEquals('Asia/Kolkata', $checkRes->json('data.hotel.timezone'));
+        $this->assertNotNull($checkRes->json('server_time'));
+        $this->assertIsInt($checkRes->json('timestamp'));
+
+        // 3. Test alias GET /api/tv/check-template-version
+        $aliasRes = $this->withToken($token)->getJson('/api/tv/check-template-version');
+        $aliasRes->assertStatus(200);
+        $this->assertEquals('Asia/Kolkata', $aliasRes->json('timezone'));
+        $this->assertEquals('Asia/Kolkata', $aliasRes->json('data.hotel.timezone'));
+        $this->assertNotNull($aliasRes->json('server_time'));
+
+        // 4. Test POST /api/tv/heartbeat
+        $heartbeatRes = $this->withToken($token)->postJson('/api/tv/heartbeat');
+        $heartbeatRes->assertStatus(200);
+        $this->assertEquals('Asia/Kolkata', $heartbeatRes->json('timezone'));
+        $this->assertEquals('Asia/Kolkata', $heartbeatRes->json('data.hotel.timezone'));
+        $this->assertNotNull($heartbeatRes->json('server_time'));
+
+        // 5. Test POST /api/tv/demo-login
+        HotelAdmin::firstOrCreate(
+            ['license_key' => 'DEMO-MASTER-SHOWCASE'],
+            [
+                'owner_name' => 'Demo Manager',
+                'email' => 'demo_time@digihotel.com',
+                'password' => bcrypt('password123'),
+                'phone' => '9999999999',
+                'hotel_name' => 'DigiLounge Demo Hotel',
+                'hotel_location' => 'Cyber City, Delhi NCR',
+                'city' => 'Delhi NCR',
+                'room_count' => 999,
+                'plan_id' => $plan->id,
+                'payment_status' => 'paid',
+                'approval_status' => 'approved',
+                'status' => true,
+            ]
+        );
+
+        $demoRes = $this->postJson('/api/tv/demo-login', [
+            'deviceId' => 'TIME_DEMO_DEVICE_002',
+            'macAddress' => 'BB:11:22:33:44:66',
+        ]);
+        $demoRes->assertStatus(200);
+        $this->assertEquals('Asia/Kolkata', $demoRes->json('timezone'));
+        $this->assertEquals('Asia/Kolkata', $demoRes->json('data.hotel.timezone'));
+        $this->assertNotNull($demoRes->json('server_time'));
+        $this->assertIsInt($demoRes->json('timestamp'));
+    }
 }

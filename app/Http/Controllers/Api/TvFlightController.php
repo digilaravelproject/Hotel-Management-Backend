@@ -57,9 +57,14 @@ class TvFlightController extends Controller
 
         $schedule = $this->flightService->getAirportSchedule($targetIata, false);
 
+        $now = now();
         return response()->json([
             'status' => true,
             'message' => 'Flight schedule retrieved successfully.',
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
             'data' => [
                 'current_airport' => $schedule['airport'] ?? ['iata_code' => $targetIata],
                 'primary_airport' => $primaryAirport ? [
@@ -118,9 +123,14 @@ class TvFlightController extends Controller
             ]);
         } catch (\Throwable $e) {}
 
+        $now = now();
         return response()->json([
             'status' => true,
             'message' => 'Flight schedule refreshed successfully.',
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
             'data' => [
                 'current_airport' => $schedule['airport'] ?? ['iata_code' => $targetIata],
                 'last_updated' => $schedule['last_updated'] ?? now()->format('d M Y, h:i A'),

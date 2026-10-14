@@ -66,9 +66,14 @@ class TvPairController extends Controller
             'expires_at' => $expiresAt,
         ]);
 
+        $now = now();
         return response()->json([
             'status' => true,
             'message' => 'Pairing code generated successfully',
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
             'data' => [
                 'pair_code' => $session->pair_code,
                 'expires_at' => $expiresAt->toIso8601String(),
@@ -105,29 +110,37 @@ class TvPairController extends Controller
 
         $session = $query->first();
 
+        $now = now();
+        $timeMeta = [
+            'server_time' => $now->toIso8601String(),
+            'timestamp' => (int) (microtime(true) * 1000),
+            'timezone' => config('app.timezone', 'Asia/Kolkata'),
+            'utc_offset_seconds' => $now->offset,
+        ];
+
         if (!$session) {
-            return response()->json([
+            return response()->json(array_merge([
                 'status' => false,
                 'state' => 'invalid',
                 'message' => 'Invalid pairing session'
-            ], 404);
+            ], $timeMeta), 404);
         }
 
         if ($session->status === 'pending') {
             if ($session->isExpired()) {
                 $session->update(['status' => 'expired']);
-                return response()->json([
+                return response()->json(array_merge([
                     'status' => false,
                     'state' => 'expired',
                     'message' => 'Pairing code expired'
-                ], 410);
+                ], $timeMeta), 410);
             }
 
-            return response()->json([
+            return response()->json(array_merge([
                 'status' => true,
                 'state' => 'pending',
                 'message' => 'Waiting for hotel admin pairing...'
-            ]);
+            ], $timeMeta));
         }
 
         if ($session->status === 'paired') {
