@@ -59,7 +59,9 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::match(['get', 'post'], 'users/{id}/toggle-status', [SuperUserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::resource('users', SuperUserController::class);
 
-    // Connected Devices
+    // Connected Devices & Demo TV Management
+    Route::delete('devices/{id}/purge', [SuperDeviceController::class, 'purgeDemoDevice'])->name('devices.purge');
+    Route::post('devices/{id}/extend-trial', [SuperDeviceController::class, 'extendDemoTrial'])->name('devices.extend-trial');
     Route::resource('devices', SuperDeviceController::class)->only(['index', 'destroy']);
 
     // Manage OTTs / Applications Master Catalog

@@ -135,4 +135,69 @@ class DeviceController extends Controller
 
         return redirect()->back()->with('success', $message);
     }
+
+    /**
+     * Permanently delete/purge a Demo TV record from the database.
+     */
+    public function purgeDemoDevice(int $id)
+    {
+        $device = ConnectedDevice::with('hotelAdmin')->findOrFail($id);
+        $roomNo = $device->room_no;
+        $hotelName = $device->hotelAdmin->hotel_name ?? 'Demo Hotel';
+
+        $device->delete();
+
+        $message = "Demo TV Room {$roomNo} ({$hotelName}) permanently deleted from database.";
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+            ]);
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
+
+    /**
+     * Extend or Reset Demo TV trial validity (+7 days or custom).
+     */
+    public function extendDemoTrial(Request $request, int $id)
+    {
+        $device = ConnectedDevice::with('hotelAdmin')->findOrFail($id);
+        
+        $days = (int) $request->input('days', 7);
+        if ($days < 1) $days = 7;
+
+        // If trial was already expired/past, start from now(); otherwise add to current expiry
+        $baseDate = ($device->demo_expires_at && $device->demo_expires_at->isFuture()) 
+            ? $device->demo_expires_at 
+            : now();
+        
+        $newExpiry = $baseDate->copy()->addDays($days);
+
+        // If api_token was cleared on disconnect, generate a fresh token so TV can continue
+        $apiToken = $device->api_token ?? \Illuminate\Support\Str::random(60);
+
+        $device->update([
+            'is_demo' => true,
+            'demo_status' => 'active',
+            'demo_expires_at' => $newExpiry,
+            'api_token' => $apiToken,
+        ]);
+
+        $formattedExpiry = $newExpiry->format('d M, Y - h:i A');
+        $message = "Demo TV Room {$device->room_no} trial extended by {$days} days (Active until: {$formattedExpiry}).";
+
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $message,
+                'new_expiry' => $formattedExpiry,
+            ]);
+        }
+
+        return redirect()->back()->with('success', $message);
+    }
 }
+

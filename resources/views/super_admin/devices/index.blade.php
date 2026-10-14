@@ -165,6 +165,8 @@
                                 'os_version' => $device->os_version ?? '',
                                 'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
                                 'disconnect_url' => route('super-admin.devices.destroy', $device->id),
+                                'purge_url' => route('super-admin.devices.purge', $device->id),
+                                'extend_url' => route('super-admin.devices.extend-trial', $device->id),
                             ];
                         @endphp
                         <tr class="hover:bg-slate-50/70 transition-colors {{ $isExpiredDemo ? 'bg-slate-50/50 opacity-85' : '' }}">
@@ -267,15 +269,28 @@
                                         <span>View</span>
                                     </button>
 
-                                    @if($isDemo && $isExpiredDemo)
-                                        <!-- Disconnected / Expired Demo TV: Gray Faded Disabled State -->
-                                        <button type="button" disabled class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed font-bold text-xs" title="Demo TV is disconnected / expired">
-                                            <i class="fa-solid fa-power-off text-[10px]"></i>
-                                            <span>Disconnected</span>
+                                    @if($isDemo)
+                                        @if($isExpiredDemo)
+                                            <!-- Renew Button for expired demo -->
+                                            <button type="button" onclick="extendDemoTrial('{{ route('super-admin.devices.extend-trial', $device->id) }}', 'Demo TV - Room {{ $device->room_no }}')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold text-xs transition-all shadow-2xs cursor-pointer" title="Renew Demo Trial for 7 days">
+                                                <i class="fa-solid fa-rotate-right text-emerald-600 text-[10px]"></i>
+                                                <span>Renew (+7d)</span>
+                                            </button>
+                                        @else
+                                            <!-- Active Demo: Disconnect Button -->
+                                            <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', 'Demo TV - Room {{ $device->room_no }} ({{ addslashes($device->hotelAdmin->hotel_name ?? 'Hotel') }})', true)" class="btn-danger inline-flex items-center space-x-1 px-2.5 py-1.5 font-bold text-xs cursor-pointer" title="Disconnect & expire trial">
+                                                <i class="fa-solid fa-power-off text-[10px]"></i>
+                                                <span>Disconnect</span>
+                                            </button>
+                                        @endif
+
+                                        <!-- Permanent Delete / Purge Button for Demo TV -->
+                                        <button type="button" onclick="confirmPurge('{{ route('super-admin.devices.purge', $device->id) }}', 'Demo TV - Room {{ $device->room_no }} ({{ addslashes($device->hotelAdmin->hotel_name ?? 'Hotel') }})')" class="inline-flex items-center justify-center w-7 h-7 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 transition-all cursor-pointer" title="Permanently delete Demo TV from database">
+                                            <i class="fa-regular fa-trash-can text-xs"></i>
                                         </button>
                                     @else
-                                        <!-- Active Device (Demo or Live Hotel TV) -->
-                                        <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', '{{ $isDemo ? 'Demo TV' : 'Hotel TV' }} - Room {{ $device->room_no }} ({{ addslashes($device->hotelAdmin->hotel_name ?? 'Hotel') }})', {{ $isDemo ? 'true' : 'false' }})" class="btn-danger inline-flex items-center space-x-1 px-2.5 py-1.5 font-bold text-xs cursor-pointer">
+                                        <!-- Regular Hotel TV Disconnect -->
+                                        <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', 'Hotel TV - Room {{ $device->room_no }} ({{ addslashes($device->hotelAdmin->hotel_name ?? 'Hotel') }})', false)" class="btn-danger inline-flex items-center space-x-1 px-2.5 py-1.5 font-bold text-xs cursor-pointer">
                                             <i class="fa-solid fa-power-off text-[10px]"></i>
                                             <span>Disconnect</span>
                                         </button>
@@ -331,6 +346,8 @@
                     'os_version' => $device->os_version ?? '',
                     'connected_at' => $device->created_at ? $device->created_at->format('d M, Y - h:i A') : 'N/A',
                     'disconnect_url' => route('super-admin.devices.destroy', $device->id),
+                    'purge_url' => route('super-admin.devices.purge', $device->id),
+                    'extend_url' => route('super-admin.devices.extend-trial', $device->id),
                 ];
             @endphp
             <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3 {{ $isExpiredDemo ? 'opacity-80 bg-slate-50/60' : '' }}">
@@ -405,19 +422,30 @@
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
-                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="btn-secondary w-full py-2 px-3 text-xs flex items-center justify-center space-x-1.5">
+                <div class="flex items-center space-x-2 pt-1 border-t border-slate-100">
+                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="btn-secondary flex-1 py-2 px-2.5 text-xs flex items-center justify-center space-x-1">
                         <i class="fa-solid fa-eye text-[#0F2537]"></i>
                         <span>Details</span>
                     </button>
                     
-                    @if($isDemo && $isExpiredDemo)
-                        <button type="button" disabled class="w-full py-2 px-3 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed font-bold text-xs flex items-center justify-center space-x-1.5">
-                            <i class="fa-solid fa-power-off text-xs"></i>
-                            <span>Disconnected</span>
+                    @if($isDemo)
+                        @if($isExpiredDemo)
+                            <button type="button" onclick="extendDemoTrial('{{ route('super-admin.devices.extend-trial', $device->id) }}', 'Demo TV - Room {{ $device->room_no }}')" class="flex-1 py-2 px-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold text-xs flex items-center justify-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-rotate-right text-emerald-600"></i>
+                                <span>Renew (+7d)</span>
+                            </button>
+                        @else
+                            <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', 'Demo TV - Room {{ $device->room_no }}', true)" class="btn-danger flex-1 py-2 px-2.5 text-xs flex items-center justify-center space-x-1 cursor-pointer">
+                                <i class="fa-solid fa-power-off text-xs"></i>
+                                <span>Disconnect</span>
+                            </button>
+                        @endif
+
+                        <button type="button" onclick="confirmPurge('{{ route('super-admin.devices.purge', $device->id) }}', 'Demo TV - Room {{ $device->room_no }}')" class="w-9 h-9 shrink-0 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 flex items-center justify-center cursor-pointer" title="Delete Demo TV permanently from database">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
                         </button>
                     @else
-                        <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', '{{ $isDemo ? 'Demo TV' : 'Hotel TV' }} - Room {{ $device->room_no }}', {{ $isDemo ? 'true' : 'false' }})" class="btn-danger w-full py-2 px-3 text-xs flex items-center justify-center space-x-1.5">
+                        <button type="button" onclick="confirmDisconnect('{{ route('super-admin.devices.destroy', $device->id) }}', 'Hotel TV - Room {{ $device->room_no }}', false)" class="btn-danger flex-1 py-2 px-2.5 text-xs flex items-center justify-center space-x-1 cursor-pointer">
                             <i class="fa-solid fa-power-off text-xs"></i>
                             <span>Disconnect</span>
                         </button>
@@ -580,12 +608,28 @@
         </div>
 
         <!-- Modal Footer -->
-        <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 flex items-center justify-between space-x-2.5 shrink-0 bg-slate-50/80">
-            <button type="button" id="modalDisconnectBtn" onclick="disconnectFromModal()" class="btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5">
-                <i class="fa-solid fa-power-off text-xs"></i>
-                <span id="modalDisconnectBtnText">Disconnect TV</span>
-            </button>
-            <button type="button" onclick="closeDeviceDetailsModal()" class="btn-secondary px-5 py-2.5 text-xs font-bold">
+        <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2.5 shrink-0 bg-slate-50/80">
+            <div class="flex flex-wrap items-center gap-2">
+                <!-- Disconnect Button -->
+                <button type="button" id="modalDisconnectBtn" onclick="disconnectFromModal()" class="btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-power-off text-xs"></i>
+                    <span id="modalDisconnectBtnText">Disconnect TV</span>
+                </button>
+
+                <!-- Extend Trial Button (for Demo TVs) -->
+                <button type="button" id="modalExtendBtn" onclick="extendFromModal(7)" class="hidden px-4 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-800 font-bold text-xs flex items-center space-x-1.5 transition-all shadow-2xs cursor-pointer">
+                    <i class="fa-solid fa-rotate-right text-emerald-600 text-xs"></i>
+                    <span>Renew Trial (+7d)</span>
+                </button>
+
+                <!-- Permanent Delete Button (for Demo TVs) -->
+                <button type="button" id="modalPurgeBtn" onclick="purgeFromModal()" class="hidden px-3.5 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 font-bold text-xs flex items-center space-x-1.5 transition-all cursor-pointer" title="Delete record permanently from DB">
+                    <i class="fa-regular fa-trash-can text-xs"></i>
+                    <span>Delete Record</span>
+                </button>
+            </div>
+
+            <button type="button" onclick="closeDeviceDetailsModal()" class="btn-secondary px-5 py-2.5 text-xs font-bold cursor-pointer">
                 Close
             </button>
         </div>
@@ -596,6 +640,18 @@
 <form id="disconnectDeviceForm" method="POST" class="hidden">
     @csrf
     @method('DELETE')
+</form>
+
+<!-- Hidden Purge Form for Execution -->
+<form id="purgeDeviceForm" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+
+<!-- Hidden Extend Trial Form for Execution -->
+<form id="extendTrialForm" method="POST" class="hidden">
+    @csrf
+    <input type="hidden" name="days" id="extendDaysInput" value="7">
 </form>
 @endsection
 
@@ -637,6 +693,8 @@
         const expiryNote = document.getElementById('modalExpiryNote');
         const modalDisconnectBtn = document.getElementById('modalDisconnectBtn');
         const modalDisconnectBtnText = document.getElementById('modalDisconnectBtnText');
+        const modalExtendBtn = document.getElementById('modalExtendBtn');
+        const modalPurgeBtn = document.getElementById('modalPurgeBtn');
 
         typeBadge.classList.remove('hidden');
         if (device.is_demo) {
@@ -646,24 +704,25 @@
             expiryLabel.innerText = 'Demo Trial Validity';
             expiryTimestamp.innerText = device.demo_expires_at ? device.demo_expires_at : '7 Days Trial';
 
+            modalExtendBtn.classList.remove('hidden');
+            modalPurgeBtn.classList.remove('hidden');
+
             if (device.is_expired) {
                 expiryBanner.className = 'p-3.5 sm:p-4 rounded-2xl border space-y-1.5 bg-rose-50/70 border-rose-200';
                 expiryBadge.className = 'px-2 py-0.5 rounded-md text-[10px] font-bold bg-rose-200 text-rose-800';
                 expiryBadge.innerText = 'Expired / Disconnected';
-                expiryNote.innerText = 'This Demo TV trial has ended or was disconnected. Record is retained in demo archive.';
+                expiryNote.innerText = 'This Demo TV trial has ended or was disconnected. You can renew trial (+7 days) or permanently delete record.';
 
-                // Disabled gray disconnect button
-                modalDisconnectBtn.disabled = true;
-                modalDisconnectBtn.className = 'px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-100 text-slate-400 opacity-50 cursor-not-allowed font-bold text-xs flex items-center space-x-1.5';
-                modalDisconnectBtnText.innerText = 'Already Disconnected';
+                modalDisconnectBtn.classList.add('hidden');
             } else {
                 expiryBanner.className = 'p-3.5 sm:p-4 rounded-2xl border space-y-1.5 bg-emerald-50/70 border-emerald-200';
                 expiryBadge.className = 'px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-200 text-emerald-800';
                 expiryBadge.innerText = device.days_left + ' Days Remaining';
                 expiryNote.innerText = 'Active 7-day demo trial period. TV has full preview capabilities.';
 
+                modalDisconnectBtn.classList.remove('hidden');
                 modalDisconnectBtn.disabled = false;
-                modalDisconnectBtn.className = 'btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5';
+                modalDisconnectBtn.className = 'btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5 cursor-pointer';
                 modalDisconnectBtnText.innerText = 'Disconnect & Expire Demo';
             }
         } else {
@@ -677,8 +736,11 @@
             expiryTimestamp.innerText = 'Valid until: ' + (device.expiry_date || 'Active');
             expiryNote.innerText = 'Authorized room TV screen bound to active property subscription.';
 
+            modalExtendBtn.classList.add('hidden');
+            modalPurgeBtn.classList.add('hidden');
+            modalDisconnectBtn.classList.remove('hidden');
             modalDisconnectBtn.disabled = false;
-            modalDisconnectBtn.className = 'btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5';
+            modalDisconnectBtn.className = 'btn-danger px-4 py-2.5 text-xs flex items-center space-x-1.5 cursor-pointer';
             modalDisconnectBtnText.innerText = 'Disconnect TV';
         }
 
@@ -743,6 +805,90 @@
         if (!currentModalDevice || !currentModalDevice.disconnect_url) return;
         const deviceLabel = (currentModalDevice.is_demo ? 'Demo TV' : 'Hotel TV') + ' Room ' + currentModalDevice.room_no + ' (' + currentModalDevice.hotel_name + ')';
         confirmDisconnect(currentModalDevice.disconnect_url, deviceLabel, currentModalDevice.is_demo);
+    }
+
+    function purgeFromModal() {
+        if (!currentModalDevice || !currentModalDevice.purge_url) return;
+        const deviceLabel = 'Demo TV Room ' + currentModalDevice.room_no + ' (' + currentModalDevice.hotel_name + ')';
+        confirmPurge(currentModalDevice.purge_url, deviceLabel);
+    }
+
+    function extendFromModal(days = 7) {
+        if (!currentModalDevice || !currentModalDevice.extend_url) return;
+        const deviceLabel = 'Demo TV Room ' + currentModalDevice.room_no + ' (' + currentModalDevice.hotel_name + ')';
+        extendDemoTrial(currentModalDevice.extend_url, deviceLabel, days);
+    }
+
+    function confirmPurge(actionUrl, deviceLabel) {
+        const title = 'Permanently Delete Demo TV?';
+        const text = 'Are you sure you want to permanently delete ' + deviceLabel + ' from database? This action will remove the device record and allow fresh demo pairing.';
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#DC2626',
+                cancelButtonColor: '#0F2537',
+                confirmButtonText: 'Yes, Delete Permanently',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-xl font-bold text-xs px-5 py-2.5',
+                    cancelButton: 'rounded-xl font-bold text-xs px-5 py-2.5'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('purgeDeviceForm');
+                    form.action = actionUrl;
+                    form.submit();
+                }
+            });
+        } else {
+            if (confirm(text)) {
+                const form = document.getElementById('purgeDeviceForm');
+                form.action = actionUrl;
+                form.submit();
+            }
+        }
+    }
+
+    function extendDemoTrial(actionUrl, deviceLabel, days = 7) {
+        const title = 'Renew Demo Trial?';
+        const text = 'Extend demo trial for ' + deviceLabel + ' by ' + days + ' days? The TV will be reactivated immediately.';
+
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: title,
+                text: text,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#10B981',
+                cancelButtonColor: '#0F2537',
+                confirmButtonText: 'Yes, Renew (+7 Days)',
+                cancelButtonText: 'Cancel',
+                customClass: {
+                    popup: 'rounded-3xl',
+                    confirmButton: 'rounded-xl font-bold text-xs px-5 py-2.5',
+                    cancelButton: 'rounded-xl font-bold text-xs px-5 py-2.5'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const form = document.getElementById('extendTrialForm');
+                    form.action = actionUrl;
+                    document.getElementById('extendDaysInput').value = days;
+                    form.submit();
+                }
+            });
+        } else {
+            if (confirm(text)) {
+                const form = document.getElementById('extendTrialForm');
+                form.action = actionUrl;
+                document.getElementById('extendDaysInput').value = days;
+                form.submit();
+            }
+        }
     }
 
     function confirmDisconnect(actionUrl, deviceLabel, isDemo) {
