@@ -1,168 +1,113 @@
-@extends('layouts.landing')
+@extends('layouts.app')
 
-@section('title', 'Forgot Password - PAX TV Hotel Portal')
+@section('title', 'Forgot Password - ' . app_name() . ' Hotel Portal')
 
 @section('styles')
-<!-- Luxury Typography -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --color-gold: #E5A853;
-        --color-gold-hover: #F2B660;
-    }
-
     .font-serif-lux {
-        font-family: 'Playfair Display', 'Cormorant Garamond', 'Cinzel', Georgia, serif !important;
-    }
-
-    .btn-gold-pill {
-        background-color: #E5A853;
-        color: #0A0D14;
-        font-weight: 700;
-        border-radius: 9999px;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 18px rgba(229, 168, 83, 0.28);
-    }
-    .btn-gold-pill:hover {
-        background-color: #F2B660;
-        transform: translateY(-1.5px);
-        box-shadow: 0 8px 26px rgba(229, 168, 83, 0.42);
-    }
-
-    .input-luxury {
-        background-color: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        color: #FFFFFF;
-        transition: all 0.2s ease-in-out;
-    }
-    .input-luxury:focus {
-        background-color: rgba(255, 255, 255, 0.07);
-        border-color: #E5A853;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(229, 168, 83, 0.18);
-    }
-    .input-luxury::placeholder {
-        color: #78716C;
+        font-family: 'Playfair Display', Georgia, serif;
     }
 </style>
 @endsection
 
 @section('content')
-<div class="min-h-screen flex flex-col justify-between bg-[#080B10] text-slate-100 relative overflow-hidden">
-
-    <!-- Ambient Luxury Resort Background -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
-        <img src="{{ asset('images/landing/demo.svg') }}" 
-             onerror="this.onerror=null;this.src='{{ asset('images/landing/demo.jpg') }}';" 
-             alt="Luxury Hotel Architecture" 
-             class="w-full h-full object-cover opacity-20 filter blur-[1px]">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/95 via-[#080B10]/90 to-[#080B10]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(229,168,83,0.12),transparent)]"></div>
-    </div>
-
+<div class="min-h-screen flex flex-col justify-between bg-[#F8FAFC] text-[#1E293B] relative overflow-hidden">
     <!-- Header Bar -->
-    <header class="relative z-10 w-full px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#080B10]/60">
+    <header class="w-full px-6 lg:px-12 py-5 bg-white border-b border-[#E2E8F0] shadow-xs relative z-20">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <img src="{{ app_logo_url() }}" 
-                     alt="{{ app_name() }}" 
-                     class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-            </a>
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
+                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                </a>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#F9F5EB] text-[#6E1841] border border-[#C5A059]/40">
+                    <i class="fa-solid fa-key text-[10px] text-[#C5A059] mr-1.5"></i> Password Recovery
+                </span>
+            </div>
 
-            <a href="{{ route('hotel.login') }}" class="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#E5A853]/40 text-stone-200 hover:text-white text-xs font-medium tracking-wide transition-all inline-flex items-center space-x-2">
-                <i class="fa-solid fa-arrow-left text-[11px] text-[#E5A853]"></i>
+            <a href="{{ route('hotel.login') }}" class="px-3.5 py-1.5 rounded-lg border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#1E293B] text-xs font-semibold transition-all inline-flex items-center space-x-1.5">
+                <i class="fa-solid fa-arrow-left text-[11px] text-[#C5A059]"></i>
                 <span>Back to Login</span>
             </a>
         </div>
     </header>
 
-    <!-- Main Card -->
-    <main class="relative z-10 max-w-md mx-auto px-6 py-12 lg:py-16 w-full flex items-center justify-center">
-        <div class="w-full bg-[#0F131C]/90 backdrop-blur-xl border border-white/15 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-black/80 space-y-6 relative">
-            <div class="absolute -top-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-[#E5A853] to-transparent"></div>
+    <!-- Main Content -->
+    <main class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 relative z-10">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-48 bg-gradient-to-b from-[#6E1841]/5 via-transparent to-transparent pointer-events-none"></div>
 
-            <div class="text-center space-y-3">
-                <img src="{{ app_logo_url() }}" 
-                     alt="{{ app_name() }}" 
-                     class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
-                <h1 class="font-serif-lux text-2xl font-medium text-white tracking-tight">Forgot Password?</h1>
-                <p class="text-xs text-stone-400 font-normal leading-relaxed">
-                    Enter your registered property email address and we will dispatch a 6-digit OTP verification code.
-                </p>
-            </div>
-
-            @if($errors->any())
-                <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-1">
-                    <ul class="list-disc pl-4 space-y-1 font-medium">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            <form action="{{ route('hotel.forgot-password') }}" method="POST" class="space-y-5">
-                @csrf
-
-                <div class="space-y-2 text-left">
-                    <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-300">
-                        Property Email Address
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-500">
-                            <i class="fa-solid fa-envelope text-xs"></i>
-                        </div>
-                        <input type="email" 
-                               name="email" 
-                               required 
-                               value="{{ old('email') }}" 
-                               placeholder="admin@hotel.com" 
-                               autocomplete="email" 
-                               autofocus
-                               class="input-luxury w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium">
+        <div class="w-full max-w-md relative z-10">
+            <div class="bg-white border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-xl shadow-slate-200/60 space-y-7">
+                <div class="text-center space-y-2.5">
+                    <div class="w-14 h-14 rounded-2xl bg-[#6E1841] text-[#C5A059] flex items-center justify-center mx-auto shadow-md shadow-[#6E1841]/20 border border-[#8A1C56]">
+                        <i class="fa-solid fa-unlock-keyhole text-2xl"></i>
                     </div>
+                    <h1 class="font-serif-lux text-2xl sm:text-3xl font-semibold text-[#1E293B] tracking-tight">Forgot Password?</h1>
+                    <p class="text-xs text-[#64748B] font-normal leading-relaxed">
+                        Enter your registered property email address and we will dispatch a 6-digit OTP verification code.
+                    </p>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="w-full py-3.5 px-6 btn-gold-pill text-xs tracking-wider uppercase flex items-center justify-center space-x-2 cursor-pointer">
-                        <span>Send OTP Code</span>
+                @if($errors->any())
+                    <div class="p-4 rounded-xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs space-y-1.5">
+                        <div class="flex items-center space-x-2 font-bold">
+                            <i class="fa-solid fa-circle-exclamation text-[#DC2626]"></i>
+                            <span>Unable to send reset code:</span>
+                        </div>
+                        <ul class="list-disc pl-5 space-y-1 font-medium">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="p-4 rounded-xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs font-medium">
+                        {{ session('error') }}
+                    </div>
+                @endif
+
+                <form action="{{ route('hotel.forgot-password') }}" method="POST" class="space-y-5">
+                    @csrf
+
+                    <div class="space-y-1.5 text-left">
+                        <label class="block text-xs font-bold text-[#1E293B]">
+                            Property Email Address
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
+                                <i class="fa-solid fa-envelope text-xs"></i>
+                            </div>
+                            <input type="email" name="email" required value="{{ old('email') }}" placeholder="admin@hotel.com" autocomplete="email" autofocus
+                                class="w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl text-sm text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/20 transition-all">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full py-3.5 px-4 bg-[#C5A059] hover:bg-[#A88440] text-white font-extrabold text-sm rounded-xl shadow-lg shadow-[#C5A059]/25 transition-all hover:-translate-y-0.5 flex items-center justify-center space-x-2 cursor-pointer">
+                        <span>Send OTP Verification Code</span>
                         <i class="fa-solid fa-paper-plane text-xs"></i>
                     </button>
-                </div>
 
-                <div class="text-center pt-2">
-                    <a href="{{ route('hotel.login') }}" class="text-xs font-medium text-stone-400 hover:text-white transition-colors inline-flex items-center space-x-1.5">
-                        <i class="fa-solid fa-arrow-left text-[11px] text-[#E5A853]"></i>
-                        <span>Return to Hotel Sign In</span>
-                    </a>
-                </div>
-            </form>
+                    <div class="text-center pt-2">
+                        <a href="{{ route('hotel.login') }}" class="text-xs font-bold text-[#64748B] hover:text-[#1E293B] transition-colors inline-flex items-center space-x-1.5">
+                            <i class="fa-solid fa-arrow-left text-[11px] text-[#C5A059]"></i>
+                            <span>Return to Hotel Sign In</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="relative z-10 w-full px-6 lg:px-16 py-6 border-t border-white/10 backdrop-blur-md bg-[#080B10]/60">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
-            <p>© {{ date('Y') }} PAX TV. All rights reserved.</p>
-            <p class="text-stone-400">
-                Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#E5A853] hover:text-[#F2B660] font-medium transition-colors">Digi Emperor</a>
-            </p>
-            <div class="flex items-center space-x-5">
-                <a href="{{ route('privacy-policy') }}" class="hover:text-stone-300 transition-colors">Privacy Policy</a>
-                <span class="text-stone-700">|</span>
-                <a href="{{ route('contact-us') }}" class="hover:text-stone-300 transition-colors">Support & Contact</a>
-            </div>
+    <footer class="w-full px-6 lg:px-12 py-4 bg-white border-t border-[#E2E8F0] text-xs text-[#64748B] relative z-20">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p>© {{ date('Y') }} {{ app_name() }}. All rights reserved.</p>
+            <p>Developed with precision by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="font-bold text-[#6E1841] hover:underline">Digi Emperor</a></p>
         </div>
     </footer>
-
 </div>
 @endsection

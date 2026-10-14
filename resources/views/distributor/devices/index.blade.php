@@ -14,14 +14,10 @@
                 <div class="w-full sm:w-64 shrink-0">
                     <label for="hotelFilter" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filter by Hotel</label>
                     <div class="relative">
-                        <select name="hotel_id" id="hotelFilter" onchange="this.form.submit()" class="w-full pl-3.5 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
-                            <option value="">All My Hotels ({{ $hotels->count() }})</option>
-                            @foreach($hotels as $hotel)
-                                <option value="{{ $hotel->id }}" {{ request('hotel_id') == $hotel->id ? 'selected' : '' }}>
-                                    {{ $hotel->hotel_name }} ({{ $hotel->room_count }} R)
-                                </option>
-                            @endforeach
-                        </select>
+                        @php
+                            $hotelOptions = ['' => 'All My Hotels (' . $hotels->count() . ')'] + $hotels->pluck('hotel_name', 'id')->toArray();
+                        @endphp
+                        <x-dropdown name="hotel_id" :options="$hotelOptions" :selected="request('hotel_id')" onchange="this.form.submit()" />
                     </div>
                 </div>
 

@@ -16,7 +16,7 @@
                     <i class="fa-solid fa-filter-circle-xmark mr-1"></i> Clear Filter (Room {{ request('room') }})
                 </a>
             @endif
-            <button onclick="openAddModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all flex items-center space-x-2">
+            <button onclick="openAddModal()" class="btn-hotel-primary px-5 py-2.5 flex items-center space-x-2">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Add New Guest</span>
             </button>
@@ -85,13 +85,13 @@
                                             </button>
                                         </form>
                                     @endif
-                                    <button onclick="openEditModal(this)" data-guest="{{ json_encode($guest) }}" class="p-2 rounded-lg border border-slate-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                                    <button onclick="openEditModal(this)" data-guest="{{ json_encode($guest) }}" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     <form action="{{ route('hotel.guests.destroy', $guest->id) }}" method="POST" onsubmit="return confirm('Delete guest record?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="p-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors">
+                                        <button type="submit" class="btn-danger p-2">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </form>
@@ -144,8 +144,8 @@
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeAddModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
-                <button type="submit" id="addGuestBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md flex items-center space-x-2">
+                <button type="button" onclick="closeAddModal()" class="btn-secondary px-5 py-2.5">Cancel</button>
+                <button type="submit" id="addGuestBtn" class="btn-hotel-primary px-6 py-2.5 flex items-center space-x-2">
                     <span>Register Guest</span>
                 </button>
             </div>
@@ -186,8 +186,8 @@
                 </div>
             </div>
             <div class="flex items-center justify-end space-x-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeEditModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold">Cancel</button>
-                <button type="submit" id="editGuestBtn" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md flex items-center space-x-2">
+                <button type="button" onclick="closeEditModal()" class="btn-secondary px-5 py-2.5">Cancel</button>
+                <button type="submit" id="editGuestBtn" class="btn-hotel-primary px-6 py-2.5 flex items-center space-x-2">
                     <span>Save Changes</span>
                 </button>
             </div>

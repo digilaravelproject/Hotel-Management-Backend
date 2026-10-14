@@ -6,14 +6,14 @@
 @section('content')
 <div class="space-y-8">
 
-    <!-- Top Wallet Header Banner -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950/60 rounded-3xl p-6 sm:p-8 text-white border border-slate-700 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <!-- Top Wallet Header Card (Pure White with Soft Gold Tint highlight) -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-xs border border-amber-500/30">
-                <i class="fa-solid fa-wallet mr-1.5"></i> Distributor Revenue Wallet
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FEF9EE] text-[#004B87] font-bold text-xs border border-[#E5A93C]/30">
+                <i class="fa-solid fa-wallet mr-1.5 text-[#E5A93C]"></i> Distributor Revenue Wallet
             </span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Financial Hub & Payouts</h2>
-            <p class="text-xs text-slate-300 max-w-xl">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">Financial Hub & Payouts</h2>
+            <p class="text-xs text-[#64748B] max-w-xl">
                 Track earned commissions across hotel client sales, monitor your wallet balance, and submit withdrawal requests directly to the administration.
             </p>
         </div>
@@ -21,35 +21,35 @@
         <div class="flex flex-wrap items-center gap-3">
             <button type="button" 
                     onclick="openWithdrawModal()" 
-                    class="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/30 transition-all flex items-center space-x-2">
+                    class="px-5 py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#C88E26] text-white font-extrabold text-xs shadow-md shadow-[#E5A93C]/20 transition-all flex items-center space-x-2 cursor-pointer">
                 <i class="fa-solid fa-money-bill-transfer text-xs"></i>
                 <span>Request Payout</span>
             </button>
-            <a href="{{ route('distributor.wallet.transactions') }}" class="px-5 py-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-extrabold text-xs border border-white/20 transition-all flex items-center space-x-2">
-                <i class="fa-solid fa-receipt text-xs text-amber-400"></i>
+            <a href="{{ route('distributor.wallet.transactions') }}" class="px-5 py-3 rounded-2xl bg-white border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] font-extrabold text-xs transition-all flex items-center space-x-2">
+                <i class="fa-solid fa-receipt text-xs text-[#E5A93C]"></i>
                 <span>Full Ledger</span>
             </a>
         </div>
     </div>
 
     @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-3 shadow-xs">
-            <i class="fa-solid fa-circle-check text-lg text-emerald-600"></i>
+        <div class="p-4 rounded-2xl bg-[#DCFCE7] border border-[#16A34A]/20 text-[#16A34A] text-xs flex items-center space-x-3 shadow-xs">
+            <i class="fa-solid fa-circle-check text-lg shrink-0"></i>
             <span class="font-semibold">{{ session('success') }}</span>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-3 shadow-xs">
-            <i class="fa-solid fa-circle-exclamation text-lg text-rose-600"></i>
+        <div class="p-4 rounded-2xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs flex items-center space-x-3 shadow-xs">
+            <i class="fa-solid fa-circle-exclamation text-lg shrink-0"></i>
             <span class="font-semibold">{{ session('error') }}</span>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1 shadow-xs">
+        <div class="p-4 rounded-2xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs space-y-1 shadow-xs">
             <div class="font-bold flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <i class="fa-solid fa-triangle-exclamation"></i>
                 <span>Please fix the following validation errors:</span>
             </div>
             <ul class="list-disc pl-6 space-y-1 mt-1">
@@ -64,60 +64,60 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
         <!-- Available Balance -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Available Balance</p>
-                <div class="text-3xl font-extrabold text-slate-900 mt-1">₹{{ number_format($metrics['available_balance'], 2) }}</div>
+                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Available Balance</p>
+                <div class="text-3xl font-extrabold text-[#1E293B] mt-1">₹{{ number_format($metrics['available_balance'], 2) }}</div>
                 @if($metrics['locked_balance'] > 0)
-                    <div class="text-xs text-amber-600 font-bold mt-1">
+                    <div class="text-xs text-[#EA580C] font-bold mt-1">
                         <i class="fa-solid fa-lock text-[10px]"></i> ₹{{ number_format($metrics['locked_balance'], 2) }} pending payout
                     </div>
                 @else
-                    <div class="text-xs text-emerald-600 font-semibold mt-1">
+                    <div class="text-xs text-[#16A34A] font-semibold mt-1">
                         <i class="fa-solid fa-circle-check text-[10px]"></i> Ready for withdrawal
                     </div>
                 @endif
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/20 text-[#E5A93C] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-wallet"></i>
             </div>
         </div>
 
         <!-- Lifetime Earned -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Lifetime Commission</p>
-                <div class="text-3xl font-extrabold text-emerald-600 mt-1">₹{{ number_format($metrics['total_earned'], 2) }}</div>
-                <div class="text-xs text-slate-400 font-medium mt-1">Total earned commissions</div>
+                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Lifetime Commission</p>
+                <div class="text-3xl font-extrabold text-[#16A34A] mt-1">₹{{ number_format($metrics['total_earned'], 2) }}</div>
+                <div class="text-xs text-[#64748B] font-medium mt-1">Total earned commissions</div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#DCFCE7] border border-[#16A34A]/20 text-[#16A34A] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-arrow-trend-up"></i>
             </div>
         </div>
 
         <!-- Total Withdrawn -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Total Withdrawn</p>
-                <div class="text-3xl font-extrabold text-slate-900 mt-1">₹{{ number_format($metrics['total_withdrawn'], 2) }}</div>
-                <div class="text-xs text-slate-400 font-medium mt-1">Settled to your account</div>
+                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Total Withdrawn</p>
+                <div class="text-3xl font-extrabold text-[#1E293B] mt-1">₹{{ number_format($metrics['total_withdrawn'], 2) }}</div>
+                <div class="text-xs text-[#64748B] font-medium mt-1">Settled to your account</div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/20 text-[#E5A93C] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-building-columns"></i>
             </div>
         </div>
 
         <!-- Commission Rate -->
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Your Commission Rate</p>
-                <div class="text-3xl font-extrabold text-amber-600 mt-1">{{ number_format($metrics['commission_rate'], 2) }}%</div>
-                <div class="text-xs font-semibold mt-1 {{ $metrics['is_override'] ? 'text-indigo-600' : 'text-slate-500' }}">
+                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Your Commission Rate</p>
+                <div class="text-3xl font-extrabold text-[#E5A93C] mt-1">{{ number_format($metrics['commission_rate'], 2) }}%</div>
+                <div class="text-xs font-semibold mt-1 {{ $metrics['is_override'] ? 'text-[#004B87]' : 'text-[#64748B]' }}">
                     <i class="fa-solid {{ $metrics['is_override'] ? 'fa-star' : 'fa-globe' }} text-[10px]"></i>
                     {{ $metrics['is_override'] ? 'Special Custom Rate' : 'Global Default Rate' }}
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/20 text-[#E5A93C] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-percent"></i>
             </div>
         </div>
@@ -247,16 +247,18 @@
         <form method="POST" action="{{ route('distributor.wallet.withdraw') }}" class="space-y-0">
             @csrf
 
-            <!-- Modal Header -->
-            <div class="p-6 bg-slate-900 text-white flex items-center justify-between">
+            <!-- Modal Header (White Header adhering to colors.md) -->
+            <div class="p-6 bg-white border-b border-[#E2E8F0] text-[#1E293B] flex items-center justify-between">
                 <div>
-                    <h3 class="text-base font-extrabold flex items-center space-x-2">
-                        <i class="fa-solid fa-money-bill-transfer text-amber-400"></i>
+                    <h3 class="text-base font-extrabold flex items-center space-x-2 text-[#1E293B]">
+                        <span class="w-8 h-8 rounded-xl bg-[#FEF9EE] border border-[#E5A93C]/30 text-[#E5A93C] flex items-center justify-center text-sm font-bold">
+                            <i class="fa-solid fa-money-bill-transfer"></i>
+                        </span>
                         <span>Request Payout from Wallet</span>
                     </h3>
-                    <p class="text-xs text-slate-400 mt-0.5">Funds will be manually processed to your bank or UPI</p>
+                    <p class="text-xs text-[#64748B] mt-0.5">Funds will be manually processed to your bank or UPI</p>
                 </div>
-                <button type="button" onclick="closeWithdrawModal()" class="text-slate-400 hover:text-white p-1">
+                <button type="button" onclick="closeWithdrawModal()" class="text-[#64748B] hover:text-[#1E293B] p-1 cursor-pointer">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -264,14 +266,14 @@
             <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
 
                 <!-- Balance Status Banner -->
-                <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-center justify-between">
+                <div class="p-4 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/30 flex items-center justify-between">
                     <div>
-                        <span class="text-[10px] font-bold text-amber-800 uppercase tracking-wider block">Spendable Balance</span>
-                        <span class="text-xl font-black text-amber-950">₹{{ number_format($metrics['available_balance'], 2) }}</span>
+                        <span class="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block">Spendable Balance</span>
+                        <span class="text-xl font-black text-[#1E293B]">₹{{ number_format($metrics['available_balance'], 2) }}</span>
                     </div>
                     <button type="button" 
                             onclick="document.getElementById('amountInput').value = '{{ $metrics['available_balance'] }}'"
-                            class="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-xs transition-all">
+                            class="px-3 py-1.5 rounded-xl bg-[#E5A93C] hover:bg-[#C88E26] text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
                         Withdraw All
                     </button>
                 </div>
@@ -354,13 +356,13 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <button type="button" onclick="closeWithdrawModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-100">
+            <div class="p-6 bg-white border-t border-[#E2E8F0] flex items-center justify-end space-x-3">
+                <button type="button" onclick="closeWithdrawModal()" class="btn-secondary px-4 py-2.5">
                     Cancel
                 </button>
                 <button type="submit" 
                         @if($metrics['available_balance'] < 100) disabled @endif 
-                        class="px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 text-xs font-extrabold shadow-md shadow-amber-500/30">
+                        class="btn-dist-primary px-6 py-2.5 disabled:opacity-50 disabled:cursor-not-allowed">
                     Submit Payout Request
                 </button>
             </div>

@@ -5,19 +5,19 @@
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-8">
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
-        <div class="border-b border-slate-100 pb-6 flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
+    <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
+        <div class="border-b border-[#E2E8F0] pb-6 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-[#FBF8F1] border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
                 <i class="fa-regular fa-user text-lg"></i>
             </div>
             <div>
-                <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Super Admin Credentials</h3>
-                <p class="text-xs text-slate-500 font-medium">Manage master administrator login email address and account password.</p>
+                <h3 class="text-xl font-extrabold text-[#1E293B] tracking-tight">Super Admin Credentials</h3>
+                <p class="text-xs text-[#64748B] font-medium">Manage master administrator login email address and account password.</p>
             </div>
         </div>
 
         @if($errors->any())
-            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
+            <div class="p-4 rounded-2xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs space-y-1">
                 <ul class="list-disc pl-4 space-y-1">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -30,33 +30,33 @@
             @csrf
             
             <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-700">Master Email Address</label>
+                <label class="text-xs font-bold text-[#1E293B]">Master Email Address</label>
                 <input type="email" name="email" value="{{ old('email', $superAdmin->email) }}" required 
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition-all">
+                    class="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D4AF37] focus:bg-white transition-all text-[#1E293B]">
             </div>
 
-            <div class="pt-4 border-t border-slate-100">
-                <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-wider mb-4">
-                    Update Password <span class="text-slate-400 font-normal lowercase">(leave blank to keep current)</span>
+            <div class="pt-4 border-t border-[#E2E8F0]">
+                <h4 class="text-xs font-extrabold text-[#64748B] uppercase tracking-wider mb-4">
+                    Update Password <span class="text-[#64748B] font-normal lowercase">(leave blank to keep current)</span>
                 </h4>
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700">New Password</label>
+                        <label class="text-xs font-bold text-[#1E293B]">New Password</label>
                         <input type="password" name="password" placeholder="Min 6 characters" 
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition-all">
+                            class="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D4AF37] focus:bg-white transition-all text-[#1E293B]">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-slate-700">Confirm New Password</label>
+                        <label class="text-xs font-bold text-[#1E293B]">Confirm New Password</label>
                         <input type="password" name="password_confirmation" placeholder="Confirm new password" 
-                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-rose-500 focus:bg-white transition-all">
+                            class="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-sm font-medium focus:outline-none focus:border-[#D4AF37] focus:bg-white transition-all text-[#1E293B]">
                     </div>
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
-                <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" class="px-8 py-3 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all hover:-translate-y-0.5">
+            <div class="pt-6 border-t border-[#E2E8F0] flex items-center justify-end space-x-4">
+                <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3 rounded-xl bg-white border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] text-xs font-bold transition-all">Cancel</a>
+                <button type="submit" class="px-8 py-3 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5">
                     Save Account Changes
                 </button>
             </div>
@@ -64,24 +64,24 @@
     </div>
 
     <!-- Google Authenticator (2FA) Security Card -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-6">
+    <div class="bg-white border border-[#E2E8F0] rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
+        <div class="flex items-center justify-between border-b border-[#E2E8F0] pb-6">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600">
+                <div class="w-10 h-10 rounded-2xl bg-[#FBF8F1] border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37]">
                     <i class="fa-solid fa-shield-halved text-lg"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight">Two-Factor Authentication</h3>
-                    <p class="text-xs text-slate-500 font-medium">Add an extra layer of security using Google Authenticator (TOTP).</p>
+                    <h3 class="text-xl font-extrabold text-[#1E293B] tracking-tight">Two-Factor Authentication</h3>
+                    <p class="text-xs text-[#64748B] font-medium">Add an extra layer of security using Google Authenticator (TOTP).</p>
                 </div>
             </div>
             <div>
                 @if($superAdmin->google2fa_enabled)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700 border border-emerald-200">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#16A34A]/20">
                         <i class="fa-solid fa-circle-check me-1.5"></i> Active
                     </span>
                 @else
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
                         <i class="fa-solid fa-circle-minus me-1.5"></i> Disabled
                     </span>
                 @endif
@@ -90,16 +90,16 @@
 
         <div class="flex items-center justify-between">
             <div class="space-y-1">
-                <h4 class="text-sm font-bold text-slate-800">Google Authenticator Verification</h4>
-                <p class="text-xs text-slate-500 max-w-md">When enabled, you will be required to enter a 6-digit TOTP code from your mobile app every time you log in.</p>
+                <h4 class="text-sm font-bold text-[#1E293B]">Google Authenticator Verification</h4>
+                <p class="text-xs text-[#64748B] max-w-md">When enabled, you will be required to enter a 6-digit TOTP code from your mobile app every time you log in.</p>
             </div>
             <div>
                 @if($superAdmin->google2fa_enabled)
-                    <button type="button" onclick="openDisable2FAModal()" class="px-5 py-2.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold transition-all">
+                    <button type="button" onclick="openDisable2FAModal()" class="px-5 py-2.5 rounded-xl border border-[#DC2626]/20 bg-[#FEE2E2] text-[#DC2626] hover:bg-red-100 text-xs font-bold transition-all cursor-pointer">
                         Disable 2FA
                     </button>
                 @else
-                    <button type="button" onclick="start2FASetup()" class="px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/20 transition-all">
+                    <button type="button" onclick="start2FASetup()" class="px-6 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] text-xs font-bold shadow-md shadow-[#D4AF37]/20 transition-all cursor-pointer">
                         Enable 2FA
                     </button>
                 @endif
@@ -110,35 +110,35 @@
 
 <!-- 2FA Setup Modal -->
 <div id="setup2FAModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 relative border border-slate-100">
-        <button onclick="closeSetup2FAModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 relative border border-[#E2E8F0]">
+        <button onclick="closeSetup2FAModal()" class="absolute top-6 right-6 text-[#64748B] hover:text-[#1E293B] cursor-pointer">
             <i class="fa-solid fa-xmark text-lg"></i>
         </button>
 
         <div class="space-y-2 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 mx-auto flex items-center justify-center text-xl">
+            <div class="w-12 h-12 rounded-2xl bg-[#FBF8F1] text-[#D4AF37] mx-auto flex items-center justify-center text-xl border border-[#D4AF37]/20">
                 <i class="fa-solid fa-qrcode"></i>
             </div>
-            <h3 class="text-xl font-extrabold text-slate-900">Set Up Google Authenticator</h3>
-            <p class="text-xs text-slate-500">Scan the QR code below using Google Authenticator app or enter the setup key manually.</p>
+            <h3 class="text-xl font-extrabold text-[#1E293B]">Set Up Google Authenticator</h3>
+            <p class="text-xs text-[#64748B]">Scan the QR code below using Google Authenticator app or enter the setup key manually.</p>
         </div>
 
         <div id="qrContainer" class="flex flex-col items-center space-y-4 py-2">
-            <div id="qrCodeSvg" class="p-3 bg-white border border-slate-200 rounded-2xl shadow-inner"></div>
+            <div id="qrCodeSvg" class="p-3 bg-white border border-[#E2E8F0] rounded-2xl shadow-inner"></div>
             <div class="text-center">
-                <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider block mb-1">Manual Secret Key</span>
-                <code id="secretKeyDisplay" class="px-3 py-1.5 bg-slate-100 rounded-lg text-sm font-mono text-indigo-700 font-bold tracking-widest select-all">Loading...</code>
+                <span class="text-xs text-[#64748B] font-semibold uppercase tracking-wider block mb-1">Manual Secret Key</span>
+                <code id="secretKeyDisplay" class="px-3 py-1.5 bg-[#F8FAFC] rounded-lg text-sm font-mono text-[#0F2537] font-bold tracking-widest select-all border border-[#E2E8F0]">Loading...</code>
             </div>
         </div>
 
-        <form id="enable2FAForm" onsubmit="submitEnable2FA(event)" class="space-y-4 pt-2 border-t border-slate-100">
+        <form id="enable2FAForm" onsubmit="submitEnable2FA(event)" class="space-y-4 pt-2 border-t border-[#E2E8F0]">
             <div class="space-y-1">
-                <label class="text-xs font-bold text-slate-700">Enter 6-Digit Authenticator Code</label>
+                <label class="text-xs font-bold text-[#1E293B]">Enter 6-Digit Authenticator Code</label>
                 <input type="text" id="setupOtpInput" maxlength="6" required placeholder="123456" 
-                    class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono text-lg font-bold tracking-widest focus:outline-none focus:border-indigo-500">
+                    class="w-full px-4 py-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl text-center font-mono text-lg font-bold tracking-widest focus:outline-none focus:border-[#D4AF37] text-[#1E293B]">
             </div>
 
-            <button type="submit" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all">
+            <button type="submit" class="w-full py-3 bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] rounded-xl font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all cursor-pointer">
                 Verify Code & Activate 2FA
             </button>
         </form>

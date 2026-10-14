@@ -14,7 +14,7 @@
             </h2>
             <p class="text-xs text-slate-500 font-medium mt-1">Configure local tourist spots, heritage landmarks, distance, descriptions, and 16:9 widescreen visuals for guest smart TVs.</p>
         </div>
-        <button onclick="openOurCityModal()" class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-lg shadow-amber-500/25 transition-all flex items-center space-x-2">
+        <button onclick="openOurCityModal()" class="btn-hotel-primary px-5 py-2.5 flex items-center space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Add New City Place</span>
         </button>
@@ -88,13 +88,13 @@
                                     <button onclick="openViewModal(this)" data-city="{{ json_encode($place) }}" title="Quick Preview" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
                                         <i class="fa-regular fa-eye"></i>
                                     </button>
-                                    <button onclick="triggerEditMode({{ json_encode($place) }})" title="Edit City Place" class="p-2 rounded-lg border border-amber-200 text-amber-600 hover:bg-amber-50 transition-colors">
+                                    <button onclick="triggerEditMode({{ json_encode($place) }})" title="Edit City Place" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     <form action="{{ route('hotel.our-city.destroy', $place->id) }}" method="POST" onsubmit="return confirm('Delete this city attraction?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Delete City Place" class="p-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors">
+                                        <button type="submit" title="Delete City Place" class="btn-danger p-2">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </form>

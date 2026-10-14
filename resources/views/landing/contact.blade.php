@@ -275,14 +275,14 @@
                             <!-- Inquiry Category -->
                             <div class="space-y-1.5">
                                 <label for="subject" class="text-xs font-bold text-slate-700">How can we assist you? <span class="text-rose-500">*</span></label>
-                                <select name="subject" id="subject" required class="w-full px-4 py-2.5 bg-[#FAF8F5] border border-[#E5DAC8] rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:border-[#C5A880] transition-all text-slate-700">
+                                <x-dropdown name="subject" id="subject" required theme="hotel">
                                     <option value="" disabled {{ old('subject') ? '' : 'selected' }}>Select an inquiry topic...</option>
                                     <option value="New Hotel Onboarding & Plan Pricing" {{ old('subject') == 'New Hotel Onboarding & Plan Pricing' ? 'selected' : '' }}>New Hotel Onboarding & Plan Pricing</option>
                                     <option value="TV Device Pairing & Hardware Setup" {{ old('subject') == 'TV Device Pairing & Hardware Setup' ? 'selected' : '' }}>TV Device Pairing & Hardware Setup</option>
                                     <option value="Billing & Subscription Renewal" {{ old('subject') == 'Billing & Subscription Renewal' ? 'selected' : '' }}>Billing & Subscription Renewal</option>
                                     <option value="Custom Theme, OTT, or PMS Integration" {{ old('subject') == 'Custom Theme, OTT, or PMS Integration' ? 'selected' : '' }}>Custom Theme, OTT, or PMS Integration</option>
                                     <option value="General Question / Partnership" {{ old('subject') == 'General Question / Partnership' ? 'selected' : '' }}>General Question / Partnership</option>
-                                </select>
+                                </x-dropdown>
                             </div>
 
                             <!-- Message -->

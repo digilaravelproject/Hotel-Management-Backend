@@ -145,8 +145,8 @@
 
                     <!-- Action Buttons -->
                     <div class="pt-4 border-t border-slate-200/80 flex items-center space-x-3">
-                        <button type="button" onclick="closeOurCityModal()" class="w-1/2 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all">Cancel</button>
-                        <button type="submit" id="submitBtn" class="w-1/2 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs shadow-lg shadow-amber-500/25 transition-all">Save Attraction</button>
+                        <button type="button" onclick="closeOurCityModal()" class="w-1/2 btn-secondary py-3">Cancel</button>
+                        <button type="submit" id="submitBtn" class="w-1/2 btn-hotel-primary py-3">Save Attraction</button>
                     </div>
                 </div>
             </div>

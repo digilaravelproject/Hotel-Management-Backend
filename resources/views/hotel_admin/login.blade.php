@@ -1,214 +1,144 @@
-@extends('layouts.landing')
+@extends('layouts.app')
 
-@section('title', 'Hotel Admin Sign In - PAX TV')
+@section('title', 'Hotel Admin Sign In - ' . app_name())
 
 @section('styles')
-<!-- Luxury Typography -->
+<!-- Luxury Editorial Typography -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-    :root {
-        --color-gold: #E5A853;
-        --color-gold-hover: #F2B660;
-        --color-gold-light: #F7D59E;
-        --color-gold-dark: #B88035;
-        --color-bg-dark: #080B10;
-        --color-bg-card: #0F131C;
-    }
-
     .font-serif-lux {
-        font-family: 'Playfair Display', 'Cormorant Garamond', 'Cinzel', Georgia, serif !important;
-    }
-
-    .btn-gold-pill {
-        background-color: #E5A853;
-        color: #0A0D14;
-        font-weight: 700;
-        border-radius: 9999px;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: 0 4px 18px rgba(229, 168, 83, 0.28);
-    }
-    .btn-gold-pill:hover {
-        background-color: #F2B660;
-        transform: translateY(-1.5px);
-        box-shadow: 0 8px 26px rgba(229, 168, 83, 0.42);
-    }
-
-    .input-luxury {
-        background-color: rgba(255, 255, 255, 0.04);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        color: #FFFFFF;
-        transition: all 0.2s ease-in-out;
-    }
-    .input-luxury:focus {
-        background-color: rgba(255, 255, 255, 0.07);
-        border-color: #E5A853;
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(229, 168, 83, 0.18);
-    }
-    .input-luxury::placeholder {
-        color: #78716C;
+        font-family: 'Playfair Display', Georgia, serif;
     }
 </style>
 @endsection
 
 @section('content')
-<div class="min-h-screen flex flex-col justify-between bg-[#080B10] text-slate-100 relative overflow-hidden">
-
-    <!-- Ambient Luxury Resort Background with Cinematic Vignette -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
-        <img src="{{ asset('images/landing/demo.svg') }}" 
-             onerror="this.onerror=null;this.src='{{ asset('images/landing/demo.jpg') }}';" 
-             alt="Luxury Hotel Architecture" 
-             class="w-full h-full object-cover opacity-25 filter blur-[1px] scale-105">
-        <div class="absolute inset-0 bg-gradient-to-b from-[#080B10]/95 via-[#080B10]/90 to-[#080B10]"></div>
-        <div class="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(229,168,83,0.15),transparent)]"></div>
-    </div>
-
-    <!-- ========================================================================= -->
-    <!-- TOP HEADER / BRAND BAR -->
-    <!-- ========================================================================= -->
-    <header class="relative z-10 w-full px-6 lg:px-16 py-6 border-b border-white/10 backdrop-blur-md bg-[#080B10]/60">
+<div class="min-h-screen flex flex-col justify-between bg-[#F8FAFC] text-[#1E293B] relative overflow-hidden">
+    <!-- Top Header Bar -->
+    <header class="w-full px-6 lg:px-12 py-5 bg-white border-b border-[#E2E8F0] shadow-xs relative z-20">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            
-            <!-- Brand Logo -->
-            <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                <img src="{{ app_logo_url() }}" 
-                     alt="{{ app_name() }}" 
-                     class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase bg-[#E5A853]/15 text-[#E5A853] border border-[#E5A853]/30">
-                    Hotel Portal
-                </span>
-            </a>
-
-            <!-- Return to Website Button -->
             <div class="flex items-center space-x-3">
-                <a href="{{ route('landing') }}" class="px-4 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#E5A853]/40 text-stone-200 hover:text-white text-xs font-medium tracking-wide transition-all inline-flex items-center space-x-2">
-                    <i class="fa-solid fa-arrow-left text-[11px] text-[#E5A853]"></i>
+                <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
+                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto object-contain transition-transform group-hover:scale-105">
+                </a>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wider uppercase bg-[#F9F5EB] text-[#6E1841] border border-[#C5A059]/40">
+                    <i class="fa-solid fa-hotel text-[10px] text-[#C5A059] mr-1.5"></i> Hotel Portal
+                </span>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('landing') }}" class="px-3.5 py-1.5 rounded-lg border border-[#CBD5E1] bg-white hover:bg-[#F8FAFC] text-[#64748B] hover:text-[#1E293B] text-xs font-semibold transition-all inline-flex items-center space-x-1.5">
+                    <i class="fa-solid fa-arrow-left text-[11px] text-[#C5A059]"></i>
                     <span>Back to Website</span>
                 </a>
             </div>
-
         </div>
     </header>
 
-    <!-- ========================================================================= -->
-    <!-- MAIN CONSOLE CONTAINER (SPLIT SHOWCASE + LOGIN FORM) -->
-    <!-- ========================================================================= -->
-    <main class="relative z-10 max-w-7xl mx-auto px-6 lg:px-16 py-12 lg:py-16 w-full flex items-center justify-center">
-        
-        <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+    <!-- Main Console Container (Split Showcase + Login Card) -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 py-10 lg:py-16 w-full flex items-center justify-center relative z-10">
+        <!-- Ambient Decorative Top Gradient -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-48 bg-gradient-to-b from-[#6E1841]/5 via-transparent to-transparent pointer-events-none"></div>
 
+        <div class="w-full grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
+            
             <!-- Left Editorial & Highlights Column (Hidden on Small Screens) -->
-            <div class="hidden lg:flex lg:col-span-6 flex-col space-y-8 text-left pr-4">
-                
+            <div class="hidden lg:flex lg:col-span-6 flex-col space-y-7 text-left pr-4">
                 <div class="space-y-3">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#E5A853]/10 border border-[#E5A853]/25 text-[#E5A853] text-[11px] font-bold uppercase tracking-[0.2em]">
-                        <i class="fa-solid fa-hotel text-xs"></i>
-                        <span>HOTEL MANAGEMENT SYSTEM</span>
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#F9F5EB] border border-[#C5A059]/30 text-[#6E1841] text-[11px] font-bold uppercase tracking-[0.15em]">
+                        <i class="fa-solid fa-sparkles text-[10px] text-[#C5A059]"></i>
+                        <span>Hospitality Smart TV Suite</span>
                     </div>
 
-                    <h1 class="font-serif-lux text-4xl xl:text-5xl font-medium tracking-tight text-white leading-[1.18]">
-                        Command Your In-Room Guest Entertainment
+                    <h1 class="font-serif-lux text-4xl xl:text-5xl font-semibold tracking-tight text-[#1E293B] leading-[1.2]">
+                        Elevate In-Room Guest Entertainment
                     </h1>
 
-                    <p class="text-sm text-stone-300 leading-relaxed font-normal max-w-lg">
-                        Log in to configure live broadcast channels, push hotel promotions, personalize guest welcome screens, and synchronize room televisions across your property in real time.
+                    <p class="text-sm text-[#64748B] leading-relaxed max-w-lg font-normal">
+                        Synchronize room smart TVs, broadcast property announcements, customize interactive concierge services, and monitor device health in real time.
                     </p>
                 </div>
 
-                <!-- 3 Feature Highlights with Golden Badges -->
-                <div class="space-y-4 pt-2">
-                    
-                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xs">
-                        <div class="w-10 h-10 rounded-xl bg-[#E5A853]/15 border border-[#E5A853]/30 text-[#E5A853] flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-tv text-sm"></i>
+                <!-- 3 Feature Highlights -->
+                <div class="space-y-3.5 pt-1">
+                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
+                        <div class="w-10 h-10 rounded-xl bg-[#F9F5EB] border border-[#C5A059]/30 text-[#6E1841] flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-tv text-sm text-[#C5A059]"></i>
                         </div>
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-bold text-white tracking-wide">Fleet Device Management</h4>
-                            <p class="text-xs text-stone-400 leading-relaxed">Instantly pair and monitor smart TVs in 500+ rooms using dedicated 16-digit license keys.</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xs">
-                        <div class="w-10 h-10 rounded-xl bg-[#E5A853]/15 border border-[#E5A853]/30 text-[#E5A853] flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-bell-concierge text-sm"></i>
-                        </div>
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-bold text-white tracking-wide">Digital Guest Concierge</h4>
-                            <p class="text-xs text-stone-400 leading-relaxed">Update room service menus, spa bookings, hotel facilities, and interactive guides on the fly.</p>
+                        <div class="space-y-0.5">
+                            <h4 class="text-xs font-bold text-[#1E293B] tracking-wide">Fleet Device Pairing</h4>
+                            <p class="text-xs text-[#64748B] leading-relaxed">Instant smart pairing and live diagnostics for all property TVs using dedicated device keys.</p>
                         </div>
                     </div>
 
-                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white/[0.03] border border-white/10 backdrop-blur-xs">
-                        <div class="w-10 h-10 rounded-xl bg-[#E5A853]/15 border border-[#E5A853]/30 text-[#E5A853] flex items-center justify-center shrink-0">
-                            <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
+                        <div class="w-10 h-10 rounded-xl bg-[#F9F5EB] border border-[#C5A059]/30 text-[#6E1841] flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-bell-concierge text-sm text-[#C5A059]"></i>
                         </div>
-                        <div class="space-y-1">
-                            <h4 class="text-sm font-bold text-white tracking-wide">Automated Checkout Privacy</h4>
-                            <p class="text-xs text-stone-400 leading-relaxed">Zero guest streaming data stored. All logins and history auto-wiped immediately at checkout.</p>
+                        <div class="space-y-0.5">
+                            <h4 class="text-xs font-bold text-[#1E293B] tracking-wide">Digital Guest Concierge</h4>
+                            <p class="text-xs text-[#64748B] leading-relaxed">Publish room service menus, spa bookings, hotel facilities, and interactive guides on the fly.</p>
                         </div>
                     </div>
 
+                    <div class="flex items-start space-x-4 p-4 rounded-2xl bg-white border border-[#E2E8F0] shadow-xs">
+                        <div class="w-10 h-10 rounded-xl bg-[#F9F5EB] border border-[#C5A059]/30 text-[#6E1841] flex items-center justify-center shrink-0">
+                            <i class="fa-solid fa-shield-halved text-sm text-[#C5A059]"></i>
+                        </div>
+                        <div class="space-y-0.5">
+                            <h4 class="text-xs font-bold text-[#1E293B] tracking-wide">Guest Privacy Protection</h4>
+                            <p class="text-xs text-[#64748B] leading-relaxed">Automated zero-retention guest session wipe ensures full privacy and hospitality compliance.</p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Trusted By Badge -->
-                <div class="pt-2 flex items-center space-x-3 text-xs text-stone-400">
-                    <div class="flex -space-x-1.5 overflow-hidden">
-                        <div class="w-6 h-6 rounded-full bg-[#E5A853] text-[#080B10] font-bold text-[9px] flex items-center justify-center border border-[#080B10]">★</div>
-                        <div class="w-6 h-6 rounded-full bg-stone-700 text-white font-bold text-[9px] flex items-center justify-center border border-[#080B10]">★</div>
-                        <div class="w-6 h-6 rounded-full bg-[#E5A853] text-[#080B10] font-bold text-[9px] flex items-center justify-center border border-[#080B10]">★</div>
-                    </div>
-                    <span>Powering boutique hotels and 5-star luxury resorts globally.</span>
+                <div class="flex items-center space-x-3 text-xs text-[#64748B] pt-2">
+                    <span class="w-2 h-2 rounded-full bg-[#16A34A]"></span>
+                    <span>Trusted by leading boutique hotels & luxury resorts globally.</span>
                 </div>
-
             </div>
 
-            <!-- Right Column: Glassmorphism Login Card -->
+            <!-- Right Column: Login Card -->
             <div class="lg:col-span-6 w-full max-w-md mx-auto">
-                
-                <div class="relative bg-[#0F131C]/90 backdrop-blur-xl border border-white/15 rounded-3xl p-8 sm:p-10 shadow-2xl shadow-black/80 space-y-7">
+                <div class="bg-white border border-[#E2E8F0] rounded-3xl p-8 sm:p-10 shadow-xl shadow-slate-200/60 space-y-7 relative">
                     
-                    <!-- Ambient Top Glow on Card -->
-                    <div class="absolute -top-px left-10 right-10 h-px bg-gradient-to-r from-transparent via-[#E5A853] to-transparent"></div>
-
                     <!-- Card Header -->
-                    <div class="text-center space-y-3">
-                        <img src="{{ app_logo_url() }}" 
-                             alt="{{ app_name() }}" 
-                             class="h-12 sm:h-14 w-auto object-contain mx-auto drop-shadow-md">
-                        <h2 class="font-serif-lux text-2xl sm:text-3xl font-medium text-white tracking-tight">
+                    <div class="text-center space-y-2.5">
+                        <div class="w-14 h-14 rounded-2xl bg-[#6E1841] text-[#C5A059] flex items-center justify-center mx-auto shadow-md shadow-[#6E1841]/20 border border-[#8A1C56]">
+                            <i class="fa-solid fa-hotel text-2xl"></i>
+                        </div>
+                        <h2 class="font-serif-lux text-2xl sm:text-3xl font-semibold text-[#1E293B] tracking-tight">
                             Hotel Admin Portal
                         </h2>
-                        <p class="text-xs text-stone-400 font-normal">
+                        <p class="text-xs text-[#64748B] font-normal">
                             Sign in to configure and monitor your hotel's Smart TV fleet
                         </p>
                     </div>
 
                     <!-- Flash & Validation Alerts -->
                     @if(session('success'))
-                        <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-start space-x-2.5">
-                            <i class="fa-solid fa-circle-check text-sm text-emerald-400 mt-0.5"></i>
-                            <div class="leading-relaxed font-medium">{{ session('success') }}</div>
+                        <div class="p-4 rounded-xl bg-[#DCFCE7] border border-[#16A34A]/25 text-[#16A34A] text-xs flex items-center space-x-2 font-medium">
+                            <i class="fa-solid fa-circle-check text-sm shrink-0"></i>
+                            <span>{{ session('success') }}</span>
                         </div>
                     @endif
 
                     @if(session('status'))
-                        <div class="p-4 rounded-2xl bg-[#E5A853]/15 border border-[#E5A853]/35 text-[#F7D59E] text-xs flex items-start space-x-2.5">
-                            <i class="fa-solid fa-circle-info text-sm text-[#E5A853] mt-0.5"></i>
-                            <div class="leading-relaxed font-medium">{{ session('status') }}</div>
+                        <div class="p-4 rounded-xl bg-[#F9F5EB] border border-[#C5A059]/35 text-[#8A1C56] text-xs flex items-center space-x-2 font-medium">
+                            <i class="fa-solid fa-circle-info text-sm text-[#C5A059] shrink-0"></i>
+                            <span>{{ session('status') }}</span>
                         </div>
                     @endif
 
                     @if($errors->any())
-                        <div class="p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs space-y-1.5">
-                            <div class="flex items-center space-x-2 font-bold text-rose-200">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400"></i>
+                        <div class="p-4 rounded-xl bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs space-y-1.5">
+                            <div class="flex items-center space-x-2 font-bold">
+                                <i class="fa-solid fa-circle-exclamation text-[#DC2626]"></i>
                                 <span>Please resolve the following:</span>
                             </div>
-                            <ul class="list-disc pl-5 space-y-1 text-rose-300/90 font-medium">
+                            <ul class="list-disc pl-5 space-y-1 font-medium">
                                 @foreach($errors->all() as $error)
                                     <li>{{ $error }}</li>
                                 @endforeach
@@ -221,123 +151,86 @@
                         @csrf
 
                         <!-- Email Input -->
-                        <div class="space-y-2 text-left">
-                            <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-300">
-                                Property Email Address
-                            </label>
+                        <div class="space-y-1.5 text-left">
+                            <label class="block text-xs font-bold text-[#1E293B]">Property Email Address</label>
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-500">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
                                     <i class="fa-solid fa-envelope text-xs"></i>
                                 </div>
-                                <input type="email" 
-                                       name="email" 
-                                       required 
-                                       value="{{ old('email') }}" 
-                                       placeholder="admin@grandresort.com" 
-                                       autocomplete="email" 
-                                       autofocus
-                                       class="input-luxury w-full pl-11 pr-4 py-3 rounded-xl text-sm font-medium">
+                                <input type="email" name="email" required value="{{ old('email') }}" placeholder="admin@grandresort.com" autocomplete="email" autofocus
+                                    class="w-full pl-10 pr-4 py-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl text-sm text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/20 transition-all">
                             </div>
                         </div>
 
                         <!-- Password Input -->
-                        <div class="space-y-2 text-left">
+                        <div class="space-y-1.5 text-left">
                             <div class="flex items-center justify-between">
-                                <label class="block text-[11px] font-bold uppercase tracking-wider text-stone-300">
-                                    Password
-                                </label>
+                                <label class="block text-xs font-bold text-[#1E293B]">Password</label>
                                 @if (Route::has('hotel.forgot-password'))
-                                    <a href="{{ route('hotel.forgot-password') }}" class="text-[11px] font-semibold text-[#E5A853] hover:text-[#F2B660] transition-colors">
+                                    <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-[#C5A059] hover:text-[#A88440] transition-colors">
                                         Forgot Password?
                                     </a>
                                 @endif
                             </div>
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-stone-500">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
                                     <i class="fa-solid fa-lock text-xs"></i>
                                 </div>
-                                <input type="password" 
-                                       id="passwordInput" 
-                                       name="password" 
-                                       required 
-                                       placeholder="••••••••" 
-                                       autocomplete="current-password"
-                                       class="input-luxury w-full pl-11 pr-11 py-3 rounded-xl text-sm font-medium">
-                                <button type="button" 
-                                        onclick="togglePasswordVisibility()" 
-                                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-stone-400 hover:text-white transition-colors cursor-pointer"
-                                        aria-label="Toggle password visibility">
-                                    <i id="eyeIcon" class="fa-regular fa-eye text-xs"></i>
+                                <input type="password" id="hotelPassword" name="password" required placeholder="••••••••" autocomplete="current-password"
+                                    class="w-full pl-10 pr-10 py-3 bg-[#F8FAFC] border border-[#CBD5E1] rounded-xl text-sm text-[#1E293B] placeholder-[#94A3B8] focus:outline-none focus:bg-white focus:border-[#C5A059] focus:ring-2 focus:ring-[#C5A059]/20 transition-all">
+                                <button type="button" onclick="togglePasswordVisibility('hotelPassword', 'hotelEyeIcon')" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#64748B] hover:text-[#1E293B] transition-colors cursor-pointer" aria-label="Toggle password visibility">
+                                    <i id="hotelEyeIcon" class="fa-regular fa-eye text-xs"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Remember Me Option -->
                         <div class="flex items-center justify-between text-xs pt-1">
-                            <label class="flex items-center space-x-2.5 cursor-pointer text-stone-300 hover:text-white transition-colors select-none">
-                                <input type="checkbox" 
-                                       name="remember" 
-                                       id="remember" 
-                                       {{ old('remember') ? 'checked' : '' }}
-                                       class="w-4 h-4 rounded bg-white/5 border border-white/20 text-[#E5A853] focus:ring-[#E5A853]/30 focus:ring-offset-0 cursor-pointer">
+                            <label class="flex items-center space-x-2 text-[#64748B] hover:text-[#1E293B] cursor-pointer select-none">
+                                <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}
+                                    class="w-4 h-4 rounded border-[#CBD5E1] text-[#6E1841] focus:ring-[#C5A059]/40 cursor-pointer">
                                 <span>Remember this workstation</span>
                             </label>
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="pt-2">
-                            <button type="submit" class="w-full py-3.5 px-6 btn-gold-pill text-xs tracking-wider uppercase flex items-center justify-center space-x-2 cursor-pointer">
-                                <span>Sign In to Hotel Admin</span>
-                                <span class="text-sm font-bold font-mono">›</span>
-                            </button>
-                        </div>
-
+                        <button type="submit" class="w-full py-3.5 px-4 bg-[#C5A059] hover:bg-[#A88440] text-white font-extrabold text-sm rounded-xl shadow-lg shadow-[#C5A059]/25 transition-all hover:-translate-y-0.5 flex items-center justify-center space-x-2 cursor-pointer">
+                            <span>Sign In to Hotel Admin</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
                     </form>
 
-                    <!-- Property Access Request Banner -->
-                    <div class="pt-4 border-t border-white/10 text-center space-y-2">
-                        <p class="text-xs text-stone-400">
-                            Looking to onboard your property or need license keys?
-                        </p>
-                        <a href="{{ route('landing') }}" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-[#E5A853] hover:text-[#F2B660] transition-colors">
-                            <span>Request a Property Demo & Pricing</span>
-                            <span class="font-mono">›</span>
-                        </a>
+                    <!-- Demo Access Mention -->
+                    <div class="pt-4 border-t border-[#E2E8F0] text-center space-y-1">
+                        <p class="text-xs font-bold text-[#1E293B]">Looking for Demo Access?</p>
+                        <p class="text-[11px] text-[#64748B]">Contact your distributor or system administrator for demo login credentials.</p>
                     </div>
-
                 </div>
-
             </div>
 
         </div>
-
     </main>
 
-    <!-- ========================================================================= -->
-    <!-- BOTTOM FOOTER BAR -->
-    <!-- ========================================================================= -->
-    <footer class="relative z-10 w-full px-6 lg:px-16 py-6 border-t border-white/10 backdrop-blur-md bg-[#080B10]/60">
-        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
-            <p>© {{ date('Y') }} PAX TV. All rights reserved.</p>
-            <p class="text-stone-400">
-                Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#E5A853] hover:text-[#F2B660] font-medium transition-colors underline decoration-[#E5A853]/40 underline-offset-2 hover:decoration-[#F2B660]">Digi Emperor</a>
-            </p>
-            <div class="flex items-center space-x-5">
-                <a href="{{ route('privacy-policy') }}" class="hover:text-stone-300 transition-colors">Privacy Policy</a>
-                <span class="text-stone-700">|</span>
-                <a href="{{ route('contact-us') }}" class="hover:text-stone-300 transition-colors">Support & Contact</a>
+    <!-- Bottom Footer Bar -->
+    <footer class="w-full px-6 lg:px-12 py-4 bg-white border-t border-[#E2E8F0] text-xs text-[#64748B] relative z-20">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+            <p>© {{ date('Y') }} {{ app_name() }}. All rights reserved.</p>
+            <p>Developed with precision by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="font-bold text-[#6E1841] hover:underline">Digi Emperor</a></p>
+            <div class="flex items-center justify-center space-x-4">
+                <a href="{{ route('privacy-policy') }}" class="hover:text-[#1E293B] transition-colors">Privacy Policy</a>
+                <span class="text-[#CBD5E1]">|</span>
+                <a href="{{ route('contact-us') }}" class="hover:text-[#1E293B] transition-colors">Support</a>
             </div>
         </div>
     </footer>
-
 </div>
 @endsection
 
 @section('scripts')
 <script>
-    function togglePasswordVisibility() {
-        const input = document.getElementById('passwordInput');
-        const icon = document.getElementById('eyeIcon');
+    function togglePasswordVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
         if (input.type === 'password') {
             input.type = 'text';
             icon.className = 'fa-regular fa-eye-slash text-xs';

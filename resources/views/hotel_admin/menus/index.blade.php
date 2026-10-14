@@ -126,11 +126,11 @@
 
                         <div class="flex items-center space-x-3.5">
                             <!-- Move into group selector -->
-                            <select class="move-into-group-select text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 focus:outline-none focus:border-indigo-400 bg-white">
+                            <x-dropdown class="move-into-group-select text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 focus:outline-none focus:border-indigo-400 bg-white">
                                 <option value="">Move into Group...</option>
                                 <option value="hotel_menu">Hotel Menu</option>
                                 <option value="interactive_services">Interactive Services</option>
-                            </select>
+                            </x-dropdown>
 
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isShown ? 'checked' : '' }}>
@@ -240,14 +240,19 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-3.5">
-                        <select class="move-into-group-select text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 focus:outline-none focus:border-indigo-400 bg-white">
-                            <option value="">Move into Group...</option>
-                            <option value="hotel_menu">Hotel Menu</option>
-                            <option value="interactive_services">Interactive Services</option>
-                        </select>
+                        <div class="custom-dropdown-wrap inline-block w-44">
+                            <select class="move-into-group-select custom-select custom-select-hotel text-xs font-semibold py-1.5 pl-3 pr-7">
+                                <option value="">Move into Group...</option>
+                                <option value="hotel_menu">Hotel Menu</option>
+                                <option value="interactive_services">Interactive Services</option>
+                            </select>
+                            <div class="custom-select-icon right-2.5">
+                                <i class="fa-solid fa-chevron-down text-[9px]"></i>
+                            </div>
+                        </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''}>
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6E1841]"></div>
                         </label>
                         <span class="status-badge text-[11px] font-bold ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
                             ${isChecked ? 'Visible' : 'Hidden'}

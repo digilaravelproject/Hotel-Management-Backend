@@ -7,27 +7,24 @@
 <div class="max-w-4xl mx-auto space-y-8">
 
     <!-- Top Alert / Header -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-950 to-indigo-950 rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden border border-slate-800">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-rose-600/10 rounded-full blur-3xl pointer-events-none"></div>
-        <div class="absolute -top-10 right-20 w-48 h-48 bg-indigo-600/10 rounded-full blur-2xl pointer-events-none"></div>
-
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-2">
-                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#FBF8F1] border border-[#D4AF37]/30 text-[#0F2537] text-xs font-bold">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[#D4AF37]"></i>
                     <span>Global White-label Configuration</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Application Identity & Media</h2>
-                <p class="text-xs sm:text-sm text-slate-400 max-w-xl">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">Application Identity & Media</h2>
+                <p class="text-xs sm:text-sm text-[#64748B] max-w-xl">
                     Configure your platform branding, portal logos, and browser favicons. Updates applied here instantly reflect across Super Admin, Hotel Portals, Distributor Hubs, and Guest Landing screens.
                 </p>
             </div>
             <div class="flex items-center space-x-3 shrink-0">
-                <div class="p-3 bg-white/5 border border-white/10 rounded-2xl flex items-center space-x-3">
-                    <img src="{{ app_favicon_url() }}" alt="Favicon" class="w-8 h-8 rounded-lg object-contain bg-white/10 p-1">
+                <div class="p-3 bg-[#FBF8F1] border border-[#D4AF37]/20 rounded-2xl flex items-center space-x-3">
+                    <img src="{{ app_favicon_url() }}" alt="Favicon" class="w-8 h-8 rounded-lg object-contain bg-white p-1 border border-[#E2E8F0]">
                     <div>
-                        <div class="text-[11px] text-slate-400 uppercase font-bold tracking-wider">Active Brand</div>
-                        <div class="text-sm font-extrabold text-white truncate max-w-[120px]">{{ app_setting('app_name', 'DigiHotel') }}</div>
+                        <div class="text-[11px] text-[#64748B] uppercase font-bold tracking-wider">Active Brand</div>
+                        <div class="text-sm font-extrabold text-[#1E293B] truncate max-w-[120px]">{{ app_setting('app_name', 'DigiHotel') }}</div>
                     </div>
                 </div>
             </div>
@@ -300,10 +297,10 @@
 
         <!-- Action Buttons -->
         <div class="pt-4 flex items-center justify-end space-x-4">
-            <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3.5 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">
+            <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3.5 rounded-2xl bg-white border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] text-xs font-bold transition-all">
                 Cancel
             </a>
-            <button type="submit" class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-rose-500 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-xs shadow-xl shadow-rose-600/30 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+            <button type="submit" class="px-8 py-3.5 rounded-2xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span>Save & Apply Platform Branding</span>
             </button>

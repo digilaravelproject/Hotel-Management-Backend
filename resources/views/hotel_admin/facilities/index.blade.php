@@ -14,7 +14,7 @@
             </h2>
             <p class="text-xs text-slate-500 font-medium mt-1">Configure hotel areas, dining, spa, pools, banquet halls, descriptions (up to 250 chars), features (max 4), and 16:9 widescreen visuals for smart TV display.</p>
         </div>
-        <button onclick="openFacilityModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+        <button onclick="openFacilityModal()" class="btn-hotel-primary px-5 py-2.5 flex items-center space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Add New Facility</span>
         </button>
@@ -73,13 +73,13 @@
                                     <button onclick="openViewModal(this)" data-facility="{{ json_encode($facility) }}" title="Quick Preview" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
                                         <i class="fa-regular fa-eye"></i>
                                     </button>
-                                    <button onclick="triggerEditMode({{ json_encode($facility) }})" title="Edit Facility" class="p-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                                    <button onclick="triggerEditMode({{ json_encode($facility) }})" title="Edit Facility" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     <form action="{{ route('hotel.facilities.destroy', $facility['id']) }}" method="POST" onsubmit="return confirm('Delete this hotel facility item?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Delete Facility" class="p-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors">
+                                        <button type="submit" title="Delete Facility" class="btn-danger p-2">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </form>
@@ -256,10 +256,10 @@
 
             <!-- Modal Action Buttons Footer -->
             <div class="flex items-center justify-end space-x-3 pt-6 mt-6 border-t border-slate-100">
-                <button type="button" onclick="closeFacilityModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all">
+                <button type="button" onclick="closeFacilityModal()" class="btn-secondary px-6 py-2.5">
                     Cancel
                 </button>
-                <button type="submit" id="submitFormBtn" class="px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+                <button type="submit" id="submitFormBtn" class="btn-hotel-primary px-8 py-2.5 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span id="submitFormBtnText">Save Facility</span>
                 </button>

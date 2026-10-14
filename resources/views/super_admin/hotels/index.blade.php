@@ -29,10 +29,10 @@
     <!-- Header Summary & Primary Action -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-lg font-extrabold text-slate-900 tracking-tight">Registered Hotels Directory</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage hotel clients, pairing licenses, channel partners, and live streaming status.</p>
+            <h2 class="text-lg font-extrabold text-[#1E293B] tracking-tight">Registered Hotels Directory</h2>
+            <p class="text-xs text-[#64748B] font-medium mt-0.5">Manage hotel clients, pairing licenses, channel partners, and live streaming status.</p>
         </div>
-        <a href="{{ route('super-admin.hotels.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/25 transition-all hover:-translate-y-0.5 space-x-2">
+        <a href="{{ route('super-admin.hotels.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5 space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Add New Hotel Vendor</span>
         </a>
@@ -41,74 +41,74 @@
     <!-- Quick Stats Metric Cards -->
     <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
         <!-- Total Hotels -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-hotel text-slate-600"></i>
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FBF8F1] border border-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center text-sm font-bold shrink-0">
+                <i class="fa-solid fa-hotel text-[#D4AF37]"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-slate-900 leading-tight" id="statTotalHotels">{{ $hotels->count() }}</div>
-                <div class="text-[11px] font-semibold text-slate-400 truncate">Total Hotels</div>
+                <div class="text-xl sm:text-2xl font-black text-[#1E293B] leading-tight" id="statTotalHotels">{{ $hotels->count() }}</div>
+                <div class="text-[11px] font-semibold text-[#64748B] truncate">Total Hotels</div>
             </div>
         </div>
 
         <!-- Active Hotels -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-circle-check text-emerald-600"></i>
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#DCFCE7] text-[#16A34A] flex items-center justify-center text-sm font-bold shrink-0">
+                <i class="fa-solid fa-circle-check text-[#16A34A]"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-emerald-700 leading-tight">{{ $hotels->where('status', true)->count() }}</div>
-                <div class="text-[11px] font-semibold text-slate-400 truncate">Active Platforms</div>
+                <div class="text-xl sm:text-2xl font-black text-[#16A34A] leading-tight">{{ $hotels->where('status', true)->count() }}</div>
+                <div class="text-[11px] font-semibold text-[#64748B] truncate">Active Platforms</div>
             </div>
         </div>
 
         <!-- Pending Review -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-clock text-amber-600"></i>
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FFEDD5] text-[#EA580C] flex items-center justify-center text-sm font-bold shrink-0">
+                <i class="fa-solid fa-clock text-[#EA580C]"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-amber-700 leading-tight">{{ $hotels->where('approval_status', 'pending')->count() }}</div>
-                <div class="text-[11px] font-semibold text-slate-400 truncate">Pending Review</div>
+                <div class="text-xl sm:text-2xl font-black text-[#EA580C] leading-tight">{{ $hotels->where('approval_status', 'pending')->count() }}</div>
+                <div class="text-[11px] font-semibold text-[#64748B] truncate">Pending Review</div>
             </div>
         </div>
 
         <!-- Paid Subscriptions -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-credit-card text-indigo-600"></i>
+        <div class="bg-white border border-[#E2E8F0] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
+            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FBF8F1] border border-[#D4AF37]/20 text-[#D4AF37] flex items-center justify-center text-sm font-bold shrink-0">
+                <i class="fa-solid fa-credit-card text-[#D4AF37]"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-indigo-700 leading-tight">{{ $hotels->where('payment_status', 'paid')->count() }}</div>
-                <div class="text-[11px] font-semibold text-slate-400 truncate">Paid Packages</div>
+                <div class="text-xl sm:text-2xl font-black text-[#1E293B] leading-tight">{{ $hotels->where('payment_status', 'paid')->count() }}</div>
+                <div class="text-[11px] font-semibold text-[#64748B] truncate">Paid Packages</div>
             </div>
         </div>
     </div>
 
     <!-- Search & Filter Controls -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs space-y-3">
+    <div class="bg-white border border-[#E2E8F0] rounded-2xl p-3 sm:p-4 shadow-xs space-y-3">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <!-- Search Input -->
             <div class="relative flex-1">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-9 pr-8 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50/50 focus:outline-none focus:ring-2 focus:ring-rose-500/25 focus:border-rose-500 placeholder-slate-400 transition-all">
-                <button type="button" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B] text-xs"></i>
+                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-9 pr-8 py-2 text-xs rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 focus:border-[#D4AF37] placeholder-[#64748B] text-[#1E293B] transition-all">
+                <button type="button" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[#64748B] hover:text-[#1E293B] p-1 cursor-pointer">
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
 
             <!-- Filter Pills -->
             <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-                <button type="button" class="filter-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-rose-600 text-white shadow-xs" data-filter="all">
+                <button type="button" class="filter-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#0F2537] text-white shadow-xs" data-filter="all">
                     All <span class="ml-1 opacity-80 font-normal">({{ $hotels->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all" data-filter="active">
+                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#64748B] hover:bg-[#F8FAFC] transition-all" data-filter="active">
                     Active <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('status', true)->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all" data-filter="pending">
+                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#64748B] hover:bg-[#F8FAFC] transition-all" data-filter="pending">
                     Pending <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-all" data-filter="paid">
+                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#64748B] hover:bg-[#F8FAFC] transition-all" data-filter="paid">
                     Paid <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
                 </button>
             </div>
@@ -117,23 +117,23 @@
 
     <!-- Empty State for 0 total hotels in system -->
     @if($hotels->isEmpty())
-        <div class="bg-white border border-slate-200/80 rounded-3xl p-12 text-center shadow-xs">
-            <div class="w-16 h-16 rounded-2xl bg-rose-50 text-rose-500 mx-auto flex items-center justify-center text-2xl mb-4">
+        <div class="bg-white border border-[#E2E8F0] rounded-3xl p-12 text-center shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-[#FBF8F1] text-[#D4AF37] mx-auto flex items-center justify-center text-2xl mb-4 border border-[#D4AF37]/20">
                 <i class="fa-solid fa-hotel"></i>
             </div>
-            <h3 class="text-base font-extrabold text-slate-900 mb-1">No Hotel Vendors Registered</h3>
-            <p class="text-xs text-slate-400 max-w-md mx-auto mb-6">Get started by creating your first hotel client. You can assign TV limit plans, logos, and distributor channels.</p>
-            <a href="{{ route('super-admin.hotels.create') }}" class="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all">
+            <h3 class="text-base font-extrabold text-[#1E293B] mb-1">No Hotel Vendors Registered</h3>
+            <p class="text-xs text-[#64748B] max-w-md mx-auto mb-6">Get started by creating your first hotel client. You can assign TV limit plans, logos, and distributor channels.</p>
+            <a href="{{ route('super-admin.hotels.create') }}" class="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Add First Hotel Vendor</span>
             </a>
         </div>
     @else
         <!-- DESKTOP / TABLET VIEW: High-density responsive table with 3-dot Action Menu -->
-        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-3xl shadow-xs overflow-visible">
+        <div class="hidden lg:block bg-white border border-[#E2E8F0] rounded-3xl shadow-xs overflow-visible">
             <div class="overflow-visible">
-                <table class="w-full text-left text-xs text-slate-700">
-                    <thead class="bg-slate-50/90 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[10px] xl:text-[11px]">
+                <table class="w-full text-left text-xs text-[#1E293B]">
+                    <thead class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[#64748B] font-bold uppercase tracking-wider text-[10px] xl:text-[11px]">
                         <tr>
                             <th class="px-2.5 py-3 xl:px-4 xl:py-3.5">Hotel Client</th>
                             <th class="px-2 py-3 xl:px-4 xl:py-3.5">Owner & Contact</th>
@@ -255,18 +255,13 @@
                                 <td class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center">
                                     <label class="relative inline-flex items-center cursor-pointer" title="Toggle active status">
                                         <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
-                                        <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-rose-600"></div>
+                                        <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#0F2537]"></div>
                                     </label>
                                 </td>
 
                                 <!-- 7. Approval Status -->
                                 <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center">
-                                    <select onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" 
-                                            class="approval-select px-1.5 py-1 rounded-lg border text-[10px] xl:text-[11px] font-bold focus:outline-none transition-all max-w-[85px] xl:max-w-none {{ $hotel->approval_status === 'approved' ? 'approval-select-approved' : ($hotel->approval_status === 'pending' ? 'approval-select-pending' : 'approval-select-disapproved') }}">
-                                        <option value="approved" {{ $hotel->approval_status == 'approved' ? 'selected' : '' }}>Approved</option>
-                                        <option value="pending" {{ $hotel->approval_status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                        <option value="disapproved" {{ $hotel->approval_status == 'disapproved' ? 'selected' : '' }}>Disapproved</option>
-                                    </select>
+                                    <x-dropdown name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-28 xl:w-32 mx-auto" selectClass="py-1 px-2.5 text-[11px] font-bold" theme="sa" />
                                 </td>
 
                                 <!-- 8. 3-Dots Action Menu (Compact, No Horizontal Overflow) -->
@@ -445,18 +440,13 @@
                             <span class="text-xs font-bold text-slate-700">Live Status:</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-rose-600"></div>
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#0F2537]"></div>
                             </label>
                         </div>
 
                         <div class="flex items-center justify-between sm:justify-start space-x-2">
                             <span class="text-xs font-bold text-slate-700">Approval:</span>
-                            <select onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" 
-                                    class="approval-select px-3 py-1.5 rounded-xl border text-xs font-bold focus:outline-none transition-all {{ $hotel->approval_status === 'approved' ? 'approval-select-approved' : ($hotel->approval_status === 'pending' ? 'approval-select-pending' : 'approval-select-disapproved') }}">
-                                <option value="approved" {{ $hotel->approval_status == 'approved' ? 'selected' : '' }}>Approved</option>
-                                <option value="pending" {{ $hotel->approval_status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="disapproved" {{ $hotel->approval_status == 'disapproved' ? 'selected' : '' }}>Disapproved</option>
-                            </select>
+                            <x-dropdown name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-32" selectClass="py-1 px-2.5 text-xs font-bold" theme="sa" />
                         </div>
                     </div>
 

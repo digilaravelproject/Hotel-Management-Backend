@@ -14,7 +14,7 @@
             </h2>
             <p class="text-xs text-slate-500 font-medium mt-1">Configure room categories, features, descriptions (up to 250 chars), specifications (max 4), and 16:9 widescreen visuals for smart TV display.</p>
         </div>
-        <button onclick="openRoomInfoModal()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+        <button onclick="openRoomInfoModal()" class="btn-hotel-primary px-5 py-2.5 flex items-center space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Add New Room Info</span>
         </button>
@@ -72,7 +72,7 @@
                             <td class="px-6 py-4">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" onchange="toggleRoomInfoStatus({{ $info->id }})" {{ $info->status ? 'checked' : '' }} class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#6E1841]"></div>
                                 </label>
                             </td>
                             <td class="px-6 py-4 text-center">
@@ -80,13 +80,13 @@
                                     <button onclick="openViewModal(this)" data-roominfo="{{ json_encode($info) }}" title="Quick Preview" class="p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors">
                                         <i class="fa-regular fa-eye"></i>
                                     </button>
-                                    <button onclick="triggerEditMode({{ json_encode($info) }})" title="Edit Room Info" class="p-2 rounded-lg border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors">
+                                    <button onclick="triggerEditMode({{ json_encode($info) }})" title="Edit Room Info" class="p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">
                                         <i class="fa-regular fa-pen-to-square"></i>
                                     </button>
                                     <form action="{{ route('hotel.room-infos.destroy', $info->id) }}" method="POST" onsubmit="return confirm('Delete this room info entry?');" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" title="Delete Room Info" class="p-2 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors">
+                                        <button type="submit" title="Delete Room Info" class="btn-danger p-2">
                                             <i class="fa-regular fa-trash-can"></i>
                                         </button>
                                     </form>
@@ -282,10 +282,10 @@
 
             <!-- Modal Action Buttons Footer -->
             <div class="flex items-center justify-end space-x-3 pt-6 mt-6 border-t border-slate-100">
-                <button type="button" onclick="closeRoomInfoModal()" class="px-6 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all">
+                <button type="button" onclick="closeRoomInfoModal()" class="btn-secondary px-6 py-2.5">
                     Cancel
                 </button>
-                <button type="submit" id="submitFormBtn" class="px-8 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/25 transition-all flex items-center space-x-2">
+                <button type="submit" id="submitFormBtn" class="btn-hotel-primary px-8 py-2.5 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span id="submitFormBtnText">Save Room Info</span>
                 </button>

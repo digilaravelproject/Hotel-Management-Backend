@@ -57,14 +57,14 @@
                     <div class="space-y-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Select Hotel Property <span class="text-rose-500">*</span></label>
-                            <select name="hotel_id" id="hotelSelect" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 bg-slate-50/50 text-slate-800">
+                            <x-dropdown name="hotel_id" id="hotelSelect" required theme="dist">
                                 <option value="">-- Choose Hotel --</option>
                                 @foreach($hotels as $hotel)
                                     <option value="{{ $hotel->id }}" {{ (old('hotel_id', $selectedHotelId) == $hotel->id) ? 'selected' : '' }} data-rooms="{{ $hotel->room_count }}" data-plan="{{ $hotel->plan ? $hotel->plan->name : 'None' }}" data-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('M d, Y') : 'None' }}">
                                         {{ $hotel->hotel_name }} ({{ $hotel->room_count }} Rooms • {{ $hotel->hotel_location }})
                                     </option>
                                 @endforeach
-                            </select>
+                            </x-dropdown>
                         </div>
 
                         <div>
@@ -100,12 +100,12 @@
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">License Duration <span class="text-rose-500">*</span></label>
-                            <select name="duration_months" id="durationSelect" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 bg-slate-50/50 text-slate-800">
+                            <x-dropdown name="duration_months" id="durationSelect" required theme="dist">
                                 <option value="1" {{ old('duration_months') == '1' ? 'selected' : '' }}>1 Month (Standard)</option>
                                 <option value="3" {{ old('duration_months') == '3' ? 'selected' : '' }}>3 Months (Quarterly)</option>
                                 <option value="6" {{ old('duration_months') == '6' ? 'selected' : '' }}>6 Months (Half-Yearly)</option>
                                 <option value="12" {{ old('duration_months') == '12' ? 'selected' : '' }}>12 Months (Annual)</option>
-                            </select>
+                            </x-dropdown>
                         </div>
 
                         <div>
@@ -115,13 +115,13 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Payment Method <span class="text-rose-500">*</span></label>
-                            <select name="payment_method" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 bg-slate-50/50 text-slate-800">
+                            <x-dropdown name="payment_method" required theme="dist">
                                 <option value="upi" {{ old('payment_method') == 'upi' ? 'selected' : '' }}>UPI / QR Transfer</option>
                                 <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank NEFT / RTGS / IMPS</option>
                                 <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash Payment</option>
                                 <option value="cheque" {{ old('payment_method') == 'cheque' ? 'selected' : '' }}>Cheque / DD</option>
                                 <option value="online_gateway" {{ old('payment_method') == 'online_gateway' ? 'selected' : '' }}>Online Card / Gateway</option>
-                            </select>
+                            </x-dropdown>
                         </div>
 
                         <div>
@@ -134,40 +134,40 @@
 
             <!-- Summary / Checkout Card (1 column) -->
             <div class="space-y-6">
-                <div class="bg-gradient-to-b from-slate-900 to-slate-950 text-white rounded-3xl p-6 border border-slate-800 shadow-xl space-y-6 sticky top-28">
-                    <div class="border-b border-slate-800 pb-4">
-                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-400">Order Summary</h4>
-                        <div class="text-xl font-black mt-1">Package Activation</div>
+                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm space-y-6 sticky top-28">
+                    <div class="border-b border-[#E2E8F0] pb-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FEF9EE] text-[#004B87] border border-[#E5A93C]/30">Order Summary</span>
+                        <div class="text-xl font-extrabold text-[#1E293B] mt-1.5">Package Activation</div>
                     </div>
 
                     <div class="space-y-3 text-xs">
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">Package:</span>
-                            <span id="summaryPlanName" class="font-bold text-white">Select plan</span>
+                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
+                            <span class="text-[#64748B]">Package:</span>
+                            <span id="summaryPlanName" class="font-bold text-[#1E293B]">Select plan</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">Monthly Rate:</span>
-                            <span id="summaryPlanRate" class="font-bold text-white">₹0</span>
+                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
+                            <span class="text-[#64748B]">Monthly Rate:</span>
+                            <span id="summaryPlanRate" class="font-bold text-[#1E293B]">₹0</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-slate-800">
-                            <span class="text-slate-400">Duration:</span>
-                            <span id="summaryDuration" class="font-bold text-white">1 Month</span>
+                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
+                            <span class="text-[#64748B]">Duration:</span>
+                            <span id="summaryDuration" class="font-bold text-[#1E293B]">1 Month</span>
                         </div>
                         <div class="flex justify-between py-2 text-sm pt-2">
-                            <span class="text-slate-300 font-bold">Total Payable:</span>
-                            <span id="summaryTotal" class="font-black text-amber-400 text-lg">₹0</span>
+                            <span class="text-[#1E293B] font-bold">Total Payable:</span>
+                            <span id="summaryTotal" class="font-black text-[#004B87] text-lg">₹0</span>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[11px] text-amber-300 space-y-1">
+                    <div class="p-3.5 rounded-xl bg-[#FEF9EE] border border-[#E5A93C]/30 text-[11px] text-[#004B87] space-y-1">
                         <div class="font-bold flex items-center space-x-1.5">
-                            <i class="fa-solid fa-bolt text-amber-400"></i>
+                            <i class="fa-solid fa-bolt text-[#E5A93C]"></i>
                             <span>Instant TV License Extension</span>
                         </div>
-                        <p class="text-slate-300 text-[10px] leading-relaxed">Submitting this form immediately activates the plan, updates room limits, and records this sale under your distributor ledger.</p>
+                        <p class="text-[#64748B] text-[10px] leading-relaxed">Submitting this form immediately activates the plan, updates room limits, and records this sale under your distributor ledger.</p>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center space-x-2">
+                    <button type="submit" class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20">
                         <i class="fa-solid fa-check text-xs"></i>
                         <span>Confirm Sale & Activate License</span>
                     </button>

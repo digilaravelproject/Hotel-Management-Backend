@@ -66,8 +66,8 @@
 
             <!-- Submit Controls -->
             <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="{{ route('hotel.package') }}" class="px-6 py-3 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" id="saveOttBtn" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all hover:-translate-y-0.5 disabled:opacity-50 flex items-center space-x-2">
+                <a href="{{ route('hotel.package') }}" class="btn-secondary px-6 py-3">Cancel</a>
+                <button type="submit" id="saveOttBtn" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="btn-hotel-primary px-8 py-3 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Save Global Settings</span>
                 </button>

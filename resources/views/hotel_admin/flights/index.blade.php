@@ -5,17 +5,14 @@
 @section('content')
 <div class="space-y-8">
     <!-- Top Info Card -->
-    <div class="bg-gradient-to-r from-indigo-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
-        <div class="absolute right-0 top-0 translate-x-8 -translate-y-8 opacity-10 text-9xl">
-            <i class="fa-solid fa-plane-departure"></i>
-        </div>
+    <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-indigo-500/20 text-indigo-300 border border-indigo-400/30 mb-3">
-                <i class="fa-solid fa-location-dot mr-1.5"></i> Detected Hotel City: {{ $hotel->city ?? 'Not Set' }}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-[#F9F5EB] text-[#6E1841] border border-[#C5A059]/30 mb-3">
+                <i class="fa-solid fa-location-dot mr-1.5 text-[#C5A059]"></i> Detected Hotel City: {{ $hotel->city ?? 'Not Set' }}
             </span>
-            <h2 class="text-3xl font-black tracking-tight">Airport Flight Schedule Setup</h2>
-            <p class="text-sm text-slate-300 mt-2">
-                Configure the nearest airport(s) for your hotel. When guests open <strong>Interactive Services &rarr; Flights</strong> on their in-room TV, real-time Arrivals and Departures for these airports will be displayed instantly.
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">Airport Flight Schedule Setup</h2>
+            <p class="text-xs sm:text-sm text-[#64748B] mt-2">
+                Configure the nearest airport(s) for your hotel. When guests open <strong class="text-[#1E293B]">Interactive Services &rarr; Flights</strong> on their in-room TV, real-time Arrivals and Departures for these airports will be displayed instantly.
             </p>
         </div>
     </div>
@@ -336,8 +333,8 @@
                     </div>
 
                     <div class="pt-3">
-                        <button type="submit" class="w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] text-white font-extrabold text-sm transition-all shadow-md shadow-indigo-600/30 flex items-center justify-center space-x-2 cursor-pointer">
-                            <i class="fa-solid fa-floppy-disk text-indigo-200"></i>
+                        <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-[#C5A059] hover:bg-[#A88440] active:scale-[0.99] text-white font-extrabold text-sm transition-all shadow-md shadow-[#C5A059]/20 flex items-center justify-center space-x-2 cursor-pointer">
+                            <i class="fa-solid fa-floppy-disk text-white/80"></i>
                             <span>Save Airport Settings</span>
                         </button>
                     </div>

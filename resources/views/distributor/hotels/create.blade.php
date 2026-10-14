@@ -271,10 +271,10 @@
 
         <!-- Form Actions Bar -->
         <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-2">
-            <a href="{{ route('distributor.hotels.index') }}" class="w-full sm:w-auto px-5 py-3 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 text-xs font-bold transition-all text-center">
+            <a href="{{ route('distributor.hotels.index') }}" class="btn-secondary w-full sm:w-auto px-5 py-3 text-center">
                 Cancel
             </a>
-            <button type="submit" id="submitBtn" class="w-full sm:w-auto px-7 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 active:bg-amber-600 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 transition-all flex items-center justify-center space-x-2">
+            <button type="submit" id="submitBtn" class="btn-dist-primary w-full sm:w-auto px-7 py-3 flex items-center justify-center space-x-2">
                 <i class="fa-solid fa-check text-xs"></i>
                 <span id="submitBtnText">Register Hotel & Generate License</span>
             </button>

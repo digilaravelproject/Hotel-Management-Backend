@@ -125,174 +125,63 @@
                     <!-- 1. Subscription Plan Custom Dropdown -->
                     @php
                         $selectedPlanId = old('plan_id', $hotel->plan_id);
-                        $activePlanObj = $plans->firstWhere('id', $selectedPlanId);
-                        $planDisplayTitle = $activePlanObj ? ($activePlanObj->name . ' • ₹' . number_format($activePlanObj->price, 0) . '/mo') : 'None (Custom / Trial Package)';
                     @endphp
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Subscription Plan</label>
-                        <div class="custom-select-box relative" data-name="plan_id">
-                            <input type="hidden" name="plan_id" value="{{ $selectedPlanId }}">
-                            <button type="button" class="select-trigger w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/70 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 text-slate-800 transition-all text-left">
-                                <span class="select-label truncate">{{ $planDisplayTitle }}</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-2 select-chevron transition-transform duration-200"></i>
-                            </button>
-
-                            <!-- Floating Options Menu -->
-                            <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 max-h-64 overflow-y-auto space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedPlanId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="None (Custom / Trial Package)" data-active-class="bg-rose-50 text-rose-600 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fa-solid fa-ban text-[11px] text-slate-400"></i>
-                                        <span>None (Custom / Trial Package)</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedPlanId) ? 'is-selected' : '' }}" style="display: {{ empty($selectedPlanId) ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-
-                                @foreach($plans as $plan)
-                                    @php
-                                        $isThisPlan = !empty($selectedPlanId) && ((string)$plan->id === (string)$selectedPlanId);
-                                        $planText = $plan->name . ' • ₹' . number_format($plan->price, 0) . '/mo';
-                                    @endphp
-                                    <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisPlan ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $plan->id }}" data-text="{{ $planText }}" data-active-class="bg-rose-50 text-rose-600 font-bold">
-                                        <div class="flex flex-col">
-                                            <span class="font-bold text-slate-800">{{ $plan->name }}</span>
-                                            <span class="text-[11px] text-slate-400">Up to {{ $plan->room_count }} Rooms limit</span>
-                                        </div>
-                                        <div class="flex items-center space-x-2">
-                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-50 text-rose-600 border border-rose-200">
-                                                ₹{{ number_format($plan->price, 0) }}/mo
-                                            </span>
-                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisPlan ? 'is-selected' : '' }}" style="display: {{ $isThisPlan ? 'inline-block' : 'none' }} !important;"></i>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
+                        <x-dropdown name="plan_id" label="None (Custom / Trial Package)" :selected="$selectedPlanId" theme="sa">
+                            <option value="">None (Custom / Trial Package)</option>
+                            @foreach($plans as $plan)
+                                <option value="{{ $plan->id }}" {{ (string)$plan->id === (string)$selectedPlanId ? 'selected' : '' }}>
+                                    {{ $plan->name }} (Up to {{ $plan->room_count }} Rooms • ₹{{ number_format($plan->price, 0) }}/mo)
+                                </option>
+                            @endforeach
+                        </x-dropdown>
                         <p class="text-[11px] text-slate-400 mt-1">Current room limit: <span class="font-bold text-slate-700">{{ $hotel->room_count }} rooms</span>.</p>
                     </div>
 
                     <!-- 2. Distributor Partner Custom Dropdown -->
                     @php
                         $selectedDistId = old('distributor_id', $hotel->distributor_id);
-                        $activeDistObj = isset($distributors) ? $distributors->firstWhere('id', $selectedDistId) : null;
-                        $distDisplayTitle = $activeDistObj ? ($activeDistObj->name . ' — ' . $activeDistObj->email) : 'Direct Vendor (No Distributor Attached)';
                     @endphp
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Onboarded By (Distributor Partner)</label>
-                        <div class="custom-select-box relative" data-name="distributor_id">
-                            <input type="hidden" name="distributor_id" value="{{ $selectedDistId }}">
-                            <button type="button" class="select-trigger w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/70 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 text-slate-800 transition-all text-left">
-                                <span class="select-label truncate">{{ $distDisplayTitle }}</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-2 select-chevron transition-transform duration-200"></i>
-                            </button>
-
-                            <!-- Floating Options Menu -->
-                            <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 max-h-64 overflow-y-auto space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ empty($selectedDistId) ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="" data-text="Direct Vendor (No Distributor Attached)" data-active-class="bg-rose-50 text-rose-600 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <i class="fa-regular fa-building text-[11px] text-slate-400"></i>
-                                        <span>Direct Vendor (No Distributor Attached)</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ empty($selectedDistId) ? 'is-selected' : '' }}" style="display: {{ empty($selectedDistId) ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-
-                                @if(isset($distributors))
-                                    @foreach($distributors as $distributor)
-                                        @php
-                                            $isThisDist = !empty($selectedDistId) && ((string)$distributor->id === (string)$selectedDistId);
-                                            $distText = $distributor->name . ' — ' . $distributor->email;
-                                        @endphp
-                                        <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-600 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $isThisDist ? 'bg-rose-50 text-rose-600 font-bold' : '' }}" data-value="{{ $distributor->id }}" data-text="{{ $distText }}" data-active-class="bg-rose-50 text-rose-600 font-bold">
-                                            <div class="flex items-center space-x-2.5">
-                                                <div class="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center text-[10px] font-bold">
-                                                    {{ strtoupper(substr($distributor->name, 0, 1)) }}
-                                                </div>
-                                                <div class="flex flex-col">
-                                                    <span class="font-bold text-slate-800">{{ $distributor->name }}</span>
-                                                    <span class="text-[11px] text-slate-400 font-mono">{{ $distributor->email }}</span>
-                                                </div>
-                                            </div>
-                                            <i class="fa-solid fa-check text-xs text-rose-600 check-indicator {{ $isThisDist ? 'is-selected' : '' }}" style="display: {{ $isThisDist ? 'inline-block' : 'none' }} !important;"></i>
-                                        </div>
-                                    @endforeach
-                                @endif
-                            </div>
-                        </div>
+                        <x-dropdown name="distributor_id" label="Direct Vendor (No Distributor Attached)" :selected="$selectedDistId" theme="sa">
+                            <option value="">Direct Vendor (No Distributor Attached)</option>
+                            @if(isset($distributors))
+                                @foreach($distributors as $distributor)
+                                    <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
+                                        {{ $distributor->name }} — {{ $distributor->email }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </x-dropdown>
                         <p class="text-[11px] text-slate-400 mt-1">Associate this hotel under a registered channel partner for sales tracking.</p>
                     </div>
 
                     <!-- 3. Payment Status Custom Dropdown -->
                     @php
                         $currentPayment = old('payment_status', $hotel->payment_status);
-                        $paymentDisplayTitle = $currentPayment === 'paid' ? 'Paid (License Key Generated & Active)' : 'Pending (Awaiting Payment Confirmation)';
                     @endphp
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Payment Status <span class="text-rose-500">*</span></label>
-                        <div class="custom-select-box relative" data-name="payment_status">
-                            <input type="hidden" name="payment_status" value="{{ $currentPayment }}">
-                            <button type="button" class="select-trigger w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/70 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 text-slate-800 transition-all text-left">
-                                <span class="select-label truncate">{{ $paymentDisplayTitle }}</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-2 select-chevron transition-transform duration-200"></i>
-                            </button>
-
-                            <!-- Floating Options Menu -->
-                            <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'paid' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="paid" data-text="Paid (License Key Generated & Active)" data-active-class="bg-emerald-50 text-emerald-700 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        <span>Paid (License Key Generated & Active)</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentPayment === 'paid' ? 'is-selected' : '' }}" style="display: {{ $currentPayment === 'paid' ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentPayment === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending (Awaiting Payment Confirmation)" data-active-class="bg-amber-50 text-amber-700 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                        <span>Pending (Awaiting Payment Confirmation)</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentPayment === 'pending' ? 'is-selected' : '' }}" style="display: {{ $currentPayment === 'pending' ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-                            </div>
-                        </div>
+                        <x-dropdown name="payment_status" required theme="sa">
+                            <option value="paid" {{ $currentPayment === 'paid' ? 'selected' : '' }}>Paid (License Key Generated & Active)</option>
+                            <option value="pending" {{ $currentPayment === 'pending' ? 'selected' : '' }}>Pending (Awaiting Payment Confirmation)</option>
+                        </x-dropdown>
                     </div>
 
                     <!-- 4. Approval Status Custom Dropdown -->
                     @php
                         $currentApproval = old('approval_status', $hotel->approval_status);
-                        $approvalDisplayTitle = match($currentApproval) {
-                            'pending' => 'Pending Review',
-                            'disapproved' => 'Disapproved',
-                            default => 'Approved (Active immediately)',
-                        };
                     @endphp
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Approval Status <span class="text-rose-500">*</span></label>
-                        <div class="custom-select-box relative" data-name="approval_status">
-                            <input type="hidden" name="approval_status" value="{{ $currentApproval }}">
-                            <button type="button" class="select-trigger w-full flex items-center justify-between px-4 py-2.5 text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-slate-100/70 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 text-slate-800 transition-all text-left">
-                                <span class="select-label truncate">{{ $approvalDisplayTitle }}</span>
-                                <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 ml-2 select-chevron transition-transform duration-200"></i>
-                            </button>
-
-                            <!-- Floating Options Menu -->
-                            <div class="select-menu hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 space-y-1">
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-emerald-50 hover:text-emerald-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'approved' ? 'bg-emerald-50 text-emerald-700 font-bold' : '' }}" data-value="approved" data-text="Approved (Active immediately)" data-active-class="bg-emerald-50 text-emerald-700 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                        <span>Approved (Active immediately)</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-emerald-600 check-indicator {{ $currentApproval === 'approved' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'approved' ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-amber-50 hover:text-amber-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'pending' ? 'bg-amber-50 text-amber-700 font-bold' : '' }}" data-value="pending" data-text="Pending Review" data-active-class="bg-amber-50 text-amber-700 font-bold">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="w-2 h-2 rounded-full bg-amber-500"></span>
-                                        <span>Pending Review</span>
-                                    </div>
-                                    <i class="fa-solid fa-check text-xs text-amber-600 check-indicator {{ $currentApproval === 'pending' ? 'is-selected' : '' }}" style="display: {{ $currentApproval === 'pending' ? 'inline-block' : 'none' }} !important;"></i>
-                                </div>
-
-                                <div class="select-option px-3.5 py-2.5 rounded-xl hover:bg-rose-50 hover:text-rose-700 text-xs font-medium text-slate-700 cursor-pointer flex items-center justify-between transition-colors {{ $currentApproval === 'disapproved' ? 'bg-rose-50 text-rose-700 font-bold' : '' }}" data-value="disapproved" data-text="Disapproved" data-active-class="bg-rose-50 text-rose-700 font-bold">
-                                    <div class="flex items-center space-x-2">
+                        <x-dropdown name="approval_status" required theme="sa">
+                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active immediately)</option>
+                            <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
+                            <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
+                        </x-dropdown>
+                    </div>
                                         <span class="w-2 h-2 rounded-full bg-rose-500"></span>
                                         <span>Disapproved</span>
                                     </div>
@@ -380,10 +269,10 @@
 
             <!-- Action Buttons Footer -->
             <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="{{ route('super-admin.hotels.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">
+                <a href="{{ route('super-admin.hotels.index') }}" class="btn-secondary">
                     Cancel
                 </a>
-                <button type="submit" class="px-8 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all flex items-center space-x-2">
+                <button type="submit" class="btn-sa-primary shadow-sm">
                     <i class="fa-solid fa-floppy-disk text-xs"></i>
                     <span>Save Changes</span>
                 </button>
@@ -392,93 +281,7 @@
     </div>
 </div>
 
-<style>
-    .custom-select-box .check-indicator {
-        display: none !important;
-    }
-    .custom-select-box .check-indicator.is-selected {
-        display: inline-block !important;
-    }
-</style>
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const dropdowns = document.querySelectorAll('.custom-select-box');
-
-    dropdowns.forEach(dropdown => {
-        const trigger = dropdown.querySelector('.select-trigger');
-        const menu = dropdown.querySelector('.select-menu');
-        const hiddenInput = dropdown.querySelector('input[type="hidden"]');
-        const label = dropdown.querySelector('.select-label');
-        const chevron = dropdown.querySelector('.select-chevron');
-        const items = dropdown.querySelectorAll('.select-option');
-
-        trigger.addEventListener('click', function (e) {
-            e.stopPropagation();
-
-            // Close all other dropdowns
-            dropdowns.forEach(other => {
-                if (other !== dropdown) {
-                    other.querySelector('.select-menu').classList.add('hidden');
-                    other.querySelector('.select-trigger').classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-500');
-                    other.querySelector('.select-chevron').classList.remove('rotate-180');
-                }
-            });
-
-            const isClosed = menu.classList.contains('hidden');
-            if (isClosed) {
-                menu.classList.remove('hidden');
-                trigger.classList.add('ring-2', 'ring-rose-500/30', 'border-rose-500');
-                chevron.classList.add('rotate-180');
-            } else {
-                menu.classList.add('hidden');
-                trigger.classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-500');
-                chevron.classList.remove('rotate-180');
-            }
-        });
-
-        items.forEach(item => {
-            item.addEventListener('click', function (e) {
-                e.stopPropagation();
-                const val = this.getAttribute('data-value');
-                const txt = this.getAttribute('data-text');
-
-                hiddenInput.value = val;
-                label.textContent = txt;
-
-                items.forEach(opt => {
-                    opt.classList.remove('bg-rose-50', 'text-rose-600', 'font-bold', 'bg-emerald-50', 'text-emerald-700', 'bg-amber-50', 'text-amber-700', 'text-rose-700');
-                    const chk = opt.querySelector('.check-indicator');
-                    if (chk) {
-                        chk.classList.remove('is-selected');
-                        chk.style.setProperty('display', 'none', 'important');
-                    }
-                });
-
-                const activeClasses = (this.getAttribute('data-active-class') || 'bg-rose-50 text-rose-600 font-bold').split(' ').filter(Boolean);
-                this.classList.add(...activeClasses);
-                const chk = this.querySelector('.check-indicator');
-                if (chk) {
-                    chk.classList.add('is-selected');
-                    chk.style.setProperty('display', 'inline-block', 'important');
-                }
-
-                menu.classList.add('hidden');
-                trigger.classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-500');
-                chevron.classList.remove('rotate-180');
-            });
-        });
-    });
-
-    // Close when clicking outside
-    document.addEventListener('click', function () {
-        dropdowns.forEach(dropdown => {
-            dropdown.querySelector('.select-menu').classList.add('hidden');
-            dropdown.querySelector('.select-trigger').classList.remove('ring-2', 'ring-rose-500/30', 'border-rose-500');
-            dropdown.querySelector('.select-chevron').classList.remove('rotate-180');
-        });
-    });
-});
 
 function togglePasswordVisibility() {
     const input = document.getElementById('passwordInput');
@@ -516,8 +319,8 @@ function deleteAdminSlide(path) {
         text: 'Are you sure you want to remove this slider image from hotel TV?',
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: '#e11d48',
-        cancelButtonColor: '#64748b',
+        confirmButtonColor: '#DC2626',
+        cancelButtonColor: '#64748B',
         confirmButtonText: 'Yes, remove it',
         cancelButtonText: 'Cancel',
         customClass: {

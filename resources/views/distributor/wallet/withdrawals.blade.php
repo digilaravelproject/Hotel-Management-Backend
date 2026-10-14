@@ -7,19 +7,19 @@
 <div class="space-y-8">
 
     <!-- Top Navigation Header -->
-    <div class="bg-gradient-to-r from-slate-900 via-slate-800 to-amber-950/60 rounded-3xl p-6 sm:p-8 text-white border border-slate-700 shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-bold text-xs border border-amber-500/30">
-                <i class="fa-solid fa-money-bill-transfer mr-1.5"></i> Payout Audit Trail
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FEF9EE] text-[#004B87] font-bold text-xs border border-[#E5A93C]/30">
+                <i class="fa-solid fa-money-bill-transfer mr-1.5 text-[#E5A93C]"></i> Payout Audit Trail
             </span>
-            <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Withdrawal Requests & Settlements</h2>
-            <p class="text-xs text-slate-300 max-w-xl">
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">Withdrawal Requests & Settlements</h2>
+            <p class="text-xs text-[#64748B] max-w-xl">
                 Check the current processing status of your payouts, bank UTR numbers provided by the administrator, and rejection remarks if any issue occurred.
             </p>
         </div>
 
         <div class="flex items-center space-x-3">
-            <a href="{{ route('distributor.wallet.index') }}" class="px-5 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/30 transition-all flex items-center space-x-2">
+            <a href="{{ route('distributor.wallet.index') }}" class="px-5 py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#C88E26] text-white font-extrabold text-xs shadow-md shadow-[#E5A93C]/20 transition-all flex items-center space-x-2">
                 <i class="fa-solid fa-wallet text-xs"></i>
                 <span>Wallet Dashboard</span>
             </a>
@@ -27,29 +27,29 @@
     </div>
 
     <!-- Table Card -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl shadow-xs overflow-hidden">
+    <div class="bg-white border border-[#E2E8F0] rounded-3xl shadow-xs overflow-hidden">
         
         <!-- Filter Bar -->
-        <div class="p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="p-6 border-b border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
                 <a href="{{ route('distributor.wallet.withdrawals') }}" 
-                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ !request()->filled('status') ? 'bg-slate-900 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ !request()->filled('status') ? 'bg-[#004B87] text-white' : 'text-[#64748B] hover:bg-[#F8FAFC]' }}">
                     All
                 </a>
                 <a href="{{ route('distributor.wallet.withdrawals', ['status' => 'pending']) }}" 
-                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'pending' ? 'bg-amber-500 text-slate-950 font-extrabold shadow-sm' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'pending' ? 'bg-[#E5A93C] text-white font-extrabold shadow-sm' : 'text-[#64748B] hover:bg-[#F8FAFC]' }}">
                     Pending
                 </a>
                 <a href="{{ route('distributor.wallet.withdrawals', ['status' => 'approved']) }}" 
-                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'approved' ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'approved' ? 'bg-[#16A34A] text-white shadow-sm' : 'text-[#64748B] hover:bg-[#F8FAFC]' }}">
                     Approved & Settled
                 </a>
                 <a href="{{ route('distributor.wallet.withdrawals', ['status' => 'rejected']) }}" 
-                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'rejected' ? 'bg-rose-600 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100' }}">
+                   class="px-4 py-2 rounded-xl text-xs font-bold transition-all {{ request('status') === 'rejected' ? 'bg-[#DC2626] text-white shadow-sm' : 'text-[#64748B] hover:bg-[#F8FAFC]' }}">
                     Rejected
                 </a>
             </div>
-            <div class="text-xs text-slate-400 font-semibold">
+            <div class="text-xs text-[#64748B] font-semibold">
                 Showing {{ $withdrawals->total() }} withdrawal records
             </div>
         </div>
@@ -57,7 +57,7 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-slate-50 border-b border-slate-200/80 text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                    <tr class="bg-[#F8FAFC] border-b border-[#E2E8F0] text-[11px] font-extrabold text-[#64748B] uppercase tracking-wider">
                         <th class="px-6 py-4">Request ID</th>
                         <th class="px-6 py-4">Requested On</th>
                         <th class="px-6 py-4">Amount</th>
@@ -66,38 +66,38 @@
                         <th class="px-6 py-4">Transaction UTR / Notes</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 text-xs">
+                <tbody class="divide-y divide-[#E2E8F0] text-xs">
                     @forelse($withdrawals as $item)
-                        <tr class="hover:bg-slate-50/50 transition-colors">
-                            <td class="px-6 py-4 font-mono font-bold text-slate-500">
+                        <tr class="hover:bg-[#F8FAFC] transition-colors">
+                            <td class="px-6 py-4 font-mono font-bold text-[#64748B]">
                                 #WTH-{{ str_pad($item->id, 5, '0', STR_PAD_LEFT) }}
                             </td>
-                            <td class="px-6 py-4 text-slate-600 font-medium">
+                            <td class="px-6 py-4 text-[#1E293B] font-medium">
                                 {{ $item->created_at->format('M d, Y') }}
-                                <div class="text-[10px] text-slate-400">{{ $item->created_at->format('h:i A') }}</div>
+                                <div class="text-[10px] text-[#64748B]">{{ $item->created_at->format('h:i A') }}</div>
                             </td>
                             <td class="px-6 py-4">
-                                <span class="text-sm font-black text-slate-900">₹{{ number_format($item->amount, 2) }}</span>
+                                <span class="text-sm font-black text-[#1E293B]">₹{{ number_format($item->amount, 2) }}</span>
                             </td>
                             <td class="px-6 py-4 max-w-xs">
-                                <span class="inline-block px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold text-[10px] uppercase mb-1">
+                                <span class="inline-block px-2 py-0.5 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] text-[#1E293B] font-bold text-[10px] uppercase mb-1">
                                     {{ str_replace('_', ' ', $item->payment_method ?? 'Bank') }}
                                 </span>
-                                <div class="text-[11px] text-slate-700 font-mono break-words leading-tight">
+                                <div class="text-[11px] text-[#1E293B] font-mono break-words leading-tight">
                                     {{ $item->account_details }}
                                 </div>
                             </td>
                             <td class="px-6 py-4">
                                 @if($item->status === 'pending')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse mr-1.5"></span> Under Review
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#FFEDD5] text-[#EA580C] border border-[#EA580C]/20">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-[#EA580C] animate-pulse mr-1.5"></span> Under Review
                                     </span>
                                 @elseif($item->status === 'approved')
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#16A34A]/20">
                                         <i class="fa-solid fa-check text-[10px] mr-1.5"></i> Settled
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 border border-rose-200">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-bold bg-[#FEE2E2] text-[#DC2626] border border-[#DC2626]/20">
                                         <i class="fa-solid fa-xmark text-[10px] mr-1.5"></i> Rejected & Refunded
                                     </span>
                                 @endif
