@@ -157,6 +157,70 @@ html, body {
 }
 .taj-form-alert-success { background-color: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
 .taj-form-alert-error { background-color: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+
+/* Move Nav Menu towards the right, close to Login and Request Demo */
+.elementor-78 .elementor-element.elementor-element-442093b {
+    margin-left: auto !important;
+}
+
+/* Luxury Login Button */
+.taj-header-login-wrap {
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+.taj-login-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #FFFFFF !important;
+    border: 1.5px solid rgba(232, 184, 100, 0.45);
+    font-family: "Poppins", Sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 10px;
+    padding: 14px 20px;
+    line-height: 1;
+    text-decoration: none !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.taj-login-button:hover {
+    background-color: #E8B864;
+    color: #0B1220 !important;
+    border-color: #E8B864;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(232, 184, 100, 0.35);
+}
+.taj-login-button svg {
+    transition: transform 0.25s ease;
+}
+.taj-login-button:hover svg {
+    stroke: #0B1220;
+    transform: translateX(2px);
+}
+
+@media (max-width: 921px) {
+    .elementor-78 .elementor-element.elementor-element-442093b {
+        margin-left: 0 !important;
+    }
+}
+@media (max-width: 576px) {
+    .taj-login-button {
+        padding: 10px 14px;
+        font-size: 12px;
+        border-radius: 8px;
+    }
+    .elementor-78 .elementor-element.elementor-element-9748283 .elementor-button {
+        padding: 10px 14px !important;
+        font-size: 12px !important;
+        border-radius: 8px !important;
+    }
+}
 </style>
 
 </head>
@@ -197,8 +261,15 @@ class="hfeed site" id="page">
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Solutions</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Gallery</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Contact Us</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom"><a href="{{ route('hotel.login') }}" class="elementor-item menu-link" tabindex="-1">Login</a></li>
 </ul>			</nav>
 						</div>
+				<div class="elementor-element taj-header-login-wrap">
+					<a href="{{ route('hotel.login') }}" class="taj-login-button">
+						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+						<span>Login</span>
+					</a>
+				</div>
 				<div class="elementor-element elementor-element-9748283 elementor-widget elementor-widget-button" data-id="9748283" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
 										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
 						<span class="elementor-button-content-wrapper">
@@ -920,8 +991,11 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 			<div class="elementor-element elementor-element-4dbbe676 e-flex e-con-boxed e-con e-parent" data-id="4dbbe676" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-78cde3fe e-con-full e-flex e-con e-child" data-id="78cde3fe" data-element_type="container" data-e-type="container">
-				<div class="elementor-element elementor-element-77f2d90f elementor-widget elementor-widget-heading" data-id="77f2d90f" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
-					<h3 class="elementor-heading-title elementor-size-default">TAJ</h3>				</div>
+				<div class="elementor-element elementor-widget elementor-widget-image" style="margin-bottom: 6px;">
+					<a href="/">
+						<img width="180" height="auto" src="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }}" class="attachment-full size-full" alt="PAX TV Hospitality" style="max-width: 175px; height: auto; display: block;" />
+					</a>
+				</div>
 				<div class="elementor-element elementor-element-cad4f36 elementor-widget elementor-widget-text-editor" data-id="cad4f36" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 									<p>Premium Hotel TV Solution for a Smarter Stay Experience.</p>								</div>
 				<div class="elementor-element elementor-element-39bc63a1 elementor-shape-rounded elementor-grid-0 e-grid-align-center elementor-widget elementor-widget-social-icons" data-id="39bc63a1" data-element_type="widget" data-e-type="widget" data-widget_type="social-icons.default">
