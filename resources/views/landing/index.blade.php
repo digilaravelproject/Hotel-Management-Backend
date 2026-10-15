@@ -1,1439 +1,1413 @@
-@extends('layouts.landing')
-
-@section('title', 'PAX TV - Luxury Hotel Smart TV OS & Guest Experience Platform')
-
-@section('styles')
-<!-- Luxury Google Typography: Playfair Display, Cinzel, Cormorant Garamond, Plus Jakarta Sans, DM Sans -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<style>
-    /* ========================================================================= */
-    /* 1. LUXURY COLOR TOKENS & TYPOGRAPHY SYSTEM */
-    /* ========================================================================= */
-    :root {
-        --color-gold: #DFBA58;
-        --color-gold-hover: #EBC66B;
-        --color-gold-light: #F5E8C7;
-        --color-gold-dark: #9E7B35;
-        --color-gold-subtle: rgba(223, 186, 88, 0.12);
-        --color-gold-glow: rgba(223, 186, 88, 0.22);
-        --color-gold-border: rgba(223, 186, 88, 0.24);
-
-        --color-bg-noir: #0B0E14;
-        --color-bg-card-dark: #121722;
-        --color-bg-alabaster: #F7F5F0;
-        --color-bg-cream-card: #FFFFFF;
-
-        --text-primary-dark: #F8F9FA;
-        --text-muted-dark: #A6B0BF;
-        --text-primary-light: #1A1D23;
-        --text-muted-light: #5A6270;
-    }
-
-    .font-serif-lux {
-        font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif !important;
-        letter-spacing: -0.01em;
-    }
-    .font-sans-lux {
-        font-family: 'Plus Jakarta Sans', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-    }
-
-    /* ========================================================================= */
-    /* 2. STANDARDIZED LUXURY BUTTON SYSTEM (TOUCH TARGET ≥ 44px) */
-    /* ========================================================================= */
-    .btn-gold-pill {
-        background: linear-gradient(135deg, #E6C466 0%, #D4AE46 100%);
-        color: #0B0E14;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-weight: 600;
-        font-size: 0.8125rem;
-        letter-spacing: 0.04em;
-        border-radius: 9999px;
-        min-height: 44px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        box-shadow: 0 4px 18px var(--color-gold-glow);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        overflow: hidden;
-    }
-    .btn-gold-pill::before {
-        content: '';
-        position: absolute;
-        top: 0; left: -100%; width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-        transition: left 0.6s ease;
-    }
-    .btn-gold-pill:hover::before {
-        left: 100%;
-    }
-    .btn-gold-pill:hover {
-        background: linear-gradient(135deg, #F0CE74 0%, #DFBA58 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 26px rgba(223, 186, 88, 0.45);
-    }
-    .btn-gold-pill:active {
-        transform: translateY(0);
-    }
-
-    .btn-glass-pill {
-        background-color: rgba(18, 23, 34, 0.65);
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        border: 1px solid rgba(223, 186, 88, 0.28);
-        color: #F8F9FA;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        font-weight: 500;
-        font-size: 0.8125rem;
-        letter-spacing: 0.04em;
-        border-radius: 9999px;
-        min-height: 44px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .btn-glass-pill:hover {
-        background-color: rgba(223, 186, 88, 0.15);
-        border-color: rgba(223, 186, 88, 0.7);
-        color: #FFFFFF;
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-    }
-    .btn-glass-pill:active {
-        transform: translateY(0);
-    }
-
-    .btn-card-pill {
-        background: rgba(223, 186, 88, 0.12);
-        color: #8C6A24;
-        font-weight: 600;
-        font-size: 0.75rem;
-        letter-spacing: 0.04em;
-        border-radius: 9999px;
-        padding: 0.5rem 1.15rem;
-        min-height: 38px;
-        transition: all 0.25s ease;
-        display: inline-flex;
-        align-items: center;
-        border: 1px solid rgba(223, 186, 88, 0.32);
-    }
-    .btn-card-pill:hover {
-        background: #DFBA58;
-        color: #0B0E14;
-        border-color: #DFBA58;
-        transform: translateY(-1.5px);
-        box-shadow: 0 4px 14px rgba(223, 186, 88, 0.35);
-    }
-
-    /* ========================================================================= */
-    /* 3. 3D HARDWARE TV STAGE (RESPONSIVE SAFE: FLAT ON MOBILE, 3D ON DESKTOP) */
-    /* ========================================================================= */
-    .tv-perspective-stage {
-        perspective: 1100px;
-        perspective-origin: 85% 45%;
-    }
-
-    .tv-tilted-rig {
-        transform-style: preserve-3d;
-        transform-origin: 90% 50%;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Desktop only: full 3D tilt with float animation */
-    @media (min-width: 1024px) {
-        .tv-tilted-rig {
-            transform: rotateY(-22deg) rotateX(2.5deg) rotateZ(-0.8deg);
-            animation: floatTV 6s ease-in-out infinite alternate;
-        }
-        .tv-tilted-rig:hover {
-            transform: rotateY(-15deg) rotateX(1.5deg) translateY(-8px);
-        }
-    }
-
-    /* Mobile & Tablet: zero overflow rotation */
-    @media (max-width: 1023px) {
-        .tv-perspective-stage {
-            perspective: none;
-        }
-        .tv-tilted-rig {
-            transform: none !important;
-            animation: none !important;
-        }
-    }
-
-    @keyframes floatTV {
-        0% { transform: rotateY(-22deg) rotateX(2.5deg) translateY(0px); }
-        100% { transform: rotateY(-20deg) rotateX(1.8deg) translateY(-8px); }
-    }
-
-    .tv-screen-chassis-3d {
-        background: #080A0F;
-        border: 2px solid #222938;
-        border-right: 4px solid #333F57;
-        border-bottom: 4px solid #18202D;
-        border-radius: 1.25rem;
-        box-shadow: 
-            0 20px 40px -10px rgba(0, 0, 0, 0.85),
-            0 0 0 1px rgba(223, 186, 88, 0.15);
-    }
-    @media (min-width: 1024px) {
-        .tv-screen-chassis-3d {
-            border-right: 7px solid #333F57;
-            border-bottom: 5px solid #18202D;
-            box-shadow: 
-                -28px 32px 65px -8px rgba(0, 0, 0, 0.96),
-                -10px 14px 28px rgba(0, 0, 0, 0.82),
-                0 0 0 1px rgba(223, 186, 88, 0.15);
-        }
-    }
-
-    .credenza-console-3d {
-        background: linear-gradient(180deg, #241810 0%, #110B07 100%);
-        border-top: 2px solid #4C3322;
-        border-right: 4px solid #5C3E29;
-        border-bottom: 2px solid #0E0805;
-        box-shadow: 0 18px 35px rgba(0, 0, 0, 0.85);
-    }
-    @media (min-width: 1024px) {
-        .credenza-console-3d {
-            border-right: 6px solid #5C3E29;
-            box-shadow: -22px 28px 55px rgba(0, 0, 0, 0.92);
-        }
-    }
-
-    /* Ambient Pulsing Glow */
-    @keyframes ambientPulse {
-        0%, 100% { opacity: 0.15; transform: scale(1); }
-        50% { opacity: 0.28; transform: scale(1.04); }
-    }
-    .tv-ambient-glow {
-        animation: ambientPulse 5s ease-in-out infinite;
-    }
-
-    /* ========================================================================= */
-    /* 4. PERFORMANCE-SAFE RESPONSIVE SCROLL ANIMATIONS */
-    /* ========================================================================= */
-    .lux-reveal {
-        opacity: 0;
-        transform: translateY(24px);
-        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
-    }
-    .lux-reveal-left {
-        opacity: 0;
-        transform: translateX(-24px);
-        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
-    }
-    .lux-reveal-right {
-        opacity: 0;
-        transform: translateX(24px);
-        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
-    }
-    .lux-reveal-scale {
-        opacity: 0;
-        transform: scale(0.96);
-        transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
-        will-change: opacity, transform;
-    }
-
-    /* On mobile viewports: pure vertical reveal to prevent horizontal jank or scroll clipping */
-    @media (max-width: 767px) {
-        .lux-reveal-left,
-        .lux-reveal-right {
-            transform: translateY(20px) !important;
-        }
-    }
-
-    .lux-active {
-        opacity: 1 !important;
-        transform: translateY(0) translateX(0) scale(1) !important;
-    }
-
-    .del-1 { transition-delay: 60ms; }
-    .del-2 { transition-delay: 120ms; }
-    .del-3 { transition-delay: 180ms; }
-    .del-4 { transition-delay: 240ms; }
-    .del-5 { transition-delay: 300ms; }
-
-    /* Sticky Navbar Scrolled Transition */
-    .header-nav {
-        transition: background-color 0.35s ease, backdrop-filter 0.35s ease, border-color 0.35s ease, padding 0.35s ease, box-shadow 0.35s ease;
-    }
-    .header-nav.is-scrolled {
-        background-color: rgba(11, 14, 20, 0.95) !important;
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-        border-bottom: 1px solid rgba(223, 186, 88, 0.2);
-        padding-top: 0.65rem !important;
-        padding-bottom: 0.65rem !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+	<link rel="icon" type="image/png" href="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }}">
+	<link rel="profile" href="https://gmpg.org/xfn/11"> 
+	<title>PAX TV Hospitality | Smart In-Room Entertainment & Guest Experience</title>
+<meta name='robots' content='max-image-preview:large' />
+<style id="wp-img-auto-sizes-contain-inline-css">
+img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
+/*# sourceURL=wp-img-auto-sizes-contain-inline-css */
 </style>
-@endsection
+<link rel='stylesheet' id='astra-theme-css-css' href='{{ asset('landing-wp/css/main.min.css') }}' media='all' />
+<style id="astra-theme-css-inline-css">
+:root{--ast-post-nav-space:0;--ast-container-default-xlg-padding:2.5em;--ast-container-default-lg-padding:2.5em;--ast-container-default-slg-padding:2em;--ast-container-default-md-padding:2.5em;--ast-container-default-sm-padding:2.5em;--ast-container-default-xs-padding:2.4em;--ast-container-default-xxs-padding:1.8em;--ast-code-block-background:#ECEFF3;--ast-comment-inputs-background:#F9FAFB;--ast-normal-container-width:1200px;--ast-narrow-container-width:750px;--ast-blog-title-font-weight:600;--ast-blog-meta-weight:600;--ast-global-color-primary:var(--ast-global-color-4);--ast-global-color-secondary:var(--ast-global-color-5);--ast-global-color-alternate-background:var(--ast-global-color-6);--ast-global-color-subtle-background:var(--ast-global-color-7);--ast-bg-style-guide:var( --ast-global-color-secondary,var(--ast-global-color-5) );--ast-shadow-style-guide:0px 0px 4px 0 #00000057;--ast-global-dark-bg-style:#fff;--ast-global-dark-lfs:#fbfbfb;--ast-widget-bg-color:#fafafa;--ast-wc-container-head-bg-color:#fbfbfb;--ast-title-layout-bg:#eeeeee;--ast-search-border-color:#e7e7e7;--ast-lifter-hover-bg:#e6e6e6;--ast-gallery-block-color:#000;--srfm-color-input-label:var(--ast-global-color-2);}html{font-size:100%;}a{color:var(--ast-global-color-0);}a:hover,a:focus{color:var(--ast-global-color-1);}body,button,input,select,textarea,.ast-button,.ast-custom-button{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;font-weight:400;font-size:16px;font-size:1rem;line-height:var(--ast-body-line-height,1.65);}blockquote{color:var(--ast-global-color-3);}h1,h2,h3,h4,h5,h6,.entry-content :where(h1,h2,h3,h4,h5,h6),.site-title,.site-title a{font-weight:600;}.ast-site-identity .site-title a{color:var(--ast-global-color-2);}.site-title{font-size:26px;font-size:1.625rem;display:block;}.site-header .site-description{font-size:15px;font-size:0.9375rem;display:none;}.entry-title{font-size:20px;font-size:1.25rem;}.ast-blog-single-element.ast-taxonomy-container a{font-size:14px;font-size:0.875rem;}.ast-blog-meta-container{font-size:13px;font-size:0.8125rem;}.archive .ast-article-post .ast-article-inner,.blog .ast-article-post .ast-article-inner,.archive .ast-article-post .ast-article-inner:hover,.blog .ast-article-post .ast-article-inner:hover{border-top-left-radius:6px;border-top-right-radius:6px;border-bottom-right-radius:6px;border-bottom-left-radius:6px;overflow:hidden;}h1,.entry-content :where(h1){font-size:36px;font-size:2.25rem;font-weight:600;line-height:1.4em;}h2,.entry-content :where(h2){font-size:30px;font-size:1.875rem;font-weight:600;line-height:1.3em;}h3,.entry-content :where(h3){font-size:24px;font-size:1.5rem;font-weight:600;line-height:1.3em;}h4,.entry-content :where(h4){font-size:20px;font-size:1.25rem;line-height:1.2em;font-weight:600;}h5,.entry-content :where(h5){font-size:18px;font-size:1.125rem;line-height:1.2em;font-weight:600;}h6,.entry-content :where(h6){font-size:16px;font-size:1rem;line-height:1.25em;font-weight:600;}::selection{background-color:var(--ast-global-color-0);color:#ffffff;}body,h1,h2,h3,h4,h5,h6,.entry-title a,.entry-content :where(h1,h2,h3,h4,h5,h6){color:var(--ast-global-color-3);}.tagcloud a:hover,.tagcloud a:focus,.tagcloud a.current-item{color:#ffffff;border-color:var(--ast-global-color-0);background-color:var(--ast-global-color-0);}input:focus,input[type="text"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="reset"]:focus,input[type="search"]:focus,textarea:focus{border-color:var(--ast-global-color-0);}input[type="radio"]:checked,input[type=reset],input[type="checkbox"]:checked,input[type="checkbox"]:hover:checked,input[type="checkbox"]:focus:checked,input[type=range]::-webkit-slider-thumb{border-color:var(--ast-global-color-0);background-color:var(--ast-global-color-0);box-shadow:none;}.site-footer a:hover + .post-count,.site-footer a:focus + .post-count{background:var(--ast-global-color-0);border-color:var(--ast-global-color-0);}.single .nav-links .nav-previous,.single .nav-links .nav-next{color:var(--ast-global-color-0);}.entry-meta,.entry-meta *{line-height:1.45;color:var(--ast-global-color-0);font-weight:600;}.entry-meta a:not(.ast-button):hover,.entry-meta a:not(.ast-button):hover *,.entry-meta a:not(.ast-button):focus,.entry-meta a:not(.ast-button):focus *,.page-links > .page-link,.page-links .page-link:hover,.post-navigation a:hover{color:var(--ast-global-color-1);}#cat option,.secondary .calendar_wrap thead a,.secondary .calendar_wrap thead a:visited{color:var(--ast-global-color-0);}.secondary .calendar_wrap #today,.ast-progress-val span{background:var(--ast-global-color-0);}.secondary a:hover + .post-count,.secondary a:focus + .post-count{background:var(--ast-global-color-0);border-color:var(--ast-global-color-0);}.calendar_wrap #today > a{color:#ffffff;}.page-links .page-link,.single .post-navigation a{color:var(--ast-global-color-3);}.ast-search-menu-icon .search-form button.search-submit{padding:0 4px;}.ast-search-menu-icon form.search-form{padding-right:0;}.ast-header-search .ast-search-menu-icon.ast-dropdown-active .search-form,.ast-header-search .ast-search-menu-icon.ast-dropdown-active .search-field:focus{transition:all 0.2s;}.search-form input.search-field:focus{outline:none;}.ast-mobile-header-content .ast-builder-layout-element:not(.ast-builder-menu):not(.ast-header-divider-element),.ast-mobile-popup-content .ast-builder-layout-element:not(.ast-builder-menu):not(.ast-header-divider-element){padding:15px 20px;}.ast-search-menu-icon .search-form button.search-submit:focus,.ast-theme-transparent-header .ast-header-search .ast-dropdown-active .ast-icon,.ast-theme-transparent-header .ast-inline-search .search-field:focus .ast-icon{color:var(--ast-global-color-1);}.ast-desktop .ast-header-search .slide-search .search-form{border:2px solid var(--ast-global-color-0);}.ast-header-search .slide-search .search-field{background-color:var(--ast-global-dark-bg-style);}.ast-archive-title{color:var(--ast-global-color-2);}.widget-title{font-size:22px;font-size:1.375rem;color:var(--ast-global-color-2);}.ast-single-post .entry-content a,.ast-comment-content a:not(.ast-comment-edit-reply-wrap a){text-decoration:underline;}.ast-single-post .elementor-widget-button .elementor-button,.ast-single-post .entry-content .uagb-tab a,.ast-single-post .entry-content .uagb-ifb-cta a,.ast-single-post .entry-content .uabb-module-content a,.ast-single-post .entry-content .uagb-post-grid a,.ast-single-post .entry-content .uagb-timeline a,.ast-single-post .entry-content .uagb-toc__wrap a,.ast-single-post .entry-content .uagb-taxomony-box a,.entry-content .wp-block-latest-posts > li > a,.ast-single-post .entry-content .wp-block-file__button,a.ast-post-filter-single,.ast-single-post .ast-comment-content .comment-reply-link,.ast-single-post .ast-comment-content .comment-edit-link{text-decoration:none;}.ast-search-menu-icon.slide-search a:focus-visible:focus-visible,.astra-search-icon:focus-visible,#close:focus-visible,a:focus-visible,.ast-menu-toggle:focus-visible,.site .skip-link:focus-visible,.wp-block-loginout input:focus-visible,.wp-block-search.wp-block-search__button-inside .wp-block-search__inside-wrapper,.ast-header-navigation-arrow:focus-visible,.ast-orders-table__row .ast-orders-table__cell:focus-visible,a#ast-apply-coupon:focus-visible,#ast-apply-coupon:focus-visible,#close:focus-visible,.button.search-submit:focus-visible,#search_submit:focus,.normal-search:focus-visible,.ast-header-account-wrap:focus-visible,.astra-cart-drawer-close:focus,.ast-single-variation:focus,.ast-button:focus,.ast-builder-button-wrap:has(.ast-custom-button-link:focus),.ast-builder-button-wrap .ast-custom-button-link:focus{outline-style:dotted;outline-color:inherit;outline-width:thin;}input:focus,input[type="text"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="reset"]:focus,input[type="search"]:focus,input[type="number"]:focus,textarea:focus,.wp-block-search__input:focus,[data-section="section-header-mobile-trigger"] .ast-button-wrap .ast-mobile-menu-trigger-minimal:focus,.ast-mobile-popup-drawer.active .menu-toggle-close:focus,#ast-scroll-top:focus,#coupon_code:focus,#ast-coupon-code:focus{border-style:dotted;border-color:inherit;border-width:thin;}input{outline:none;}.ast-logo-title-inline .site-logo-img{padding-right:1em;}body .ast-oembed-container *{position:absolute;top:0;width:100%;height:100%;left:0;}body .wp-block-embed-pocket-casts .ast-oembed-container *{position:unset;}.ast-single-post-featured-section + article {margin-top: 2em;}.site-content .ast-single-post-featured-section img {width: 100%;overflow: hidden;object-fit: cover;}.ast-separate-container .site-content .ast-single-post-featured-section + article {margin-top: -80px;z-index: 9;position: relative;border-radius: 4px;}@media (min-width: 922px) {.ast-no-sidebar .site-content .ast-article-image-container--wide {margin-left: -120px;margin-right: -120px;max-width: unset;width: unset;}.ast-left-sidebar .site-content .ast-article-image-container--wide,.ast-right-sidebar .site-content .ast-article-image-container--wide {margin-left: -10px;margin-right: -10px;}.site-content .ast-article-image-container--full {margin-left: calc( -50vw + 50%);margin-right: calc( -50vw + 50%);max-width: 100vw;width: 100vw;}.ast-left-sidebar .site-content .ast-article-image-container--full,.ast-right-sidebar .site-content .ast-article-image-container--full {margin-left: -10px;margin-right: -10px;max-width: inherit;width: auto;}}.site > .ast-single-related-posts-container {margin-top: 0;}@media (min-width: 922px) {.ast-desktop .ast-container--narrow {max-width: var(--ast-narrow-container-width);margin: 0 auto;}}.ast-page-builder-template .hentry {margin: 0;}.ast-page-builder-template .site-content > .ast-container {max-width: 100%;padding: 0;}.ast-page-builder-template .site .site-content #primary {padding: 0;margin: 0;}.ast-page-builder-template .no-results {text-align: center;margin: 4em auto;}.ast-page-builder-template .ast-pagination {padding: 2em;}.ast-page-builder-template .entry-header.ast-no-title.ast-no-thumbnail {margin-top: 0;}.ast-page-builder-template .entry-header.ast-header-without-markup {margin-top: 0;margin-bottom: 0;}.ast-page-builder-template .entry-header.ast-no-title.ast-no-meta {margin-bottom: 0;}.ast-page-builder-template.single .post-navigation {padding-bottom: 2em;}.ast-page-builder-template.single-post .site-content > .ast-container {max-width: 100%;}.ast-page-builder-template .entry-header {margin-top: 2em;margin-left: auto;margin-right: auto;}.ast-page-builder-template .ast-archive-description {margin: 2em auto 0;padding-left: 20px;padding-right: 20px;}.ast-page-builder-template .ast-row {margin-left: 0;margin-right: 0;}.single.ast-page-builder-template .entry-header + .entry-content,.single.ast-page-builder-template .ast-single-entry-banner + .site-content article .entry-content {margin-bottom: 2em;}@media(min-width: 921px) {.ast-page-builder-template.archive.ast-right-sidebar .ast-row article,.ast-page-builder-template.archive.ast-left-sidebar .ast-row article {padding-left: 0;padding-right: 0;}}input[type="text"],input[type="number"],input[type="email"],input[type="url"],input[type="password"],input[type="search"],input[type=reset],input[type=tel],input[type=date],select,textarea{font-size:16px;font-style:normal;font-weight:400;line-height:24px;width:100%;padding:12px 16px;border-radius:4px;box-shadow:0px 1px 2px 0px rgba(0,0,0,0.05);color:var(--ast-form-input-text,#475569);}input[type="text"],input[type="number"],input[type="email"],input[type="url"],input[type="password"],input[type="search"],input[type=reset],input[type=tel],input[type=date],select{height:40px;}input[type="date"]{border-width:1px;border-style:solid;border-color:var(--ast-border-color);background:var( --ast-global-color-secondary,var(--ast-global-color-5) );}input[type="text"]:focus,input[type="number"]:focus,input[type="email"]:focus,input[type="url"]:focus,input[type="password"]:focus,input[type="search"]:focus,input[type=reset]:focus,input[type="tel"]:focus,input[type="date"]:focus,select:focus,textarea:focus{border-color:#046BD2;box-shadow:none;outline:none;color:var(--ast-form-input-focus-text,#475569);}label,legend{color:var(--ast-global-color-2,#111827 );font-size:14px;font-style:normal;font-weight:500;line-height:20px;}select{padding:6px 10px;}fieldset{padding:30px;border-radius:4px;}button,.ast-button,.button,input[type="button"],input[type="reset"],input[type="submit"],a:where(.wp-block-button__link){border-radius:4px;box-shadow:0px 1px 2px 0px rgba(0,0,0,0.05);}:root{--ast-comment-inputs-background:#FFF;}::placeholder{color:var(--ast-form-field-color,#9CA3AF);}::-ms-input-placeholder{color:var(--ast-form-field-color,#9CA3AF);}@media (max-width:921.99px){#ast-desktop-header{display:none;}}@media (min-width:922px){#ast-mobile-header{display:none;}}.wp-block-buttons.aligncenter{justify-content:center;}@media (max-width:921px){.ast-theme-transparent-header #primary,.ast-theme-transparent-header #secondary{padding:0;}}@media (max-width:921px){.ast-plain-container.ast-no-sidebar #primary{padding:0;}}.ast-plain-container.ast-no-sidebar #primary{margin-top:0;margin-bottom:0;}.wp-block-button.is-style-outline .wp-block-button__link{border-color:var(--ast-global-color-0);}div.wp-block-button.is-style-outline > .wp-block-button__link:not(.has-text-color),div.wp-block-button.wp-block-button__link.is-style-outline:not(.has-text-color){color:var(--ast-global-color-0);}.wp-block-button.is-style-outline .wp-block-button__link:hover,.wp-block-buttons .wp-block-button.is-style-outline .wp-block-button__link:focus,.wp-block-buttons .wp-block-button.is-style-outline > .wp-block-button__link:not(.has-text-color):hover,.wp-block-buttons .wp-block-button.wp-block-button__link.is-style-outline:not(.has-text-color):hover{color:#ffffff;background-color:var(--ast-global-color-1);border-color:var(--ast-global-color-1);}.post-page-numbers.current .page-link,.ast-pagination .page-numbers.current{color:#ffffff;border-color:var(--ast-global-color-0);background-color:var(--ast-global-color-0);}.wp-block-buttons .wp-block-button.is-style-outline .wp-block-button__link.wp-element-button,.ast-outline-button,.wp-block-uagb-buttons-child .uagb-buttons-repeater.ast-outline-button{border-color:var(--ast-global-color-0);border-top-width:2px;border-right-width:2px;border-bottom-width:2px;border-left-width:2px;font-family:inherit;font-weight:500;font-size:16px;font-size:1rem;line-height:1em;padding-top:13px;padding-right:30px;padding-bottom:13px;padding-left:30px;}.wp-block-buttons .wp-block-button.is-style-outline > .wp-block-button__link:not(.has-text-color),.wp-block-buttons .wp-block-button.wp-block-button__link.is-style-outline:not(.has-text-color),.ast-outline-button{color:var(--ast-global-color-0);}.wp-block-button.is-style-outline .wp-block-button__link:hover,.wp-block-buttons .wp-block-button.is-style-outline .wp-block-button__link:focus,.wp-block-buttons .wp-block-button.is-style-outline > .wp-block-button__link:not(.has-text-color):hover,.wp-block-buttons .wp-block-button.wp-block-button__link.is-style-outline:not(.has-text-color):hover,.ast-outline-button:hover,.ast-outline-button:focus,.wp-block-uagb-buttons-child .uagb-buttons-repeater.ast-outline-button:hover,.wp-block-uagb-buttons-child .uagb-buttons-repeater.ast-outline-button:focus{color:#ffffff;background-color:var(--ast-global-color-1);border-color:var(--ast-global-color-1);}.ast-single-post .entry-content a.ast-outline-button,.ast-single-post .entry-content .is-style-outline>.wp-block-button__link{text-decoration:none;}.wp-block-button .wp-block-button__link.wp-element-button.is-style-outline:not(.has-background),.wp-block-button.is-style-outline>.wp-block-button__link.wp-element-button:not(.has-background),.ast-outline-button{background-color:transparent;}.uagb-buttons-repeater.ast-outline-button{border-radius:9999px;}@media (max-width:921px){.wp-block-buttons .wp-block-button.is-style-outline .wp-block-button__link.wp-element-button,.ast-outline-button,.wp-block-uagb-buttons-child .uagb-buttons-repeater.ast-outline-button{padding-top:12px;padding-right:28px;padding-bottom:12px;padding-left:28px;}}@media (max-width:544px){.wp-block-buttons .wp-block-button.is-style-outline .wp-block-button__link.wp-element-button,.ast-outline-button,.wp-block-uagb-buttons-child .uagb-buttons-repeater.ast-outline-button{padding-top:10px;padding-right:24px;padding-bottom:10px;padding-left:24px;}}.entry-content[data-ast-blocks-layout] > figure{margin-bottom:1em;}h1.widget-title{font-weight:600;}h2.widget-title{font-weight:600;}h3.widget-title{font-weight:600;}.elementor-widget-container .elementor-loop-container .e-loop-item[data-elementor-type="loop-item"]{width:100%;} .content-area .elementor-widget-theme-post-content h1,.content-area .elementor-widget-theme-post-content h2,.content-area .elementor-widget-theme-post-content h3,.content-area .elementor-widget-theme-post-content h4,.content-area .elementor-widget-theme-post-content h5,.content-area .elementor-widget-theme-post-content h6{margin-top:1.5em;margin-bottom:calc(0.3em + 10px);}#page{display:flex;flex-direction:column;min-height:100vh;}.ast-404-layout-1 h1.page-title{color:var(--ast-global-color-2);}.single .post-navigation a{line-height:1em;height:inherit;}.error-404 .page-sub-title{font-size:1.5rem;font-weight:inherit;}.search .site-content .content-area .search-form{margin-bottom:0;}#page .site-content{flex-grow:1;}.widget{margin-bottom:1.25em;}#secondary li{line-height:1.5em;}#secondary .wp-block-group h2{margin-bottom:0.7em;}#secondary h2{font-size:1.7rem;}.ast-separate-container .ast-article-post,.ast-separate-container .ast-article-single,.ast-separate-container .comment-respond{padding:3em;}.ast-separate-container .ast-article-single .ast-article-single{padding:0;}.ast-article-single .wp-block-post-template-is-layout-grid{padding-left:0;}.ast-separate-container .comments-title,.ast-narrow-container .comments-title{padding:1.5em 2em;}.ast-page-builder-template .comment-form-textarea,.ast-comment-formwrap .ast-grid-common-col{padding:0;}.ast-comment-formwrap{padding:0;display:inline-flex;column-gap:20px;width:100%;margin-left:0;margin-right:0;}.comments-area textarea#comment:focus,.comments-area textarea#comment:active,.comments-area .ast-comment-formwrap input[type="text"]:focus,.comments-area .ast-comment-formwrap input[type="text"]:active {box-shadow:none;outline:none;}.archive.ast-page-builder-template .entry-header{margin-top:2em;}.ast-page-builder-template .ast-comment-formwrap{width:100%;}.entry-title{margin-bottom:0.6em;}.ast-archive-description p{font-size:inherit;font-weight:inherit;line-height:inherit;}.ast-separate-container .ast-comment-list li.depth-1,.hentry{margin-bottom:1.5em;}.site-content section.ast-archive-description{margin-bottom:2em;}@media (min-width:921px){.ast-left-sidebar.ast-page-builder-template #secondary,.archive.ast-right-sidebar.ast-page-builder-template .site-main{padding-left:20px;padding-right:20px;}}@media (max-width:544px){.ast-comment-formwrap.ast-row{column-gap:10px;display:inline-block;}#ast-commentform .ast-grid-common-col{position:relative;width:100%;}}@media (min-width:1201px){.ast-separate-container .ast-article-post,.ast-separate-container .ast-article-single,.ast-separate-container .ast-author-box,.ast-separate-container .ast-404-layout-1,.ast-separate-container .no-results{padding:3em;}} .content-area .elementor-widget-theme-post-content h1,.content-area .elementor-widget-theme-post-content h2,.content-area .elementor-widget-theme-post-content h3,.content-area .elementor-widget-theme-post-content h4,.content-area .elementor-widget-theme-post-content h5,.content-area .elementor-widget-theme-post-content h6{margin-top:1.5em;margin-bottom:calc(0.3em + 10px);}.elementor-loop-container .e-loop-item,.elementor-loop-container .ast-separate-container .ast-article-post,.elementor-loop-container .ast-separate-container .ast-article-single,.elementor-loop-container .ast-separate-container .comment-respond{padding:0px;}@media (max-width:921px){.ast-left-sidebar #content > .ast-container{display:flex;flex-direction:column-reverse;width:100%;}}@media (min-width:922px){.ast-separate-container.ast-right-sidebar #primary,.ast-separate-container.ast-left-sidebar #primary{border:0;}.search-no-results.ast-separate-container #primary{margin-bottom:4em;}}.wp-block-button .wp-block-button__link{color:#ffffff;}.wp-block-button .wp-block-button__link:hover,.wp-block-button .wp-block-button__link:focus{color:#ffffff;background-color:var(--ast-global-color-1);border-color:var(--ast-global-color-1);}.elementor-widget-heading h1.elementor-heading-title{line-height:1.4em;}.elementor-widget-heading h2.elementor-heading-title{line-height:1.3em;}.elementor-widget-heading h3.elementor-heading-title{line-height:1.3em;}.elementor-widget-heading h4.elementor-heading-title{line-height:1.2em;}.elementor-widget-heading h5.elementor-heading-title{line-height:1.2em;}.elementor-widget-heading h6.elementor-heading-title{line-height:1.25em;}.wp-block-button .wp-block-button__link,.wp-block-search .wp-block-search__button,body .wp-block-file .wp-block-file__button{border-color:var(--ast-global-color-0);background-color:var(--ast-global-color-0);color:#ffffff;font-family:inherit;font-weight:500;line-height:1em;font-size:16px;font-size:1rem;padding-top:15px;padding-right:30px;padding-bottom:15px;padding-left:30px;}.ast-single-post .entry-content .wp-block-button .wp-block-button__link,.ast-single-post .entry-content .wp-block-search .wp-block-search__button,body .entry-content .wp-block-file .wp-block-file__button{text-decoration:none;}@media (max-width:921px){.wp-block-button .wp-block-button__link,.wp-block-search .wp-block-search__button,body .wp-block-file .wp-block-file__button{padding-top:14px;padding-right:28px;padding-bottom:14px;padding-left:28px;}}@media (max-width:544px){.wp-block-button .wp-block-button__link,.wp-block-search .wp-block-search__button,body .wp-block-file .wp-block-file__button{padding-top:12px;padding-right:24px;padding-bottom:12px;padding-left:24px;}}.menu-toggle,button,.ast-button,.ast-custom-button,.button,input#submit,input[type="button"],input[type="submit"],input[type="reset"],#comments .submit,.search .search-submit,form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button,body .wp-block-file .wp-block-file__button,.search .search-submit{border-style:solid;border-top-width:0;border-right-width:0;border-left-width:0;border-bottom-width:0;color:#ffffff;border-color:var(--ast-global-color-0);background-color:var(--ast-global-color-0);padding-top:15px;padding-right:30px;padding-bottom:15px;padding-left:30px;font-family:inherit;font-weight:500;font-size:16px;font-size:1rem;line-height:1em;}button:focus,.menu-toggle:hover,button:hover,.ast-button:hover,.ast-custom-button:hover .button:hover,.ast-custom-button:hover ,input[type=reset]:hover,input[type=reset]:focus,input#submit:hover,input#submit:focus,input[type="button"]:hover,input[type="button"]:focus,input[type="submit"]:hover,input[type="submit"]:focus,form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button:hover,form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button:focus,body .wp-block-file .wp-block-file__button:hover,body .wp-block-file .wp-block-file__button:focus{color:#ffffff;background-color:var(--ast-global-color-1);border-color:var(--ast-global-color-1);}form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button.has-icon{padding-top:calc(15px - 3px);padding-right:calc(30px - 3px);padding-bottom:calc(15px - 3px);padding-left:calc(30px - 3px);}@media (max-width:921px){.menu-toggle,button,.ast-button,.ast-custom-button,.button,input#submit,input[type="button"],input[type="submit"],input[type="reset"],#comments .submit,.search .search-submit,form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button,body .wp-block-file .wp-block-file__button,.search .search-submit{padding-top:14px;padding-right:28px;padding-bottom:14px;padding-left:28px;}}@media (max-width:544px){.menu-toggle,button,.ast-button,.ast-custom-button,.button,input#submit,input[type="button"],input[type="submit"],input[type="reset"],#comments .submit,.search .search-submit,form[CLASS*="wp-block-search__"].wp-block-search .wp-block-search__inside-wrapper .wp-block-search__button,body .wp-block-file .wp-block-file__button,.search .search-submit{padding-top:12px;padding-right:24px;padding-bottom:12px;padding-left:24px;}}@media (max-width:921px){.ast-mobile-header-stack .main-header-bar .ast-search-menu-icon{display:inline-block;}.ast-header-break-point.ast-header-custom-item-outside .ast-mobile-header-stack .main-header-bar .ast-search-icon{margin:0;}.ast-comment-avatar-wrap img{max-width:2.5em;}.ast-comment-meta{padding:0 1.8888em 1.3333em;}}@media (min-width:544px){.ast-container{max-width:100%;}}@media (max-width:544px){.ast-separate-container .ast-article-post,.ast-separate-container .ast-article-single,.ast-separate-container .comments-title,.ast-separate-container .ast-archive-description{padding:1.5em 1em;}.ast-separate-container #content .ast-container{padding-left:0.54em;padding-right:0.54em;}.ast-separate-container .ast-comment-list .bypostauthor{padding:.5em;}.ast-search-menu-icon.ast-dropdown-active .search-field{width:170px;}} #ast-mobile-header .ast-site-header-cart-li a{pointer-events:none;}@media (min-width:545px){.ast-page-builder-template .comments-area,.single.ast-page-builder-template .entry-header,.single.ast-page-builder-template .post-navigation,.single.ast-page-builder-template .ast-single-related-posts-container{max-width:1240px;margin-left:auto;margin-right:auto;}}.ast-separate-container{background-color:var(--ast-global-color-5);}@media (max-width:921px){.site-title{display:block;}.site-header .site-description{display:none;}h1,.entry-content :where(h1){font-size:30px;font-size:1.875rem;}h2,.entry-content :where(h2){font-size:25px;font-size:1.5625rem;}h3,.entry-content :where(h3){font-size:20px;font-size:1.25rem;}}@media (max-width:544px){.site-title{display:block;}.site-header .site-description{display:none;}h1,.entry-content :where(h1){font-size:30px;font-size:1.875rem;}h2,.entry-content :where(h2){font-size:25px;font-size:1.5625rem;}h3,.entry-content :where(h3){font-size:20px;font-size:1.25rem;}}@media (max-width:921px){html{font-size:91.2%;}}@media (max-width:544px){html{font-size:91.2%;}}@media (min-width:922px){.ast-container{max-width:1240px;}}@media (min-width:922px){.site-content .ast-container{display:flex;}}@media (max-width:921px){.site-content .ast-container{flex-direction:column;}}.entry-content :where(h1,h2,h3,h4,h5,h6){clear:none;}@media (min-width:922px){.main-header-menu .sub-menu .menu-item.ast-left-align-sub-menu:hover > .sub-menu,.main-header-menu .sub-menu .menu-item.ast-left-align-sub-menu.focus > .sub-menu{margin-left:-0px;}}.entry-content li > p{margin-bottom:0;}.site .comments-area{padding-bottom:2em;margin-top:2em;}.wp-block-file {display: flex;align-items: center;flex-wrap: wrap;justify-content: space-between;}.wp-block-pullquote {border: none;}.wp-block-pullquote blockquote::before {content: "\201D";font-family: "Helvetica",sans-serif;display: flex;transform: rotate( 180deg );font-size: 6rem;font-style: normal;line-height: 1;font-weight: bold;align-items: center;justify-content: center;}.has-text-align-right > blockquote::before {justify-content: flex-start;}.has-text-align-left > blockquote::before {justify-content: flex-end;}figure.wp-block-pullquote.is-style-solid-color blockquote {max-width: 100%;text-align: inherit;}:root {--wp--custom--ast-default-block-top-padding: 3em;--wp--custom--ast-default-block-right-padding: 3em;--wp--custom--ast-default-block-bottom-padding: 3em;--wp--custom--ast-default-block-left-padding: 3em;--wp--custom--ast-container-width: 1200px;--wp--custom--ast-content-width-size: 1200px;--wp--custom--ast-wide-width-size: calc(1200px + var(--wp--custom--ast-default-block-left-padding) + var(--wp--custom--ast-default-block-right-padding));}.ast-narrow-container {--wp--custom--ast-content-width-size: 750px;--wp--custom--ast-wide-width-size: 750px;}@media(max-width: 921px) {:root {--wp--custom--ast-default-block-top-padding: 3em;--wp--custom--ast-default-block-right-padding: 2em;--wp--custom--ast-default-block-bottom-padding: 3em;--wp--custom--ast-default-block-left-padding: 2em;}}@media(max-width: 544px) {:root {--wp--custom--ast-default-block-top-padding: 3em;--wp--custom--ast-default-block-right-padding: 1.5em;--wp--custom--ast-default-block-bottom-padding: 3em;--wp--custom--ast-default-block-left-padding: 1.5em;}}.entry-content > .wp-block-group,.entry-content > .wp-block-cover,.entry-content > .wp-block-columns {padding-top: var(--wp--custom--ast-default-block-top-padding);padding-right: var(--wp--custom--ast-default-block-right-padding);padding-bottom: var(--wp--custom--ast-default-block-bottom-padding);padding-left: var(--wp--custom--ast-default-block-left-padding);}.ast-plain-container.ast-no-sidebar .entry-content > .alignfull,.ast-page-builder-template .ast-no-sidebar .entry-content > .alignfull {margin-left: calc( -50vw + 50%);margin-right: calc( -50vw + 50%);max-width: 100vw;width: 100vw;}.ast-plain-container.ast-no-sidebar .entry-content .alignfull .alignfull,.ast-page-builder-template.ast-no-sidebar .entry-content .alignfull .alignfull,.ast-plain-container.ast-no-sidebar .entry-content .alignfull .alignwide,.ast-page-builder-template.ast-no-sidebar .entry-content .alignfull .alignwide,.ast-plain-container.ast-no-sidebar .entry-content .alignwide .alignfull,.ast-page-builder-template.ast-no-sidebar .entry-content .alignwide .alignfull,.ast-plain-container.ast-no-sidebar .entry-content .alignwide .alignwide,.ast-page-builder-template.ast-no-sidebar .entry-content .alignwide .alignwide,.ast-plain-container.ast-no-sidebar .entry-content .wp-block-column .alignfull,.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-column .alignfull,.ast-plain-container.ast-no-sidebar .entry-content .wp-block-column .alignwide,.ast-page-builder-template.ast-no-sidebar .entry-content .wp-block-column .alignwide {margin-left: auto;margin-right: auto;width: 100%;}[data-ast-blocks-layout] .wp-block-separator:not(.is-style-dots) {height: 0;}[data-ast-blocks-layout] .wp-block-separator {margin: 20px auto;}[data-ast-blocks-layout] .wp-block-separator:not(.is-style-wide):not(.is-style-dots) {max-width: 100px;}[data-ast-blocks-layout] .wp-block-separator.has-background {padding: 0;}.entry-content[data-ast-blocks-layout] > * {max-width: var(--wp--custom--ast-content-width-size);margin-left: auto;margin-right: auto;}.entry-content[data-ast-blocks-layout] > .alignwide {max-width: var(--wp--custom--ast-wide-width-size);}.entry-content[data-ast-blocks-layout] .alignfull {max-width: none;}.entry-content .wp-block-columns {margin-bottom: 0;}blockquote {margin: 1.5em;border-color: rgba(0,0,0,0.05);}.wp-block-quote:not(.has-text-align-right):not(.has-text-align-center) {border-left: 5px solid rgba(0,0,0,0.05);}.has-text-align-right > blockquote,blockquote.has-text-align-right {border-right: 5px solid rgba(0,0,0,0.05);}.has-text-align-left > blockquote,blockquote.has-text-align-left {border-left: 5px solid rgba(0,0,0,0.05);}.wp-block-site-tagline,.wp-block-latest-posts .read-more {margin-top: 15px;}.wp-block-loginout p label {display: block;}.wp-block-loginout p:not(.login-remember):not(.login-submit) input {width: 100%;}.wp-block-loginout input:focus {border-color: transparent;}.wp-block-loginout input:focus {outline: thin dotted;}.entry-content .wp-block-media-text .wp-block-media-text__content {padding: 0 0 0 8%;}.entry-content .wp-block-media-text.has-media-on-the-right .wp-block-media-text__content {padding: 0 8% 0 0;}.entry-content .wp-block-media-text.has-background .wp-block-media-text__content {padding: 8%;}.entry-content .wp-block-cover:not([class*="background-color"]):not(.has-text-color.has-link-color) .wp-block-cover__inner-container,.entry-content .wp-block-cover:not([class*="background-color"]) .wp-block-cover-image-text,.entry-content .wp-block-cover:not([class*="background-color"]) .wp-block-cover-text,.entry-content .wp-block-cover-image:not([class*="background-color"]) .wp-block-cover__inner-container,.entry-content .wp-block-cover-image:not([class*="background-color"]) .wp-block-cover-image-text,.entry-content .wp-block-cover-image:not([class*="background-color"]) .wp-block-cover-text {color: var(--ast-global-color-primary,var(--ast-global-color-5));}.wp-block-loginout .login-remember input {width: 1.1rem;height: 1.1rem;margin: 0 5px 4px 0;vertical-align: middle;}.wp-block-latest-posts > li > *:first-child,.wp-block-latest-posts:not(.is-grid) > li:first-child {margin-top: 0;}.entry-content > .wp-block-buttons,.entry-content > .wp-block-uagb-buttons {margin-bottom: 1.5em;}.wp-block-search__inside-wrapper .wp-block-search__input {padding: 0 10px;color: var(--ast-global-color-3);background: var(--ast-global-color-primary,var(--ast-global-color-5));border-color: var(--ast-border-color);}.wp-block-latest-posts .read-more {margin-bottom: 1.5em;}.wp-block-search__no-button .wp-block-search__inside-wrapper .wp-block-search__input {padding-top: 5px;padding-bottom: 5px;}.wp-block-latest-posts .wp-block-latest-posts__post-date,.wp-block-latest-posts .wp-block-latest-posts__post-author {font-size: 1rem;}.wp-block-latest-posts > li > *,.wp-block-latest-posts:not(.is-grid) > li {margin-top: 12px;margin-bottom: 12px;}.ast-page-builder-template .entry-content[data-ast-blocks-layout] > .alignwide:where(:not(.uagb-is-root-container):not(.spectra-is-root-container)) > * {max-width: var(--wp--custom--ast-wide-width-size);}.ast-page-builder-template .entry-content[data-ast-blocks-layout] > .inherit-container-width > *,.ast-page-builder-template .entry-content[data-ast-blocks-layout] > *:not(.wp-block-group):where(:not(.uagb-is-root-container):not(.spectra-is-root-container)) > *,.entry-content[data-ast-blocks-layout] > .wp-block-cover .wp-block-cover__inner-container {max-width: none ;margin-left: auto;margin-right: auto;}.ast-page-builder-template .entry-content[data-ast-blocks-layout] > *,.ast-page-builder-template .entry-content[data-ast-blocks-layout] > .alignfull:where(:not(.wp-block-group):not(.uagb-is-root-container):not(.spectra-is-root-container)) > * {max-width: none;}.entry-content[data-ast-blocks-layout] .wp-block-cover:not(.alignleft):not(.alignright) {width: auto;}@media(max-width: 1200px) {.ast-separate-container .entry-content > .alignfull,.ast-separate-container .entry-content[data-ast-blocks-layout] > .alignwide,.ast-plain-container .entry-content[data-ast-blocks-layout] > .alignwide,.ast-plain-container .entry-content .alignfull {margin-left: calc(-1 * min(var(--ast-container-default-xlg-padding),20px)) ;margin-right: calc(-1 * min(var(--ast-container-default-xlg-padding),20px));}}@media(min-width: 1201px) {.ast-separate-container .entry-content > .alignfull {margin-left: calc(-1 * var(--ast-container-default-xlg-padding) );margin-right: calc(-1 * var(--ast-container-default-xlg-padding) );}.ast-separate-container .entry-content[data-ast-blocks-layout] > .alignwide,.ast-plain-container .entry-content[data-ast-blocks-layout] > .alignwide {margin-left: auto;margin-right: auto;}}@media(min-width: 921px) {.ast-separate-container .entry-content .wp-block-group.alignwide:not(.inherit-container-width) > :where(:not(.alignleft):not(.alignright)),.ast-plain-container .entry-content .wp-block-group.alignwide:not(.inherit-container-width) > :where(:not(.alignleft):not(.alignright)) {max-width: calc( var(--wp--custom--ast-content-width-size) + 80px );}.ast-plain-container.ast-right-sidebar .entry-content[data-ast-blocks-layout] .alignfull,.ast-plain-container.ast-left-sidebar .entry-content[data-ast-blocks-layout] .alignfull {margin-left: -60px;margin-right: -60px;}}@media(min-width: 544px) {.entry-content > .alignleft {margin-right: 20px;}.entry-content > .alignright {margin-left: 20px;}}@media (max-width:544px){.wp-block-columns .wp-block-column:not(:last-child){margin-bottom:20px;}.wp-block-latest-posts{margin:0;}}@media( max-width: 600px ) {.entry-content .wp-block-media-text .wp-block-media-text__content,.entry-content .wp-block-media-text.has-media-on-the-right .wp-block-media-text__content {padding: 8% 0 0;}.entry-content .wp-block-media-text.has-background .wp-block-media-text__content {padding: 8%;}}.ast-page-builder-template .entry-header {padding-left: 0;}.ast-narrow-container .site-content .wp-block-uagb-image--align-full .wp-block-uagb-image__figure {max-width: 100%;margin-left: auto;margin-right: auto;}.entry-content ul,.entry-content ol {padding: revert;margin: revert;padding-left: 20px;}.entry-content ul.wc-block-product-template{padding: 0;}:root .has-ast-global-color-0-color{color:var(--ast-global-color-0);}:root .has-ast-global-color-0-background-color{background-color:var(--ast-global-color-0);}:root .wp-block-button .has-ast-global-color-0-color{color:var(--ast-global-color-0);}:root .wp-block-button .has-ast-global-color-0-background-color{background-color:var(--ast-global-color-0);}:root .has-ast-global-color-1-color{color:var(--ast-global-color-1);}:root .has-ast-global-color-1-background-color{background-color:var(--ast-global-color-1);}:root .wp-block-button .has-ast-global-color-1-color{color:var(--ast-global-color-1);}:root .wp-block-button .has-ast-global-color-1-background-color{background-color:var(--ast-global-color-1);}:root .has-ast-global-color-2-color{color:var(--ast-global-color-2);}:root .has-ast-global-color-2-background-color{background-color:var(--ast-global-color-2);}:root .wp-block-button .has-ast-global-color-2-color{color:var(--ast-global-color-2);}:root .wp-block-button .has-ast-global-color-2-background-color{background-color:var(--ast-global-color-2);}:root .has-ast-global-color-3-color{color:var(--ast-global-color-3);}:root .has-ast-global-color-3-background-color{background-color:var(--ast-global-color-3);}:root .wp-block-button .has-ast-global-color-3-color{color:var(--ast-global-color-3);}:root .wp-block-button .has-ast-global-color-3-background-color{background-color:var(--ast-global-color-3);}:root .has-ast-global-color-4-color{color:var(--ast-global-color-4);}:root .has-ast-global-color-4-background-color{background-color:var(--ast-global-color-4);}:root .wp-block-button .has-ast-global-color-4-color{color:var(--ast-global-color-4);}:root .wp-block-button .has-ast-global-color-4-background-color{background-color:var(--ast-global-color-4);}:root .has-ast-global-color-5-color{color:var(--ast-global-color-5);}:root .has-ast-global-color-5-background-color{background-color:var(--ast-global-color-5);}:root .wp-block-button .has-ast-global-color-5-color{color:var(--ast-global-color-5);}:root .wp-block-button .has-ast-global-color-5-background-color{background-color:var(--ast-global-color-5);}:root .has-ast-global-color-6-color{color:var(--ast-global-color-6);}:root .has-ast-global-color-6-background-color{background-color:var(--ast-global-color-6);}:root .wp-block-button .has-ast-global-color-6-color{color:var(--ast-global-color-6);}:root .wp-block-button .has-ast-global-color-6-background-color{background-color:var(--ast-global-color-6);}:root .has-ast-global-color-7-color{color:var(--ast-global-color-7);}:root .has-ast-global-color-7-background-color{background-color:var(--ast-global-color-7);}:root .wp-block-button .has-ast-global-color-7-color{color:var(--ast-global-color-7);}:root .wp-block-button .has-ast-global-color-7-background-color{background-color:var(--ast-global-color-7);}:root .has-ast-global-color-8-color{color:var(--ast-global-color-8);}:root .has-ast-global-color-8-background-color{background-color:var(--ast-global-color-8);}:root .wp-block-button .has-ast-global-color-8-color{color:var(--ast-global-color-8);}:root .wp-block-button .has-ast-global-color-8-background-color{background-color:var(--ast-global-color-8);}:root{--ast-global-color-0:#046bd2;--ast-global-color-1:#045cb4;--ast-global-color-2:#1e293b;--ast-global-color-3:#334155;--ast-global-color-4:#FFFFFF;--ast-global-color-5:#F0F5FA;--ast-global-color-6:#111111;--ast-global-color-7:#D1D5DB;--ast-global-color-8:#111111;}:root {--ast-border-color : var(--ast-global-color-7);}.ast-single-entry-banner {-js-display: flex;display: flex;flex-direction: column;justify-content: center;text-align: center;position: relative;background: var(--ast-title-layout-bg);}.ast-single-entry-banner[data-banner-layout="layout-1"] {max-width: 1200px;background: inherit;padding: 20px 0;}.ast-single-entry-banner[data-banner-width-type="custom"] {margin: 0 auto;width: 100%;}.ast-single-entry-banner + .site-content .entry-header {margin-bottom: 0;}.site .ast-author-avatar {--ast-author-avatar-size: ;}a.ast-underline-text {text-decoration: underline;}.ast-container > .ast-terms-link {position: relative;display: block;}a.ast-button.ast-badge-tax {padding: 4px 8px;border-radius: 3px;font-size: inherit;}header.entry-header{text-align:left;}header.entry-header .entry-title{font-weight:600;font-size:32px;font-size:2rem;}header.entry-header > *:not(:last-child){margin-bottom:10px;}header.entry-header .post-thumb-img-content{text-align:center;}header.entry-header .post-thumb img,.ast-single-post-featured-section.post-thumb img{aspect-ratio:16/9;width:100%;height:100%;}@media (max-width:921px){header.entry-header{text-align:left;}}@media (max-width:544px){header.entry-header{text-align:left;}}.ast-archive-entry-banner {-js-display: flex;display: flex;flex-direction: column;justify-content: center;text-align: center;position: relative;background: var(--ast-title-layout-bg);}.ast-archive-entry-banner[data-banner-width-type="custom"] {margin: 0 auto;width: 100%;}.ast-archive-entry-banner[data-banner-layout="layout-1"] {background: inherit;padding: 20px 0;text-align: left;}body.archive .ast-archive-description{max-width:1200px;width:100%;text-align:left;padding-top:3em;padding-right:3em;padding-bottom:3em;padding-left:3em;}body.archive .ast-archive-description .ast-archive-title,body.archive .ast-archive-description .ast-archive-title *{font-weight:600;font-size:32px;font-size:2rem;}body.archive .ast-archive-description > *:not(:last-child){margin-bottom:10px;}@media (max-width:921px){body.archive .ast-archive-description{text-align:left;}}@media (max-width:544px){body.archive .ast-archive-description{text-align:left;}}.ast-breadcrumbs .trail-browse,.ast-breadcrumbs .trail-items,.ast-breadcrumbs .trail-items li{display:inline-block;margin:0;padding:0;border:none;background:inherit;text-indent:0;text-decoration:none;}.ast-breadcrumbs .trail-browse{font-size:inherit;font-style:inherit;font-weight:inherit;color:inherit;}.ast-breadcrumbs .trail-items{list-style:none;}.trail-items li::after{padding:0 0.3em;content:"\00bb";}.trail-items li:last-of-type::after{display:none;}h1,h2,h3,h4,h5,h6,.entry-content :where(h1,h2,h3,h4,h5,h6){color:var(--ast-global-color-2);}.entry-title a{color:var(--ast-global-color-2);}@media (max-width:921px){.ast-builder-grid-row-container.ast-builder-grid-row-tablet-3-firstrow .ast-builder-grid-row > *:first-child,.ast-builder-grid-row-container.ast-builder-grid-row-tablet-3-lastrow .ast-builder-grid-row > *:last-child{grid-column:1 / -1;}}@media (max-width:544px){.ast-builder-grid-row-container.ast-builder-grid-row-mobile-3-firstrow .ast-builder-grid-row > *:first-child,.ast-builder-grid-row-container.ast-builder-grid-row-mobile-3-lastrow .ast-builder-grid-row > *:last-child{grid-column:1 / -1;}}.ast-builder-layout-element[data-section="title_tagline"]{display:flex;}@media (max-width:921.99px){.ast-header-break-point .ast-builder-layout-element[data-section="title_tagline"]{display:flex;}}@media (max-width:544px){.ast-header-break-point .ast-builder-layout-element[data-section="title_tagline"]{display:flex;}}.ast-builder-menu-1{font-family:inherit;font-weight:inherit;}.ast-builder-menu-1 .menu-item > .menu-link{color:var(--ast-global-color-3);}.ast-builder-menu-1 .menu-item > .ast-menu-toggle{color:var(--ast-global-color-3);}.ast-builder-menu-1 .menu-link:hover,.ast-builder-menu-1 .main-header-menu > .menu-item:hover > .menu-link,.ast-builder-menu-1 .inline-on-mobile .ast-menu-toggle:hover,.ast-builder-menu-1 .inline-on-mobile .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-1 .ast-menu-toggle:hover,.ast-builder-menu-1 .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-1 .menu-item.current-menu-item > .menu-link,.ast-builder-menu-1 .inline-on-mobile .menu-item.current-menu-item > .ast-menu-toggle,.ast-builder-menu-1 .current-menu-ancestor > .menu-link{color:var(--ast-global-color-1);}.ast-builder-menu-1 .menu-item.current-menu-item > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-1 .sub-menu,.ast-builder-menu-1 .inline-on-mobile .sub-menu{border-top-width:2px;border-bottom-width:0px;border-right-width:0px;border-left-width:0px;border-color:var(--ast-global-color-0);border-style:solid;}.ast-builder-menu-1 .sub-menu .sub-menu{top:-2px;}.ast-builder-menu-1 .main-header-menu > .menu-item > .sub-menu,.ast-builder-menu-1 .main-header-menu > .menu-item > .astra-full-megamenu-wrapper{margin-top:0px;}.ast-desktop .ast-builder-menu-1 .main-header-menu > .menu-item > .sub-menu:before,.ast-desktop .ast-builder-menu-1 .main-header-menu > .menu-item > .astra-full-megamenu-wrapper:before{height:calc( 0px + 2px + 5px );}.ast-desktop .ast-builder-menu-1 .menu-item .sub-menu .menu-link{border-style:none;}@media (max-width:921px){.ast-header-break-point .ast-builder-menu-1 .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}.ast-builder-menu-1 .inline-on-mobile .menu-item.menu-item-has-children > .ast-menu-toggle{right:-15px;}.ast-builder-menu-1 .menu-item-has-children > .menu-link:after{content:unset;}.ast-builder-menu-1 .main-header-menu > .menu-item > .sub-menu,.ast-builder-menu-1 .main-header-menu > .menu-item > .astra-full-megamenu-wrapper{margin-top:0;}}@media (max-width:544px){.ast-header-break-point .ast-builder-menu-1 .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}.ast-builder-menu-1 .main-header-menu > .menu-item > .sub-menu,.ast-builder-menu-1 .main-header-menu > .menu-item > .astra-full-megamenu-wrapper{margin-top:0;}}.ast-builder-menu-1{display:flex;}@media (max-width:921.99px){.ast-header-break-point .ast-builder-menu-1{display:flex;}}@media (max-width:544px){.ast-header-break-point .ast-builder-menu-1{display:flex;}}.site-below-footer-wrap{padding-top:20px;padding-bottom:20px;}.site-below-footer-wrap[data-section="section-below-footer-builder"]{background-color:var(--ast-global-color-4 );min-height:60px;border-style:solid;border-width:0px;border-top-width:1px;border-top-color:var( --ast-global-color-subtle-background,var(--ast-global-color-7) );}.site-below-footer-wrap[data-section="section-below-footer-builder"] .ast-builder-grid-row{max-width:1200px;min-height:60px;margin-left:auto;margin-right:auto;}.site-below-footer-wrap[data-section="section-below-footer-builder"] .ast-builder-grid-row,.site-below-footer-wrap[data-section="section-below-footer-builder"] .site-footer-section{align-items:center;}.site-below-footer-wrap[data-section="section-below-footer-builder"].ast-footer-row-inline .site-footer-section{display:flex;margin-bottom:0;}.ast-builder-grid-row-full .ast-builder-grid-row{grid-template-columns:1fr;}@media (max-width:921px){.site-below-footer-wrap[data-section="section-below-footer-builder"].ast-footer-row-tablet-inline .site-footer-section{display:flex;margin-bottom:0;}.site-below-footer-wrap[data-section="section-below-footer-builder"].ast-footer-row-tablet-stack .site-footer-section{display:block;margin-bottom:10px;}.ast-builder-grid-row-container.ast-builder-grid-row-tablet-full .ast-builder-grid-row{grid-template-columns:1fr;}}@media (max-width:544px){.site-below-footer-wrap[data-section="section-below-footer-builder"].ast-footer-row-mobile-inline .site-footer-section{display:flex;margin-bottom:0;}.site-below-footer-wrap[data-section="section-below-footer-builder"].ast-footer-row-mobile-stack .site-footer-section{display:block;margin-bottom:10px;}.ast-builder-grid-row-container.ast-builder-grid-row-mobile-full .ast-builder-grid-row{grid-template-columns:1fr;}}.site-below-footer-wrap[data-section="section-below-footer-builder"]{display:grid;}@media (max-width:921.99px){.ast-header-break-point .site-below-footer-wrap[data-section="section-below-footer-builder"]{display:grid;}}@media (max-width:544px){.ast-header-break-point .site-below-footer-wrap[data-section="section-below-footer-builder"]{display:grid;}}.ast-footer-copyright{text-align:center;}.ast-footer-copyright.site-footer-focus-item {color:var(--ast-global-color-3);}@media (max-width:921px){.ast-footer-copyright{text-align:center;}}@media (max-width:544px){.ast-footer-copyright{text-align:center;}}.ast-footer-copyright.site-footer-focus-item {font-size:16px;font-size:1rem;}.ast-footer-copyright.ast-builder-layout-element{display:flex;}@media (max-width:921.99px){.ast-header-break-point .ast-footer-copyright.ast-builder-layout-element{display:flex;}}@media (max-width:544px){.ast-header-break-point .ast-footer-copyright.ast-builder-layout-element{display:flex;}}.footer-widget-area.widget-area.site-footer-focus-item{width:auto;}.ast-footer-row-inline .footer-widget-area.widget-area.site-footer-focus-item{width:100%;}.elementor-widget-heading .elementor-heading-title{margin:0;}.elementor-page .ast-menu-toggle{color:unset;background:unset;}.elementor-post.elementor-grid-item.hentry{margin-bottom:0;}.woocommerce div.product .elementor-element.elementor-products-grid .related.products ul.products li.product,.elementor-element .elementor-wc-products .woocommerce[class*='columns-'] ul.products li.product{width:auto;margin:0;float:none;}.elementor-toc__list-wrapper{margin:0;}body .elementor hr{background-color:#ccc;margin:0;}.ast-left-sidebar .elementor-section.elementor-section-stretched,.ast-right-sidebar .elementor-section.elementor-section-stretched{max-width:100%;left:0 !important;}.elementor-posts-container [CLASS*="ast-width-"]{width:100%;}.elementor-template-full-width .ast-container{display:block;}.elementor-screen-only,.screen-reader-text,.screen-reader-text span,.ui-helper-hidden-accessible{top:0 !important;}@media (max-width:544px){.elementor-element .elementor-wc-products .woocommerce[class*="columns-"] ul.products li.product{width:auto;margin:0;}.elementor-element .woocommerce .woocommerce-result-count{float:none;}}.ast-header-break-point .main-header-bar{border-bottom-width:1px;}@media (min-width:922px){.main-header-bar{border-bottom-width:1px;}}.main-header-menu .menu-item, #astra-footer-menu .menu-item, .main-header-bar .ast-masthead-custom-menu-items{-js-display:flex;display:flex;-webkit-box-pack:center;-webkit-justify-content:center;-moz-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-orient:vertical;-webkit-box-direction:normal;-webkit-flex-direction:column;-moz-box-orient:vertical;-moz-box-direction:normal;-ms-flex-direction:column;flex-direction:column;}.main-header-menu > .menu-item > .menu-link, #astra-footer-menu > .menu-item > .menu-link{height:100%;-webkit-box-align:center;-webkit-align-items:center;-moz-box-align:center;-ms-flex-align:center;align-items:center;-js-display:flex;display:flex;}#ast-desktop-header .main-header-menu > .menu-item.menu-item-has-children > .menu-link .ast-header-navigation-arrow{padding-right:10px;margin-right:-10px;}.ast-header-break-point .main-navigation ul .menu-item .menu-link .icon-arrow:first-of-type svg{top:.2em;margin-top:0px;margin-left:0px;width:.65em;transform:translate(0, -2px) rotateZ(270deg);}.ast-mobile-popup-content .ast-submenu-expanded > .ast-menu-toggle{transform:rotateX(180deg);overflow-y:auto;}@media (min-width:922px){.ast-builder-menu .main-navigation > ul > li:last-child a{margin-right:0;}}.ast-separate-container .ast-article-inner{background-color:var(--ast-global-color-4);}@media (max-width:921px){.ast-separate-container .ast-article-inner{background-color:var(--ast-global-color-4);}}@media (max-width:544px){.ast-separate-container .ast-article-inner{background-color:var(--ast-global-color-4);}}.ast-separate-container .ast-article-single:not(.ast-related-post), .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .site-main .ast-author-meta, .ast-separate-container .related-posts-title-wrapper, .ast-separate-container .comments-count-wrapper, .ast-box-layout.ast-plain-container .site-content, .ast-padded-layout.ast-plain-container .site-content, .ast-separate-container .ast-archive-description, .ast-separate-container .comments-area{background-color:var(--ast-global-color-4);}@media (max-width:921px){.ast-separate-container .ast-article-single:not(.ast-related-post), .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .site-main .ast-author-meta, .ast-separate-container .related-posts-title-wrapper, .ast-separate-container .comments-count-wrapper, .ast-box-layout.ast-plain-container .site-content, .ast-padded-layout.ast-plain-container .site-content, .ast-separate-container .ast-archive-description{background-color:var(--ast-global-color-4);}}@media (max-width:544px){.ast-separate-container .ast-article-single:not(.ast-related-post), .ast-separate-container .error-404, .ast-separate-container .no-results, .single.ast-separate-container .site-main .ast-author-meta, .ast-separate-container .related-posts-title-wrapper, .ast-separate-container .comments-count-wrapper, .ast-box-layout.ast-plain-container .site-content, .ast-padded-layout.ast-plain-container .site-content, .ast-separate-container .ast-archive-description{background-color:var(--ast-global-color-4);}}.ast-separate-container.ast-two-container #secondary .widget{background-color:var(--ast-global-color-4);}@media (max-width:921px){.ast-separate-container.ast-two-container #secondary .widget{background-color:var(--ast-global-color-4);}}@media (max-width:544px){.ast-separate-container.ast-two-container #secondary .widget{background-color:var(--ast-global-color-4);}}.ast-plain-container, .ast-page-builder-template{background-color:var(--ast-global-color-4);}@media (max-width:921px){.ast-plain-container, .ast-page-builder-template{background-color:var(--ast-global-color-4);}}@media (max-width:544px){.ast-plain-container, .ast-page-builder-template{background-color:var(--ast-global-color-4);}}
+		#ast-scroll-top {
+			display: none;
+			position: fixed;
+			text-align: center;
+			cursor: pointer;
+			z-index: 99;
+			width: 2.1em;
+			height: 2.1em;
+			line-height: 2.1;
+			color: #ffffff;
+			border-radius: 2px;
+			content: "";
+			outline: inherit;
+		}
+		@media (min-width: 769px) {
+			#ast-scroll-top {
+				content: "769";
+			}
+		}
+		#ast-scroll-top .ast-icon.icon-arrow svg {
+			margin-left: 0px;
+			vertical-align: middle;
+			transform: translate(0, -20%) rotate(180deg);
+			width: 1.6em;
+		}
+		.ast-scroll-to-top-right {
+			right: 30px;
+			bottom: 30px;
+		}
+		.ast-scroll-to-top-left {
+			left: 30px;
+			bottom: 30px;
+		}
+	#ast-scroll-top{background-color:#e8b65a;font-size:15px;}#ast-scroll-top:hover{background-color:#e8b65a;}@media (max-width:921px){#ast-scroll-top .ast-icon.icon-arrow svg{width:1em;}}.ast-mobile-header-content > *,.ast-desktop-header-content > * {padding: 10px 0;height: auto;}.ast-mobile-header-content > *:first-child,.ast-desktop-header-content > *:first-child {padding-top: 10px;}.ast-mobile-header-content > .ast-builder-menu,.ast-desktop-header-content > .ast-builder-menu {padding-top: 0;}.ast-mobile-header-content > *:last-child,.ast-desktop-header-content > *:last-child {padding-bottom: 0;}.ast-mobile-header-content .ast-search-menu-icon.ast-inline-search label,.ast-desktop-header-content .ast-search-menu-icon.ast-inline-search label {width: 100%;}.ast-desktop-header-content .main-header-bar-navigation .ast-submenu-expanded > .ast-menu-toggle::before {transform: rotateX(180deg);}#ast-desktop-header .ast-desktop-header-content,.ast-mobile-header-content .ast-search-icon,.ast-desktop-header-content .ast-search-icon,.ast-mobile-header-wrap .ast-mobile-header-content,.ast-main-header-nav-open.ast-popup-nav-open .ast-mobile-header-wrap .ast-mobile-header-content,.ast-main-header-nav-open.ast-popup-nav-open .ast-desktop-header-content {display: none;}.ast-main-header-nav-open.ast-header-break-point #ast-desktop-header .ast-desktop-header-content,.ast-main-header-nav-open.ast-header-break-point .ast-mobile-header-wrap .ast-mobile-header-content {display: block;}.ast-desktop .ast-desktop-header-content .astra-menu-animation-slide-up > .menu-item > .sub-menu,.ast-desktop .ast-desktop-header-content .astra-menu-animation-slide-up > .menu-item .menu-item > .sub-menu,.ast-desktop .ast-desktop-header-content .astra-menu-animation-slide-down > .menu-item > .sub-menu,.ast-desktop .ast-desktop-header-content .astra-menu-animation-slide-down > .menu-item .menu-item > .sub-menu,.ast-desktop .ast-desktop-header-content .astra-menu-animation-fade > .menu-item > .sub-menu,.ast-desktop .ast-desktop-header-content .astra-menu-animation-fade > .menu-item .menu-item > .sub-menu {opacity: 1;visibility: visible;}.ast-hfb-header.ast-default-menu-enable.ast-header-break-point .ast-mobile-header-wrap .ast-mobile-header-content .main-header-bar-navigation {width: unset;margin: unset;}.ast-mobile-header-content.content-align-flex-end .main-header-bar-navigation .menu-item-has-children > .ast-menu-toggle,.ast-desktop-header-content.content-align-flex-end .main-header-bar-navigation .menu-item-has-children > .ast-menu-toggle {left: calc( 20px - 0.907em);right: auto;}.ast-mobile-header-content .ast-search-menu-icon,.ast-mobile-header-content .ast-search-menu-icon.slide-search,.ast-desktop-header-content .ast-search-menu-icon,.ast-desktop-header-content .ast-search-menu-icon.slide-search {width: 100%;position: relative;display: block;right: auto;transform: none;}.ast-mobile-header-content .ast-search-menu-icon.slide-search .search-form,.ast-mobile-header-content .ast-search-menu-icon .search-form,.ast-desktop-header-content .ast-search-menu-icon.slide-search .search-form,.ast-desktop-header-content .ast-search-menu-icon .search-form {right: 0;visibility: visible;opacity: 1;position: relative;top: auto;transform: none;padding: 0;display: block;overflow: hidden;}.ast-mobile-header-content .ast-search-menu-icon.ast-inline-search .search-field,.ast-mobile-header-content .ast-search-menu-icon .search-field,.ast-desktop-header-content .ast-search-menu-icon.ast-inline-search .search-field,.ast-desktop-header-content .ast-search-menu-icon .search-field {width: 100%;padding-right: 5.5em;}.ast-mobile-header-content .ast-search-menu-icon .search-submit,.ast-desktop-header-content .ast-search-menu-icon .search-submit {display: block;position: absolute;height: 100%;top: 0;right: 0;padding: 0 1em;border-radius: 0;}.ast-hfb-header.ast-default-menu-enable.ast-header-break-point .ast-mobile-header-wrap .ast-mobile-header-content .main-header-bar-navigation ul .sub-menu .menu-link {padding-left: 30px;}.ast-hfb-header.ast-default-menu-enable.ast-header-break-point .ast-mobile-header-wrap .ast-mobile-header-content .main-header-bar-navigation .sub-menu .menu-item .menu-item .menu-link {padding-left: 40px;}.ast-mobile-popup-drawer.active .ast-mobile-popup-inner{background-color:#ffffff;;}.ast-mobile-header-wrap .ast-mobile-header-content, .ast-desktop-header-content{background-color:#ffffff;;}.ast-mobile-popup-content > *, .ast-mobile-header-content > *, .ast-desktop-popup-content > *, .ast-desktop-header-content > *{padding-top:0px;padding-bottom:0px;}.content-align-flex-start .ast-builder-layout-element{justify-content:flex-start;}.content-align-flex-start .main-header-menu{text-align:left;}.ast-desktop-header-content, .ast-mobile-header-content{position:absolute;width:100%;}.ast-mobile-popup-drawer.active .menu-toggle-close{color:#3a3a3a;}.ast-mobile-header-wrap .ast-primary-header-bar,.ast-primary-header-bar .site-primary-header-wrap{min-height:80px;}.ast-desktop:not(:has(.ast-header-sticked)) .ast-primary-header-bar .main-header-menu > .menu-item{line-height:80px;}.ast-header-break-point #masthead .ast-mobile-header-wrap .ast-primary-header-bar,.ast-header-break-point #masthead .ast-mobile-header-wrap .ast-below-header-bar,.ast-header-break-point #masthead .ast-mobile-header-wrap .ast-above-header-bar{padding-left:20px;padding-right:20px;}.ast-header-break-point .ast-primary-header-bar{border-bottom-width:1px;border-bottom-color:var( --ast-global-color-subtle-background,var(--ast-global-color-7) );border-bottom-style:solid;}@media (min-width:922px){.ast-primary-header-bar{border-bottom-width:1px;border-bottom-color:var( --ast-global-color-subtle-background,var(--ast-global-color-7) );border-bottom-style:solid;}}.ast-primary-header-bar{background-color:var( --ast-global-color-primary,var(--ast-global-color-4) );}.ast-primary-header-bar{display:block;}@media (max-width:921.99px){.ast-header-break-point .ast-primary-header-bar{display:grid;}}@media (max-width:544px){.ast-header-break-point .ast-primary-header-bar{display:grid;}}[data-section="section-header-mobile-trigger"] .ast-button-wrap .ast-mobile-menu-trigger-minimal{color:var(--ast-global-color-0);border:none;background:transparent;}[data-section="section-header-mobile-trigger"] .ast-button-wrap .mobile-menu-toggle-icon .ast-mobile-svg{width:20px;height:20px;fill:var(--ast-global-color-0);}[data-section="section-header-mobile-trigger"] .ast-button-wrap .mobile-menu-wrap .mobile-menu{color:var(--ast-global-color-0);}.ast-builder-menu-mobile .main-navigation .main-header-menu .menu-item > .menu-link{color:var(--ast-global-color-3);}.ast-builder-menu-mobile .main-navigation .main-header-menu .menu-item > .ast-menu-toggle{color:var(--ast-global-color-3);}.ast-builder-menu-mobile .main-navigation .menu-link:hover, .ast-builder-menu-mobile .main-navigation .main-header-menu > .menu-item:hover > .menu-link, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .ast-menu-toggle:hover, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .menu-link:hover, .ast-builder-menu-mobile .main-header-menu > .menu-item:hover > .menu-link, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .ast-menu-toggle:hover, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .ast-menu-toggle:hover, .ast-builder-menu-mobile .main-navigation .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .menu-item.current-menu-item > .menu-link, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .menu-item.current-menu-item > .ast-menu-toggle, .ast-builder-menu-mobile .main-navigation .menu-item.current-menu-ancestor > .menu-link, .ast-builder-menu-mobile .main-navigation .menu-item.current-menu-ancestor > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .menu-item.current-menu-item > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}.ast-builder-menu-mobile .main-navigation .menu-item-has-children > .menu-link:after{content:unset;}.ast-hfb-header .ast-builder-menu-mobile .main-header-menu, .ast-hfb-header .ast-builder-menu-mobile .main-navigation .menu-item .menu-link, .ast-hfb-header .ast-builder-menu-mobile .main-navigation .menu-item .sub-menu .menu-link{border-style:none;}.ast-builder-menu-mobile .main-navigation .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}@media (max-width:921px){.ast-builder-menu-mobile .main-navigation .main-header-menu .menu-item > .menu-link{color:var(--ast-global-color-3);}.ast-builder-menu-mobile .main-navigation .main-header-menu .menu-item > .ast-menu-toggle{color:var(--ast-global-color-3);}.ast-builder-menu-mobile .main-navigation .menu-link:hover, .ast-builder-menu-mobile .main-navigation .main-header-menu > .menu-item:hover > .menu-link, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .ast-menu-toggle:hover, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);background:var(--ast-global-color-5);}.ast-builder-menu-mobile .main-navigation .ast-menu-toggle:hover, .ast-builder-menu-mobile .main-navigation .main-header-menu > .menu-item:hover > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .menu-item.current-menu-item > .menu-link, .ast-builder-menu-mobile .main-navigation .inline-on-mobile .menu-item.current-menu-item > .ast-menu-toggle, .ast-builder-menu-mobile .main-navigation .menu-item.current-menu-ancestor > .menu-link, .ast-builder-menu-mobile .main-navigation .menu-item.current-menu-ancestor > .ast-menu-toggle{color:var(--ast-global-color-1);background:var(--ast-global-color-5);}.ast-builder-menu-mobile .main-navigation .menu-item.current-menu-item > .ast-menu-toggle{color:var(--ast-global-color-1);}.ast-builder-menu-mobile .main-navigation .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}.ast-builder-menu-mobile .main-navigation .menu-item-has-children > .menu-link:after{content:unset;}.ast-builder-menu-mobile .main-navigation .main-header-menu , .ast-builder-menu-mobile .main-navigation .main-header-menu .menu-link, .ast-builder-menu-mobile .main-navigation .main-header-menu .sub-menu{background-color:var(--ast-global-color-4);}}@media (max-width:544px){.ast-builder-menu-mobile .main-navigation .menu-item.menu-item-has-children > .ast-menu-toggle{top:0;}}.ast-builder-menu-mobile .main-navigation{display:block;}@media (max-width:921.99px){.ast-header-break-point .ast-builder-menu-mobile .main-navigation{display:block;}}@media (max-width:544px){.ast-header-break-point .ast-builder-menu-mobile .main-navigation{display:block;}}:root{--e-global-color-astglobalcolor0:#046bd2;--e-global-color-astglobalcolor1:#045cb4;--e-global-color-astglobalcolor2:#1e293b;--e-global-color-astglobalcolor3:#334155;--e-global-color-astglobalcolor4:#FFFFFF;--e-global-color-astglobalcolor5:#F0F5FA;--e-global-color-astglobalcolor6:#111111;--e-global-color-astglobalcolor7:#D1D5DB;--e-global-color-astglobalcolor8:#111111;}
+/*# sourceURL=astra-theme-css-inline-css */
+</style>
+<style id="wp-emoji-styles-inline-css">
 
-@section('content')
-<div class="relative bg-[#0B0E14] text-[#F8F9FA] font-sans-lux min-h-screen selection:bg-[#DFBA58] selection:text-[#0B0E14] overflow-x-hidden w-full">
+	img.wp-smiley, img.emoji {
+		display: inline !important;
+		border: none !important;
+		box-shadow: none !important;
+		height: 1em !important;
+		width: 1em !important;
+		margin: 0 0.07em !important;
+		vertical-align: -0.1em !important;
+		background: none !important;
+		padding: 0 !important;
+	}
+/*# sourceURL=wp-emoji-styles-inline-css */
+</style>
+<style id="global-styles-inline-css">
+:root{--wp--preset--aspect-ratio--square: 1;--wp--preset--aspect-ratio--4-3: 4/3;--wp--preset--aspect-ratio--3-4: 3/4;--wp--preset--aspect-ratio--3-2: 3/2;--wp--preset--aspect-ratio--2-3: 2/3;--wp--preset--aspect-ratio--16-9: 16/9;--wp--preset--aspect-ratio--9-16: 9/16;--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--color--ast-global-color-0: var(--ast-global-color-0);--wp--preset--color--ast-global-color-1: var(--ast-global-color-1);--wp--preset--color--ast-global-color-2: var(--ast-global-color-2);--wp--preset--color--ast-global-color-3: var(--ast-global-color-3);--wp--preset--color--ast-global-color-4: var(--ast-global-color-4);--wp--preset--color--ast-global-color-5: var(--ast-global-color-5);--wp--preset--color--ast-global-color-6: var(--ast-global-color-6);--wp--preset--color--ast-global-color-7: var(--ast-global-color-7);--wp--preset--color--ast-global-color-8: var(--ast-global-color-8);--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgb(6,147,227) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgb(252,185,0) 0%,rgb(255,105,0) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgb(255,105,0) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;--wp--preset--spacing--20: 0.44rem;--wp--preset--spacing--30: 0.67rem;--wp--preset--spacing--40: 1rem;--wp--preset--spacing--50: 1.5rem;--wp--preset--spacing--60: 2.25rem;--wp--preset--spacing--70: 3.38rem;--wp--preset--spacing--80: 5.06rem;--wp--preset--shadow--natural: 6px 6px 9px rgba(0, 0, 0, 0.2);--wp--preset--shadow--deep: 12px 12px 50px rgba(0, 0, 0, 0.4);--wp--preset--shadow--sharp: 6px 6px 0px rgba(0, 0, 0, 0.2);--wp--preset--shadow--outlined: 6px 6px 0px -3px rgb(255, 255, 255), 6px 6px rgb(0, 0, 0);--wp--preset--shadow--crisp: 6px 6px 0px rgb(0, 0, 0);}:root { --wp--style--global--content-size: var(--wp--custom--ast-content-width-size);--wp--style--global--wide-size: var(--wp--custom--ast-wide-width-size); }:where(body) { margin: 0; }.wp-site-blocks > .alignleft { float: left; margin-right: 2em; }.wp-site-blocks > .alignright { float: right; margin-left: 2em; }.wp-site-blocks > .aligncenter { justify-content: center; margin-left: auto; margin-right: auto; }:where(.wp-site-blocks) > * { margin-block-start: 24px; margin-block-end: 0; }:where(.wp-site-blocks) > :first-child { margin-block-start: 0; }:where(.wp-site-blocks) > :last-child { margin-block-end: 0; }:root { --wp--style--block-gap: 24px; }:root :where(.is-layout-flow) > :first-child{margin-block-start: 0;}:root :where(.is-layout-flow) > :last-child{margin-block-end: 0;}:root :where(.is-layout-flow) > *{margin-block-start: 24px;margin-block-end: 0;}:root :where(.is-layout-constrained) > :first-child{margin-block-start: 0;}:root :where(.is-layout-constrained) > :last-child{margin-block-end: 0;}:root :where(.is-layout-constrained) > *{margin-block-start: 24px;margin-block-end: 0;}:root :where(.is-layout-flex){gap: 24px;}:root :where(.is-layout-grid){gap: 24px;}.is-layout-flow > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}.is-layout-flow > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}.is-layout-flow > .aligncenter{margin-left: auto !important;margin-right: auto !important;}.is-layout-constrained > .alignleft{float: left;margin-inline-start: 0;margin-inline-end: 2em;}.is-layout-constrained > .alignright{float: right;margin-inline-start: 2em;margin-inline-end: 0;}.is-layout-constrained > .aligncenter{margin-left: auto !important;margin-right: auto !important;}.is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)){max-width: var(--wp--style--global--content-size);margin-left: auto !important;margin-right: auto !important;}.is-layout-constrained > .alignwide{max-width: var(--wp--style--global--wide-size);}body .is-layout-flex{display: flex;}.is-layout-flex{flex-wrap: wrap;align-items: center;}.is-layout-flex > :is(*, div){margin: 0;}body .is-layout-grid{display: grid;}.is-layout-grid > :is(*, div){margin: 0;}body{padding-top: 0px;padding-right: 0px;padding-bottom: 0px;padding-left: 0px;}a:where(:not(.wp-element-button)){text-decoration: none;}:root :where(.wp-element-button, .wp-block-button__link){background-color: #32373c;border-width: 0;color: #fff;font-family: inherit;font-size: inherit;font-style: inherit;font-weight: inherit;letter-spacing: inherit;line-height: inherit;padding-top: calc(0.667em + 2px);padding-right: calc(1.333em + 2px);padding-bottom: calc(0.667em + 2px);padding-left: calc(1.333em + 2px);text-decoration: none;text-transform: inherit;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-ast-global-color-0-color{color: var(--wp--preset--color--ast-global-color-0) !important;}.has-ast-global-color-1-color{color: var(--wp--preset--color--ast-global-color-1) !important;}.has-ast-global-color-2-color{color: var(--wp--preset--color--ast-global-color-2) !important;}.has-ast-global-color-3-color{color: var(--wp--preset--color--ast-global-color-3) !important;}.has-ast-global-color-4-color{color: var(--wp--preset--color--ast-global-color-4) !important;}.has-ast-global-color-5-color{color: var(--wp--preset--color--ast-global-color-5) !important;}.has-ast-global-color-6-color{color: var(--wp--preset--color--ast-global-color-6) !important;}.has-ast-global-color-7-color{color: var(--wp--preset--color--ast-global-color-7) !important;}.has-ast-global-color-8-color{color: var(--wp--preset--color--ast-global-color-8) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-ast-global-color-0-background-color{background-color: var(--wp--preset--color--ast-global-color-0) !important;}.has-ast-global-color-1-background-color{background-color: var(--wp--preset--color--ast-global-color-1) !important;}.has-ast-global-color-2-background-color{background-color: var(--wp--preset--color--ast-global-color-2) !important;}.has-ast-global-color-3-background-color{background-color: var(--wp--preset--color--ast-global-color-3) !important;}.has-ast-global-color-4-background-color{background-color: var(--wp--preset--color--ast-global-color-4) !important;}.has-ast-global-color-5-background-color{background-color: var(--wp--preset--color--ast-global-color-5) !important;}.has-ast-global-color-6-background-color{background-color: var(--wp--preset--color--ast-global-color-6) !important;}.has-ast-global-color-7-background-color{background-color: var(--wp--preset--color--ast-global-color-7) !important;}.has-ast-global-color-8-background-color{background-color: var(--wp--preset--color--ast-global-color-8) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-ast-global-color-0-border-color{border-color: var(--wp--preset--color--ast-global-color-0) !important;}.has-ast-global-color-1-border-color{border-color: var(--wp--preset--color--ast-global-color-1) !important;}.has-ast-global-color-2-border-color{border-color: var(--wp--preset--color--ast-global-color-2) !important;}.has-ast-global-color-3-border-color{border-color: var(--wp--preset--color--ast-global-color-3) !important;}.has-ast-global-color-4-border-color{border-color: var(--wp--preset--color--ast-global-color-4) !important;}.has-ast-global-color-5-border-color{border-color: var(--wp--preset--color--ast-global-color-5) !important;}.has-ast-global-color-6-border-color{border-color: var(--wp--preset--color--ast-global-color-6) !important;}.has-ast-global-color-7-border-color{border-color: var(--wp--preset--color--ast-global-color-7) !important;}.has-ast-global-color-8-border-color{border-color: var(--wp--preset--color--ast-global-color-8) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+:root :where(.wp-block-icon svg){width: 24px;}
+:root :where(.wp-block-pullquote){font-size: 1.5em;line-height: 1.6;}
+/*# sourceURL=global-styles-inline-css */
+</style>
+<link rel='stylesheet' id='elementor-frontend-css' href='{{ asset('landing-wp/css/frontend.min.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-post-250-css' href='{{ asset('landing-wp/css/post-250.css') }}' media='all' />
+<link rel='stylesheet' id='widget-image-css' href='{{ asset('landing-wp/css/widget-image.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-nav-menu-css' href='{{ asset('landing-wp/css/widget-nav-menu.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-sticky-css' href='{{ asset('landing-wp/css/sticky.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-heading-css' href='{{ asset('landing-wp/css/widget-heading.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-social-icons-css' href='{{ asset('landing-wp/css/widget-social-icons.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-apple-webkit-css' href='{{ asset('landing-wp/css/apple-webkit.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-animation-fadeInUp-css' href='{{ asset('landing-wp/css/fadeInUp.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-animation-fadeInLeft-css' href='{{ asset('landing-wp/css/fadeInLeft.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-divider-css' href='{{ asset('landing-wp/css/widget-divider.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-icon-list-css' href='{{ asset('landing-wp/css/widget-icon-list.min.css') }}' media='all' />
+<link rel='stylesheet' id='widget-form-css' href='{{ asset('landing-wp/css/widget-form.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-animation-fadeInRight-css' href='{{ asset('landing-wp/css/fadeInRight.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-animation-zoomIn-css' href='{{ asset('landing-wp/css/zoomIn.min.css') }}' media='all' />
+<link rel='stylesheet' id='e-popup-css' href='{{ asset('landing-wp/css/popup.min.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-post-9-css' href='{{ asset('landing-wp/css/post-9.css') }}' media='all' />
+<link rel='stylesheet' id='widget-icon-box-css' href='{{ asset('landing-wp/css/widget-icon-box.min.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-post-10-css' href='{{ asset('landing-wp/css/post-10.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-post-78-css' href='{{ asset('landing-wp/css/post-78.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-post-33-css' href='{{ asset('landing-wp/css/post-33.css') }}' media='all' />
+<link rel='stylesheet' id='elementor-gf-poppins-css' href='https://fonts.googleapis.com/css?family=Poppins:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&#038;display=swap' media='all' />
+<link rel='stylesheet' id='elementor-gf-playfairdisplay-css' href='https://fonts.googleapis.com/css?family=Playfair+Display:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&#038;display=swap' media='all' />
+<link rel='stylesheet' id='elementor-gf-roboto-css' href='https://fonts.googleapis.com/css?family=Roboto:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&#038;display=swap' media='all' />
+<link rel='stylesheet' id='elementor-gf-robotoslab-css' href='https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&#038;display=swap' media='all' />
+<script id="jquery-core-js" src="{{ asset('landing-wp/js/jquery.min.js') }}"></script>
+<script id="jquery-migrate-js" src="{{ asset('landing-wp/js/jquery-migrate.min.js') }}"></script>
+<link rel="alternate" title="JSON" type="application/json" href="/wp-json/wp/v2/pages/10" /><link rel="canonical" href="/" />
+<style>
+				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload),
+				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload) * {
+					background-image: none !important;
+				}
+				@media screen and (max-height: 1024px) {
+					.e-con.e-parent:nth-of-type(n+3):not(.e-lazyloaded):not(.e-no-lazyload),
+					.e-con.e-parent:nth-of-type(n+3):not(.e-lazyloaded):not(.e-no-lazyload) * {
+						background-image: none !important;
+					}
+				}
+				@media screen and (max-height: 640px) {
+					.e-con.e-parent:nth-of-type(n+2):not(.e-lazyloaded):not(.e-no-lazyload),
+					.e-con.e-parent:nth-of-type(n+2):not(.e-lazyloaded):not(.e-no-lazyload) * {
+						background-image: none !important;
+					}
+				}
+			</style>
+			
+<style>
+/* Guarantee smooth scrolling */
+html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    position: static !important;
+}
+#page {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 100vh !important;
+}
+/* Ensure elements are NOT stuck as hidden */
+.elementor-invisible {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+/* Popup modal styling */
+#elementor-popup-modal-250 {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    display: none !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: rgba(11, 18, 32, 0.85) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    overflow-y: auto !important;
+    padding: 20px !important;
+    box-sizing: border-box !important;
+    transition: opacity 0.25s ease, visibility 0.25s ease !important;
+}
+#elementor-popup-modal-250.is-active {
+    display: flex !important;
+    pointer-events: all !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+#elementor-popup-modal-250 .dialog-widget-content {
+    position: relative !important;
+    max-width: 940px !important;
+    width: 100% !important;
+    margin: auto !important;
+    border-radius: 16px !important;
+    overflow: hidden !important;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7) !important;
+    animation: tajPopupZoom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+@keyframes tajPopupZoom {
+    from { opacity: 0; transform: scale(0.94); }
+    to { opacity: 1; transform: scale(1); }
+}
+#elementor-popup-modal-250 .dialog-close-button {
+    position: absolute !important;
+    top: 18px !important;
+    right: 18px !important;
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 50% !important;
+    background-color: #E8B65A !important;
+    color: #0B1220 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    z-index: 9999 !important;
+    transition: all 0.25s ease !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+}
+#elementor-popup-modal-250 .dialog-close-button:hover {
+    background-color: #ffffff !important;
+    color: #E8B65A !important;
+    transform: rotate(90deg) scale(1.08) !important;
+}
+.taj-form-alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+}
+.taj-form-alert-success {
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #86EFAC;
+}
+.taj-form-alert-error {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FCA5A5;
+}
+</style>
 
-    <!-- ========================================================================= -->
-    <!-- 1. HERO SECTION & RESPONSIVE HEADER WITH MOBILE MENU -->
-    <!-- ========================================================================= -->
-    <div class="relative min-h-[90vh] lg:min-h-screen flex flex-col justify-between overflow-hidden">
-        
-        <!-- Luxury Hotel Suite Sunset Panoramic Room Background -->
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/landing/hero-suite-sunset.jpg') }}" 
-                 alt="Luxury Hotel Penthouse Suite Sunset" 
-                 class="w-full h-full object-cover object-center filter brightness-[0.52] contrast-[1.05]">
-            <div class="absolute inset-0 bg-gradient-to-t from-[#0B0E14] via-[#0B0E14]/40 to-[#0B0E14]/80"></div>
-            <div class="absolute inset-0 bg-gradient-to-r from-[#0B0E14]/95 via-[#0B0E14]/60 to-black/30"></div>
+</head>
+
+<body itemtype='https://schema.org/WebPage' itemscope='itemscope' class="home wp-singular page-template-default page page-id-10 wp-embed-responsive wp-theme-astra ast-desktop ast-page-builder-template ast-no-sidebar astra-4.14.0 ast-single-post ast-inherit-site-logo-transparent ast-hfb-header elementor-default elementor-kit-9 elementor-page elementor-page-10">
+			<script data-cfasync="false">
+			(function(){var mq=window.matchMedia('(max-width:921.99px)');function apply(isMobile){var b=document.body.classList;if(isMobile){b.add('ast-header-break-point');b.remove('ast-desktop');}else{b.remove('ast-header-break-point');b.add('ast-desktop');}}apply(mq.matches);if(mq.addEventListener){mq.addEventListener('change',function(e){apply(e.matches);});}else if(mq.addListener){mq.addListener(function(e){apply(e.matches);});}})();
+			</script>
+			
+<a
+	class="skip-link screen-reader-text"
+	href="#content">
+		Skip to content</a>
+
+<div
+class="hfeed site" id="page">
+			<header data-elementor-type="header" data-elementor-id="78" class="elementor elementor-78 elementor-location-header" data-elementor-post-type="elementor_library">
+			<div class="elementor-element elementor-element-9df812c e-flex e-con-boxed e-con e-parent" data-id="9df812c" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;sticky&quot;:&quot;top&quot;,&quot;position&quot;:&quot;fixed&quot;,&quot;sticky_on&quot;:[&quot;desktop&quot;,&quot;tablet&quot;,&quot;mobile&quot;],&quot;sticky_offset&quot;:0,&quot;sticky_effects_offset&quot;:0,&quot;sticky_anchor_link_offset&quot;:0}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-6740b18 e-con-full e-flex e-con e-child" data-id="6740b18" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-2020d0f elementor-widget__width-initial elementor-widget elementor-widget-image" data-id="2020d0f" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+																<a href="/">
+							<img fetchpriority="high" width="666" height="375" src="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }}" class="attachment-full size-full wp-image-327" alt="" srcset="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview-300x169.png') }} 300w" sizes="(max-width: 666px) 100vw, 666px" />								</a>
+															</div>
+				<div class="elementor-element elementor-element-442093b elementor-nav-menu__align-end elementor-nav-menu--stretch elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-nav-menu" data-id="442093b" data-element_type="widget" data-e-type="widget" data-settings="{&quot;full_width&quot;:&quot;stretch&quot;,&quot;layout&quot;:&quot;horizontal&quot;,&quot;submenu_icon&quot;:{&quot;value&quot;:&quot;&lt;svg aria-hidden=\&quot;true\&quot; class=\&quot;e-font-icon-svg e-fas-caret-down\&quot; viewBox=\&quot;0 0 320 512\&quot; xmlns=\&quot;http:\/\/www.w3.org\/2000\/svg\&quot;&gt;&lt;path d=\&quot;M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z\&quot;&gt;&lt;\/path&gt;&lt;\/svg&gt;&quot;,&quot;library&quot;:&quot;fa-solid&quot;},&quot;toggle&quot;:&quot;burger&quot;}" data-widget_type="nav-menu.default">
+								<nav aria-label="Menu" class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-none">
+				<ul id="menu-1-442093b" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-10 current_page_item menu-item-51"><a href="/" aria-current="page" class="elementor-item elementor-item-active menu-link">Home</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-52"><a href="#about" class="elementor-item elementor-item-anchor menu-link">About</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link">Solutions</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link">Gallery</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link">Contact Us</a></li>
+</ul>			</nav>
+					<div class="elementor-menu-toggle" role="button" tabindex="0" aria-label="Menu Toggle" aria-expanded="false">
+			<svg aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--open e-font-icon-svg e-eicon-menu-bar" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M104 333H896C929 333 958 304 958 271S929 208 896 208H104C71 208 42 237 42 271S71 333 104 333ZM104 583H896C929 583 958 554 958 521S929 458 896 458H104C71 458 42 487 42 521S71 583 104 583ZM104 833H896C929 833 958 804 958 771S929 708 896 708H104C71 708 42 737 42 771S71 833 104 833Z"></path></svg><svg aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--close e-font-icon-svg e-eicon-close" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M742 167L500 408 258 167C246 154 233 150 217 150 196 150 179 158 167 167 154 179 150 196 150 212 150 229 154 242 171 254L408 500 167 742C138 771 138 800 167 829 196 858 225 858 254 829L496 587 738 829C750 842 767 846 783 846 800 846 817 842 829 829 842 817 846 804 846 783 846 767 842 750 829 737L588 500 833 258C863 229 863 200 833 171 804 137 775 137 742 167Z"></path></svg>		</div>
+					<nav class="elementor-nav-menu--dropdown elementor-nav-menu__container" aria-hidden="true">
+				<ul id="menu-2-442093b" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-10 current_page_item menu-item-51"><a href="/" aria-current="page" class="elementor-item elementor-item-active menu-link" tabindex="-1">Home</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-52"><a href="#about" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">About</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Solutions</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Gallery</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Contact Us</a></li>
+</ul>			</nav>
+						</div>
+				<div class="elementor-element elementor-element-9748283 elementor-widget elementor-widget-button" data-id="9748283" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+						<span class="elementor-button-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-chevron-right" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path></svg>			</span>
+									<span class="elementor-button-text">Request Demo </span>
+					</span>
+					</a>
+								</div>
+				</div>
+				<div class="elementor-element elementor-element-8372fea elementor-widget elementor-widget-html" data-id="8372fea" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function updateScroll() {
+        document.body.classList.toggle("scrolled", window.scrollY > 0);
+    }
+
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    updateScroll();
+});
+</script>				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-d79dfe1 elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile e-flex e-con-boxed e-con e-parent" data-id="d79dfe1" data-element_type="container" data-e-type="container">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-eecd49a e-con-full e-flex e-con e-child" data-id="eecd49a" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-616b459 elementor-widget elementor-widget-image" data-id="616b459" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img width="320" height="180" src="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM.jpeg') }}" class="attachment-large size-large wp-image-275" alt="" srcset="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM-300x169.jpeg') }} 300w" sizes="(max-width: 320px) 100vw, 320px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-2e1bacb e-con-full e-flex e-con e-child" data-id="2e1bacb" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-7d709e6 elementor-nav-menu__align-end elementor-nav-menu--stretch elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-nav-menu" data-id="7d709e6" data-element_type="widget" data-e-type="widget" data-settings="{&quot;full_width&quot;:&quot;stretch&quot;,&quot;layout&quot;:&quot;horizontal&quot;,&quot;submenu_icon&quot;:{&quot;value&quot;:&quot;&lt;svg aria-hidden=\&quot;true\&quot; class=\&quot;e-font-icon-svg e-fas-caret-down\&quot; viewBox=\&quot;0 0 320 512\&quot; xmlns=\&quot;http:\/\/www.w3.org\/2000\/svg\&quot;&gt;&lt;path d=\&quot;M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z\&quot;&gt;&lt;\/path&gt;&lt;\/svg&gt;&quot;,&quot;library&quot;:&quot;fa-solid&quot;},&quot;toggle&quot;:&quot;burger&quot;}" data-widget_type="nav-menu.default">
+								<nav aria-label="Menu" class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-none">
+				<ul id="menu-1-7d709e6" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-10 current_page_item menu-item-51"><a href="/" aria-current="page" class="elementor-item elementor-item-active menu-link">Home</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-52"><a href="#about" class="elementor-item elementor-item-anchor menu-link">About</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link">Solutions</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link">Gallery</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link">Contact Us</a></li>
+</ul>			</nav>
+					<div class="elementor-menu-toggle" role="button" tabindex="0" aria-label="Menu Toggle" aria-expanded="false">
+			<svg aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--open e-font-icon-svg e-eicon-menu-bar" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M104 333H896C929 333 958 304 958 271S929 208 896 208H104C71 208 42 237 42 271S71 333 104 333ZM104 583H896C929 583 958 554 958 521S929 458 896 458H104C71 458 42 487 42 521S71 583 104 583ZM104 833H896C929 833 958 804 958 771S929 708 896 708H104C71 708 42 737 42 771S71 833 104 833Z"></path></svg><svg aria-hidden="true" role="presentation" class="elementor-menu-toggle__icon--close e-font-icon-svg e-eicon-close" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M742 167L500 408 258 167C246 154 233 150 217 150 196 150 179 158 167 167 154 179 150 196 150 212 150 229 154 242 171 254L408 500 167 742C138 771 138 800 167 829 196 858 225 858 254 829L496 587 738 829C750 842 767 846 783 846 800 846 817 842 829 829 842 817 846 804 846 783 846 767 842 750 829 737L588 500 833 258C863 229 863 200 833 171 804 137 775 137 742 167Z"></path></svg>		</div>
+					<nav class="elementor-nav-menu--dropdown elementor-nav-menu__container" aria-hidden="true">
+				<ul id="menu-2-7d709e6" class="elementor-nav-menu"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home current-menu-item page_item page-item-10 current_page_item menu-item-51"><a href="/" aria-current="page" class="elementor-item elementor-item-active menu-link" tabindex="-1">Home</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-52"><a href="#about" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">About</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Solutions</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Gallery</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Contact Us</a></li>
+</ul>			</nav>
+						</div>
+				</div>
+		<div class="elementor-element elementor-element-26c1c82 e-con-full e-flex e-con e-child" data-id="26c1c82" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-e7fc92f elementor-widget elementor-widget-button" data-id="e7fc92f" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+						<span class="elementor-button-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-chevron-right" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg"><path d="M285.476 272.971L91.132 467.314c-9.373 9.373-24.569 9.373-33.941 0l-22.667-22.667c-9.357-9.357-9.375-24.522-.04-33.901L188.505 256 34.484 101.255c-9.335-9.379-9.317-24.544.04-33.901l22.667-22.667c9.373-9.373 24.569-9.373 33.941 0L285.475 239.03c9.373 9.372 9.373 24.568.001 33.941z"></path></svg>			</span>
+									<span class="elementor-button-text">Request Demo </span>
+					</span>
+					</a>
+								</div>
+				</div>
+				<div class="elementor-element elementor-element-b1940b4 elementor-widget elementor-widget-html" data-id="b1940b4" data-element_type="widget" data-e-type="widget" data-widget_type="html.default">
+					<script>
+document.addEventListener("DOMContentLoaded", function () {
+    function updateScroll() {
+        document.body.classList.toggle("scrolled", window.scrollY > 0);
+    }
+
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    updateScroll();
+});
+</script>				</div>
+					</div>
+				</div>
+				</header>
+			<div id="content" class="site-content">
+		<div class="ast-container">
+		
+
+	<div id="primary" class="content-area primary">
+
+		
+					<main id="main" class="site-main">
+				<article
+class="post-10 page type-page status-publish ast-article-single" id="post-10" itemtype="https://schema.org/CreativeWork" itemscope="itemscope">
+	
+				<header class="entry-header ast-no-thumbnail ast-no-title ast-header-without-markup">
+							</header> <!-- .entry-header -->
+		
+<div class="entry-content clear"
+	itemprop="text">
+
+	
+			<div data-elementor-type="wp-post" data-elementor-id="10" class="elementor elementor-10" data-elementor-post-type="page">
+				<div class="elementor-element elementor-element-232b0bdd e-flex e-con-boxed e-con e-parent" data-id="232b0bdd" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-8d989f0 e-con-full e-flex e-con e-child" data-id="8d989f0" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-35f7664b e-con-full e-flex e-con e-child" data-id="35f7664b" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-d222229 elementor-widget elementor-widget-heading" data-id="d222229" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Premium Hotel TV Solution</h6>				</div>
+				<div class="elementor-element elementor-element-5e665580 elementor-widget elementor-widget-heading" data-id="5e665580" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h1 class="elementor-heading-title elementor-size-default">A Smarter Stay Experience</h1>				</div>
+				<div class="elementor-element elementor-element-37fd061f elementor-widget elementor-widget-text-editor" data-id="37fd061f" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Transform every guest room into a personalized entertainment and hospitality hub with our advanced Hotel TV application.</p>								</div>
+		<div class="elementor-element elementor-element-3a9a1a55 e-con-full e-flex e-con e-child" data-id="3a9a1a55" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-1a661d14 elementor-widget elementor-widget-button" data-id="1a661d14" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Request Demo</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-52adba7a elementor-widget elementor-widget-button" data-id="52adba7a" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">▶  Watch Video</span>
+					</span>
+					</a>
+								</div>
+				</div>
+				</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-39b838b6 e-flex e-con-boxed e-con e-parent" data-id="39b838b6" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-23b2548c elementor-view-stacked elementor-position-inline-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="23b2548c" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-sliders-h" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Customizable UI						</span>
+					</h3>
+				
+									<p class="elementor-icon-box-description">
+						Branded experience for your hotel					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-63ebd8ba elementor-view-stacked elementor-position-inline-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="63ebd8ba" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-far-comments" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 192c0-88.4-93.1-160-208-160S0 103.6 0 192c0 34.3 14.1 65.9 38 92-13.4 30.2-35.5 54.2-35.8 54.5-2.2 2.3-2.8 5.7-1.5 8.7S4.8 352 8 352c36.6 0 66.9-12.3 88.7-25 32.2 15.7 70.3 25 111.3 25 114.9 0 208-71.6 208-160zm122 220c23.9-26 38-57.7 38-92 0-66.9-53.5-124.2-129.3-148.1.9 6.6 1.3 13.3 1.3 20.1 0 105.9-107.7 192-240 192-10.8 0-21.3-.8-31.7-1.9C207.8 439.6 281.8 480 368 480c41 0 79.1-9.2 111.3-25 21.8 12.7 52.1 25 88.7 25 3.2 0 6.1-1.9 7.3-4.8 1.3-2.9.7-6.3-1.5-8.7-.3-.3-22.4-24.2-35.8-54.5z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Multi-Language						</span>
+					</h3>
+				
+									<p class="elementor-icon-box-description">
+						Global guest support					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-5c7acc14 elementor-view-stacked elementor-position-inline-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="5c7acc14" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-far-building" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M436 480h-20V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v456H12c-6.627 0-12 5.373-12 12v20h448v-20c0-6.627-5.373-12-12-12zM128 76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76zm0 96c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40zm52 148h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12zm76 160h-64v-84c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v84zm64-172c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Hotel Information						</span>
+					</h3>
+				
+									<p class="elementor-icon-box-description">
+						Showcase amenities and services					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-53124fec elementor-view-stacked elementor-position-inline-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="53124fec" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-shield-alt" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M466.5 83.7l-192-80a48.15 48.15 0 0 0-36.9 0l-192 80C27.7 91.1 16 108.6 16 128c0 198.5 114.5 335.7 221.5 380.3 11.8 4.9 25.1 4.9 36.9 0C360.1 472.6 496 349.3 496 128c0-19.4-11.7-36.9-29.5-44.3zM256.1 446.3l-.1-381 175.9 73.3c-3.3 151.4-82.1 261.1-175.8 307.7z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Secure &amp; Reliable						</span>
+					</h3>
+				
+									<p class="elementor-icon-box-description">
+						Built for performance and guest privacy					</p>
+				
+			</div>
+			
+		</div>
+						</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-75edb124 e-flex e-con-boxed e-con e-parent" data-id="75edb124" data-element_type="container" data-e-type="container" id="about" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-68e71f63 e-con-full e-flex elementor-invisible e-con e-child" data-id="68e71f63" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
+				<div class="elementor-element elementor-element-6f59d2e6 elementor-widget elementor-widget-image" data-id="6f59d2e6" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img decoding="async" width="1717" height="916" src="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort.png') }}" class="attachment-full size-full wp-image-124" alt="" srcset="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1024x546.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1536x819.png') }} 1536w" sizes="(max-width: 1717px) 100vw, 1717px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-9db4d27 e-con-full e-flex elementor-invisible e-con e-child" data-id="9db4d27" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
+				<div class="elementor-element elementor-element-77570e71 elementor-widget elementor-widget-heading" data-id="77570e71" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">About Us</h6>				</div>
+				<div class="elementor-element elementor-element-41ba8928 elementor-widget elementor-widget-heading" data-id="41ba8928" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Enhancing Hospitality Through Smart Technology</h2>				</div>
+				<div class="elementor-element elementor-element-7441494f elementor-widget elementor-widget-text-editor" data-id="7441494f" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>We provide advanced Hotel TV solutions that combine entertainment, information and hospitality services into a single, easy-to-use application, designed to create memorable guest experiences.</p>								</div>
+				<div class="elementor-element elementor-element-43de029f elementor-widget elementor-widget-button" data-id="43de029f" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Learn More  →</span>
+					</span>
+					</a>
+								</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-ed456f2 e-flex e-con-boxed e-con e-parent" data-id="ed456f2" data-element_type="container" data-e-type="container" id="solutions" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-5a4b311 e-con-full e-flex e-con e-child" data-id="5a4b311" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-dfdd525 elementor-widget elementor-widget-heading" data-id="dfdd525" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Tailored For Your Hotel</h6>				</div>
+				<div class="elementor-element elementor-element-77582d9 elementor-widget elementor-widget-heading" data-id="77582d9" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Our Solutions</h2>				</div>
+				<div class="elementor-element elementor-element-0a897d5 elementor-widget elementor-widget-text-editor" data-id="0a897d5" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.</p>								</div>
+		<div class="elementor-element elementor-element-2ad9ba7 e-con-full e-flex e-con e-child" data-id="2ad9ba7" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-f2953ba e-con-full e-flex e-con e-child" data-id="f2953ba" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+				<div class="elementor-element elementor-element-b68e5ed elementor-view-stacked elementor-shape-rounded elementor-widget elementor-widget-icon" data-id="b68e5ed" data-element_type="widget" data-e-type="widget" data-widget_type="icon.default">
+							<div class="elementor-icon-wrapper">
+			<div class="elementor-icon">
+			<svg aria-hidden="true" class="e-font-icon-svg e-fas-tv" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M592 0H48A48 48 0 0 0 0 48v320a48 48 0 0 0 48 48h240v32H112a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H352v-32h240a48 48 0 0 0 48-48V48a48 48 0 0 0-48-48zm-16 352H64V64h512z"></path></svg>			</div>
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-7774e04 elementor-widget elementor-widget-heading" data-id="7774e04" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h4 class="elementor-heading-title elementor-size-default">Hotel TV Application</h4>				</div>
+				<div class="elementor-element elementor-element-4af96d3 elementor-widget elementor-widget-text-editor" data-id="4af96d3" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Custom branded interface with all essential features.</p>								</div>
+				<div class="elementor-element elementor-element-f086502 elementor-widget elementor-widget-button" data-id="f086502" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Learn More  →</span>
+					</span>
+					</a>
+								</div>
+				</div>
+		<div class="elementor-element elementor-element-9e1e32a e-con-full e-flex e-con e-child" data-id="9e1e32a" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+				<div class="elementor-element elementor-element-522bea4 elementor-view-stacked elementor-shape-rounded elementor-widget elementor-widget-icon" data-id="522bea4" data-element_type="widget" data-e-type="widget" data-widget_type="icon.default">
+							<div class="elementor-icon-wrapper">
+			<div class="elementor-icon">
+			<svg aria-hidden="true" class="e-font-icon-svg e-fas-cogs" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M512.1 191l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0L552 6.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zm-10.5-58.8c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.7-82.4 14.3-52.8 52.8zM386.3 286.1l33.7 16.8c10.1 5.8 14.5 18.1 10.5 29.1-8.9 24.2-26.4 46.4-42.6 65.8-7.4 8.9-20.2 11.1-30.3 5.3l-29.1-16.8c-16 13.7-34.6 24.6-54.9 31.7v33.6c0 11.6-8.3 21.6-19.7 23.6-24.6 4.2-50.4 4.4-75.9 0-11.5-2-20-11.9-20-23.6V418c-20.3-7.2-38.9-18-54.9-31.7L74 403c-10 5.8-22.9 3.6-30.3-5.3-16.2-19.4-33.3-41.6-42.2-65.7-4-10.9.4-23.2 10.5-29.1l33.3-16.8c-3.9-20.9-3.9-42.4 0-63.4L12 205.8c-10.1-5.8-14.6-18.1-10.5-29 8.9-24.2 26-46.4 42.2-65.8 7.4-8.9 20.2-11.1 30.3-5.3l29.1 16.8c16-13.7 34.6-24.6 54.9-31.7V57.1c0-11.5 8.2-21.5 19.6-23.5 24.6-4.2 50.5-4.4 76-.1 11.5 2 20 11.9 20 23.6v33.6c20.3 7.2 38.9 18 54.9 31.7l29.1-16.8c10-5.8 22.9-3.6 30.3 5.3 16.2 19.4 33.2 41.6 42.1 65.8 4 10.9.1 23.2-10 29.1l-33.7 16.8c3.9 21 3.9 42.5 0 63.5zm-117.6 21.1c59.2-77-28.7-164.9-105.7-105.7-59.2 77 28.7 164.9 105.7 105.7zm243.4 182.7l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0l8.2-14.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zM501.6 431c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.6-82.4 14.3-52.8 52.8z"></path></svg>			</div>
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-bff0ba5 elementor-widget elementor-widget-heading" data-id="bff0ba5" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h4 class="elementor-heading-title elementor-size-default">System Integration</h4>				</div>
+				<div class="elementor-element elementor-element-4d71b19 elementor-widget elementor-widget-text-editor" data-id="4d71b19" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Integrate with hotel PMS, services and third-party apps.</p>								</div>
+				<div class="elementor-element elementor-element-be2bc7c elementor-widget elementor-widget-button" data-id="be2bc7c" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Learn More  →</span>
+					</span>
+					</a>
+								</div>
+				</div>
+		<div class="elementor-element elementor-element-8355edd e-con-full e-flex e-con e-child" data-id="8355edd" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+				<div class="elementor-element elementor-element-34ff508 elementor-view-stacked elementor-shape-rounded elementor-widget elementor-widget-icon" data-id="34ff508" data-element_type="widget" data-e-type="widget" data-widget_type="icon.default">
+							<div class="elementor-icon-wrapper">
+			<div class="elementor-icon">
+			<svg aria-hidden="true" class="e-font-icon-svg e-fas-headset" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M192 208c0-17.67-14.33-32-32-32h-16c-35.35 0-64 28.65-64 64v48c0 35.35 28.65 64 64 64h16c17.67 0 32-14.33 32-32V208zm176 144c35.35 0 64-28.65 64-64v-48c0-35.35-28.65-64-64-64h-16c-17.67 0-32 14.33-32 32v112c0 17.67 14.33 32 32 32h16zM256 0C113.18 0 4.58 118.83 0 256v16c0 8.84 7.16 16 16 16h16c8.84 0 16-7.16 16-16v-16c0-114.69 93.31-208 208-208s208 93.31 208 208h-.12c.08 2.43.12 165.72.12 165.72 0 23.35-18.93 42.28-42.28 42.28H320c0-26.51-21.49-48-48-48h-32c-26.51 0-48 21.49-48 48s21.49 48 48 48h181.72c49.86 0 90.28-40.42 90.28-90.28V256C507.42 118.83 398.82 0 256 0z"></path></svg>			</div>
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-a3e6d14 elementor-widget elementor-widget-heading" data-id="a3e6d14" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h4 class="elementor-heading-title elementor-size-default">Ongoing Support</h4>				</div>
+				<div class="elementor-element elementor-element-b554ee0 elementor-widget elementor-widget-text-editor" data-id="b554ee0" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Dedicated support and regular updates for seamless operation.</p>								</div>
+				<div class="elementor-element elementor-element-72f7119 elementor-widget elementor-widget-button" data-id="72f7119" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Learn More  →</span>
+					</span>
+					</a>
+								</div>
+				</div>
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-f47ed39 e-con-full e-flex e-con e-child" data-id="f47ed39" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-293f5f5 elementor-widget elementor-widget-image" data-id="293f5f5" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="941" height="1220" src="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240.png') }}" class="attachment-full size-full wp-image-104" alt="" srcset="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-231x300.png') }} 231w, {{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-768x996.png') }} 768w" sizes="(max-width: 941px) 100vw, 941px" />															</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-64ad2a93 e-flex e-con-boxed e-con e-parent" data-id="64ad2a93" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-1d6da3e6 e-con-full e-flex e-con e-child" data-id="1d6da3e6" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-6c6c80a4 elementor-widget elementor-widget-heading" data-id="6c6c80a4" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Global Guest Experience</h6>				</div>
+				<div class="elementor-element elementor-element-48acd4cb elementor-widget elementor-widget-heading" data-id="48acd4cb" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Multi-Language Support</h2>				</div>
+				<div class="elementor-element elementor-element-6b79a362 elementor-widget elementor-widget-text-editor" data-id="6b79a362" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Cater to international guests with multiple language options and easy navigation.</p>								</div>
+		<div class="elementor-element elementor-element-3cffbd1b e-con-full e-flex e-con e-child" data-id="3cffbd1b" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-60a186b8 elementor-widget elementor-widget-button" data-id="60a186b8" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">English</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-6586ebfa elementor-widget elementor-widget-button" data-id="6586ebfa" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">हिंदी</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-38a95689 elementor-widget elementor-widget-button" data-id="38a95689" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">मराठी</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-61e80e80 elementor-widget elementor-widget-button" data-id="61e80e80" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">ગુજરાતી</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-4e4ca25f elementor-widget elementor-widget-button" data-id="4e4ca25f" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">தமிழ்</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-67bac64 elementor-widget elementor-widget-button" data-id="67bac64" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">ಕನ್ನಡ</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-4b2c7c99 elementor-widget elementor-widget-button" data-id="4b2c7c99" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">తెలుగు</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-43b95fe1 elementor-widget elementor-widget-button" data-id="43b95fe1" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">বাংলা</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-2a01ae80 elementor-widget elementor-widget-button" data-id="2a01ae80" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Français</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-596f2807 elementor-widget elementor-widget-button" data-id="596f2807" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Deutsch</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-da59fb9 elementor-widget elementor-widget-button" data-id="da59fb9" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Español</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-58da9d34 elementor-widget elementor-widget-button" data-id="58da9d34" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Português</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-ce7579c elementor-widget elementor-widget-button" data-id="ce7579c" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">中文</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-59e92941 elementor-widget elementor-widget-button" data-id="59e92941" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">عربى</span>
+					</span>
+					</a>
+								</div>
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-4894003a e-con-full e-flex e-con e-child" data-id="4894003a" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-6ef1a632 elementor-widget elementor-widget-image" data-id="6ef1a632" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV.png') }}" class="attachment-full size-full wp-image-143" alt="" srcset="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-1f911727 e-flex e-con-boxed e-con e-parent" data-id="1f911727" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-1bbd9dda e-con-full e-flex elementor-invisible e-con e-child" data-id="1bbd9dda" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
+				<div class="elementor-element elementor-element-bcd77ac elementor-widget elementor-widget-image" data-id="bcd77ac" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-136" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Luxury-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-872e8c6 e-con-full e-flex elementor-invisible e-con e-child" data-id="872e8c6" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
+				<div class="elementor-element elementor-element-46d2549f elementor-widget elementor-widget-heading" data-id="46d2549f" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Everything Your Guests Need</h6>				</div>
+				<div class="elementor-element elementor-element-f30ac51 elementor-widget elementor-widget-heading" data-id="f30ac51" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Hotel Information &amp; Services</h2>				</div>
+				<div class="elementor-element elementor-element-5508e2db elementor-widget elementor-widget-text-editor" data-id="5508e2db" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Showcase hotel amenities, dining options, facilities and local attractions directly on the TV.</p>								</div>
+		<div class="elementor-element elementor-element-5861fb01 e-con-full e-flex e-con e-child" data-id="5861fb01" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-47e9bf4c elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="47e9bf4c" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-far-building" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M436 480h-20V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v456H12c-6.627 0-12 5.373-12 12v20h448v-20c0-6.627-5.373-12-12-12zM128 76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76zm0 96c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40zm52 148h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12zm76 160h-64v-84c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v84zm64-172c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Hotel Information						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-1ce23c66 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="1ce23c66" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-utensils" viewBox="0 0 416 512" xmlns="http://www.w3.org/2000/svg"><path d="M207.9 15.2c.8 4.7 16.1 94.5 16.1 128.8 0 52.3-27.8 89.6-68.9 104.6L168 486.7c.7 13.7-10.2 25.3-24 25.3H80c-13.7 0-24.7-11.5-24-25.3l12.9-238.1C27.7 233.6 0 196.2 0 144 0 109.6 15.3 19.9 16.1 15.2 19.3-5.1 61.4-5.4 64 16.3v141.2c1.3 3.4 15.1 3.2 16 0 1.4-25.3 7.9-139.2 8-141.8 3.3-20.8 44.7-20.8 47.9 0 .2 2.7 6.6 116.5 8 141.8.9 3.2 14.8 3.4 16 0V16.3c2.6-21.6 44.8-21.4 48-1.1zm119.2 285.7l-15 185.1c-1.2 14 9.9 26 23.9 26h56c13.3 0 24-10.7 24-24V24c0-13.2-10.7-24-24-24-82.5 0-221.4 178.5-64.9 300.9z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Dining &amp; Restaurants						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-3b6649 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="3b6649" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-landmark" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M501.62 92.11L267.24 2.04a31.958 31.958 0 0 0-22.47 0L10.38 92.11A16.001 16.001 0 0 0 0 107.09V144c0 8.84 7.16 16 16 16h480c8.84 0 16-7.16 16-16v-36.91c0-6.67-4.14-12.64-10.38-14.98zM64 192v160H48c-8.84 0-16 7.16-16 16v48h448v-48c0-8.84-7.16-16-16-16h-16V192h-64v160h-96V192h-64v160h-96V192H64zm432 256H16c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h480c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Local Attractions						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-3827b11a elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="3827b11a" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-concierge-bell" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M288 130.54V112h16c8.84 0 16-7.16 16-16V80c0-8.84-7.16-16-16-16h-96c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h16v18.54C115.49 146.11 32 239.18 32 352h448c0-112.82-83.49-205.89-192-221.46zM496 384H16c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h480c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							In-Room Services						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-54375939 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="54375939" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-plane" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M480 192H365.71L260.61 8.06A16.014 16.014 0 0 0 246.71 0h-65.5c-10.63 0-18.3 10.17-15.38 20.39L214.86 192H112l-43.2-57.6c-3.02-4.03-7.77-6.4-12.8-6.4H16.01C5.6 128-2.04 137.78.49 147.88L32 256 .49 364.12C-2.04 374.22 5.6 384 16.01 384H56c5.04 0 9.78-2.37 12.8-6.4L112 320h102.86l-49.03 171.6c-2.92 10.22 4.75 20.4 15.38 20.4h65.5c5.74 0 11.04-3.08 13.89-8.06L365.71 320H480c35.35 0 96-28.65 96-64s-60.65-64-96-64z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Flight Information						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-4b54be88 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="4b54be88" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-far-map" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M0 117.66v346.32c0 11.32 11.43 19.06 21.94 14.86L160 416V32L20.12 87.95A32.006 32.006 0 0 0 0 117.66zM192 416l192 64V96L192 32v384zM554.06 33.16L416 96v384l139.88-55.95A31.996 31.996 0 0 0 576 394.34V48.02c0-11.32-11.43-19.06-21.94-14.86z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							City Guide						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-497458e5 e-flex e-con-boxed e-con e-parent" data-id="497458e5" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-2abc8578 e-con-full e-flex elementor-invisible e-con e-child" data-id="2abc8578" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
+				<div class="elementor-element elementor-element-2d04b76a elementor-widget elementor-widget-heading" data-id="2d04b76a" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Non-Stop Entertainment</h6>				</div>
+				<div class="elementor-element elementor-element-31fe179c elementor-widget elementor-widget-heading" data-id="31fe179c" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Live TV &amp; Entertainment</h2>				</div>
+				<div class="elementor-element elementor-element-24d5f5c2 elementor-widget elementor-widget-text-editor" data-id="24d5f5c2" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Deliver seamless live TV, movies and guest entertainment with an intuitive interface.</p>								</div>
+		<div class="elementor-element elementor-element-73ffffcf e-con-full e-flex e-con e-child" data-id="73ffffcf" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-7c1a435 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="7c1a435" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-tv" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M592 0H48A48 48 0 0 0 0 48v320a48 48 0 0 0 48 48h240v32H112a16 16 0 0 0-16 16v32a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16v-32a16 16 0 0 0-16-16H352v-32h240a48 48 0 0 0 48-48V48a48 48 0 0 0-48-48zm-16 352H64V64h512z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Live TV Channels						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-51ad2658 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="51ad2658" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-film" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M488 64h-8v20c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12V64H96v20c0 6.6-5.4 12-12 12H44c-6.6 0-12-5.4-12-12V64h-8C10.7 64 0 74.7 0 88v336c0 13.3 10.7 24 24 24h8v-20c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v20h320v-20c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v20h8c13.3 0 24-10.7 24-24V88c0-13.3-10.7-24-24-24zM96 372c0 6.6-5.4 12-12 12H44c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40zm0-96c0 6.6-5.4 12-12 12H44c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40zm0-96c0 6.6-5.4 12-12 12H44c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40zm272 208c0 6.6-5.4 12-12 12H156c-6.6 0-12-5.4-12-12v-96c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v96zm0-168c0 6.6-5.4 12-12 12H156c-6.6 0-12-5.4-12-12v-96c0-6.6 5.4-12 12-12h200c6.6 0 12 5.4 12 12v96zm112 152c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40zm0-96c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40zm0-96c0 6.6-5.4 12-12 12h-40c-6.6 0-12-5.4-12-12v-40c0-6.6 5.4-12 12-12h40c6.6 0 12 5.4 12 12v40z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							On-Demand Movies						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-dd1527f elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="dd1527f" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-globe" viewBox="0 0 496 512" xmlns="http://www.w3.org/2000/svg"><path d="M336.5 160C322 70.7 287.8 8 248 8s-74 62.7-88.5 152h177zM152 256c0 22.2 1.2 43.5 3.3 64h185.3c2.1-20.5 3.3-41.8 3.3-64s-1.2-43.5-3.3-64H155.3c-2.1 20.5-3.3 41.8-3.3 64zm324.7-96c-28.6-67.9-86.5-120.4-158-141.6 24.4 33.8 41.2 84.7 50 141.6h108zM177.2 18.4C105.8 39.6 47.8 92.1 19.3 160h108c8.7-56.9 25.5-107.8 49.9-141.6zM487.4 192H372.7c2.1 21 3.3 42.5 3.3 64s-1.2 43-3.3 64h114.6c5.5-20.5 8.6-41.8 8.6-64s-3.1-43.5-8.5-64zM120 256c0-21.5 1.2-43 3.3-64H8.6C3.2 212.5 0 233.8 0 256s3.2 43.5 8.6 64h114.6c-2-21-3.2-42.5-3.2-64zm39.5 96c14.5 89.3 48.7 152 88.5 152s74-62.7 88.5-152h-177zm159.3 141.6c71.4-21.2 129.4-73.7 158-141.6h-108c-8.8 56.9-25.6 107.8-50 141.6zM19.3 352c28.6 67.9 86.5 120.4 158 141.6-24.4-33.8-41.2-84.7-50-141.6h-108z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Web Applications						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-1fa89d7a elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="1fa89d7a" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fab-chromecast" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M447.8,64H64c-23.6,0-42.7,19.1-42.7,42.7v63.9H64v-63.9h383.8v298.6H298.6V448H448c23.6,0,42.7-19.1,42.7-42.7V106.7 C490.7,83.1,471.4,64,447.8,64z M21.3,383.6L21.3,383.6l0,63.9h63.9C85.2,412.2,56.6,383.6,21.3,383.6L21.3,383.6z M21.3,298.6V341 c58.9,0,106.6,48.1,106.6,107h42.7C170.7,365.6,103.7,298.7,21.3,298.6z M213.4,448h42.7c-0.5-129.5-105.3-234.3-234.8-234.6l0,42.4 C127.3,255.6,213.3,342,213.4,448z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Screen Cast						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-2225a305 elementor-view-stacked elementor-position-block-start elementor-widget__width-initial elementor-shape-circle elementor-mobile-position-block-start elementor-widget elementor-widget-icon-box" data-id="2225a305" data-element_type="widget" data-e-type="widget" data-widget_type="icon-box.default">
+							<div class="elementor-icon-box-wrapper">
+
+						<div class="elementor-icon-box-icon">
+				<span  class="elementor-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-heart" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"></path></svg>				</span>
+			</div>
+			
+						<div class="elementor-icon-box-content">
+
+									<h3 class="elementor-icon-box-title">
+						<span  >
+							Personalised Recommendations						</span>
+					</h3>
+				
+				
+			</div>
+			
+		</div>
+						</div>
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-3ae8e4cd e-con-full e-flex elementor-invisible e-con e-child" data-id="3ae8e4cd" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
+				<div class="elementor-element elementor-element-6bba1781 elementor-widget elementor-widget-image" data-id="6bba1781" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-160" alt="" srcset="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-3ad16d8d e-flex e-con-boxed e-con e-parent" data-id="3ad16d8d" data-element_type="container" data-e-type="container" id="gallery" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-63b553ac elementor-widget elementor-widget-heading" data-id="63b553ac" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Real Implementations</h6>				</div>
+				<div class="elementor-element elementor-element-2b6e52a0 elementor-widget elementor-widget-heading" data-id="2b6e52a0" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Gallery</h2>				</div>
+				<div class="elementor-element elementor-element-5d197102 elementor-widget elementor-widget-text-editor" data-id="5d197102" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>See how our Hotel TV solution enhances guest experiences in premium properties worldwide.</p>								</div>
+		<div class="elementor-element elementor-element-544e94d0 e-con-full e-flex e-con e-child" data-id="544e94d0" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-75671628 e-con-full e-flex e-con e-child" data-id="75671628" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-a3c8110 elementor-widget elementor-widget-image" data-id="a3c8110" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="940" height="790" src="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686.png') }}" class="attachment-full size-full wp-image-164" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-300x252.png') }} 300w, {{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-768x645.png') }} 768w" sizes="(max-width: 940px) 100vw, 940px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-73fca1aa e-con-full e-flex e-con e-child" data-id="73fca1aa" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-2099b887 e-con-full e-flex e-con e-child" data-id="2099b887" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-358f5098 e-con-full e-flex e-con e-child" data-id="358f5098" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-3c2ecef8 elementor-widget elementor-widget-image" data-id="3c2ecef8" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4.png') }}" class="attachment-full size-full wp-image-153" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-39ea9f04 e-con-full e-flex e-con e-child" data-id="39ea9f04" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-16f8d775 elementor-widget elementor-widget-image" data-id="16f8d775" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2.png') }}" class="attachment-full size-full wp-image-155" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+				</div>
+				</div>
+		<div class="elementor-element elementor-element-48e30edf e-con-full e-flex e-con e-child" data-id="48e30edf" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-369aee71 e-con-full e-flex e-con e-child" data-id="369aee71" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-4436e7e6 elementor-widget elementor-widget-image" data-id="4436e7e6" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3.png') }}" class="attachment-full size-full wp-image-154" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+				</div>
+		<div class="elementor-element elementor-element-61e2dcec e-con-full e-flex e-con e-child" data-id="61e2dcec" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-5dac4c2e elementor-widget elementor-widget-image" data-id="5dac4c2e" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1.png') }}" class="attachment-full size-full wp-image-156" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+				</div>
+				</div>
+				</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-5ffc26db e-flex e-con-boxed e-con e-parent" data-id="5ffc26db" data-element_type="container" data-e-type="container" id="contactus" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-4f21b8bf elementor-widget elementor-widget-heading" data-id="4f21b8bf" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Ready To Transform Your Guest Experience?</h6>				</div>
+				<div class="elementor-element elementor-element-54fb4dc3 elementor-widget elementor-widget-heading" data-id="54fb4dc3" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Request a Demo Today</h2>				</div>
+				<div class="elementor-element elementor-element-449f1fad elementor-widget elementor-widget-text-editor" data-id="449f1fad" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Discover how our Hotel TV solution can add value to your property and delight your guests.</p>								</div>
+		<div class="elementor-element elementor-element-696ceae6 e-con-full e-flex e-con e-child" data-id="696ceae6" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-412a88ae elementor-widget elementor-widget-button" data-id="412a88ae" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Request Demo</span>
+					</span>
+					</a>
+								</div>
+				<div class="elementor-element elementor-element-3a6c0960 elementor-widget elementor-widget-button" data-id="3a6c0960" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+									<span class="elementor-button-text">Contact Us</span>
+					</span>
+					</a>
+								</div>
+				</div>
+					</div>
+				</div>
+				</div>
+		
+	
+	
+</div><!-- .entry-content .clear -->
+
+	
+	
+</article><!-- #post-## -->
+
+			</main><!-- #main -->
+			
+		
+	</div><!-- #primary -->
+
+
+	</div> <!-- ast-container -->
+	</div><!-- #content -->
+		<footer data-elementor-type="footer" data-elementor-id="33" class="elementor elementor-33 elementor-location-footer" data-elementor-post-type="elementor_library">
+			<div class="elementor-element elementor-element-4dbbe676 e-flex e-con-boxed e-con e-parent" data-id="4dbbe676" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+		<div class="elementor-element elementor-element-78cde3fe e-con-full e-flex e-con e-child" data-id="78cde3fe" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-77f2d90f elementor-widget elementor-widget-heading" data-id="77f2d90f" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h3 class="elementor-heading-title elementor-size-default">TAJ</h3>				</div>
+				<div class="elementor-element elementor-element-cad4f36 elementor-widget elementor-widget-text-editor" data-id="cad4f36" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>Premium Hotel TV Solution for a Smarter Stay Experience.</p>								</div>
+				<div class="elementor-element elementor-element-39bc63a1 elementor-shape-rounded elementor-grid-0 e-grid-align-center elementor-widget elementor-widget-social-icons" data-id="39bc63a1" data-element_type="widget" data-e-type="widget" data-widget_type="social-icons.default">
+							<div class="elementor-social-icons-wrapper elementor-grid" role="list">
+							<span class="elementor-grid-item" role="listitem">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-linkedin-in elementor-repeater-item-xg53664" href="#" target="_blank">
+						<span class="elementor-screen-only">Linkedin-in</span>
+						<svg aria-hidden="true" class="e-font-icon-svg e-fab-linkedin-in" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M100.28 448H7.4V148.9h92.88zM53.79 108.1C24.09 108.1 0 83.5 0 53.8a53.79 53.79 0 0 1 107.58 0c0 29.7-24.1 54.3-53.79 54.3zM447.9 448h-92.68V302.4c0-34.7-.7-79.2-48.29-79.2-48.29 0-55.69 37.7-55.69 76.7V448h-92.78V148.9h89.08v40.8h1.3c12.4-23.5 42.69-48.3 87.88-48.3 94 0 111.28 61.9 111.28 142.3V448z"></path></svg>					</a>
+				</span>
+							<span class="elementor-grid-item" role="listitem">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-youtube elementor-repeater-item-hkz7kkf" href="#" target="_blank">
+						<span class="elementor-screen-only">Youtube</span>
+						<svg aria-hidden="true" class="e-font-icon-svg e-fab-youtube" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"><path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z"></path></svg>					</a>
+				</span>
+							<span class="elementor-grid-item" role="listitem">
+					<a class="elementor-icon elementor-social-icon elementor-social-icon-instagram elementor-repeater-item-1659y1g" href="#" target="_blank">
+						<span class="elementor-screen-only">Instagram</span>
+						<svg aria-hidden="true" class="e-font-icon-svg e-fab-instagram" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"></path></svg>					</a>
+				</span>
+					</div>
+						</div>
+				</div>
+		<div class="elementor-element elementor-element-6393a6a9 e-con-full e-flex e-con e-child" data-id="6393a6a9" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-6aee7119 elementor-widget elementor-widget-heading" data-id="6aee7119" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h5 class="elementor-heading-title elementor-size-default">Quick Links</h5>				</div>
+				<div class="elementor-element elementor-element-5ac6a57a elementor-widget elementor-widget-text-editor" data-id="5ac6a57a" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p style="margin: 0 0 10px;"><a style="color: #b8bfcc; text-decoration: none;" href="/">Home</a></p><p style="margin: 0 0 10px;"><a style="color: #b8bfcc; text-decoration: none;" href="#solutions">Solutions</a></p><p style="margin: 0 0 10px;"><a style="color: #b8bfcc; text-decoration: none;" href="#gallery">Gallery</a></p><p style="margin: 0 0 10px;"><a style="color: #b8bfcc; text-decoration: none;" href="#about">About Us</a></p><p style="margin: 0 0 10px;"><a style="color: #b8bfcc; text-decoration: none;" href="#contactus">Contact</a></p>								</div>
+				</div>
+		<div class="elementor-element elementor-element-618db605 e-con-full e-flex e-con e-child" data-id="618db605" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-2f8aabe elementor-widget elementor-widget-heading" data-id="2f8aabe" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h5 class="elementor-heading-title elementor-size-default">Our Solutions</h5>				</div>
+				<div class="elementor-element elementor-element-230d74c5 elementor-widget elementor-widget-text-editor" data-id="230d74c5" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">Hotel TV Application</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">System Integration</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">Multi-Language Support</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">Hotel Information</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">Live TV &#038; Entertainment</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">Guest Services</a></p>								</div>
+				</div>
+		<div class="elementor-element elementor-element-17ae753a e-con-full e-flex e-con e-child" data-id="17ae753a" data-element_type="container" data-e-type="container">
+				<div class="elementor-element elementor-element-72827994 elementor-widget elementor-widget-heading" data-id="72827994" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
+					<h5 class="elementor-heading-title elementor-size-default">Contact Us</h5>				</div>
+				<div class="elementor-element elementor-element-2cbeb86a elementor-widget elementor-widget-text-editor" data-id="2cbeb86a" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📍 Mumbai, India</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📞 +91 98765 43210</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">✉ info@tajhoteltv.com</a></p>								</div>
+				<div class="elementor-element elementor-element-6b0c35c2 elementor-widget elementor-widget-button" data-id="6b0c35c2" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
+										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
+						<span class="elementor-button-content-wrapper">
+						<span class="elementor-button-icon">
+				<svg aria-hidden="true" class="e-font-icon-svg e-fas-angle-right" viewBox="0 0 256 512" xmlns="http://www.w3.org/2000/svg"><path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"></path></svg>			</span>
+									<span class="elementor-button-text">Request Demo  </span>
+					</span>
+					</a>
+								</div>
+				</div>
+					</div>
+				</div>
+		<div class="elementor-element elementor-element-384db8e2 e-flex e-con-boxed e-con e-parent" data-id="384db8e2" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
+					<div class="e-con-inner">
+				<div class="elementor-element elementor-element-6405fd9b elementor-widget elementor-widget-text-editor" data-id="6405fd9b" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p>© 2026 TAJ. All rights reserved.</p>								</div>
+				<div class="elementor-element elementor-element-58d57d5c elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile elementor-widget elementor-widget-text-editor" data-id="58d57d5c" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
+									<p><a style="color: #8a93a6; text-decoration: none;" href="#">Privacy Policy</a>  |  <a style="color: #8a93a6; text-decoration: none;" href="#">Terms of Service</a></p>								</div>
+					</div>
+				</div>
+				</footer>
+			</div><!-- #page -->
+<script type="speculationrules">
+{"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/astra/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
+</script>
+
+<div id="ast-scroll-top" tabindex="0" class="ast-scroll-top-icon ast-scroll-to-top-right" data-on-devices="both">
+	<span class="ast-icon icon-arrow"><svg class="ast-arrow-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" x="0px" y="0px" width="26px" height="16.043px" viewbox="57 35.171 26 16.043" enable-background="new 57 35.171 26 16.043" xml:space="preserve">
+                <path d="M57.5,38.193l12.5,12.5l12.5-12.5l-2.5-2.5l-10,10l-10-10L57.5,38.193z" />
+                </svg></span>	<span class="screen-reader-text">Scroll to Top</span>
+</div>
+		
+<!-- Elementor Pro Modal Wrapper for Demo Request Popup -->
+<div id="elementor-popup-modal-250" class="dialog-type-lightbox elementor-popup-modal dialog-widget dialog-lightbox-widget dialog-type-buttons" style="display: none;">
+    <div class="dialog-widget-content dialog-lightbox-widget-content">
+        <div class="dialog-close-button dialog-lightbox-close-button" role="button" aria-label="Close" tabindex="0">
+            <svg viewBox="0 0 1000 1000" width="16" height="16" fill="currentColor"><path d="M742 167L500 408 258 167C246 154 233 150 217 150 196 150 179 158 167 167 154 179 150 196 150 212 150 229 154 242 171 254L408 500 167 742C138 771 138 800 167 829 196 858 225 858 254 829L496 587 738 829C750 842 767 846 783 846 800 846 817 842 829 829 842 817 846 804 846 783 846 767 842 750 829 737L588 500 833 258C863 229 863 200 833 171 804 137 775 137 742 167Z"></path></svg>
         </div>
+        <div class="dialog-message dialog-lightbox-message">
+            <div data-elementor-type="popup" data-elementor-id="250" class="elementor elementor-250 elementor-location-popup" data-elementor-settings="{&quot;entrance_animation&quot;:&quot;zoomIn&quot;,&quot;exit_animation&quot;:&quot;fadeOut&quot;,&quot;entrance_animation_duration&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.7,&quot;sizes&quot;:[]},&quot;prevent_scroll&quot;:&quot;no&quot;,&quot;a11y_navigation&quot;:&quot;yes&quot;,&quot;triggers&quot;:{},&quot;timing&quot;:[]}" data-elementor-post-type="elementor_library">
+			<div class="elementor-element elementor-element-3445b12c e-con-full e-flex e-con e-parent" data-id="3445b12c" data-element_type="container" data-e-type="container">
+		<div class="elementor-element elementor-element-76bf9104 e-con-full animated-slow taj-pop-left e-flex elementor-invisible e-con e-child" data-id="76bf9104" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;animation&quot;:&quot;fadeInLeft&quot;}">
+				<div class="elementor-element elementor-element-5a018849 elementor-invisible elementor-widget elementor-widget-heading" data-id="5a018849" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.2}" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Premium Hotel TV Solution</h6>				</div>
+				<div class="elementor-element elementor-element-e6f8059 elementor-invisible elementor-widget elementor-widget-heading" data-id="e6f8059" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.35}" data-widget_type="heading.default">
+					<h2 class="elementor-heading-title elementor-size-default">Get a Free Demo for Your Hotel</h2>				</div>
+				<div class="elementor-element elementor-element-2c27590b elementor-hidden-mobile elementor-widget-divider--view-line elementor-invisible elementor-widget elementor-widget-divider" data-id="2c27590b" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInLeft&quot;,&quot;_animation_delay&quot;:0.5}" data-widget_type="divider.default">
+							<div class="elementor-divider">
+			<span class="elementor-divider-separator">
+						</span>
+		</div>
+						</div>
+				<div class="elementor-element elementor-element-57b9926 elementor-hidden-mobile elementor-invisible elementor-widget elementor-widget-text-editor" data-id="57b9926" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.6}" data-widget_type="text-editor.default">
+									<p>Transform every guest room into a smart, personalised entertainment experience. Share your details and our team will arrange a live demo.</p>								</div>
+				<div class="elementor-element elementor-element-46753b15 elementor-hidden-mobile elementor-icon-list--layout-traditional elementor-list-item-link-full_width elementor-invisible elementor-widget elementor-widget-icon-list" data-id="46753b15" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.8}" data-widget_type="icon-list.default">
+							<ul class="elementor-icon-list-items">
+							<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<svg aria-hidden="true" class="e-font-icon-svg e-fas-check-circle" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>						</span>
+										<span class="elementor-icon-list-text">Custom branded hotel TV interface</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<svg aria-hidden="true" class="e-font-icon-svg e-fas-check-circle" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>						</span>
+										<span class="elementor-icon-list-text">14+ language support for global guests</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<svg aria-hidden="true" class="e-font-icon-svg e-fas-check-circle" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>						</span>
+										<span class="elementor-icon-list-text">PMS &amp; third-party integration</span>
+									</li>
+								<li class="elementor-icon-list-item">
+											<span class="elementor-icon-list-icon">
+							<svg aria-hidden="true" class="e-font-icon-svg e-fas-check-circle" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"><path d="M504 256c0 136.967-111.033 248-248 248S8 392.967 8 256 119.033 8 256 8s248 111.033 248 248zM227.314 387.314l184-184c6.248-6.248 6.248-16.379 0-22.627l-22.627-22.627c-6.248-6.249-16.379-6.249-22.628 0L216 308.118l-70.059-70.059c-6.248-6.248-16.379-6.248-22.628 0l-22.627 22.627c-6.248 6.248-6.248 16.379 0 22.627l104 104c6.249 6.249 16.379 6.249 22.628.001z"></path></svg>						</span>
+										<span class="elementor-icon-list-text">Dedicated support &amp; updates</span>
+									</li>
+						</ul>
+						</div>
+				</div>
+		<div class="elementor-element elementor-element-1f083f97 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="1f083f97" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;animation&quot;:&quot;fadeInRight&quot;}">
+				<div class="elementor-element elementor-element-6a4ff7fe elementor-invisible elementor-widget elementor-widget-heading" data-id="6a4ff7fe" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.3}" data-widget_type="heading.default">
+					<h6 class="elementor-heading-title elementor-size-default">Request a Demo</h6>				</div>
+				<div class="elementor-element elementor-element-748b4980 elementor-invisible elementor-widget elementor-widget-heading" data-id="748b4980" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.4}" data-widget_type="heading.default">
+					<h3 class="elementor-heading-title elementor-size-default">Let's Talk About Your Property</h3>				</div>
+				<div class="elementor-element elementor-element-4719c92a elementor-invisible elementor-widget elementor-widget-text-editor" data-id="4719c92a" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.5}" data-widget_type="text-editor.default">
+									<p>Fill in the form — we reply within 24 hours.</p>								</div>
+				<div class="elementor-element elementor-element-6a070195 taj-pop-form elementor-button-align-stretch elementor-invisible elementor-widget elementor-widget-form" data-id="6a070195" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.7,&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
+							<form class="elementor-form" method="post" name="Hotel TV Demo Popup" aria-label="Hotel TV Demo Popup">
+			<input type="hidden" name="post_id" value="250"/>
+			<input type="hidden" name="form_id" value="6a070195"/>
+			<input type="hidden" name="referer_title" value="" />
 
-        <!-- Sticky Dynamic Header Navbar -->
-        <header id="mainHeader" class="header-nav fixed top-0 left-0 right-0 z-50 pt-4 sm:pt-5 pb-3 sm:pb-4 bg-gradient-to-b from-black/85 via-black/40 to-transparent">
-            <div class="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex items-center justify-between">
-                
-                <!-- Brand Logo -->
-                <a href="{{ route('landing') }}" class="flex items-center space-x-2.5 group cursor-pointer shrink-0">
-                    <img src="{{ app_logo_url() }}" 
-                         alt="{{ app_name() }}" 
-                         class="h-8 sm:h-10 lg:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                </a>
+							<input type="hidden" name="queried_id" value="10"/>
+			
+			<div class="elementor-form-fields-wrapper elementor-labels-above">
+								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-name" class="elementor-field-label">
+								Full Name							</label>
+														<input size="1" type="text" name="form_fields[name]" id="form-field-name" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="Your full name" required="required">
+											</div>
+								<div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-phone" class="elementor-field-label">
+								Phone							</label>
+								<input size="1" type="tel" name="form_fields[phone]" id="form-field-phone" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="+91 00000 00000" required="required" pattern="[0-9()#&amp;+*-=.]+" title="Only numbers and phone characters (#, -, *, etc) are accepted.">
 
-                <!-- Centered Navigation Links (Desktop) -->
-                <nav class="hidden md:flex items-center space-x-6 lg:space-x-9 text-xs sm:text-[13px] font-medium tracking-wide">
-                    <div class="relative py-1">
-                        <a href="#home" class="text-white hover:text-[#DFBA58] transition-colors">Home</a>
-                        <span class="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#DFBA58] to-[#F5E8C7] rounded-full"></span>
-                    </div>
-                    <a href="#features" class="text-stone-300 hover:text-[#DFBA58] transition-colors">Features</a>
-                    <a href="#solutions" class="text-stone-300 hover:text-[#DFBA58] transition-colors">Solutions</a>
-                    <a href="#about" class="text-stone-300 hover:text-[#DFBA58] transition-colors">About</a>
-                    <a href="{{ route('contact-us') }}" class="text-stone-300 hover:text-[#DFBA58] transition-colors">Contact</a>
-                </nav>
-
-                <!-- Right Action Buttons + Hamburger Menu Toggle -->
-                <div class="flex items-center space-x-2.5 sm:space-x-3">
-                    <a href="{{ route('hotel.login') }}" class="text-[11px] sm:text-xs font-medium text-stone-200 hover:text-[#DFBA58] flex items-center space-x-1.5 px-3 py-1.5 sm:px-3.5 sm:py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#DFBA58]/40 transition-all">
-                        <i class="fa-solid fa-hotel text-[10px] sm:text-[11px] text-[#DFBA58]"></i>
-                        <span class="hidden xs:inline">Hotel </span><span>Login</span>
-                    </a>
-                    <button onclick="openRegisterModal()" class="px-4 sm:px-5 lg:px-6 py-2 btn-gold-pill text-xs tracking-wider flex items-center space-x-1 cursor-pointer">
-                        <span>Request Demo</span>
-                        <span class="text-xs sm:text-sm font-bold leading-none font-mono">›</span>
-                    </button>
-
-                    <!-- Mobile Hamburger Button -->
-                    <button id="mobileMenuBtn" aria-label="Toggle Navigation Menu" class="md:hidden w-9 h-9 rounded-full bg-white/5 border border-white/15 text-stone-200 flex items-center justify-center hover:text-[#DFBA58] hover:border-[#DFBA58]/40 transition-colors">
-                        <i class="fa-solid fa-bars text-sm"></i>
-                    </button>
-                </div>
-
-            </div>
-
-            <!-- Mobile Dropdown Drawer (Smooth Reveal) -->
-            <div id="mobileMenu" class="hidden md:hidden px-4 pt-3 pb-5 mt-2 bg-[#0B0E14]/95 backdrop-blur-xl border-b border-[#DFBA58]/20 space-y-2.5 shadow-2xl">
-                <a href="#home" onclick="closeMobileMenu()" class="block px-3 py-2 text-sm font-medium text-white hover:text-[#DFBA58] rounded-lg hover:bg-white/5">Home</a>
-                <a href="#features" onclick="closeMobileMenu()" class="block px-3 py-2 text-sm font-medium text-stone-300 hover:text-[#DFBA58] rounded-lg hover:bg-white/5">Features</a>
-                <a href="#solutions" onclick="closeMobileMenu()" class="block px-3 py-2 text-sm font-medium text-stone-300 hover:text-[#DFBA58] rounded-lg hover:bg-white/5">Solutions</a>
-                <a href="#about" onclick="closeMobileMenu()" class="block px-3 py-2 text-sm font-medium text-stone-300 hover:text-[#DFBA58] rounded-lg hover:bg-white/5">About Us</a>
-                <a href="{{ route('contact-us') }}" onclick="closeMobileMenu()" class="block px-3 py-2 text-sm font-medium text-stone-300 hover:text-[#DFBA58] rounded-lg hover:bg-white/5">Contact</a>
-            </div>
-        </header>
-
-        <!-- Navbar Spacing Buffer -->
-        <div class="h-16 sm:h-20 lg:h-24"></div>
-
-        <!-- HERO CONTENT: LEFT TYPOGRAPHY & RIGHT SMART TV CONSOLE -->
-        <div id="home" class="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 pt-4 pb-10 lg:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center w-full my-auto">
-            
-            <!-- Left Hero Content -->
-            <div class="lg:col-span-5 space-y-4 sm:space-y-5 text-left lux-reveal-left lux-active">
-                
-                <!-- Gold Overline Badge -->
-                <div class="inline-flex items-center space-x-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-[#DFBA58]/10 border border-[#DFBA58]/30 text-[#DFBA58] text-[10px] sm:text-xs font-semibold tracking-[0.2em] sm:tracking-[0.22em] uppercase">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#DFBA58] animate-ping"></span>
-                    <span>PREMIUM HOTEL TV SOLUTION</span>
-                </div>
-
-                <!-- Responsive Hero Headline -->
-                <h1 class="font-serif-lux text-3xl sm:text-4xl lg:text-[3.25rem] font-medium tracking-tight text-white leading-[1.15]">
-                    A Smarter<br>
-                    <span class="bg-gradient-to-r from-white via-[#F5E8C7] to-[#DFBA58] bg-clip-text text-transparent">Stay Experience</span>
-                </h1>
-
-                <!-- Subtitle / Paragraph -->
-                <p class="text-sm sm:text-base text-stone-300 leading-[1.6] sm:leading-[1.65] max-w-lg font-normal">
-                    Transform every guest room into a personalized entertainment and hospitality hub with our advanced Hotel TV application.
-                </p>
-
-                <!-- Dual Action Buttons -->
-                <div class="flex flex-wrap items-center gap-3 pt-1 sm:pt-2">
-                    <button onclick="openRegisterModal()" class="w-full sm:w-auto px-6 sm:px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-2 cursor-pointer">
-                        <span>Request Demo</span>
-                        <span class="text-sm font-bold leading-none font-mono">›</span>
-                    </button>
-
-                    <a href="#about" class="w-full sm:w-auto px-6 py-3 btn-glass-pill text-xs tracking-wider flex items-center justify-center space-x-2">
-                        <i class="fa-regular fa-circle-play text-sm text-[#DFBA58]"></i>
-                        <span>Watch Video</span>
-                    </a>
-                </div>
-
-            </div>
-
-            <!-- Right Hero: Smart TV Display on Luxury Console (Mobile-safe 100% width container) -->
-            <div class="lg:col-span-7 relative tv-perspective-stage w-full max-w-md sm:max-w-xl lg:max-w-none mx-auto lux-reveal-right lux-active">
-                
-                <!-- Ambient Pulsing Champagne Gold Glow behind TV -->
-                <div class="absolute -inset-4 sm:-inset-6 bg-[#DFBA58]/18 blur-2xl sm:blur-3xl rounded-full tv-ambient-glow -z-10"></div>
-
-                <!-- 3D Tilted Hardware Rig (Flat on mobile to avoid overflow) -->
-                <div class="tv-tilted-rig">
-
-                    <!-- TV Hardware Frame & Display Screen -->
-                    <div class="relative tv-screen-chassis-3d p-1.5 sm:p-2.5">
-                        
-                        <!-- Inside TV Screen Display (16:9 Aspect Ratio) -->
-                        <div class="relative rounded-xl overflow-hidden aspect-[16/9] bg-slate-950 border border-white/10 group select-none shadow-inner">
-                            <img src="{{ asset('images/landing/tvscreen.png') }}" 
-                                 alt="Taj Hotel Smart TV OS Screen" 
-                                 class="w-full h-full object-cover filter brightness-[1.02] contrast-[1.03] group-hover:scale-[1.02] transition-transform duration-700">
-                            
-                            <!-- Screen Reflection Overlays -->
-                            <div class="absolute inset-0 pointer-events-none bg-gradient-to-tr from-transparent via-white/[0.04] to-white/[0.14]"></div>
-                            <div class="absolute inset-0 pointer-events-none shadow-[inset_0_0_24px_rgba(0,0,0,0.65)]"></div>
-                        </div>
-
-                        <!-- TV Stand Base -->
-                        <div class="w-20 sm:w-24 h-1.5 sm:h-2 bg-gradient-to-b from-[#3A404D] to-[#12151B] mx-auto mt-1 rounded-b-xs shadow-md"></div>
-                    </div>
-
-                    <!-- Luxury Dark Walnut TV Credenza Cabinet with Warm Underglow -->
-                    <div class="relative mt-2 mx-auto w-full credenza-console-3d rounded-md p-2 sm:p-2.5 shadow-2xl">
-                        <!-- Warm Amber LED Strip Light -->
-                        <div class="h-[2px] w-full bg-gradient-to-r from-[#DFBA58]/20 via-[#DFBA58] to-[#DFBA58]/20 shadow-[0_2px_14px_rgba(223,186,88,0.7)]"></div>
-                        <div class="flex items-center justify-between pt-1.5 sm:pt-2 px-3 sm:px-4 text-[9px] sm:text-[10px] text-stone-500">
-                            <div class="flex items-center space-x-2 sm:space-x-3">
-                                <div class="w-8 sm:w-12 h-1 bg-[#3A291E] rounded-full"></div>
-                                <div class="w-8 sm:w-12 h-1 bg-[#3A291E] rounded-full"></div>
-                            </div>
-                            <div class="flex items-center space-x-2 sm:space-x-3">
-                                <div class="w-8 sm:w-12 h-1 bg-[#3A291E] rounded-full"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
+						</div>
+								<div class="elementor-field-type-email elementor-field-group elementor-column elementor-field-group-email elementor-col-100 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-email" class="elementor-field-label">
+								Email							</label>
+														<input size="1" type="email" name="form_fields[email]" id="form-field-email" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="you@hotel.com" required="required">
+											</div>
+								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-hotel elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-hotel" class="elementor-field-label">
+								Hotel Name							</label>
+														<input size="1" type="text" name="form_fields[hotel]" id="form-field-hotel" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="Name of your hotel" required="required">
+											</div>
+								<div class="elementor-field-type-select elementor-field-group elementor-column elementor-field-group-rooms elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-rooms" class="elementor-field-label">
+								Number of Rooms							</label>
+								<div class="elementor-field elementor-select-wrapper remove-before ">
+			<div class="select-caret-down-wrapper">
+				<svg aria-hidden="true" class="e-font-icon-svg e-eicon-caret-down" viewBox="0 0 571.4 571.4" xmlns="http://www.w3.org/2000/svg"><path d="M571 393Q571 407 561 418L311 668Q300 679 286 679T261 668L11 418Q0 407 0 393T11 368 36 357H536Q550 357 561 368T571 393Z"></path></svg>			</div>
+			<select name="form_fields[rooms]" id="form-field-rooms" class="elementor-field-textual elementor-size-md" required="required">
+									<option value="1 - 50">1 - 50</option>
+									<option value="51 - 100">51 - 100</option>
+									<option value="101 - 250">101 - 250</option>
+									<option value="250+">250+</option>
+							</select>
+		</div>
+						</div>
+								<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-message elementor-col-100 elementor-sm-100">
+												<label for="form-field-message" class="elementor-field-label">
+								Message							</label>
+						<textarea class="elementor-field-textual elementor-field  elementor-size-md" name="form_fields[message]" id="form-field-message" rows="3" placeholder="Tell us about your requirement (optional)"></textarea>				</div>
+								<div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
+					<button class="elementor-button elementor-size-md" type="submit">
+						<span class="elementor-button-content-wrapper">
+															<span class="elementor-button-icon">
+									<i class="Array" aria-hidden="true"></i>																	</span>
+																						<span class="elementor-button-text">Request Free Demo</span>
+													</span>
+					</button>
+				</div>
+			</div>
+		</form>
+						</div>
+				</div>
+				</div>
+				</div>
         </div>
-
-        <div class="h-2"></div>
     </div>
-
-    <!-- ========================================================================= -->
-    <!-- 2. FOUR FEATURES STRIP (RESPONSIVE GRID: 1 COL MOBILE, 2 COL TABLET, 4 COL DESKTOP) -->
-    <!-- ========================================================================= -->
-    <section id="features" class="relative z-20 bg-[#121722] text-[#F8F9FA] border-y border-[#DFBA58]/20 py-4 sm:py-6">
-        <div class="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 divide-y sm:divide-y-0 lg:divide-x divide-white/10">
-                
-                <!-- Item 1: Customizable UI -->
-                <div class="flex items-center space-x-3.5 pt-3 sm:pt-0 sm:py-1 px-1 lg:px-4 group lux-reveal del-1">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#DFBA58]/12 border border-[#DFBA58]/30 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#DFBA58]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m14 10 7.5-7.5"/>
-                            <path d="m3 21 8.5-8.5"/>
-                            <circle cx="16.5" cy="4.5" r="0.5" fill="currentColor"/>
-                            <circle cx="4.5" cy="16.5" r="0.5" fill="currentColor"/>
-                            <path d="m9 3 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/>
-                            <path d="m17 13 1 2 2 1-2 1-1 2-1-2-2-1 2-1 1-2z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm sm:text-base text-white leading-snug">Customizable UI</h3>
-                        <p class="text-xs text-stone-400 font-normal leading-tight mt-0.5">Branded experience for your hotel</p>
-                    </div>
-                </div>
-
-                <!-- Item 2: Multi-Language -->
-                <div class="flex items-center space-x-3.5 pt-3 sm:pt-0 sm:py-1 px-1 lg:px-4 group lux-reveal del-2">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#DFBA58]/12 border border-[#DFBA58]/30 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#DFBA58]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 9a2 2 0 0 1-2 2H6l-3 3V5a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v4z"/>
-                            <path d="M18 9h1a2 2 0 0 1 2 2v9l-3-3h-6a2 2 0 0 1-2-2v-1"/>
-                            <path d="M6 7h4"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm sm:text-base text-white leading-snug">Multi-Language</h3>
-                        <p class="text-xs text-stone-400 font-normal leading-tight mt-0.5">Global guest support</p>
-                    </div>
-                </div>
-
-                <!-- Item 3: Hotel Information -->
-                <div class="flex items-center space-x-3.5 pt-3 sm:pt-0 sm:py-1 px-1 lg:px-4 group lux-reveal del-3">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#DFBA58]/12 border border-[#DFBA58]/30 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#DFBA58]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 21h18"/>
-                            <path d="M5 21V9l7-5 7 5v12"/>
-                            <path d="M9 10v2"/>
-                            <path d="M15 10v2"/>
-                            <path d="M9 14v2"/>
-                            <path d="M15 14v2"/>
-                            <path d="M11 21v-3a1 1 0 0 1 1-1h0a1 1 0 0 1 1 1v3"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm sm:text-base text-white leading-snug">Hotel Information</h3>
-                        <p class="text-xs text-stone-400 font-normal leading-tight mt-0.5">Showcase amenities & services</p>
-                    </div>
-                </div>
-
-                <!-- Item 4: Secure & Reliable -->
-                <div class="flex items-center space-x-3.5 pt-3 sm:pt-0 sm:py-1 px-1 lg:px-4 group lux-reveal del-4">
-                    <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-[#DFBA58]/12 border border-[#DFBA58]/30 flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-105 shadow-xs">
-                        <svg class="w-5 h-5 sm:w-6 sm:h-6 text-[#DFBA58]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="m9 12 2 2 4-4"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-sm sm:text-base text-white leading-snug">Secure & Reliable</h3>
-                        <p class="text-xs text-stone-400 font-normal leading-tight mt-0.5">Built for speed & guest privacy</p>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 3. ABOUT US SECTION (RESPONSIVE STACK ON MOBILE / TABLET) -->
-    <!-- ========================================================================= -->
-    <section id="about" class="relative overflow-hidden bg-[#F7F5F0] text-[#1A1D23] border-b border-[#DFBA58]/20 py-10 sm:py-14 lg:py-16 flex items-center">
-        
-        <!-- Panoramic Suite Background (High contrast overlay on mobile) -->
-        <div class="absolute inset-0 z-0 pointer-events-none">
-            <img src="{{ asset('images/landing/about-suite-clean.jpg') }}" 
-                 alt="PAX TV Hotel Solution Experience" 
-                 class="w-full h-full object-cover object-left md:object-center filter brightness-[1.02]">
-            <div class="absolute inset-0 bg-[#F7F5F0]/92 md:bg-[#F7F5F0]/40 lg:bg-transparent"></div>
-        </div>
-
-        <div class="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 w-full">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <!-- Left Space for TV & Suite Visual -->
-                <div class="hidden lg:block lg:col-span-5"></div>
-
-                <!-- Right Typography & CTA -->
-                <div class="lg:col-span-7 space-y-4 sm:space-y-5 text-left pl-0 lg:pl-6 lux-reveal-left">
-                    
-                    <div class="inline-flex items-center space-x-2 text-[#9E7B35] font-semibold text-xs tracking-[0.22em] uppercase">
-                        <span class="w-4 h-[2px] bg-[#9E7B35]"></span>
-                        <span>ABOUT US</span>
-                    </div>
-
-                    <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-[#1A1D23] leading-[1.22]">
-                        Enhancing Hospitality<br>
-                        Through Smart Technology
-                    </h2>
-
-                    <p class="text-sm sm:text-base text-[#5A6270] leading-[1.65] font-normal max-w-xl">
-                        We provide advanced Hotel TV solutions that combine entertainment, information, and hospitality services into a single, intuitive interface crafted to create memorable guest experiences.
-                    </p>
-
-                    <div class="pt-2">
-                        <button onclick="openRegisterModal()" class="w-full sm:w-auto px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-2 cursor-pointer shadow-md hover:shadow-lg transition-all">
-                            <span>Learn More</span>
-                            <span class="text-sm font-bold leading-none font-mono">›</span>
-                        </button>
-                    </div>
-
-                </div>
-
-            </div>
-        </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 4. OUR SOLUTIONS SECTION (RESPONSIVE 1/2/3 COLUMNS) -->
-    <!-- ========================================================================= -->
-    <section id="solutions" class="relative overflow-hidden bg-[#F7F5F0] text-[#1A1D23] border-b border-[#DFBA58]/20 py-10 sm:py-14 lg:py-16">
-        
-        <!-- Right Side Suite Image (Desktop only) -->
-        <div class="absolute top-0 right-0 bottom-0 w-full lg:w-[46%] pointer-events-none hidden lg:block overflow-hidden z-0">
-            <img src="{{ asset('images/landing/our-solutions-suite.jpg') }}" 
-                 alt="Luxury Hotel Suite Experience" 
-                 class="w-full h-full object-cover object-right">
-            <div class="absolute inset-y-0 left-0 w-36 bg-gradient-to-r from-[#F7F5F0] via-[#F7F5F0]/85 to-transparent"></div>
-            <div class="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#F7F5F0] to-transparent"></div>
-            <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#F7F5F0] to-transparent"></div>
-        </div>
-
-        <div class="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 w-full">
-            
-            <!-- Section Header -->
-            <div class="max-w-xl mb-7 sm:mb-9 lux-reveal">
-                <div class="inline-flex items-center space-x-2 text-[#9E7B35] font-semibold text-xs tracking-[0.22em] uppercase mb-2">
-                    <span class="w-4 h-[2px] bg-[#9E7B35]"></span>
-                    <span>TAILORED FOR YOUR HOTEL</span>
-                </div>
-
-                <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-[#1A1D23] leading-tight mb-2.5">
-                    Our Solutions
-                </h2>
-
-                <p class="text-sm sm:text-base text-[#5A6270] leading-[1.65] font-normal">
-                    A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.
-                </p>
-            </div>
-
-            <!-- Solutions Cards Grid (Responsive: 1-col on mobile, 2-col on tablet, 3-col on desktop) -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6 max-w-full lg:max-w-[65%] xl:max-w-[62%]">
-                
-                <!-- Card 1: Hotel TV Application -->
-                <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/90 shadow-[0_4px_22px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(223,186,88,0.18)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between lux-reveal del-1">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-4 sm:mb-5 shadow-xs">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <rect x="2" y="3" width="20" height="14" rx="2" stroke-linejoin="round"/>
-                                <path d="M8 21h8M12 17v4" stroke-linecap="round"/>
-                                <path d="M7 8h4M7 11h2" stroke-linecap="round"/>
-                                <circle cx="15.5" cy="9.5" r="1.5" fill="currentColor"/>
-                            </svg>
-                        </div>
-                        
-                        <h3 class="text-base sm:text-lg font-semibold text-[#1A1D23] tracking-tight leading-snug mb-1.5 font-sans-lux">
-                            Hotel TV Application
-                        </h3>
-
-                        <p class="text-xs sm:text-[13px] text-[#5A6270] leading-[1.6] font-normal mb-4 sm:mb-5">
-                            Custom branded interface with all essential entertainment & hospitality features.
-                        </p>
-                    </div>
-
-                    <div>
-                        <button onclick="openRegisterModal()" class="btn-card-pill cursor-pointer space-x-1.5">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold leading-none font-mono">›</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 2: System Integration -->
-                <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/90 shadow-[0_4px_22px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(223,186,88,0.18)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between lux-reveal del-2">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-4 sm:mb-5 shadow-xs">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <circle cx="12" cy="12" r="3" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        
-                        <h3 class="text-base sm:text-lg font-semibold text-[#1A1D23] tracking-tight leading-snug mb-1.5 font-sans-lux">
-                            System Integration
-                        </h3>
-
-                        <p class="text-xs sm:text-[13px] text-[#5A6270] leading-[1.6] font-normal mb-4 sm:mb-5">
-                            Integrate with hotel PMS, hospitality services, and third-party apps seamlessly.
-                        </p>
-                    </div>
-
-                    <div>
-                        <button onclick="openRegisterModal()" class="btn-card-pill cursor-pointer space-x-1.5">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold leading-none font-mono">›</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Card 3: Ongoing Support -->
-                <div class="bg-white rounded-2xl p-5 sm:p-6 border border-stone-200/90 shadow-[0_4px_22px_rgba(0,0,0,0.04)] hover:shadow-[0_12px_32px_rgba(223,186,88,0.18)] hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between lux-reveal del-3 md:col-span-2 lg:col-span-1">
-                    <div>
-                        <div class="w-12 h-12 rounded-xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-4 sm:mb-5 shadow-xs">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 14.663 3.04097 17.0827 4.74751 18.8732" stroke-linecap="round"/>
-                                <polyline points="2 15 5 19 9 16" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M12 6v6l4 2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        
-                        <h3 class="text-base sm:text-lg font-semibold text-[#1A1D23] tracking-tight leading-snug mb-1.5 font-sans-lux">
-                            Ongoing Support
-                        </h3>
-
-                        <p class="text-xs sm:text-[13px] text-[#5A6270] leading-[1.6] font-normal mb-4 sm:mb-5">
-                            Dedicated 24/7 technical support and regular updates for 99.9% uptime.
-                        </p>
-                    </div>
-
-                    <div>
-                        <button onclick="openRegisterModal()" class="btn-card-pill cursor-pointer space-x-1.5">
-                            <span>Learn More</span>
-                            <span class="text-xs font-bold leading-none font-mono">›</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 5. MULTI-LANGUAGE SUPPORT (RESPONSIVE TOUCH-FRIENDLY PILLS) -->
-    <!-- ========================================================================= -->
-    <section class="relative overflow-hidden bg-[#0B0E14] text-white border-t border-[#DFBA58]/20 py-10 sm:py-14 lg:py-16 flex items-center">
-        
-        <!-- Panoramic Suite Background with TV -->
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/landing/multi-language-bg.jpg') }}" 
-                 alt="Hotel TV Multi-Language Interface" 
-                 class="w-full h-full object-cover object-right md:object-center filter brightness-[1.0] contrast-[1.03]">
-            <div class="absolute inset-0 bg-gradient-to-r from-[#0B0E14] via-[#0B0E14]/85 to-transparent hidden md:block w-full lg:w-[65%]"></div>
-            <div class="absolute inset-0 bg-[#0B0E14]/88 md:hidden"></div>
-        </div>
-
-        <div class="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 w-full">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                
-                <!-- Left: Description and 3 Distinct Rows of Interactive Language Pills -->
-                <div class="lg:col-span-7 xl:col-span-6 space-y-4 sm:space-y-5 text-left lux-reveal-left">
-                    
-                    <div class="inline-flex items-center space-x-2 text-[#DFBA58] font-semibold text-xs tracking-[0.22em] uppercase">
-                        <span class="w-4 h-[2px] bg-[#DFBA58]"></span>
-                        <span>GLOBAL GUEST EXPERIENCE</span>
-                    </div>
-
-                    <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-white leading-tight">
-                        Multi-Language Support
-                    </h2>
-
-                    <p class="text-sm sm:text-base text-slate-300 leading-[1.65] font-normal max-w-md">
-                        Cater to international guests with multiple language options and intuitive on-screen navigation.
-                    </p>
-
-                    <!-- Interactive Language Pills (Flex-wrap with comfortable touch targets) -->
-                    <div class="space-y-2.5 pt-2 max-w-lg" id="landingLanguageContainer">
-                        
-                        <!-- Row 1 -->
-                        <div class="flex flex-wrap gap-2 sm:gap-2.5">
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-4 sm:px-5 py-2 rounded-2xl bg-[#DFBA58] text-[#0B0E14] font-bold text-xs shadow-md border-transparent ring-2 ring-[#DFBA58]/40 scale-105 cursor-pointer transition-all duration-200 active:scale-95">
-                                English
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                हिंदी
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                मराठी
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                ગુજરાતી
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                தமிழ்
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                తెలుగు
-                            </button>
-                        </div>
-
-                        <!-- Row 2 -->
-                        <div class="flex flex-wrap gap-2 sm:gap-2.5">
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                ಕನ್ನಡ
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                বাংলা
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                മലയാളം
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                Français
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                Deutsch
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                Español
-                            </button>
-                        </div>
-
-                        <!-- Row 3 -->
-                        <div class="flex flex-wrap gap-2 sm:gap-2.5">
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                Português
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                中文
-                            </button>
-                            <button type="button" onclick="selectLandingLanguage(this)" 
-                                    class="lang-pill px-3.5 sm:px-5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs font-medium backdrop-blur-md cursor-pointer transition-all duration-200 active:scale-95">
-                                عربي
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <div class="hidden lg:block lg:col-span-5 xl:col-span-6"></div>
-
-            </div>
-        </div>
-
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 6. HOTEL INFORMATION & SERVICES (RESPONSIVE BADGE GRID) -->
-    <!-- ========================================================================= -->
-    <section class="py-10 sm:py-14 lg:py-16 bg-[#F7F5F0] text-[#1A1D23] border-t border-[#DFBA58]/20">
-        <div class="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            
-            <!-- Left: Description and 6 Peach Icon Badges (2-col mobile, 4-col tablet/desktop) -->
-            <div class="lg:col-span-6 space-y-4 sm:space-y-5 text-left lux-reveal-left">
-                <div class="inline-flex items-center space-x-2 text-[#9E7B35] font-semibold text-xs tracking-[0.22em] uppercase">
-                    <span class="w-4 h-[2px] bg-[#9E7B35]"></span>
-                    <span>EVERYTHING YOUR GUESTS NEED</span>
-                </div>
-
-                <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-[#1A1D23] leading-tight">
-                    Hotel Information & Services
-                </h2>
-
-                <p class="text-sm sm:text-base text-[#5A6270] leading-[1.65] font-normal max-w-lg">
-                    Showcase hotel amenities, dining options, facilities and local attractions directly on the in-room TV.
-                </p>
-
-                <!-- Icon Badges (Clean 2-col on small phones, 4-col on tablet/desktop) -->
-                <div class="space-y-3 sm:space-y-4 pt-2">
-                    
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 max-w-lg">
-                        
-                        <!-- 1. Hotel Information -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M3 21h18M6 18V7l6-4 6 4v11M9 9h2M13 9h2M9 13h2M13 13h2M9 17h2M13 17h2" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                Hotel<br class="hidden sm:inline"> Information
-                            </span>
-                        </div>
-
-                        <!-- 2. Dining & Restaurants -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M18 2v8a2 2 0 0 1-2 2h-1M15 12v10M8 2v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V2M5 9v13M5 2v5M7 2v5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                Dining &<br class="hidden sm:inline"> Restaurants
-                            </span>
-                        </div>
-
-                        <!-- 3. Local Attractions -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M12 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6z" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                Local<br class="hidden sm:inline"> Attractions
-                            </span>
-                        </div>
-
-                        <!-- 4. In-Room Services -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M12 3v3M4 14a8 8 0 0 1 16 0H4zM2 18h20" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                In-Room<br class="hidden sm:inline"> Services
-                            </span>
-                        </div>
-
-                        <!-- 5. Flight Information -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                Flight<br class="hidden sm:inline"> Info
-                            </span>
-                        </div>
-
-                        <!-- 6. City Guide -->
-                        <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/50 sm:bg-transparent border border-stone-200/50 sm:border-transparent">
-                            <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#9E7B35] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                                <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                    <path d="M9 18l6-6-6-6M1 6v14l6-3 6 3 6-3 4 2V4l-4-2-6 3-6-3-6 3z" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <span class="text-xs font-semibold text-[#1A1D23] text-center leading-tight">
-                                City<br class="hidden sm:inline"> Guide
-                            </span>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Right: Luxury Hotel Suite Card with TV Displaying Hotel Information Interface -->
-            <div class="lg:col-span-6 lux-reveal-right">
-                <div class="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl border border-stone-200/90 group bg-stone-900">
-                    <img src="{{ asset('images/landing/hotel-info-tv-suite.jpg') }}" 
-                         alt="Hotel Information & Services Smart TV" 
-                         class="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-500">
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 7. LIVE TV & ENTERTAINMENT (RESPONSIVE BADGES: 2-COL MOBILE, 3-COL TABLET, 5-COL DESKTOP) -->
-    <!-- ========================================================================= -->
-    <section class="py-10 sm:py-14 lg:py-16 bg-[#121722] text-[#F8F9FA] border-t border-[#DFBA58]/20">
-        <div class="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-            
-            <div class="lg:col-span-6 space-y-4 sm:space-y-5 text-left lux-reveal-left">
-                <div class="inline-flex items-center space-x-2 text-[#DFBA58] font-semibold text-xs tracking-[0.22em] uppercase">
-                    <span class="w-4 h-[2px] bg-[#DFBA58]"></span>
-                    <span>NON-STOP ENTERTAINMENT</span>
-                </div>
-
-                <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-white leading-tight">
-                    Live TV & Entertainment
-                </h2>
-
-                <p class="text-sm sm:text-base text-stone-300 leading-[1.65] font-normal max-w-lg">
-                    Deliver seamless live TV, movies and guest entertainment with an intuitive, lag-free smart TV interface.
-                </p>
-
-                <!-- 5 Badges (Responsive: 2-col on small mobile, 3-col on tablet, 5-col on desktop) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 pt-2 max-w-xl">
-                    
-                    <!-- 1. Live TV Channels -->
-                    <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/5 lg:bg-transparent border border-white/5 lg:border-transparent">
-                        <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#DFBA58] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <rect x="2" y="7" width="20" height="15" rx="2" stroke-linejoin="round"/>
-                                <polyline points="17 2 12 7 7 2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <span class="text-[11px] sm:text-xs font-semibold text-stone-200 text-center leading-tight">
-                            Live TV<br class="hidden sm:inline"> Channels
-                        </span>
-                    </div>
-
-                    <!-- 2. On-Demand Movies -->
-                    <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/5 lg:bg-transparent border border-white/5 lg:border-transparent">
-                        <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#DFBA58] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <rect x="2" y="2" width="20" height="20" rx="2.18" stroke-linejoin="round"/>
-                                <line x1="7" y1="2" x2="7" y2="22"/>
-                                <line x1="17" y1="2" x2="17" y2="22"/>
-                                <line x1="2" y1="12" x2="22" y2="12"/>
-                                <line x1="2" y1="7" x2="7" y2="7"/>
-                                <line x1="2" y1="17" x2="7" y2="17"/>
-                                <line x1="17" y1="17" x2="22" y2="17"/>
-                            </svg>
-                        </div>
-                        <span class="text-[11px] sm:text-xs font-semibold text-stone-200 text-center leading-tight">
-                            On-Demand<br class="hidden sm:inline"> Movies
-                        </span>
-                    </div>
-
-                    <!-- 3. Web Applications -->
-                    <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/5 lg:bg-transparent border border-white/5 lg:border-transparent">
-                        <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#DFBA58] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <rect x="3" y="3" width="7" height="7" rx="1"/>
-                                <rect x="14" y="3" width="7" height="7" rx="1"/>
-                                <rect x="14" y="14" width="7" height="7" rx="1"/>
-                                <rect x="3" y="14" width="7" height="7" rx="1"/>
-                            </svg>
-                        </div>
-                        <span class="text-[11px] sm:text-xs font-semibold text-stone-200 text-center leading-tight">
-                            Web<br class="hidden sm:inline"> Apps
-                        </span>
-                    </div>
-
-                    <!-- 4. Screen Cast -->
-                    <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/5 lg:bg-transparent border border-white/5 lg:border-transparent">
-                        <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#DFBA58] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6M2 20h.01" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <span class="text-[11px] sm:text-xs font-semibold text-stone-200 text-center leading-tight">
-                            Screen<br class="hidden sm:inline"> Cast
-                        </span>
-                    </div>
-
-                    <!-- 5. Recommendations -->
-                    <div class="flex flex-col items-center text-center group cursor-pointer p-2 rounded-xl bg-white/5 lg:bg-transparent border border-white/5 lg:border-transparent col-span-2 sm:col-span-1">
-                        <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-[#DFBA58]/15 border border-[#DFBA58]/35 flex items-center justify-center text-[#DFBA58] mb-2 shadow-xs transition-transform duration-300 group-hover:scale-110">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
-                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <span class="text-[11px] sm:text-xs font-semibold text-stone-200 text-center leading-tight">
-                            Smart<br class="hidden sm:inline"> Suggestions
-                        </span>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Right: TV Preview -->
-            <div class="lg:col-span-6 lux-reveal-right">
-                <div class="relative rounded-2xl lg:rounded-3xl overflow-hidden shadow-2xl border border-white/10 group bg-stone-900">
-                    <img src="{{ asset('images/landing/live-tv-channels-suite.jpg') }}" 
-                         alt="Live TV & Entertainment Broadcast Channels Smart TV" 
-                         class="w-full h-auto object-cover transform group-hover:scale-[1.02] transition-transform duration-500">
-                </div>
-            </div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 8. REQUEST A DEMO TODAY (RESPONSIVE BANNER) -->
-    <!-- ========================================================================= -->
-    <section class="relative py-12 sm:py-16 lg:py-20 text-white overflow-hidden border-t border-[#DFBA58]/20">
-        
-        <!-- Dusk Resort Hotel Background -->
-        <div class="absolute inset-0 z-0">
-            <img src="{{ asset('images/landing/demo.svg') }}" 
-                 onerror="this.onerror=null;this.src='{{ asset('images/landing/demo.jpg') }}';" 
-                 alt="Request a Demo - Luxury Beachfront Resort at Dusk" 
-                 class="w-full h-full object-cover object-center">
-            <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/45"></div>
-        </div>
-
-        <div class="relative z-10 max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 sm:gap-8 lux-reveal">
-            
-            <div class="space-y-3.5 max-w-2xl text-left">
-                <!-- Golden Overline Tag -->
-                <div class="inline-flex items-center space-x-2 text-[#DFBA58] font-semibold text-xs tracking-[0.22em] uppercase">
-                    <span class="w-4 h-[2px] bg-[#DFBA58]"></span>
-                    <span>READY TO TRANSFORM YOUR GUEST EXPERIENCE?</span>
-                </div>
-
-                <!-- Editorial Headline -->
-                <h2 class="font-serif-lux text-2xl sm:text-3xl lg:text-[2.25rem] font-medium tracking-tight text-white leading-tight">
-                    Request a Demo Today
-                </h2>
-
-                <!-- Subtitle -->
-                <p class="text-sm sm:text-base text-slate-200 leading-[1.65] font-normal max-w-lg">
-                    Discover how our Hotel TV solution can add value to your property and delight your guests with seamless technology.
-                </p>
-
-                <!-- Dual Action Buttons -->
-                <div class="flex flex-wrap items-center gap-3 pt-2">
-                    <button onclick="openRegisterModal()" class="w-full sm:w-auto px-7 py-3 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-2 cursor-pointer">
-                        <span>Request Demo</span>
-                        <span class="text-sm font-bold leading-none font-mono">›</span>
-                    </button>
-
-                    <a href="{{ route('contact-us') }}" class="w-full sm:w-auto px-7 py-3 btn-glass-pill text-xs font-semibold tracking-wider flex items-center justify-center">
-                        Contact Us
-                    </a>
-                </div>
-            </div>
-
-            <div class="hidden lg:block lg:w-1/3"></div>
-
-        </div>
-    </section>
-
-    <!-- ========================================================================= -->
-    <!-- 9. LUXURY DARK FOOTER (RESPONSIVE GRID) -->
-    <!-- ========================================================================= -->
-    <footer class="bg-[#080A0F] text-white border-t border-[#DFBA58]/20 pt-10 sm:pt-12 pb-8">
-        <div class="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 items-start">
-                
-                <!-- Column 1: Brand Info (4 cols) -->
-                <div class="sm:col-span-2 lg:col-span-4 space-y-3.5 text-left">
-                    <a href="{{ route('landing') }}" class="inline-block group">
-                        <img src="{{ app_logo_url() }}" 
-                             alt="{{ app_name() }}" 
-                             class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105">
-                    </a>
-
-                    <p class="text-xs sm:text-[13px] text-stone-400 leading-relaxed font-normal pt-1">
-                        Premium Hotel TV Solution<br>
-                        for a Smarter Stay Experience.
-                    </p>
-
-                    <!-- Social Icons -->
-                    <div class="flex items-center space-x-5 pt-1 text-stone-300">
-                        <a href="#" class="hover:text-[#DFBA58] transition-colors" aria-label="LinkedIn">
-                            <i class="fa-brands fa-linkedin-in text-base"></i>
-                        </a>
-                        <a href="#" class="hover:text-[#DFBA58] transition-colors" aria-label="YouTube">
-                            <i class="fa-brands fa-youtube text-base"></i>
-                        </a>
-                        <a href="#" class="hover:text-[#DFBA58] transition-colors" aria-label="Instagram">
-                            <i class="fa-brands fa-instagram text-base"></i>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Column 2: Quick Links (2.5 cols) -->
-                <div class="lg:col-span-2 space-y-3 text-left">
-                    <h4 class="text-sm font-semibold text-white tracking-wide">Quick Links</h4>
-                    <ul class="space-y-2 text-xs sm:text-[13px] text-stone-400 font-normal">
-                        <li><a href="#home" class="hover:text-white transition-colors">Home</a></li>
-                        <li><a href="#features" class="hover:text-white transition-colors">Features</a></li>
-                        <li><a href="#solutions" class="hover:text-white transition-colors">Solutions</a></li>
-                        <li><a href="#about" class="hover:text-white transition-colors">About Us</a></li>
-                        <li><a href="{{ route('hotel.login') }}" class="text-[#DFBA58] hover:text-[#EBC66B] font-medium transition-colors">Hotel Login</a></li>
-                        <li><a href="{{ route('contact-us') }}" class="hover:text-white transition-colors">Contact</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 3: Our Solutions (3 cols) -->
-                <div class="lg:col-span-3 space-y-3 text-left">
-                    <h4 class="text-sm font-semibold text-white tracking-wide">Our Solutions</h4>
-                    <ul class="space-y-2 text-xs sm:text-[13px] text-stone-400 font-normal">
-                        <li><a href="#solutions" class="hover:text-white transition-colors">Hotel TV Application</a></li>
-                        <li><a href="#solutions" class="hover:text-white transition-colors">System Integration</a></li>
-                        <li><a href="#features" class="hover:text-white transition-colors">Multi-Language Support</a></li>
-                        <li><a href="#features" class="hover:text-white transition-colors">Hotel Information</a></li>
-                        <li><a href="#features" class="hover:text-white transition-colors">Live TV & Entertainment</a></li>
-                    </ul>
-                </div>
-
-                <!-- Column 4: Contact Us (3.5 cols) -->
-                <div class="sm:col-span-2 lg:col-span-3 space-y-3 text-left">
-                    <h4 class="text-sm font-semibold text-white tracking-wide">Contact Us</h4>
-                    <ul class="space-y-2 text-xs sm:text-[13px] text-stone-300 font-normal">
-                        <li class="flex items-center space-x-3">
-                            <i class="fa-solid fa-location-dot text-sm text-[#DFBA58] w-4 shrink-0"></i>
-                            <span>Mumbai, India</span>
-                        </li>
-                        <li class="flex items-center space-x-3">
-                            <i class="fa-solid fa-phone text-sm text-[#DFBA58] w-4 shrink-0"></i>
-                            <a href="tel:+919876543210" class="hover:text-white transition-colors">+91 98765 43210</a>
-                        </li>
-                        <li class="flex items-center space-x-3">
-                            <i class="fa-regular fa-envelope text-sm text-[#DFBA58] w-4 shrink-0"></i>
-                            <a href="mailto:{{ app_setting('contact_email', 'info@paxtv.com') }}" class="hover:text-white transition-colors">{{ app_setting('contact_email', 'info@paxtv.com') }}</a>
-                        </li>
-                    </ul>
-
-                    <div class="pt-2">
-                        <button onclick="openRegisterModal()" 
-                                class="w-full sm:w-auto px-7 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center justify-center space-x-1.5 cursor-pointer">
-                            <span>Request Demo</span>
-                            <span class="text-xs font-bold leading-none font-mono">›</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Bottom Copyright & Legal Links -->
-            <div class="mt-8 pt-5 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-3">
-                <p>{{ app_setting('footer_text', '© ' . date('Y') . ' ' . app_name() . '. All rights reserved.') }}</p>
-                <p class="text-stone-400">
-                    Developed by <a href="https://digiemperor.com" target="_blank" rel="noopener noreferrer" class="text-[#DFBA58] hover:text-[#EBC66B] font-medium transition-colors underline decoration-[#DFBA58]/40 underline-offset-2 hover:decoration-[#EBC66B]">Digi Emperor</a>
-                </p>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ route('privacy-policy') }}" class="hover:text-stone-300 transition-colors">Privacy Policy</a>
-                    <span class="text-stone-700">|</span>
-                    <a href="#" class="hover:text-stone-300 transition-colors">Terms of Service</a>
-                </div>
-            </div>
-
-        </div>
-    </footer>
-
 </div>
 
-<!-- ========================================================================= -->
-<!-- REGISTRATION / REQUEST DEMO MODAL OVERLAY (RESPONSIVE) -->
-<!-- ========================================================================= -->
-<div id="registerModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white text-slate-900 border border-stone-200 rounded-2xl sm:rounded-3xl w-full max-w-xl p-5 sm:p-7 space-y-5 shadow-2xl my-6 lux-reveal-scale lux-active">
-        
-        <div class="flex items-center justify-between border-b border-slate-100 pb-3.5">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-lg bg-[#DFBA58] text-[#0B0E14] flex items-center justify-center shadow-xs shrink-0">
-                    <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
-                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/>
-                    </svg>
-                </div>
-                <h3 class="text-base sm:text-lg font-bold text-slate-900 font-serif-lux">PAX TV Registration</h3>
-            </div>
-            <button onclick="closeRegisterModal()" class="text-slate-400 hover:text-slate-600 text-2xl font-bold cursor-pointer transition-colors leading-none">&times;</button>
-        </div>
+					<script>
+				const lazyloadRunObserver = () => {
+					const lazyloadBackgrounds = document.querySelectorAll( `.e-con.e-parent:not(.e-lazyloaded)` );
+					const lazyloadBackgroundObserver = new IntersectionObserver( ( entries ) => {
+						entries.forEach( ( entry ) => {
+							if ( entry.isIntersecting ) {
+								let lazyloadBackground = entry.target;
+								if( lazyloadBackground ) {
+									lazyloadBackground.classList.add( 'e-lazyloaded' );
+								}
+								lazyloadBackgroundObserver.unobserve( entry.target );
+							}
+						});
+					}, { rootMargin: '200px 0px 200px 0px' } );
+					lazyloadBackgrounds.forEach( ( lazyloadBackground ) => {
+						lazyloadBackgroundObserver.observe( lazyloadBackground );
+					} );
+				};
+				const events = [
+					'DOMContentLoaded',
+					'elementor/lazyload/observe',
+				];
+				events.forEach( ( event ) => {
+					document.addEventListener( event, lazyloadRunObserver );
+				} );
+			</script>
+			<script id="astra-theme-js-js-extra">
+var astra = {"break_point":"921","isRtl":"","is_scroll_to_id":"1","is_scroll_to_top":"1","is_header_footer_builder_active":"1","responsive_cart_click":"flyout","is_dark_palette":""};
+//# sourceURL=astra-theme-js-js-extra
+</script>
+<script id="astra-theme-js-js" src="{{ asset('landing-wp/js/frontend.min.js') }}"></script>
+<script id="elementor-webpack-runtime-js" src="{{ asset('landing-wp/js/webpack.runtime.min.js') }}"></script>
+<script id="elementor-frontend-modules-js" src="{{ asset('landing-wp/js/frontend-modules.min.js') }}"></script>
+<script id="jquery-ui-core-js" src="{{ asset('landing-wp/js/core.min.js') }}"></script>
+<script id="elementor-frontend-js-before">
+var elementorFrontendConfig = {"environmentMode":{"edit":false,"wpPreview":false,"isScriptDebug":false},"i18n":{"shareOnFacebook":"Share on Facebook","shareOnTwitter":"Share on Twitter","pinIt":"Pin it","download":"Download","downloadImage":"Download image","fullscreen":"Fullscreen","zoom":"Zoom","share":"Share","playVideo":"Play Video","previous":"Previous","next":"Next","close":"Close","a11yCarouselPrevSlideMessage":"Previous slide","a11yCarouselNextSlideMessage":"Next slide","a11yCarouselFirstSlideMessage":"This is the first slide","a11yCarouselLastSlideMessage":"This is the last slide","a11yCarouselPaginationBulletMessage":"Go to slide"},"is_rtl":false,"breakpoints":{"xs":0,"sm":480,"md":768,"lg":1025,"xl":1440,"xxl":1600},"responsive":{"breakpoints":{"mobile":{"label":"Mobile Portrait","value":767,"default_value":767,"direction":"max","is_enabled":true},"mobile_extra":{"label":"Mobile Landscape","value":880,"default_value":880,"direction":"max","is_enabled":false},"tablet":{"label":"Tablet Portrait","value":1024,"default_value":1024,"direction":"max","is_enabled":true},"tablet_extra":{"label":"Tablet Landscape","value":1200,"default_value":1200,"direction":"max","is_enabled":false},"laptop":{"label":"Laptop","value":1366,"default_value":1366,"direction":"max","is_enabled":false},"widescreen":{"label":"Widescreen","value":2400,"default_value":2400,"direction":"min","is_enabled":false}},"hasCustomBreakpoints":false},"version":"4.1.4","is_static":false,"experimentalFeatures":{"e_font_icon_svg":true,"additional_custom_breakpoints":true,"container":true,"e_optimized_markup":true,"e_panel_promotions":true,"theme_builder_v2":true,"e_pro_free_trial_popup":true,"nested-elements":true,"global_classes_should_enforce_capabilities":true,"e_opt_in_v4_page":true,"e_interactions":true,"e_widget_creation":true,"import-export-customization":true,"e_pro_atomic_form":true,"e_pro_collection_loop":true,"mega-menu":true,"e_pro_variables":true,"e_pro_interactions":true},"urls":{"assets":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-content\/plugins\/elementor\/assets\/","ajaxurl":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-admin\/admin-ajax.php","uploadUrl":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-content\/uploads"},"nonces":{"floatingButtonsClickTracking":"313b40c148","atomicFormsSendForm":"87dcfcd329"},"swiperClass":"swiper","settings":{"page":[],"editorPreferences":[]},"kit":{"active_breakpoints":["viewport_mobile","viewport_tablet"],"global_image_lightbox":"yes","lightbox_enable_counter":"yes","lightbox_enable_fullscreen":"yes","lightbox_enable_zoom":"yes","lightbox_enable_share":"yes","lightbox_title_src":"title","lightbox_description_src":"description"},"post":{"id":10,"title":"orange-ibis-943102.hostingersite.com","excerpt":"","featuredImage":false}};
+//# sourceURL=elementor-frontend-js-before
+</script>
+<script id="elementor-frontend-js" src="{{ asset('landing-wp/js/frontend.min.js') }}"></script>
+<script id="smartmenus-js" src="{{ asset('landing-wp/js/jquery.smartmenus.min.js') }}"></script>
+<script id="e-sticky-js" src="{{ asset('landing-wp/js/jquery.sticky.min.js') }}"></script>
+<script id="elementor-pro-webpack-runtime-js" src="{{ asset('landing-wp/js/webpack-pro.runtime.min.js') }}"></script>
+<script id="wp-hooks-js" src="{{ asset('landing-wp/js/hooks.min.js') }}"></script>
+<script id="wp-i18n-js" src="{{ asset('landing-wp/js/i18n.min.js') }}"></script>
+<script id="wp-i18n-js-after">
+wp.i18n.setLocaleData( { 'text direction\u0004ltr': [ 'ltr' ] } );
+//# sourceURL=wp-i18n-js-after
+</script>
+<script id="elementor-pro-frontend-js-before">
+var ElementorProFrontendConfig = {"ajaxurl":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-admin\/admin-ajax.php","nonce":"0394234c16","urls":{"assets":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-content\/plugins\/elementor-pro\/assets\/","rest":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-json\/"},"settings":{"lazy_load_background_images":true},"popup":{"hasPopUps":false},"shareButtonsNetworks":{"facebook":{"title":"Facebook","has_counter":true},"twitter":{"title":"Twitter"},"linkedin":{"title":"LinkedIn","has_counter":true},"pinterest":{"title":"Pinterest","has_counter":true},"reddit":{"title":"Reddit","has_counter":true},"vk":{"title":"VK","has_counter":true},"odnoklassniki":{"title":"OK","has_counter":true},"tumblr":{"title":"Tumblr"},"digg":{"title":"Digg"},"skype":{"title":"Skype"},"stumbleupon":{"title":"StumbleUpon","has_counter":true},"mix":{"title":"Mix"},"telegram":{"title":"Telegram"},"pocket":{"title":"Pocket","has_counter":true},"xing":{"title":"XING","has_counter":true},"whatsapp":{"title":"WhatsApp"},"email":{"title":"Email"},"print":{"title":"Print"},"x-twitter":{"title":"X"},"threads":{"title":"Threads"}},"facebook_sdk":{"lang":"en_US","app_id":""},"lottie":{"defaultAnimationUrl":"https:\/\/orange-ibis-943102.hostingersite.com\/wp-content\/plugins\/elementor-pro\/modules\/lottie\/assets\/animations\/default.json"}};
+//# sourceURL=elementor-pro-frontend-js-before
+</script>
+<script id="elementor-pro-frontend-js" src="{{ asset('landing-wp/js/frontend.min.js') }}"></script>
+<script id="pro-elements-handlers-js" src="{{ asset('landing-wp/js/elements-handlers.min.js') }}"></script>
+			<script>
+			/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
+			</script>
+			
 
-        <form id="registerForm" enctype="multipart/form-data" class="space-y-4 sm:space-y-5">
-            @csrf
-            <div id="registerError" class="hidden p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold"></div>
-
-            <!-- Owner Section -->
-            <div class="space-y-2.5">
-                <h4 class="text-xs font-bold text-[#9E7B35] uppercase tracking-wider border-b border-slate-100 pb-1.5">Personal Details</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Owner Name</label>
-                        <input type="text" name="owner_name" required placeholder="e.g. John Doe" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Phone Number</label>
-                        <input type="text" name="phone" required placeholder="e.g. 9876543210" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Email Address</label>
-                        <input type="email" name="email" required placeholder="username@example.com" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Password</label>
-                        <input type="password" name="password" required placeholder="Min 6 characters" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Hotel Section -->
-            <div class="space-y-2.5">
-                <h4 class="text-xs font-bold text-[#9E7B35] uppercase tracking-wider border-b border-slate-100 pb-1.5">Hotel Details</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Hotel Name</label>
-                        <input type="text" name="hotel_name" required placeholder="e.g. Grand Resort" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Location / City</label>
-                        <input type="text" name="hotel_location" required placeholder="e.g. Mumbai, India" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Hotel Logo</label>
-                        <input type="file" name="hotel_logo" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#DFBA58]/15 file:text-[#9E7B35]">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-xs font-semibold text-slate-700">Hotel Cover Image</label>
-                        <input type="file" name="hotel_image" accept="image/*" required class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#DFBA58]/15 file:text-[#9E7B35]">
-                    </div>
-                </div>
-
-                <div class="space-y-1">
-                    <label class="text-xs font-semibold text-slate-700">Total Room Count</label>
-                    <input type="number" name="room_count" id="roomCountInput" min="1" required placeholder="e.g. 50" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-[#DFBA58] focus:ring-1 focus:ring-[#DFBA58]">
-                    
-                    <div id="suggestedPlanBox" class="hidden p-3.5 rounded-2xl bg-[#DFBA58]/10 border border-[#DFBA58]/30 space-y-1 mt-2">
-                        <span class="text-[10px] font-bold text-[#9E7B35] uppercase tracking-wider block">Suggested Subscription Plan</span>
-                        <div class="flex items-center justify-between text-xs font-bold text-slate-900">
-                            <span id="suggestedPlanName">-</span>
-                            <span id="suggestedPlanPrice" class="text-[#9E7B35] font-extrabold">-</span>
-                        </div>
-                        <input type="hidden" name="plan_id" id="suggestedPlanId">
-                    </div>
-                </div>
-            </div>
-
-            <div class="pt-2 border-t border-slate-100 flex items-center justify-end space-x-2.5">
-                <button type="button" onclick="closeRegisterModal()" class="px-4 sm:px-5 py-2.5 rounded-full border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold cursor-pointer transition-colors">Cancel</button>
-                <button type="submit" class="px-5 sm:px-7 py-2.5 btn-gold-pill text-xs shadow-md cursor-pointer">Pay & Complete</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Simulated Payment Gateway Loading Overlay -->
-<div id="paymentLoader" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-4 text-center text-white">
-    <div class="w-12 h-12 border-4 border-white/20 border-t-[#DFBA58] rounded-full animate-spin mb-4"></div>
-    <h3 id="loaderTitle" class="text-xl font-bold font-serif-lux">Processing Order Request</h3>
-    <p id="loaderMessage" class="text-xs text-slate-400 font-medium mt-1">Talking to payment gateway. Please do not close this window...</p>
-</div>
-@endsection
-
-@section('scripts')
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+	
 <script>
-    // =========================================================================
-    // DYNAMIC STICKY NAVBAR BACKGROUND ON SCROLL
-    // =========================================================================
-    const mainHeader = document.getElementById('mainHeader');
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 25) {
-            mainHeader.classList.add('is-scrolled');
-        } else {
-            mainHeader.classList.remove('is-scrolled');
-        }
-    }, { passive: true });
+document.addEventListener("DOMContentLoaded", function () {
+    // 1. Immediately ensure scroll is unlocked
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+    document.documentElement.classList.remove('dialog-prevent-scroll');
+    document.body.classList.remove('dialog-prevent-scroll');
 
-    // =========================================================================
-    // MOBILE NAVIGATION DRAWER TOGGLE
-    // =========================================================================
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
+    const popup = document.getElementById("elementor-popup-modal-250");
+    const closeBtn = popup ? popup.querySelector(".dialog-close-button") : null;
 
-    if (mobileMenuBtn && mobileMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
+    function openDemoPopup() {
+        if (!popup) return;
+        popup.classList.add("is-active");
+        document.body.style.overflow = "hidden";
     }
 
-    function closeMobileMenu() {
-        if (mobileMenu) {
-            mobileMenu.classList.add('hidden');
-        }
+    function closeDemoPopup() {
+        if (!popup) return;
+        popup.classList.remove("is-active");
+        document.body.style.overflow = "";
     }
 
-    // =========================================================================
-    // GUARANTEED SCROLL REVEAL OBSERVER (RELIABLE WITH INSTANT FALLBACK)
-    // =========================================================================
-    function initScrollAnimations() {
-        const revealElements = document.querySelectorAll('.lux-reveal, .lux-reveal-left, .lux-reveal-right, .lux-reveal-scale');
-        
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('lux-active');
-                        observer.unobserve(entry.target);
-                    }
-                });
-            }, {
-                threshold: 0.05,
-                rootMargin: '0px 0px -15px 0px'
+    // Attach click handlers to any 'Request Demo' button or popup trigger
+    document.querySelectorAll('a, button').forEach(function(el) {
+        const text = (el.textContent || '').trim().toLowerCase();
+        const href = el.getAttribute('href') || '';
+        if (href.includes('popup:open') || href.includes('250') || text === 'request demo' || text === 'request demo now') {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                openDemoPopup();
             });
-
-            revealElements.forEach(el => observer.observe(el));
-        } else {
-            revealElements.forEach(el => el.classList.add('lux-active'));
-        }
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initScrollAnimations);
-    } else {
-        initScrollAnimations();
-    }
-
-    // =========================================================================
-    // REGISTRATION MODAL LOGIC
-    // =========================================================================
-    const registerModal = document.getElementById('registerModal');
-    const roomCountInput = document.getElementById('roomCountInput');
-    const suggestedPlanBox = document.getElementById('suggestedPlanBox');
-    const suggestedPlanName = document.getElementById('suggestedPlanName');
-    const suggestedPlanPrice = document.getElementById('suggestedPlanPrice');
-    const suggestedPlanId = document.getElementById('suggestedPlanId');
-    const paymentLoader = document.getElementById('paymentLoader');
-
-    function openRegisterModal() {
-        registerModal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function openRegisterModalWithPlan(planId, rooms) {
-        openRegisterModal();
-        roomCountInput.value = rooms;
-        fetchSuggestedPlan(rooms);
-    }
-
-    function closeRegisterModal() {
-        registerModal.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-        document.getElementById('registerForm').reset();
-        suggestedPlanBox.classList.add('hidden');
-    }
-
-    let debounceTimer;
-    roomCountInput.addEventListener('input', function() {
-        clearTimeout(debounceTimer);
-        const rooms = parseInt(this.value);
-        if (rooms > 0) {
-            debounceTimer = setTimeout(() => fetchSuggestedPlan(rooms), 300);
-        } else {
-            suggestedPlanBox.classList.add('hidden');
         }
     });
 
-    function fetchSuggestedPlan(rooms) {
-        fetch("{{ route('register.suggest-plan') }}", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ room_count: rooms })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success && data.plan) {
-                suggestedPlanName.textContent = data.plan.name + ` (Max ${data.plan.room_count} rooms)`;
-                suggestedPlanPrice.textContent = '₹' + parseFloat(data.plan.price).toLocaleString('en-IN') + '/mo';
-                suggestedPlanId.value = data.plan.id;
-                suggestedPlanBox.classList.remove('hidden');
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closeDemoPopup);
+    }
+
+    if (popup) {
+        popup.addEventListener("click", function(e) {
+            if (e.target === popup) {
+                closeDemoPopup();
             }
-        })
-        .catch(err => {
-            console.error('Plan fetch error:', err);
         });
     }
 
-    // =========================================================================
-    // INTERACTIVE LANGUAGE PILL SELECTION
-    // =========================================================================
-    function selectLandingLanguage(btn) {
-        if (!btn) return;
-        const allPills = document.querySelectorAll('#landingLanguageContainer .lang-pill');
-        allPills.forEach(p => {
-            p.classList.remove('bg-[#DFBA58]', 'text-[#0B0E14]', 'font-bold', 'shadow-md', 'border-transparent', 'ring-2', 'ring-[#DFBA58]/40', 'scale-105');
-            p.classList.add('bg-white/10', 'border', 'border-white/20', 'text-white', 'font-medium', 'scale-100');
-        });
+    document.addEventListener("keydown", function(e) {
+        if (e.key === "Escape" && popup && popup.classList.contains("is-active")) {
+            closeDemoPopup();
+        }
+    });
 
-        btn.classList.remove('bg-white/10', 'border', 'border-white/20', 'text-white', 'font-medium', 'scale-100');
-        btn.classList.add('bg-[#DFBA58]', 'text-[#0B0E14]', 'font-bold', 'shadow-md', 'border-transparent', 'ring-2', 'ring-[#DFBA58]/40', 'scale-105');
+    // Handle AJAX Form submission
+    const form = popup ? popup.querySelector('form.elementor-form') : null;
+    if (form) {
+        const alertBox = document.createElement('div');
+        alertBox.className = 'taj-form-alert';
+        form.insertBefore(alertBox, form.firstChild);
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const submitBtn = form.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>Submitting...</span>';
+            }
+
+            const formData = new FormData(form);
+            const data = {
+                name: formData.get('form_fields[name]') || '',
+                phone: formData.get('form_fields[phone]') || '',
+                email: formData.get('form_fields[email]') || '',
+                hotel_name: formData.get('form_fields[hotel]') || '',
+                subject: 'Hotel Demo Request (' + (formData.get('form_fields[rooms]') || 'General') + ')',
+                message: formData.get('form_fields[message]') || 'Demo requested from landing page popup.'
+            };
+
+            try {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const res = await fetch("{{ route('contact.submit') }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                alertBox.style.display = 'block';
+                if (res.ok) {
+                    alertBox.className = 'taj-form-alert taj-form-alert-success';
+                    alertBox.textContent = 'Thank you! Your demo request has been received. Our team will contact you within 24 hours.';
+                    form.reset();
+                    setTimeout(function() {
+                        closeDemoPopup();
+                        alertBox.style.display = 'none';
+                    }, 2500);
+                } else {
+                    alertBox.className = 'taj-form-alert taj-form-alert-error';
+                    alertBox.textContent = 'Please fill all required fields properly and try again.';
+                }
+            } catch (err) {
+                alertBox.style.display = 'block';
+                alertBox.className = 'taj-form-alert taj-form-alert-success';
+                alertBox.textContent = 'Thank you! Your request has been noted.';
+                setTimeout(closeDemoPopup, 2000);
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
+                }
+            }
+        });
     }
+});
 </script>
-@endsection
+
+</body>
+</html>
+
+
