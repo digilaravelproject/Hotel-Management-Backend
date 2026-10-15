@@ -1034,7 +1034,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 				<div class="elementor-element elementor-element-72827994 elementor-widget elementor-widget-heading" data-id="72827994" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
 					<h5 class="elementor-heading-title elementor-size-default">Contact Us</h5>				</div>
 				<div class="elementor-element elementor-element-2cbeb86a elementor-widget elementor-widget-text-editor" data-id="2cbeb86a" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-									<p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📍 Mumbai, India</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📞 +91 98765 43210</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">✉ info@tajhoteltv.com</a></p>								</div>
+									<p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📍 Mumbai, India</a></p><p style="margin:0 0 10px"><a href="#" style="color:#B8BFCC;text-decoration:none">📞 +91 98765 43210</a></p><p style="margin:0 0 10px"><a href="mailto:info@paxtv.com" style="color:#B8BFCC;text-decoration:none">✉ info@paxtv.com</a></p>								</div>
 				<div class="elementor-element elementor-element-6b0c35c2 elementor-widget elementor-widget-button" data-id="6b0c35c2" data-element_type="widget" data-e-type="widget" data-widget_type="button.default">
 										<a class="elementor-button elementor-button-link elementor-size-sm" href="#elementor-action%3Aaction%3Dpopup%3Aopen%26settings%3DeyJpZCI6IjI1MCIsInRvZ2dsZSI6ZmFsc2V9">
 						<span class="elementor-button-content-wrapper">
@@ -1050,7 +1050,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 		<div class="elementor-element elementor-element-384db8e2 e-flex e-con-boxed e-con e-parent" data-id="384db8e2" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;}">
 					<div class="e-con-inner">
 				<div class="elementor-element elementor-element-6405fd9b elementor-widget elementor-widget-text-editor" data-id="6405fd9b" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
-									<p>© 2026 TAJ. All rights reserved.</p>								</div>
+									<p>© 2026 PAX TV. All rights reserved.</p>								</div>
 				<div class="elementor-element elementor-element-58d57d5c elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile elementor-widget elementor-widget-text-editor" data-id="58d57d5c" data-element_type="widget" data-e-type="widget" data-widget_type="text-editor.default">
 									<p><a style="color: #8a93a6; text-decoration: none;" href="#">Privacy Policy</a>  |  <a style="color: #8a93a6; text-decoration: none;" href="#">Terms of Service</a></p>								</div>
 					</div>
