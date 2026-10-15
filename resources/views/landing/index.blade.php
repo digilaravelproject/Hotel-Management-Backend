@@ -8,6 +8,10 @@
 	<link rel="profile" href="https://gmpg.org/xfn/11"> 
 	<title>PAX TV Hospitality | Smart In-Room Entertainment & Guest Experience</title>
 <meta name='robots' content='max-image-preview:large' />
+<link rel="alternate" type="application/rss+xml" title="orange-ibis-943102.hostingersite.com &raquo; Feed" href="/feed/" />
+<link rel="alternate" type="application/rss+xml" title="orange-ibis-943102.hostingersite.com &raquo; Comments Feed" href="/comments/feed/" />
+<link rel="alternate" title="oEmbed (JSON)" type="application/json+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2Forange-ibis-943102.hostingersite.com%2F" />
+<link rel="alternate" title="oEmbed (XML)" type="text/xml+oembed" href="/wp-json/oembed/1.0/embed?url=https%3A%2F%2Forange-ibis-943102.hostingersite.com%2F&#038;format=xml" />
 <style id="wp-img-auto-sizes-contain-inline-css">
 img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /*# sourceURL=wp-img-auto-sizes-contain-inline-css */
@@ -99,8 +103,12 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 <link rel='stylesheet' id='elementor-gf-robotoslab-css' href='https://fonts.googleapis.com/css?family=Roboto+Slab:100,100italic,200,200italic,300,300italic,400,400italic,500,500italic,600,600italic,700,700italic,800,800italic,900,900italic&#038;display=swap' media='all' />
 <script id="jquery-core-js" src="{{ asset('landing-wp/js/jquery.min.js') }}"></script>
 <script id="jquery-migrate-js" src="{{ asset('landing-wp/js/jquery-migrate.min.js') }}"></script>
-<link rel="alternate" title="JSON" type="application/json" href="/wp-json/wp/v2/pages/10" /><link rel="canonical" href="/" />
-<style>
+<link rel="https://api.w.org/" href="/wp-json/" /><link rel="alternate" title="JSON" type="application/json" href="/wp-json/wp/v2/pages/10" /><link rel="EditURI" type="application/rsd+xml" title="RSD" href="/xmlrpc.php?rsd" />
+<meta name="generator" content="WordPress 7.0.7" />
+<link rel="canonical" href="/" />
+<link rel='shortlink' href='/' />
+<meta name="generator" content="Elementor 4.1.4; features: e_font_icon_svg, additional_custom_breakpoints; settings: css_print_method-external, google_font-enabled, font_display-swap">
+			<style>
 				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload),
 				.e-con.e-parent:nth-of-type(n+4):not(.e-lazyloaded):not(.e-no-lazyload) * {
 					background-image: none !important;
@@ -120,36 +128,65 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 			</style>
 			
 <style>
-/* Guarantee smooth scrolling */
+/* Smooth Scroll & Visibility */
 html, body {
     overflow-x: hidden !important;
     overflow-y: auto !important;
     height: auto !important;
     min-height: 100vh !important;
-    position: static !important;
+    scroll-behavior: smooth;
 }
 #page {
     overflow: visible !important;
     height: auto !important;
     min-height: 100vh !important;
 }
-/* Ensure elements are NOT stuck as hidden */
+
+/* Animations: start visible with smooth transitions */
 .elementor-invisible {
-    visibility: visible !important;
-    opacity: 1 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease, transform 0.6s ease;
 }
-/* Popup modal styling */
-#elementor-popup-modal-250 {
+.elementor-invisible.animated,
+.animated {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+@keyframes tajFadeInUp {
+    from { opacity: 0; transform: translate3d(0, 30px, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.fadeInUp { animation: tajFadeInUp 0.8s both !important; }
+
+@keyframes tajFadeInLeft {
+    from { opacity: 0; transform: translate3d(-30px, 0, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.fadeInLeft { animation: tajFadeInLeft 0.8s both !important; }
+
+@keyframes tajFadeInRight {
+    from { opacity: 0; transform: translate3d(30px, 0, 0); }
+    to { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+.fadeInRight { animation: tajFadeInRight 0.8s both !important; }
+
+@keyframes tajZoomIn {
+    from { opacity: 0; transform: scale(0.92); }
+    to { opacity: 1; transform: scale(1); }
+}
+.zoomIn { animation: tajZoomIn 0.8s both !important; }
+
+/* Modal overlay styling */
+#taj-modal-backdrop {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    z-index: 999999 !important;
-    display: none !important;
-    pointer-events: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
+    z-index: 9999999 !important;
+    display: none;
     align-items: center !important;
     justify-content: center !important;
     background-color: rgba(11, 18, 32, 0.85) !important;
@@ -158,29 +195,26 @@ html, body {
     overflow-y: auto !important;
     padding: 20px !important;
     box-sizing: border-box !important;
-    transition: opacity 0.25s ease, visibility 0.25s ease !important;
 }
-#elementor-popup-modal-250.is-active {
+#taj-modal-backdrop.is-open {
     display: flex !important;
-    pointer-events: all !important;
-    visibility: visible !important;
-    opacity: 1 !important;
 }
-#elementor-popup-modal-250 .dialog-widget-content {
+#taj-modal-backdrop .dialog-widget-content {
     position: relative !important;
-    max-width: 940px !important;
+    max-width: 960px !important;
     width: 100% !important;
     margin: auto !important;
     border-radius: 16px !important;
     overflow: hidden !important;
-    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7) !important;
-    animation: tajPopupZoom 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8) !important;
+    animation: tajZoomIn 0.35s ease !important;
 }
-@keyframes tajPopupZoom {
-    from { opacity: 0; transform: scale(0.94); }
-    to { opacity: 1; transform: scale(1); }
+#taj-modal-backdrop [data-elementor-type="popup"] {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
-#elementor-popup-modal-250 .dialog-close-button {
+#taj-modal-backdrop .dialog-close-button {
     position: absolute !important;
     top: 18px !important;
     right: 18px !important;
@@ -193,14 +227,14 @@ html, body {
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
-    z-index: 9999 !important;
+    z-index: 99999 !important;
     transition: all 0.25s ease !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
 }
-#elementor-popup-modal-250 .dialog-close-button:hover {
+#taj-modal-backdrop .dialog-close-button:hover {
     background-color: #ffffff !important;
     color: #E8B65A !important;
-    transform: rotate(90deg) scale(1.08) !important;
+    transform: rotate(90deg) scale(1.1) !important;
 }
 .taj-form-alert {
     padding: 12px 16px;
@@ -210,16 +244,8 @@ html, body {
     font-weight: 500;
     display: none;
 }
-.taj-form-alert-success {
-    background-color: #DCFCE7;
-    color: #166534;
-    border: 1px solid #86EFAC;
-}
-.taj-form-alert-error {
-    background-color: #FEE2E2;
-    color: #991B1B;
-    border: 1px solid #FCA5A5;
-}
+.taj-form-alert-success { background-color: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+.taj-form-alert-error { background-color: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
 </style>
 
 </head>
@@ -241,8 +267,8 @@ class="hfeed site" id="page">
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-6740b18 e-con-full e-flex e-con e-child" data-id="6740b18" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-2020d0f elementor-widget__width-initial elementor-widget elementor-widget-image" data-id="2020d0f" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-																<a href="/">
-							<img fetchpriority="high" width="666" height="375" src="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }}" class="attachment-full size-full wp-image-327" alt="" srcset="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview-300x169.png') }} 300w" sizes="(max-width: 666px) 100vw, 666px" />								</a>
+																<a href="">
+							<img fetchpriority="high" width="666" height="375" src="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }}" class="attachment-full size-full wp-image-327" alt="" srcset="{{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview.png') }} 666w, {{ asset('landing-wp/images/PAX_TV_Hospitality_Logo-removebg-preview-300x169.png') }} 300w" sizes="(max-width: 666px) 100vw, 666px" />								</a>
 															</div>
 				<div class="elementor-element elementor-element-442093b elementor-nav-menu__align-end elementor-nav-menu--stretch elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-nav-menu" data-id="442093b" data-element_type="widget" data-e-type="widget" data-settings="{&quot;full_width&quot;:&quot;stretch&quot;,&quot;layout&quot;:&quot;horizontal&quot;,&quot;submenu_icon&quot;:{&quot;value&quot;:&quot;&lt;svg aria-hidden=\&quot;true\&quot; class=\&quot;e-font-icon-svg e-fas-caret-down\&quot; viewBox=\&quot;0 0 320 512\&quot; xmlns=\&quot;http:\/\/www.w3.org\/2000\/svg\&quot;&gt;&lt;path d=\&quot;M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z\&quot;&gt;&lt;\/path&gt;&lt;\/svg&gt;&quot;,&quot;library&quot;:&quot;fa-solid&quot;},&quot;toggle&quot;:&quot;burger&quot;}" data-widget_type="nav-menu.default">
 								<nav aria-label="Menu" class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-none">
@@ -289,7 +315,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-eecd49a e-con-full e-flex e-con e-child" data-id="eecd49a" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-616b459 elementor-widget elementor-widget-image" data-id="616b459" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img width="320" height="180" src="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM.jpeg') }}" class="attachment-large size-large wp-image-275" alt="" srcset="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM-300x169.jpeg') }} 300w" sizes="(max-width: 320px) 100vw, 320px" />															</div>
+															<img width="320" height="180" src="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM.jpeg') }}" class="attachment-large size-large wp-image-275" alt="" srcset="{{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM.jpeg') }} 320w, {{ asset('landing-wp/images/WhatsApp-Image-2026-10-12-at-3.39.17-PM-300x169.jpeg') }} 300w" sizes="(max-width: 320px) 100vw, 320px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-2e1bacb e-con-full e-flex e-con e-child" data-id="2e1bacb" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-7d709e6 elementor-nav-menu__align-end elementor-nav-menu--stretch elementor-nav-menu--dropdown-tablet elementor-nav-menu__text-align-aside elementor-nav-menu--toggle elementor-nav-menu--burger elementor-widget elementor-widget-nav-menu" data-id="7d709e6" data-element_type="widget" data-e-type="widget" data-settings="{&quot;full_width&quot;:&quot;stretch&quot;,&quot;layout&quot;:&quot;horizontal&quot;,&quot;submenu_icon&quot;:{&quot;value&quot;:&quot;&lt;svg aria-hidden=\&quot;true\&quot; class=\&quot;e-font-icon-svg e-fas-caret-down\&quot; viewBox=\&quot;0 0 320 512\&quot; xmlns=\&quot;http:\/\/www.w3.org\/2000\/svg\&quot;&gt;&lt;path d=\&quot;M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z\&quot;&gt;&lt;\/path&gt;&lt;\/svg&gt;&quot;,&quot;library&quot;:&quot;fa-solid&quot;},&quot;toggle&quot;:&quot;burger&quot;}" data-widget_type="nav-menu.default">
@@ -481,7 +507,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-68e71f63 e-con-full e-flex elementor-invisible e-con e-child" data-id="68e71f63" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
 				<div class="elementor-element elementor-element-6f59d2e6 elementor-widget elementor-widget-image" data-id="6f59d2e6" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img decoding="async" width="1717" height="916" src="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort.png') }}" class="attachment-full size-full wp-image-124" alt="" srcset="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1024x546.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1536x819.png') }} 1536w" sizes="(max-width: 1717px) 100vw, 1717px" />															</div>
+															<img decoding="async" width="1717" height="916" src="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort.png') }}" class="attachment-full size-full wp-image-124" alt="" srcset="{{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort.png') }} 1717w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-300x160.png') }} 300w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1024x546.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-768x410.png') }} 768w, {{ asset('landing-wp/images/Sunset-Welcome-at-the-Oceanfront-Resort-1536x819.png') }} 1536w" sizes="(max-width: 1717px) 100vw, 1717px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-9db4d27 e-con-full e-flex elementor-invisible e-con e-child" data-id="9db4d27" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
 				<div class="elementor-element elementor-element-77570e71 elementor-widget elementor-widget-heading" data-id="77570e71" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
@@ -571,7 +597,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 				</div>
 		<div class="elementor-element elementor-element-f47ed39 e-con-full e-flex e-con e-child" data-id="f47ed39" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-293f5f5 elementor-widget elementor-widget-image" data-id="293f5f5" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="941" height="1220" src="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240.png') }}" class="attachment-full size-full wp-image-104" alt="" srcset="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-231x300.png') }} 231w, {{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-768x996.png') }} 768w" sizes="(max-width: 941px) 100vw, 941px" />															</div>
+															<img loading="lazy" decoding="async" width="941" height="1220" src="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240.png') }}" class="attachment-full size-full wp-image-104" alt="" srcset="{{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240.png') }} 941w, {{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-231x300.png') }} 231w, {{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-790x1024.png') }} 790w, {{ asset('landing-wp/images/Luxury-Resort-Bedroom-at-Tropical-Sunset-e1791466670240-768x996.png') }} 768w" sizes="(max-width: 941px) 100vw, 941px" />															</div>
 				</div>
 					</div>
 				</div>
@@ -687,7 +713,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 				</div>
 		<div class="elementor-element elementor-element-4894003a e-con-full e-flex e-con e-child" data-id="4894003a" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-6ef1a632 elementor-widget elementor-widget-image" data-id="6ef1a632" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV.png') }}" class="attachment-full size-full wp-image-143" alt="" srcset="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV.png') }}" class="attachment-full size-full wp-image-143" alt="" srcset="{{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV.png') }} 1448w, {{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-300x225.png') }} 300w, {{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Sunset-Luxury-Suite-with-Multilingual-TV-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
 				</div>
 					</div>
 				</div>
@@ -695,7 +721,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-1bbd9dda e-con-full e-flex elementor-invisible e-con e-child" data-id="1bbd9dda" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
 				<div class="elementor-element elementor-element-bcd77ac elementor-widget elementor-widget-image" data-id="bcd77ac" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-136" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Luxury-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-136" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Sunset.png') }} 1448w, {{ asset('landing-wp/images/Luxury-Suite-at-Sunset-300x225.png') }} 300w, {{ asset('landing-wp/images/Luxury-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Luxury-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-872e8c6 e-con-full e-flex elementor-invisible e-con e-child" data-id="872e8c6" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
 				<div class="elementor-element elementor-element-46d2549f elementor-widget elementor-widget-heading" data-id="46d2549f" data-element_type="widget" data-e-type="widget" data-widget_type="heading.default">
@@ -943,7 +969,7 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 				</div>
 		<div class="elementor-element elementor-element-3ae8e4cd e-con-full e-flex elementor-invisible e-con e-child" data-id="3ae8e4cd" data-element_type="container" data-e-type="container" data-settings="{&quot;animation&quot;:&quot;fadeInRight&quot;}">
 				<div class="elementor-element elementor-element-6bba1781 elementor-widget elementor-widget-image" data-id="6bba1781" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-160" alt="" srcset="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
+															<img loading="lazy" decoding="async" width="1448" height="1086" src="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset.png') }}" class="attachment-full size-full wp-image-160" alt="" srcset="{{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset.png') }} 1448w, {{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-300x225.png') }} 300w, {{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-1024x768.png') }} 1024w, {{ asset('landing-wp/images/Cinematic-Resort-Suite-at-Sunset-768x576.png') }} 768w" sizes="(max-width: 1448px) 100vw, 1448px" />															</div>
 				</div>
 					</div>
 				</div>
@@ -958,27 +984,27 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 		<div class="elementor-element elementor-element-544e94d0 e-con-full e-flex e-con e-child" data-id="544e94d0" data-element_type="container" data-e-type="container">
 		<div class="elementor-element elementor-element-75671628 e-con-full e-flex e-con e-child" data-id="75671628" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-a3c8110 elementor-widget elementor-widget-image" data-id="a3c8110" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="940" height="790" src="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686.png') }}" class="attachment-full size-full wp-image-164" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-300x252.png') }} 300w, {{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-768x645.png') }} 768w" sizes="(max-width: 940px) 100vw, 940px" />															</div>
+															<img loading="lazy" decoding="async" width="940" height="790" src="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686.png') }}" class="attachment-full size-full wp-image-164" alt="" srcset="{{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686.png') }} 940w, {{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-300x252.png') }} 300w, {{ asset('landing-wp/images/Luxury-Suite-at-Tropical-Sunset-e1791468262686-768x645.png') }} 768w" sizes="(max-width: 940px) 100vw, 940px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-73fca1aa e-con-full e-flex e-con e-child" data-id="73fca1aa" data-element_type="container" data-e-type="container">
 		<div class="elementor-element elementor-element-2099b887 e-con-full e-flex e-con e-child" data-id="2099b887" data-element_type="container" data-e-type="container">
 		<div class="elementor-element elementor-element-358f5098 e-con-full e-flex e-con e-child" data-id="358f5098" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-3c2ecef8 elementor-widget elementor-widget-image" data-id="3c2ecef8" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4.png') }}" class="attachment-full size-full wp-image-153" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4.png') }}" class="attachment-full size-full wp-image-153" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4.png') }} 1672w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-300x169.png') }} 300w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-768x432.png') }} 768w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-39ea9f04 e-con-full e-flex e-con e-child" data-id="39ea9f04" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-16f8d775 elementor-widget elementor-widget-image" data-id="16f8d775" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2.png') }}" class="attachment-full size-full wp-image-155" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2.png') }}" class="attachment-full size-full wp-image-155" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2.png') }} 1672w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-300x169.png') }} 300w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-768x432.png') }} 768w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
 				</div>
 				</div>
 		<div class="elementor-element elementor-element-48e30edf e-con-full e-flex e-con e-child" data-id="48e30edf" data-element_type="container" data-e-type="container">
 		<div class="elementor-element elementor-element-369aee71 e-con-full e-flex e-con e-child" data-id="369aee71" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-4436e7e6 elementor-widget elementor-widget-image" data-id="4436e7e6" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3.png') }}" class="attachment-full size-full wp-image-154" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3.png') }}" class="attachment-full size-full wp-image-154" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3.png') }} 1672w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-300x169.png') }} 300w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-768x432.png') }} 768w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
 				</div>
 		<div class="elementor-element elementor-element-61e2dcec e-con-full e-flex e-con e-child" data-id="61e2dcec" data-element_type="container" data-e-type="container">
 				<div class="elementor-element elementor-element-5dac4c2e elementor-widget elementor-widget-image" data-id="5dac4c2e" data-element_type="widget" data-e-type="widget" data-widget_type="image.default">
-															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1.png') }}" class="attachment-full size-full wp-image-156" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
+															<img loading="lazy" decoding="async" width="1672" height="941" src="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1.png') }}" class="attachment-full size-full wp-image-156" alt="" srcset="{{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1.png') }} 1672w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-300x169.png') }} 300w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1024x576.png') }} 1024w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-768x432.png') }} 768w, {{ asset('landing-wp/images/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1536x864.png') }} 1536w" sizes="(max-width: 1672px) 100vw, 1672px" />															</div>
 				</div>
 				</div>
 				</div>
@@ -1106,14 +1132,13 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
                 </svg></span>	<span class="screen-reader-text">Scroll to Top</span>
 </div>
 		
-<!-- Elementor Pro Modal Wrapper for Demo Request Popup -->
-<div id="elementor-popup-modal-250" class="dialog-type-lightbox elementor-popup-modal dialog-widget dialog-lightbox-widget dialog-type-buttons" style="display: none;">
-    <div class="dialog-widget-content dialog-lightbox-widget-content">
-        <div class="dialog-close-button dialog-lightbox-close-button" role="button" aria-label="Close" tabindex="0">
+<!-- Bulletproof Demo Popup Modal -->
+<div id="taj-modal-backdrop">
+    <div class="dialog-widget-content">
+        <div class="dialog-close-button" role="button" aria-label="Close" tabindex="0">
             <svg viewBox="0 0 1000 1000" width="16" height="16" fill="currentColor"><path d="M742 167L500 408 258 167C246 154 233 150 217 150 196 150 179 158 167 167 154 179 150 196 150 212 150 229 154 242 171 254L408 500 167 742C138 771 138 800 167 829 196 858 225 858 254 829L496 587 738 829C750 842 767 846 783 846 800 846 817 842 829 829 842 817 846 804 846 783 846 767 842 750 829 737L588 500 833 258C863 229 863 200 833 171 804 137 775 137 742 167Z"></path></svg>
         </div>
-        <div class="dialog-message dialog-lightbox-message">
-            <div data-elementor-type="popup" data-elementor-id="250" class="elementor elementor-250 elementor-location-popup" data-elementor-settings="{&quot;entrance_animation&quot;:&quot;zoomIn&quot;,&quot;exit_animation&quot;:&quot;fadeOut&quot;,&quot;entrance_animation_duration&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.7,&quot;sizes&quot;:[]},&quot;prevent_scroll&quot;:&quot;no&quot;,&quot;a11y_navigation&quot;:&quot;yes&quot;,&quot;triggers&quot;:{},&quot;timing&quot;:[]}" data-elementor-post-type="elementor_library">
+        <div data-elementor-type="popup" data-elementor-id="250" class="elementor elementor-250 elementor-location-popup" data-elementor-settings="{&quot;entrance_animation&quot;:&quot;zoomIn&quot;,&quot;exit_animation&quot;:&quot;fadeOut&quot;,&quot;entrance_animation_duration&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.7,&quot;sizes&quot;:[]},&quot;prevent_scroll&quot;:&quot;no&quot;,&quot;a11y_navigation&quot;:&quot;yes&quot;,&quot;triggers&quot;:{},&quot;timing&quot;:[]}" data-elementor-post-type="elementor_library">
 			<div class="elementor-element elementor-element-3445b12c e-con-full e-flex e-con e-parent" data-id="3445b12c" data-element_type="container" data-e-type="container">
 		<div class="elementor-element elementor-element-76bf9104 e-con-full animated-slow taj-pop-left e-flex elementor-invisible e-con e-child" data-id="76bf9104" data-element_type="container" data-e-type="container" data-settings="{&quot;background_background&quot;:&quot;classic&quot;,&quot;animation&quot;:&quot;fadeInLeft&quot;}">
 				<div class="elementor-element elementor-element-5a018849 elementor-invisible elementor-widget elementor-widget-heading" data-id="5a018849" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.2}" data-widget_type="heading.default">
@@ -1223,7 +1248,6 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 				</div>
 				</div>
 				</div>
-        </div>
     </div>
 </div>
 
@@ -1284,73 +1308,126 @@ var ElementorProFrontendConfig = {"ajaxurl":"https:\/\/orange-ibis-943102.hostin
 			<script>
 			/(trident|msie)/i.test(navigator.userAgent)&&document.getElementById&&window.addEventListener&&window.addEventListener("hashchange",function(){var t,e=location.hash.substring(1);/^[A-z0-9_-]+$/.test(e)&&(t=document.getElementById(e))&&(/^(?:a|select|input|button|textarea)$/i.test(t.tagName)||(t.tabIndex=-1),t.focus())},!1);
 			</script>
-			
-
+			<script id="wp-emoji-settings" type="application/json">
+{"baseUrl":"https://s.w.org/images/core/emoji/17.0.2/72x72/","ext":".png","svgUrl":"https://s.w.org/images/core/emoji/17.0.2/svg/","svgExt":".svg","source":{"concatemoji":"{{ asset('landing-wp/js/wp-emoji-release.min.js') }}"}}
+</script>
+<script type="module">
+/*! This file is auto-generated */
+var e="script#wp-emoji-settings",t=document.querySelector(e);if(!(t instanceof HTMLScriptElement))throw new Error("Element missing: "+e);const r=JSON.parse(t.text),s=(window._wpemojiSettings=r,"wpEmojiSettingsSupports"),o=["flag","emoji"];function i(e){try{var t={supportTests:e,timestamp:(new Date).valueOf()};sessionStorage.setItem(s,JSON.stringify(t))}catch(e){}}function c(e,t,n){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);t=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(n,0,0);const r=new Uint32Array(e.getImageData(0,0,e.canvas.width,e.canvas.height).data);return t.every((e,t)=>e===r[t])}function p(e,t){e.clearRect(0,0,e.canvas.width,e.canvas.height),e.fillText(t,0,0);var n=e.getImageData(16,16,1,1);for(let e=0;e<n.data.length;e++)if(0!==n.data[e])return!1;return!0}function u(e,t,n,r){switch(t){case"flag":return n(e,"\ud83c\udff3\ufe0f\u200d\u26a7\ufe0f","\ud83c\udff3\ufe0f\u200b\u26a7\ufe0f")?!1:!n(e,"\ud83c\udde8\ud83c\uddf6","\ud83c\udde8\u200b\ud83c\uddf6")&&!n(e,"\ud83c\udff4\udb40\udc67\udb40\udc62\udb40\udc65\udb40\udc6e\udb40\udc67\udb40\udc7f","\ud83c\udff4\u200b\udb40\udc67\u200b\udb40\udc62\u200b\udb40\udc65\u200b\udb40\udc6e\u200b\udb40\udc67\u200b\udb40\udc7f");case"emoji":return!r(e,"\ud83e\u1fac8")}return!1}function f(e,t,n,r){let a;const s=(a="undefined"!=typeof WorkerGlobalScope&&self instanceof WorkerGlobalScope?new OffscreenCanvas(300,150):document.createElement("canvas")).getContext("2d",{willReadFrequently:!0}),o=(s.textBaseline="top",s.font="600 32px Arial",{});return e.forEach(e=>{o[e]=t(s,e,n,r)}),o}function a(e){var t=document.createElement("script");t.src=e,t.defer=!0,document.head.appendChild(t)}r.supports={everything:!0,everythingExceptFlag:!0},new Promise(t=>{let n=function(){try{var e=JSON.parse(sessionStorage.getItem(s));if("object"==typeof e&&"number"==typeof e.timestamp&&(new Date).valueOf()<e.timestamp+604800&&"object"==typeof e.supportTests)return e.supportTests}catch(e){}return null}();if(!n){if("undefined"!=typeof Worker&&"undefined"!=typeof OffscreenCanvas&&"undefined"!=typeof URL&&URL.createObjectURL&&"undefined"!=typeof Blob)try{var e="postMessage("+f.toString()+"("+[JSON.stringify(o),u.toString(),c.toString(),p.toString()].join(",")+"));",r=new Blob([e],{type:"text/javascript"});const a=new Worker(URL.createObjectURL(r),{name:"wpTestEmojiSupports"});return void(a.onmessage=e=>{i(n=e.data),a.terminate(),t(n)})}catch(e){}i(n=f(o,u,c,p))}t(n)}).then(e=>{for(const n in e)r.supports[n]=e[n],r.supports.everything=r.supports.everything&&r.supports[n],"flag"!==n&&(r.supports.everythingExceptFlag=r.supports.everythingExceptFlag&&r.supports[n]);var t;r.supports.everythingExceptFlag=r.supports.everythingExceptFlag&&!r.supports.flag,r.supports.everything||((t=r.source||{}).concatemoji?a(t.concatemoji):t.wpemoji&&t.twemoji&&(a(t.twemoji),a(t.wpemoji)))});
+//# sourceURL={{ asset('landing-wp/js/wp-emoji-loader.min.js') }}
+</script>
 	
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    // 1. Immediately ensure scroll is unlocked
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-    document.documentElement.classList.remove('dialog-prevent-scroll');
-    document.body.classList.remove('dialog-prevent-scroll');
-
-    const popup = document.getElementById("elementor-popup-modal-250");
-    const closeBtn = popup ? popup.querySelector(".dialog-close-button") : null;
-
-    function openDemoPopup() {
-        if (!popup) return;
-        popup.classList.add("is-active");
-        document.body.style.overflow = "hidden";
-    }
-
-    function closeDemoPopup() {
-        if (!popup) return;
-        popup.classList.remove("is-active");
-        document.body.style.overflow = "";
-    }
-
-    // Attach click handlers to any 'Request Demo' button or popup trigger
-    document.querySelectorAll('a, button').forEach(function(el) {
-        const text = (el.textContent || '').trim().toLowerCase();
-        const href = el.getAttribute('href') || '';
-        if (href.includes('popup:open') || href.includes('250') || text === 'request demo' || text === 'request demo now') {
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
-                openDemoPopup();
+    // 1. SCROLL ENTRANCE ANIMATIONS (IntersectionObserver)
+    const animEls = document.querySelectorAll('.elementor-invisible, [data-settings*="animation"]');
+    if ('IntersectionObserver' in window) {
+        const obs = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const el = entry.target;
+                    let anim = 'fadeInUp';
+                    let delay = 0;
+                    const s = el.getAttribute('data-settings');
+                    if (s) {
+                        try {
+                            const parsed = JSON.parse(s);
+                            anim = parsed._animation || parsed.animation || anim;
+                            delay = (parseFloat(parsed._animation_delay || parsed.animation_delay || 0)) * 1000;
+                        } catch(e) {}
+                    }
+                    setTimeout(() => {
+                        el.classList.remove('elementor-invisible');
+                        el.classList.add('animated', anim);
+                    }, delay);
+                    observer.unobserve(el);
+                }
             });
-        }
-    });
+        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
 
-    if (closeBtn) {
-        closeBtn.addEventListener("click", closeDemoPopup);
-    }
-
-    if (popup) {
-        popup.addEventListener("click", function(e) {
-            if (e.target === popup) {
-                closeDemoPopup();
-            }
+        animEls.forEach(el => obs.observe(el));
+    } else {
+        animEls.forEach(el => {
+            el.classList.remove('elementor-invisible');
+            el.classList.add('animated', 'fadeInUp');
         });
     }
 
-    document.addEventListener("keydown", function(e) {
-        if (e.key === "Escape" && popup && popup.classList.contains("is-active")) {
-            closeDemoPopup();
+    // Fallback: Reveal anything still invisible after 2.5s
+    setTimeout(() => {
+        document.querySelectorAll('.elementor-invisible').forEach(el => {
+            el.classList.remove('elementor-invisible');
+            el.classList.add('animated', 'fadeInUp');
+        });
+    }, 2500);
+
+    // 2. MODAL CONTROLLER
+    const modal = document.getElementById("taj-modal-backdrop");
+    const closeBtn = modal ? modal.querySelector(".dialog-close-button") : null;
+
+    function openModal() {
+        if (!modal) return;
+        modal.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+        modal.querySelectorAll('.elementor-invisible').forEach(el => {
+            el.classList.remove('elementor-invisible');
+            el.classList.add('animated', 'fadeInUp');
+        });
+    }
+
+    function closeModal() {
+        if (!modal) return;
+        modal.classList.remove("is-open");
+        document.body.style.overflow = "";
+    }
+
+    function bindButtons() {
+        document.querySelectorAll('a, button').forEach(el => {
+            const txt = (el.textContent || '').trim().toLowerCase();
+            const href = el.getAttribute('href') || '';
+            if (href.includes('popup:open') || href.includes('250') || txt === 'request demo' || txt === 'request demo now' || txt === 'contact us') {
+                if (!el.dataset.tajBound) {
+                    el.dataset.tajBound = 'true';
+                    el.style.cursor = 'pointer';
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        openModal();
+                    });
+                }
+            }
+        });
+    }
+    bindButtons();
+    setTimeout(bindButtons, 500);
+
+    if (closeBtn) {
+        closeBtn.addEventListener("click", closeModal);
+    }
+    if (modal) {
+        modal.addEventListener("click", (e) => {
+            if (e.target === modal) closeModal();
+        });
+    }
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal && modal.classList.contains("is-open")) {
+            closeModal();
         }
     });
 
-    // Handle AJAX Form submission
-    const form = popup ? popup.querySelector('form.elementor-form') : null;
+    // 3. AJAX LEAD SUBMISSION
+    const form = modal ? modal.querySelector('form.elementor-form') : null;
     if (form) {
-        const alertBox = document.createElement('div');
-        alertBox.className = 'taj-form-alert';
-        form.insertBefore(alertBox, form.firstChild);
+        let alertBox = form.querySelector('.taj-form-alert');
+        if (!alertBox) {
+            alertBox = document.createElement('div');
+            alertBox.className = 'taj-form-alert';
+            form.insertBefore(alertBox, form.firstChild);
+        }
 
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn ? submitBtn.innerHTML : '';
+            const originalText = submitBtn ? submitBtn.innerHTML : '';
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.innerHTML = '<span>Submitting...</span>';
@@ -1383,8 +1460,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     alertBox.className = 'taj-form-alert taj-form-alert-success';
                     alertBox.textContent = 'Thank you! Your demo request has been received. Our team will contact you within 24 hours.';
                     form.reset();
-                    setTimeout(function() {
-                        closeDemoPopup();
+                    setTimeout(() => {
+                        closeModal();
                         alertBox.style.display = 'none';
                     }, 2500);
                 } else {
@@ -1395,11 +1472,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 alertBox.style.display = 'block';
                 alertBox.className = 'taj-form-alert taj-form-alert-success';
                 alertBox.textContent = 'Thank you! Your request has been noted.';
-                setTimeout(closeDemoPopup, 2000);
+                setTimeout(closeModal, 2000);
             } finally {
                 if (submitBtn) {
                     submitBtn.disabled = false;
-                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.innerHTML = originalText;
                 }
             }
         });
