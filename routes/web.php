@@ -23,6 +23,10 @@ Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('
 Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
 Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
 
+// Payment Gateway Callbacks (PayU, etc.)
+Route::match(['get', 'post'], '/payment/success', [\App\Http\Controllers\PaymentCallbackController::class, 'success'])->name('payment.success');
+Route::match(['get', 'post'], '/payment/failure', [\App\Http\Controllers\PaymentCallbackController::class, 'failure'])->name('payment.failure');
+
 // Fallback login route name
 Route::get('/login', function () {
     return redirect()->route('distributor.login');

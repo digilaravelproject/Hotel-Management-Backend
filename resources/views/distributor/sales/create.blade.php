@@ -377,6 +377,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 rzp.open();
+            } else if (orderData.gateway === 'payu' || (orderData.payu_params && orderData.checkout_url)) {
+                if (submitLabel) submitLabel.textContent = 'Redirecting to PayU...';
+                const payuForm = document.createElement('form');
+                payuForm.method = 'POST';
+                payuForm.action = orderData.checkout_url;
+                payuForm.style.display = 'none';
+
+                const params = orderData.payu_params || {};
+                Object.keys(params).forEach(function(key) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = params[key];
+                    payuForm.appendChild(input);
+                });
+
+                document.body.appendChild(payuForm);
+                payuForm.submit();
             } else if (orderData.checkout_url && orderData.checkout_url !== '#') {
                 window.location.href = orderData.checkout_url;
             } else {

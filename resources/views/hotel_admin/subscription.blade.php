@@ -85,7 +85,8 @@
         <p id="payMsg" class="text-xs text-[#64748B] hidden"></p>
     </div>
 </div>
-@endsection@section('scripts')
+@endsection
+@section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const planRadios = document.querySelectorAll('.plan-radio');
@@ -103,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!sel) return { amount: 0, planId: null, months: 1 };
         const price = parseFloat(sel.dataset.price) || 0;
         const months = parseInt(durationSelect.value) || 1;
-        totalBox.textContent = '?' + (price * months).toLocaleString();
+        totalBox.textContent = '₹' + (price * months).toLocaleString();
         return { amount: price * months, planId: sel.value, months: months };
     }
     planRadios.forEach(r => r.addEventListener('change', calc));
@@ -113,7 +114,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function setMsg(text, isError) {
         payMsg.textContent = text;
         payMsg.className = 'text-xs ' + (isError ? 'text-[#DC2626] font-bold' : 'text-[#64748B]');
-    }    payBtn.addEventListener('click', async function() {
+    }
+
+    payBtn.addEventListener('click', async function() {
         if (processing) return;
         const d = calc();
         if (!d.planId) { setMsg('Please select a plan first.', true); return; }
@@ -130,6 +133,28 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             const data = await res.json();
             if (!res.ok || !data.success) throw new Error(data.message || 'Could not create order.');
+
+            if (data.gateway === 'payu' || (data.payu_params && data.checkout_url)) {
+                setMsg('Redirecting to PayU...', false);
+                const payuForm = document.createElement('form');
+                payuForm.method = 'POST';
+                payuForm.action = data.checkout_url;
+                payuForm.style.display = 'none';
+
+                const params = data.payu_params || {};
+                Object.keys(params).forEach(function(k) {
+                    const inp = document.createElement('input');
+                    inp.type = 'hidden';
+                    inp.name = k;
+                    inp.value = params[k];
+                    payuForm.appendChild(inp);
+                });
+
+                document.body.appendChild(payuForm);
+                payuForm.submit();
+                return;
+            }
+
             if (typeof Razorpay === 'undefined') throw new Error('Razorpay failed to load. Refresh page.');
             const rzp = new Razorpay({
                 key: data.key_id, order_id: data.order_id,

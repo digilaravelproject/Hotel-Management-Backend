@@ -58,8 +58,14 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
             ];
         }
 
+        $udf1 = $customerDetails['udf1'] ?? '';
+        $udf2 = $customerDetails['udf2'] ?? '';
+        $udf3 = $customerDetails['udf3'] ?? '';
+        $udf4 = $customerDetails['udf4'] ?? '';
+        $udf5 = $customerDetails['udf5'] ?? '';
+
         // PayU Hash formula: sha512(key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5||||||SALT)
-        $hashString = "{$merchantKey}|{$txnid}|{$amount}|{$productInfo}|{$firstName}|{$email}|||||||||||{$merchantSalt}";
+        $hashString = "{$merchantKey}|{$txnid}|{$amount}|{$productInfo}|{$firstName}|{$email}|{$udf1}|{$udf2}|{$udf3}|{$udf4}|{$udf5}||||||{$merchantSalt}";
         $hash = strtolower(hash('sha512', $hashString));
 
         $baseUrl = $isLive
@@ -81,6 +87,11 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
                 'firstname' => $firstName,
                 'email' => $email,
                 'phone' => $phone,
+                'udf1' => $udf1,
+                'udf2' => $udf2,
+                'udf3' => $udf3,
+                'udf4' => $udf4,
+                'udf5' => $udf5,
                 'hash' => $hash,
                 'surl' => route('payment.success'),
                 'furl' => route('payment.failure'),
@@ -104,6 +115,11 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
         $firstName = $payload['firstname'] ?? '';
         $email = $payload['email'] ?? '';
         $receivedHash = $payload['hash'] ?? '';
+        $udf1 = $payload['udf1'] ?? '';
+        $udf2 = $payload['udf2'] ?? '';
+        $udf3 = $payload['udf3'] ?? '';
+        $udf4 = $payload['udf4'] ?? '';
+        $udf5 = $payload['udf5'] ?? '';
 
         if (empty($merchantSalt) || empty($receivedHash)) {
             return $status === 'success';
@@ -111,7 +127,7 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
 
         // Reverse hash calculation for PayU response verification:
         // salt|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key
-        $hashString = "{$merchantSalt}|{$status}|||||||||||{$email}|{$firstName}|{$productInfo}|{$amount}|{$txnid}|{$merchantKey}";
+        $hashString = "{$merchantSalt}|{$status}||||||{$udf5}|{$udf4}|{$udf3}|{$udf2}|{$udf1}|{$email}|{$firstName}|{$productInfo}|{$amount}|{$txnid}|{$merchantKey}";
         $calculatedHash = strtolower(hash('sha512', $hashString));
 
         return $status === 'success' && hash_equals($calculatedHash, $receivedHash);

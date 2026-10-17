@@ -45,6 +45,12 @@ class SubscriptionController extends Controller
                 'name' => $hotel->hotel_name ?? '',
                 'email' => $hotel->email ?? '',
                 'phone' => $hotel->phone ?? '',
+                'product_info' => 'Plan: ' . $plan->name,
+                'udf1' => (string) $hotel->id,
+                'udf2' => (string) $plan->id,
+                'udf3' => (string) $validated['duration_months'],
+                'udf4' => (string) $hotel->id,
+                'udf5' => 'hotel_subscription',
             ]);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Payment init failed: ' . $e->getMessage()], 422);

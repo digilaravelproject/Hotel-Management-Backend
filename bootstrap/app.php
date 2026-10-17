@@ -36,6 +36,10 @@ return Application::configure(basePath: dirname(__DIR__))
             return route('landing');
         });
 
+        $middleware->validateCsrfTokens(except: [
+            'payment/*',
+        ]);
+
         $middleware->alias([
             'super_admin' => \App\Http\Middleware\SuperAdminMiddleware::class,
             'hotel_admin' => \App\Http\Middleware\HotelAdminMiddleware::class,

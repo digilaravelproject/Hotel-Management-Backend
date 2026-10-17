@@ -199,8 +199,15 @@ class DistributorController extends Controller
             }
 
             $order = $gateway->createOrder($amount, 'DSALE-' . strtoupper(Str::random(10)), [
+                'name' => $user->name ?? '',
                 'email' => $user->email ?? '',
                 'phone' => $user->phone ?? '',
+                'product_info' => 'Plan: ' . $plan->name,
+                'udf1' => (string) $hotel->id,
+                'udf2' => (string) $plan->id,
+                'udf3' => (string) $validated['duration_months'],
+                'udf4' => (string) $user->id,
+                'udf5' => 'distributor_sale',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -216,6 +223,8 @@ class DistributorController extends Controller
             'order_id' => $order['order_id'],
             'amount' => $order['amount'] ?? $amount,
             'currency' => $order['currency'] ?? 'INR',
+            'checkout_url' => $order['checkout_url'] ?? null,
+            'payu_params' => $order['payu_params'] ?? null,
             'name' => $user->name ?? '',
             'email' => $user->email ?? '',
             'phone' => $user->phone ?? '',
@@ -247,14 +256,15 @@ class DistributorController extends Controller
         }
 
         $gateway = PaymentManager::active();
+        $code = $gateway->getCode();
 
-        $payload = match ($gateway->getCode()) {
-            'payu' => $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash']),
-            'icici' => $request->only(['encrypted_response', 'order_id', 'status', 'reference_id']),
-            default => $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']),
-        };
-
-        $transactionId = $payload['razorpay_payment_id'] ?? $payload['txnid'] ?? $payload['reference_id'] ?? $request->input('transaction_id');
+        if ($code === 'payu') {
+            $payload = $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash']);
+            $transactionId = $payload['txnid'] ?? '';
+        } else {
+            $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
+            $transactionId = $payload['razorpay_payment_id'] ?? '';
+        }
 
         if (empty($transactionId) && empty($payload['razorpay_order_id'])) {
             return $this->gatewaySaleResponse(
@@ -268,8 +278,8 @@ class DistributorController extends Controller
             PaymentTransaction::create([
                 'distributor_id' => $user->id,
                 'hotel_admin_id' => $hotel->id,
-                'gateway_code' => $gateway->getCode(),
-                'transaction_id' => (string) ($transactionId ?? 'failed_' . time()),
+                'gateway_code' => $code,
+                'transaction_id' => (string) ($transactionId ?: 'failed_' . time()),
                 'amount' => $computedAmount,
                 'currency' => 'INR',
                 'status' => 'failed',
