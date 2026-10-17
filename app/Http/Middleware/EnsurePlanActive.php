@@ -20,11 +20,11 @@ class EnsurePlanActive
         $hasPaidPlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
 
         $allowedRoutes = [
-            'hotel.dashboard',
             'hotel.package',
+            'hotel.subscription',
+            'hotel.subscription.order',
+            'hotel.subscription.purchase',
             'hotel.subscribe',
-            'hotel.profile',
-            'hotel.hotel-info',
             'hotel.logout',
         ];
 
@@ -37,8 +37,8 @@ class EnsurePlanActive
                     'error' => 'An active subscription plan is required to access this feature.'
                 ], 403);
             }
-            return redirect()->route('hotel.dashboard')
-                             ->with('error', 'Please subscribe to an active plan to access hotel features.');
+            return redirect()->route('hotel.package')
+                             ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
         }
 
         return $next($request);

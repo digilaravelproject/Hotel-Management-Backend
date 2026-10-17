@@ -222,11 +222,15 @@ class HotelDeviceAddTest extends TestCase
 
         $this->assertEquals(0, $hotelWithoutPlan->allowed_device_limit);
 
-        // Dashboard renders 0 / 0
+        // Unpaid hotel is redirected to package page where device limit is 0 TVs
         $response = $this->actingAs($hotelWithoutPlan, 'hotel_admin')
                          ->get(route('hotel.dashboard'));
-        $response->assertStatus(200);
-        $response->assertSee('0 / 0');
+        $response->assertRedirect(route('hotel.package'));
+
+        $packageResponse = $this->actingAs($hotelWithoutPlan, 'hotel_admin')
+                                ->get(route('hotel.package'));
+        $packageResponse->assertStatus(200);
+        $packageResponse->assertSee('0 TVs');
     }
 
     public function test_hotel_with_expired_plan_has_zero_allowed_devices(): void

@@ -28,7 +28,9 @@ class OttController extends Controller
             return in_array($ott['package'], $planPackageNames);
         });
 
-        return view('hotel_admin.ott.package', compact('hotel', 'plan', 'assignedPlatforms'));
+        $availablePlans = Plan::where('status', true)->orderBy('room_count', 'asc')->get();
+
+        return view('hotel_admin.ott.package', compact('hotel', 'plan', 'assignedPlatforms', 'availablePlans'));
     }
 
     /**

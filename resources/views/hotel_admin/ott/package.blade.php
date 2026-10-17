@@ -5,13 +5,45 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto space-y-6">
+    @if($hotel->payment_status !== 'paid' || !$plan || ($hotel->expiry_date && $hotel->expiry_date->isPast()))
+        <!-- Unpaid / Inactive Alert Banner -->
+        <div class="p-6 rounded-2xl bg-amber-50 border-2 border-amber-300/80 text-amber-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+            <div class="flex items-start space-x-3.5">
+                <div class="w-10 h-10 rounded-xl bg-amber-200/80 text-amber-800 flex items-center justify-center shrink-0 mt-0.5">
+                    <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+                </div>
+                <div class="space-y-1">
+                    <h4 class="text-sm font-extrabold text-amber-900">Subscription Inactive — Payment Required</h4>
+                    <p class="text-xs text-amber-800/90 leading-relaxed">
+                        Your hotel account is currently in <strong>Unpaid / Inactive</strong> status. TV devices cannot connect and panel features remain locked until payment is completed.
+                    </p>
+                </div>
+            </div>
+            @if($hotel->distributor)
+                <div class="text-left sm:text-right shrink-0 bg-white/70 px-4 py-2 rounded-xl border border-amber-200">
+                    <span class="text-[10px] font-bold text-amber-700 uppercase tracking-wider block">Assigned Distributor</span>
+                    <span class="text-xs font-extrabold text-amber-950">{{ $hotel->distributor->name }}</span>
+                    <p class="text-[11px] text-amber-800 font-semibold">{{ $hotel->distributor->phone ?? $hotel->distributor->email }}</p>
+                </div>
+            @endif
+        </div>
+    @endif
+
     <!-- Active Plan Header Card -->
     <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E2E8F0] pb-6">
             <div class="space-y-1">
-                @if($hotel->expiry_date && $hotel->expiry_date->isPast())
+                @if($hotel->payment_status !== 'paid')
                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs font-bold uppercase tracking-wider">
-                        <span class="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse mr-1.5"></span> Plan Expired
+                        <span class="w-2 h-2 rounded-full bg-[#DC2626] animate-pulse mr-1.5"></span> Unpaid / Inactive
+                    </span>
+                @elseif(!$plan)
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 border border-slate-300 text-slate-700 text-xs font-bold uppercase tracking-wider">
+                        No Active Plan
+                    </span>
+                @elseif($hotel->expiry_date && $hotel->expiry_date->isPast())
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-xs font-bold uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-[#DC2626] mr-1.5"></span> Plan Expired
                     </span>
                 @else
                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#DCFCE7] border border-[#16A34A]/20 text-[#16A34A] text-xs font-bold uppercase tracking-wider">
@@ -50,16 +82,22 @@
 
             <div class="bg-[#F9F5EB] border border-[#C5A059]/20 rounded-xl p-4 space-y-1">
                 <span class="text-[10px] font-bold text-[#64748B] uppercase tracking-wider block">Subscription Status</span>
-                @if($hotel->expiry_date)
-                    @if($hotel->expiry_date->isPast())
-                        <p class="text-sm font-extrabold text-[#DC2626]">
-                            <i class="fa-solid fa-circle-exclamation mr-1.5"></i> Expired
-                        </p>
-                    @else
-                        <p class="text-sm font-extrabold text-[#16A34A]">
-                            <i class="fa-solid fa-shield-check mr-1.5"></i> {{ ceil(now()->diffInHours($hotel->expiry_date)/24) }} Days Remaining
-                        </p>
-                    @endif
+                @if($hotel->payment_status !== 'paid')
+                    <p class="text-sm font-extrabold text-rose-600">
+                        <i class="fa-solid fa-lock mr-1.5"></i> Unpaid (Locked)
+                    </p>
+                @elseif(!$plan)
+                    <p class="text-sm font-extrabold text-slate-500">
+                        <i class="fa-solid fa-circle-minus mr-1.5"></i> No Plan
+                    </p>
+                @elseif($hotel->expiry_date && $hotel->expiry_date->isPast())
+                    <p class="text-sm font-extrabold text-rose-600">
+                        <i class="fa-solid fa-circle-exclamation mr-1.5"></i> Expired
+                    </p>
+                @elseif($hotel->expiry_date)
+                    <p class="text-sm font-extrabold text-emerald-600">
+                        <i class="fa-solid fa-shield-check mr-1.5"></i> {{ ceil(now()->diffInHours($hotel->expiry_date)/24) }} Days Remaining
+                    </p>
                 @else
                     <p class="text-sm font-extrabold text-[#64748B]">N/A</p>
                 @endif

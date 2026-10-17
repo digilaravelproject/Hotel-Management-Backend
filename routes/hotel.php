@@ -37,6 +37,12 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::get('/hotel/profile', [ProfileController::class, 'showProfileForm'])->name('hotel.profile');
     Route::post('/hotel/profile', [ProfileController::class, 'updateProfile']);
 
+    // Subscription: self-service plan purchase / upgrade / renewal
+    Route::get('/hotel/subscription', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'index'])->name('hotel.subscription');
+    Route::post('/hotel/subscription/order', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'createOrder'])->name('hotel.subscription.order');
+    Route::post('/hotel/subscription/purchase', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'purchase'])->name('hotel.subscription.purchase');
+
+
     // 2FA Management Endpoints
     Route::post('/hotel/2fa/generate', [\App\Http\Controllers\TwoFactorController::class, 'generate'])->name('hotel.2fa.generate');
     Route::post('/hotel/2fa/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('hotel.2fa.enable');

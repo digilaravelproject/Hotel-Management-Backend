@@ -66,6 +66,10 @@
                     <i class="fa-solid fa-chart-line text-base w-5 text-center {{ Request::routeIs('hotel.dashboard') ? 'text-[#C5A059]' : 'text-[#FCE7F3]' }}"></i>
                     <span>Dashboard</span>
                 </a>
+                <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-[#8A1C56] text-[#C5A059] font-bold border-l-4 border-[#C5A059] shadow-md shadow-[#8A1C56]/40' : 'text-[#FCE7F3] hover:text-[#FFFFFF] hover:bg-[#8A1C56]/60' }}">
+                    <i class="fa-solid fa-credit-card text-base w-5 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#C5A059]' : 'text-[#FCE7F3]' }}"></i>
+                    <span>Plan & Billing</span>
+                </a>
                 <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.package') ? 'bg-[#8A1C56] text-[#C5A059] font-bold border-l-4 border-[#C5A059] shadow-md shadow-[#8A1C56]/40' : 'text-[#FCE7F3] hover:text-[#FFFFFF] hover:bg-[#8A1C56]/60' }}">
                     <i class="fa-solid fa-brands fa-google-play text-base w-5 text-center {{ Request::routeIs('hotel.package') ? 'text-[#C5A059]' : 'text-[#FCE7F3]' }}"></i>
                     <span>OTT Apps Control</span>

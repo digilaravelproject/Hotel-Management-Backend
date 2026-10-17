@@ -276,4 +276,41 @@ class TvApiTest extends TestCase
         $this->assertNotNull($demoRes->json('server_time'));
         $this->assertIsInt($demoRes->json('timestamp'));
     }
+
+    public function test_unpaid_hotel_license_key_cannot_login_on_tv(): void
+    {
+        $plan = Plan::create([
+            'name' => 'Standard Plan',
+            'room_count' => 15,
+            'price' => '1999.00',
+            'status' => true,
+        ]);
+
+        $unpaidHotel = HotelAdmin::create([
+            'owner_name' => 'Unpaid Owner',
+            'email' => 'unpaid@hotel.com',
+            'password' => bcrypt('password123'),
+            'phone' => '9888877777',
+            'hotel_name' => 'Unpaid Hotel',
+            'hotel_location' => 'Mumbai',
+            'room_count' => 15,
+            'plan_id' => $plan->id,
+            'payment_status' => 'unpaid',
+            'license_key' => 'UNPAID-KEY-9999',
+            'approval_status' => 'approved',
+            'status' => true,
+        ]);
+
+        $response = $this->postJson('/api/tv/login', [
+            'license_key' => 'UNPAID-KEY-9999',
+            'room_no' => '101',
+            'deviceId' => 'DEV_UNPAID_TV_001',
+            'macAddress' => 'AA:BB:CC:DD:EE:FF',
+        ]);
+
+        $response->assertStatus(403);
+        $response->assertJsonFragment([
+            'message' => 'Subscription payment is pending. Please complete your subscription payment to activate TV devices.',
+        ]);
+    }
 }

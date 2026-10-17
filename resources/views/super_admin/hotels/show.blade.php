@@ -150,16 +150,20 @@
                     <div class="space-y-2.5 text-xs">
                         <div class="flex items-center justify-between gap-3 border-b border-slate-200/50 pb-2">
                             <span class="text-slate-500 font-semibold shrink-0">Room / TV Limit</span>
-                            <span class="font-extrabold text-slate-900 bg-slate-200/70 px-2 py-0.5 rounded-md text-right whitespace-nowrap">{{ $hotel->room_count }} TVs Authorized</span>
+                            @if($hotel->payment_status === 'paid' && $hotel->plan_id && (!$hotel->expiry_date || $hotel->expiry_date->isFuture()))
+                                <span class="font-extrabold text-slate-900 bg-slate-200/70 px-2 py-0.5 rounded-md text-right whitespace-nowrap">{{ $hotel->allowed_device_limit }} TVs Authorized</span>
+                            @else
+                                <span class="font-extrabold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md text-right whitespace-nowrap">0 TVs Active (Unpaid)</span>
+                            @endif
                         </div>
                         <div class="flex items-center justify-between gap-3 border-b border-slate-200/50 pb-2">
                             <span class="text-slate-500 font-semibold shrink-0">Active Plan Tier</span>
-                            <span class="font-extrabold text-indigo-600 text-right truncate">{{ $hotel->plan->name ?? 'Trial' }}</span>
+                            <span class="font-extrabold {{ $hotel->plan ? 'text-indigo-600' : 'text-slate-500' }} text-right truncate">{{ $hotel->plan->name ?? 'None (No Active Plan)' }}</span>
                         </div>
                         <div class="flex items-center justify-between gap-3 border-b border-slate-200/50 pb-2">
                             <span class="text-slate-500 font-semibold shrink-0">Payment State</span>
                             <span class="font-extrabold text-right {{ $hotel->payment_status === 'paid' ? 'text-emerald-600' : 'text-rose-600' }}">
-                                {{ $hotel->payment_status === 'paid' ? 'Paid (Razorpay)' : 'Unpaid' }}
+                                {{ $hotel->payment_status === 'paid' ? 'Paid' : 'Unpaid (Pending)' }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 border-b border-slate-200/50 pb-2">
@@ -199,14 +203,25 @@
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
+                            @if($hotel->payment_status !== 'paid' || !$hotel->plan_id || ($hotel->expiry_date && $hotel->expiry_date->isPast()))
+                                <p class="text-[11px] text-rose-600 font-bold mt-1">
+                                    <i class="fa-solid fa-lock mr-1 text-rose-500"></i> Locked: TVs cannot connect until payment is completed.
+                                </p>
+                            @endif
                         @else
                             <span class="text-xs text-[#64748B] italic">No key generated yet. Complete payment first.</span>
                         @endif
                     </div>
                     
-                    <span class="px-3.5 py-1.5 rounded-full bg-white border border-[#D4AF37]/30 text-[#0F2537] text-xs font-bold shrink-0">
-                        <i class="fa-solid fa-tv mr-1 text-[#D4AF37]"></i> Valid for {{ $hotel->room_count }} TV Connections
-                    </span>
+                    @if($hotel->payment_status === 'paid' && $hotel->plan_id && (!$hotel->expiry_date || $hotel->expiry_date->isFuture()))
+                        <span class="px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shrink-0">
+                            <i class="fa-solid fa-tv mr-1 text-emerald-600"></i> Valid for {{ $hotel->allowed_device_limit }} TV Connections
+                        </span>
+                    @else
+                        <span class="px-3.5 py-1.5 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold shrink-0">
+                            <i class="fa-solid fa-lock mr-1 text-rose-600"></i> Inactive (Payment Required)
+                        </span>
+                    @endif
                 </div>
             </div>
 

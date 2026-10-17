@@ -126,6 +126,15 @@ class TvLoginService
             throw new HttpException(403, 'Invalid or inactive license key');
         }
 
+        // Validate plan subscription and payment status
+        if ($hotel->payment_status !== 'paid' || !$hotel->plan_id) {
+            throw new HttpException(403, 'Subscription payment is pending. Please complete your subscription payment to activate TV devices.');
+        }
+
+        if ($hotel->expiry_date && $hotel->expiry_date->isPast()) {
+            throw new HttpException(403, 'Subscription plan has expired. Please renew your subscription to continue using TV services.');
+        }
+
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
 

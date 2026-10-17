@@ -37,19 +37,19 @@ class HotelAdminMiddleware
             return redirect()->route('landing')->with('error', 'Your account is currently inactive.');
         }
 
-        // 3. Check Subscription & Payment Status: Allow dashboard, package, profile, & subscription page; block other features
+        // 3. Check Subscription & Payment Status: If no active plan, unpaid, or expired, lock panel and force to Package / Payment page
         $hasActivePlan = $hotelAdmin->plan_id 
             && $hotelAdmin->payment_status === 'paid' 
             && ($hotelAdmin->expiry_date === null || $hotelAdmin->expiry_date->isFuture());
 
         if (!$hasActivePlan) {
-            // Allow dashboard, package details, profile and subscription/payment routes
+            // Only allow package/subscription page, payment submit, and sign out
             $allowedRoutes = [
-                'hotel.dashboard',
                 'hotel.package',
+                'hotel.subscription',
+                'hotel.subscription.order',
+                'hotel.subscription.purchase',
                 'hotel.subscribe',
-                'hotel.profile',
-                'hotel.hotel-info',
                 'hotel.logout',
             ];
 
@@ -59,11 +59,11 @@ class HotelAdminMiddleware
                 if ($request->wantsJson()) {
                     return response()->json([
                         'success' => false,
-                        'error' => 'Payment required. Please complete your subscription payment to access this feature.'
+                        'error' => 'Payment required. An active subscription is required to access hotel features.'
                     ], 403);
                 }
-                return redirect()->route('hotel.dashboard')
-                                 ->with('error', 'Please complete your subscription payment to unlock panel features.');
+                return redirect()->route('hotel.package')
+                                 ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
             }
         }
 
