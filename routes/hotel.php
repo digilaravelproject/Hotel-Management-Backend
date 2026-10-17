@@ -31,7 +31,7 @@ Route::get('/hotel/reset-password', [ForgotPasswordController::class, 'showReset
 Route::post('/hotel/reset-password', [ForgotPasswordController::class, 'reset']);
 
 // Hotel Admin Dashboard (Protected by custom hotel_admin middleware)
-Route::middleware(['hotel_admin', '2fa'])->group(function () {
+Route::middleware(['hotel_admin', '2fa', 'plan.active'])->group(function () {
     Route::get('/hotel/dashboard', [HotelDashboardController::class, 'index'])->name('hotel.dashboard');
     Route::post('/hotel/subscribe', [HotelDashboardController::class, 'subscribe'])->name('hotel.subscribe');
     Route::get('/hotel/profile', [ProfileController::class, 'showProfileForm'])->name('hotel.profile');

@@ -12,6 +12,8 @@ use App\Http\Controllers\SuperAdmin\UserController as SuperUserController;
 
 use App\Http\Controllers\SuperAdmin\FirebaseSettingsController as SuperFirebaseSettingsController;
 
+use App\Http\Controllers\SuperAdmin\PaymentSettingController;
+
 /*
 |--------------------------------------------------------------------------
 | Super Admin Routes
@@ -91,6 +93,10 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     // Application & System Branding Settings
     Route::get('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [\App\Http\Controllers\SuperAdmin\SettingController::class, 'update'])->name('settings.update');
+
+    // Payment Gateway Settings & Multi-Gateway Architecture
+    Route::get('payment-settings', [PaymentSettingController::class, 'index'])->name('payment-settings.index');
+    Route::post('payment-settings', [PaymentSettingController::class, 'update'])->name('payment-settings.update');
 
     // Commission Settings (Global)
     Route::get('commissions/settings', [\App\Http\Controllers\SuperAdmin\CommissionController::class, 'settings'])->name('commissions.settings');

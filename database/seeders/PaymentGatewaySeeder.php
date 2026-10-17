@@ -12,16 +12,32 @@ class PaymentGatewaySeeder extends Seeder
      */
     public function run(): void
     {
-        PaymentGateway::updateOrCreate(
-            ['code' => 'icici'],
+        $gateways = [
             [
                 'name' => 'ICICI Payment Gateway',
-                'is_enabled' => false, // Disabled by default as requested
+                'code' => 'icici',
+                'is_enabled' => true,
                 'mode' => 'sandbox',
-                'api_key' => null,
-                'api_secret' => null,
-                'merchant_id' => null,
-            ]
-        );
+            ],
+            [
+                'name' => 'Razorpay',
+                'code' => 'razorpay',
+                'is_enabled' => false,
+                'mode' => 'sandbox',
+            ],
+            [
+                'name' => 'PayU',
+                'code' => 'payu',
+                'is_enabled' => false,
+                'mode' => 'sandbox',
+            ],
+        ];
+
+        foreach ($gateways as $gateway) {
+            PaymentGateway::updateOrCreate(
+                ['code' => $gateway['code']],
+                $gateway
+            );
+        }
     }
 }
