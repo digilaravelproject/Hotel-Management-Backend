@@ -17,10 +17,28 @@ class EnsurePlanActive
         $hotel = Auth::guard('hotel_admin')->user();
         $hotel->loadMissing('plan');
 
-        $hasPaidPlan = $hotel->plan && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        $hasPaidPlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
 
-        if (!$hasPaidPlan && !$request->routeIs('hotel.package') && !$request->routeIs('hotel.subscribe')) {
-            return redirect()->route('hotel.package');
+        $allowedRoutes = [
+            'hotel.dashboard',
+            'hotel.package',
+            'hotel.subscribe',
+            'hotel.profile',
+            'hotel.hotel-info',
+            'hotel.logout',
+        ];
+
+        $currentRoute = $request->route()?->getName();
+
+        if (!$hasPaidPlan && $currentRoute && !in_array($currentRoute, $allowedRoutes)) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'error' => 'An active subscription plan is required to access this feature.'
+                ], 403);
+            }
+            return redirect()->route('hotel.dashboard')
+                             ->with('error', 'Please subscribe to an active plan to access hotel features.');
         }
 
         return $next($request);

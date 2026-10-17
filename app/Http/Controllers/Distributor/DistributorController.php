@@ -7,6 +7,8 @@ use App\Models\HotelAdmin;
 use App\Models\Plan;
 use App\Models\DistributorSale;
 use App\Models\ConnectedDevice;
+use App\Models\PaymentTransaction;
+use App\Services\PaymentManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -158,6 +160,61 @@ class DistributorController extends Controller
     }
 
     /**
+     * Create a payment gateway order (AJAX) for online gateway sales.
+     * Returns the gateway order id + key needed to open Razorpay Checkout on the frontend.
+     */
+    public function createSaleOrder(Request $request)
+    {
+        $user = auth()->user();
+
+        $validated = $request->validate([
+            'hotel_id' => 'required|exists:hotel_admins,id',
+            'plan_id' => 'required|exists:plans,id',
+            'duration_months' => 'required|integer|in:1,3,6,12',
+        ]);
+
+        // Security check: hotel must belong to the authenticated distributor
+        $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
+        $plan = Plan::findOrFail($validated['plan_id']);
+
+        // Amount is always computed server-side to prevent tampering
+        $amount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+
+        try {
+            $gateway = PaymentManager::active();
+
+            if (!$gateway->isEnabled()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No online payment gateway is currently enabled. Please contact support.',
+                ], 422);
+            }
+
+            $order = $gateway->createOrder($amount, 'DSALE-' . strtoupper(Str::random(10)), [
+                'email' => $user->email ?? '',
+                'phone' => $user->phone ?? '',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to initialize payment: ' . $e->getMessage(),
+            ], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'gateway' => $gateway->getCode(),
+            'key_id' => $order['key_id'] ?? null,
+            'order_id' => $order['order_id'],
+            'amount' => $order['amount'] ?? $amount,
+            'currency' => $order['currency'] ?? 'INR',
+            'name' => $user->name ?? '',
+            'email' => $user->email ?? '',
+            'phone' => $user->phone ?? '',
+        ]);
+    }
+
+    /**
      * Process package sale and update hotel license/validity using HotelService.
      */
     public function storeSale(\App\Http\Requests\StoreDistributorSaleRequest $request)
@@ -169,6 +226,64 @@ class DistributorController extends Controller
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
         $plan = Plan::findOrFail($validated['plan_id']);
 
+        // Amount is always computed server-side for gateway sales to prevent tampering
+        $computedAmount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+
+        // Online gateway payments must carry a verified Razorpay response
+        if (($validated['payment_method'] ?? '') === 'online_gateway') {
+            $gateway = PaymentManager::active();
+
+            $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
+
+            if (empty($payload['razorpay_order_id']) || empty($payload['razorpay_payment_id'])) {
+                return $this->gatewaySaleResponse(
+                    $request,
+                    false,
+                    'Online payment was not completed. No payment reference received from the gateway.'
+                );
+            }
+
+            if (!$gateway->verifyPayment($payload)) {
+                PaymentTransaction::create([
+                    'distributor_id' => $user->id,
+                    'hotel_admin_id' => $hotel->id,
+                    'gateway_code' => $gateway->getCode(),
+                    'transaction_id' => (string) $payload['razorpay_payment_id'],
+                    'amount' => $computedAmount,
+                    'currency' => 'INR',
+                    'status' => 'failed',
+                    'payload' => $payload,
+                    'plan_id' => $plan->id,
+                ]);
+
+                return $this->gatewaySaleResponse(
+                    $request,
+                    false,
+                    'Payment verification failed. The transaction was not trusted, license was not activated.'
+                );
+            }
+
+            // Prevent duplicate processing of the same gateway payment
+            $alreadyProcessed = PaymentTransaction::where('transaction_id', $payload['razorpay_payment_id'])
+                ->where('status', 'success')
+                ->exists();
+
+            if ($alreadyProcessed) {
+                return $this->gatewaySaleResponse(
+                    $request,
+                    false,
+                    'This payment was already processed. Duplicate submission blocked.'
+                );
+            }
+
+            // Use the verified gateway amount (in rupees) instead of client-sent value
+            $validated['amount'] = $computedAmount;
+            $validated['notes'] = trim(
+                ($validated['notes'] ?? '') .
+                " | Razorpay Order: {$payload['razorpay_order_id']}, Payment: {$payload['razorpay_payment_id']}"
+            );
+        }
+
         $result = $this->hotelService->assignPlanAndRecordSale(
             $hotel,
             $plan,
@@ -176,6 +291,23 @@ class DistributorController extends Controller
             $validated,
             $user->id
         );
+
+        // Record successful gateway transaction in the ledger
+        if (($validated['payment_method'] ?? '') === 'online_gateway') {
+            PaymentTransaction::create([
+                'distributor_id' => $user->id,
+                'hotel_admin_id' => $hotel->id,
+                'gateway_code' => $gateway->getCode(),
+                'transaction_id' => (string) $payload['razorpay_payment_id'],
+                'amount' => $computedAmount,
+                'currency' => 'INR',
+                'status' => 'success',
+                'payload' => $payload,
+                'plan_id' => $plan->id,
+                'paid_at' => now(),
+                'idempotency_checked' => true,
+            ]);
+        }
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -188,6 +320,22 @@ class DistributorController extends Controller
 
         return redirect()->route('distributor.sales.index')
                          ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}'! Valid until {$result['new_expiry']->format('M d, Y')}.");
+    }
+
+    /**
+     * Uniform response helper for gateway payment failures during a sale.
+     */
+    private function gatewaySaleResponse(Request $request, bool $success, string $message)
+    {
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => $success,
+                'message' => $message,
+            ], $success ? 201 : 422);
+        }
+
+        return redirect()->route('distributor.sales.create', $request->only('hotel_id'))
+                         ->with('error', $message);
     }
 
     /**

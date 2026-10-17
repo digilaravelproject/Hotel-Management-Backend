@@ -4,6 +4,7 @@
 @section('page_title', 'Sell Subscription Package')
 
 @section('content')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Back Header -->
     <div class="flex items-center justify-between">
@@ -12,6 +13,15 @@
             <span>Back to Sales Ledger</span>
         </a>
     </div>
+
+    @if (session('error'))
+        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+            <div class="font-bold flex items-center space-x-2">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
 
     @if ($errors->any())
         <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
@@ -115,7 +125,7 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Payment Method <span class="text-rose-500">*</span></label>
-                            <x-dropdown name="payment_method" required theme="dist">
+                            <x-dropdown name="payment_method" id="paymentMethod" required theme="dist">
                                 <option value="upi" {{ old('payment_method') == 'upi' ? 'selected' : '' }}>UPI / QR Transfer</option>
                                 <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank NEFT / RTGS / IMPS</option>
                                 <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash Payment</option>
@@ -167,10 +177,15 @@
                         <p class="text-[#64748B] text-[10px] leading-relaxed">Submitting this form immediately activates the plan, updates room limits, and records this sale under your distributor ledger.</p>
                     </div>
 
-                    <button type="submit" class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20">
+                    <button type="submit" id="saleSubmitBtn" class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20">
                         <i class="fa-solid fa-check text-xs"></i>
-                        <span>Confirm Sale & Activate License</span>
+                        <span id="saleSubmitLabel">Confirm Sale & Activate License</span>
                     </button>
+
+                    <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                        <i class="fa-solid fa-lock mr-1"></i>
+                        Online gateway payments are verified server-side via Razorpay before the license is activated.
+                    </p>
                 </div>
             </div>
         </form>
@@ -211,6 +226,128 @@ document.addEventListener('DOMContentLoaded', function() {
     planRadios.forEach(radio => radio.addEventListener('change', calculateTotal));
     if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
     calculateTotal();
+
+    // ---------------------------------------------------------------
+    // Online Gateway (Razorpay) checkout flow
+    // ---------------------------------------------------------------
+    const form = document.getElementById('saleForm');
+    const paymentMethodSelect = document.getElementById('paymentMethod');
+    const submitBtn = document.getElementById('saleSubmitBtn');
+    const submitLabel = document.getElementById('saleSubmitLabel');
+    const orderUrl = @json(route('distributor.sales.order'));
+
+    let checkoutSubmitting = false;
+
+    function setSubmitting(state) {
+        if (!submitBtn) return;
+        submitBtn.disabled = state;
+        if (submitLabel) submitLabel.textContent = state ? 'Processing Payment…' : 'Confirm Sale & Activate License';
+    }
+
+    function showError(message) {
+        alert(message); // simple fallback; session('error') also renders server-side
+    }
+
+    form.addEventListener('submit', async function(e) {
+        // Only intercept when "Online Card / Gateway" is selected
+        if (paymentMethodSelect.value !== 'online_gateway' || checkoutSubmitting) {
+            return;
+        }
+
+        e.preventDefault();
+
+        // Client-side guard: hotel & plan must be selected before creating an order
+        const hotelSelect = document.getElementById('hotelSelect');
+        if (!hotelSelect || !hotelSelect.value) {
+            showError('Please select a target hotel before proceeding with online payment.');
+            return;
+        }
+        if (!document.querySelector('.plan-radio:checked')) {
+            showError('Please select a subscription plan before proceeding with online payment.');
+            return;
+        }
+
+        setSubmitting(true);
+        checkoutSubmitting = true;
+
+        try {
+            // 1. Create a Razorpay order on the server
+            const orderRes = await fetch(orderUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+                body: JSON.stringify({
+                    hotel_id: hotelSelect.value,
+                    plan_id: document.querySelector('.plan-radio:checked').value,
+                    duration_months: durationSelect.value,
+                }),
+            });
+
+            const orderData = await orderRes.json();
+
+            if (!orderRes.ok || !orderData.success) {
+                throw new Error(orderData.message || 'Could not create payment order.');
+            }
+
+            // 2. Open Razorpay Checkout
+            if (typeof Razorpay === 'undefined') {
+                throw new Error('Razorpay checkout script failed to load. Please refresh the page and try again.');
+            }
+
+            const rzp = new Razorpay({
+                key: orderData.key_id,
+                order_id: orderData.order_id,
+                amount: Math.round(parseFloat(orderData.amount) * 100), // paise
+                currency: orderData.currency || 'INR',
+                name: 'PaxTV Hospitality',
+                description: 'Package Activation',
+                prefill: {
+                    name: orderData.name || '',
+                    email: orderData.email || '',
+                    contact: orderData.phone || '',
+                },
+                theme: { color: '#E5A93C' },
+                handler: function(response) {
+                    // 3. Append gateway response to the form and submit for server-side verification
+                    ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {
+                        let input = form.querySelector('input[name="' + field + '"]');
+                        if (!input) {
+                            input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = field;
+                            form.appendChild(input);
+                        }
+                        input.value = response[field] || '';
+                    });
+
+                    checkoutSubmitting = false; // allow real submit through
+                    form.submit();
+                },
+                modal: {
+                    ondismiss: function() {
+                        checkoutSubmitting = false;
+                        setSubmitting(false);
+                    },
+                },
+            });
+
+            rzp.on('payment.failed', function(response) {
+                checkoutSubmitting = false;
+                setSubmitting(false);
+                showError('Payment failed: ' + (response.error?.description || 'Unknown error. Please try again.'));
+            });
+
+            rzp.open();
+        } catch (err) {
+            checkoutSubmitting = false;
+            setSubmitting(false);
+            showError(err.message || 'Something went wrong while starting the payment.');
+        }
+    });
 });
 </script>
 @endsection

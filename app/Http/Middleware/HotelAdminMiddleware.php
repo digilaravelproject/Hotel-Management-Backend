@@ -37,12 +37,19 @@ class HotelAdminMiddleware
             return redirect()->route('landing')->with('error', 'Your account is currently inactive.');
         }
 
-        // 3. Check Pending Payment (Pay Later state): Allow login & dashboard/subscription page, block other features
-        if ($hotelAdmin->payment_status !== 'paid') {
-            // Allow dashboard and subscription/payment routes
+        // 3. Check Subscription & Payment Status: Allow dashboard, package, profile, & subscription page; block other features
+        $hasActivePlan = $hotelAdmin->plan_id 
+            && $hotelAdmin->payment_status === 'paid' 
+            && ($hotelAdmin->expiry_date === null || $hotelAdmin->expiry_date->isFuture());
+
+        if (!$hasActivePlan) {
+            // Allow dashboard, package details, profile and subscription/payment routes
             $allowedRoutes = [
                 'hotel.dashboard',
+                'hotel.package',
                 'hotel.subscribe',
+                'hotel.profile',
+                'hotel.hotel-info',
                 'hotel.logout',
             ];
 
