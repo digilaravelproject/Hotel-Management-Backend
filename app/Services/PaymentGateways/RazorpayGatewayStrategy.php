@@ -37,8 +37,8 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
             throw new Exception("Razorpay gateway is disabled.");
         }
 
-        $keyId = $this->gatewayModel->api_key;
-        $keySecret = $this->gatewayModel->api_secret;
+        $keyId = $this->gatewayModel->api_key ?: env('RAZORPAY_KEY_ID', env('RAZORPAY_KEY'));
+        $keySecret = $this->gatewayModel->api_secret ?: env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET'));
 
         // Convert amount to paise for Razorpay
         $amountInPaise = (int) round($amount * 100);
@@ -92,7 +92,7 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
             return false;
         }
 
-        $keySecret = $this->gatewayModel->api_secret;
+        $keySecret = $this->gatewayModel->api_secret ?: env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET'));
         if (empty($keySecret)) {
             return true; // Mock verification
         }

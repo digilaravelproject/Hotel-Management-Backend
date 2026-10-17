@@ -156,7 +156,15 @@ class DistributorController extends Controller
         $plans = Plan::where('status', 1)->get();
         $selectedHotelId = $request->query('hotel_id');
 
-        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId'));
+        $activeGatewayRecord = \App\Models\PaymentGateway::where('is_enabled', true)->first();
+        $gateway = null;
+        try {
+            $gateway = PaymentManager::active();
+        } catch (\Exception $e) {
+            $gateway = null;
+        }
+
+        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId', 'activeGatewayRecord', 'gateway'));
     }
 
     /**
@@ -229,42 +237,56 @@ class DistributorController extends Controller
         // Amount is always computed server-side for gateway sales to prevent tampering
         $computedAmount = round((float) $plan->price * (int) $validated['duration_months'], 2);
 
-        // Online gateway payments must carry a verified Razorpay response
-        if (($validated['payment_method'] ?? '') === 'online_gateway') {
-            $gateway = PaymentManager::active();
+        // Strict enforcement: Only verified online gateway payment is accepted
+        if (($validated['payment_method'] ?? '') !== 'online_gateway') {
+            return $this->gatewaySaleResponse(
+                $request,
+                false,
+                'Offline or manual payment methods are disabled. All purchases must be completed via the active online payment gateway.'
+            );
+        }
 
-            $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
+        $gateway = PaymentManager::active();
 
-            if (empty($payload['razorpay_order_id']) || empty($payload['razorpay_payment_id'])) {
-                return $this->gatewaySaleResponse(
-                    $request,
-                    false,
-                    'Online payment was not completed. No payment reference received from the gateway.'
-                );
-            }
+        $payload = match ($gateway->getCode()) {
+            'payu' => $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash']),
+            'icici' => $request->only(['encrypted_response', 'order_id', 'status', 'reference_id']),
+            default => $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']),
+        };
 
-            if (!$gateway->verifyPayment($payload)) {
-                PaymentTransaction::create([
-                    'distributor_id' => $user->id,
-                    'hotel_admin_id' => $hotel->id,
-                    'gateway_code' => $gateway->getCode(),
-                    'transaction_id' => (string) $payload['razorpay_payment_id'],
-                    'amount' => $computedAmount,
-                    'currency' => 'INR',
-                    'status' => 'failed',
-                    'payload' => $payload,
-                    'plan_id' => $plan->id,
-                ]);
+        $transactionId = $payload['razorpay_payment_id'] ?? $payload['txnid'] ?? $payload['reference_id'] ?? $request->input('transaction_id');
 
-                return $this->gatewaySaleResponse(
-                    $request,
-                    false,
-                    'Payment verification failed. The transaction was not trusted, license was not activated.'
-                );
-            }
+        if (empty($transactionId) && empty($payload['razorpay_order_id'])) {
+            return $this->gatewaySaleResponse(
+                $request,
+                false,
+                'Online payment was not completed. No payment reference received from the gateway.'
+            );
+        }
 
-            // Prevent duplicate processing of the same gateway payment
-            $alreadyProcessed = PaymentTransaction::where('transaction_id', $payload['razorpay_payment_id'])
+        if (!$gateway->verifyPayment($payload)) {
+            PaymentTransaction::create([
+                'distributor_id' => $user->id,
+                'hotel_admin_id' => $hotel->id,
+                'gateway_code' => $gateway->getCode(),
+                'transaction_id' => (string) ($transactionId ?? 'failed_' . time()),
+                'amount' => $computedAmount,
+                'currency' => 'INR',
+                'status' => 'failed',
+                'payload' => $payload,
+                'plan_id' => $plan->id,
+            ]);
+
+            return $this->gatewaySaleResponse(
+                $request,
+                false,
+                'Payment verification failed via ' . $gateway->getName() . '. The transaction was not trusted, license was not activated.'
+            );
+        }
+
+        // Prevent duplicate processing of the same gateway payment
+        if ($transactionId) {
+            $alreadyProcessed = PaymentTransaction::where('transaction_id', $transactionId)
                 ->where('status', 'success')
                 ->exists();
 
@@ -275,14 +297,14 @@ class DistributorController extends Controller
                     'This payment was already processed. Duplicate submission blocked.'
                 );
             }
-
-            // Use the verified gateway amount (in rupees) instead of client-sent value
-            $validated['amount'] = $computedAmount;
-            $validated['notes'] = trim(
-                ($validated['notes'] ?? '') .
-                " | Razorpay Order: {$payload['razorpay_order_id']}, Payment: {$payload['razorpay_payment_id']}"
-            );
         }
+
+        // Use the verified gateway amount (in rupees) instead of client-sent value
+        $validated['amount'] = $computedAmount;
+        $validated['notes'] = trim(
+            ($validated['notes'] ?? '') .
+            " | {$gateway->getName()} Verified: " . ($transactionId ?? $payload['razorpay_order_id'])
+        );
 
         $result = $this->hotelService->assignPlanAndRecordSale(
             $hotel,
@@ -293,21 +315,19 @@ class DistributorController extends Controller
         );
 
         // Record successful gateway transaction in the ledger
-        if (($validated['payment_method'] ?? '') === 'online_gateway') {
-            PaymentTransaction::create([
-                'distributor_id' => $user->id,
-                'hotel_admin_id' => $hotel->id,
-                'gateway_code' => $gateway->getCode(),
-                'transaction_id' => (string) $payload['razorpay_payment_id'],
-                'amount' => $computedAmount,
-                'currency' => 'INR',
-                'status' => 'success',
-                'payload' => $payload,
-                'plan_id' => $plan->id,
-                'paid_at' => now(),
-                'idempotency_checked' => true,
-            ]);
-        }
+        PaymentTransaction::create([
+            'distributor_id' => $user->id,
+            'hotel_admin_id' => $hotel->id,
+            'gateway_code' => $gateway->getCode(),
+            'transaction_id' => (string) ($transactionId ?? $payload['razorpay_order_id']),
+            'amount' => $computedAmount,
+            'currency' => 'INR',
+            'status' => 'success',
+            'payload' => $payload,
+            'plan_id' => $plan->id,
+            'paid_at' => now(),
+            'idempotency_checked' => true,
+        ]);
 
         if ($request->wantsJson()) {
             return response()->json([

@@ -26,6 +26,7 @@ class PaymentTransaction extends Model
 
     protected $casts = [
         'amount' => 'decimal:2',
+        'payload' => 'array',
         'is_refunded' => 'boolean',
         'idempotency_checked' => 'boolean',
         'paid_at' => 'datetime',

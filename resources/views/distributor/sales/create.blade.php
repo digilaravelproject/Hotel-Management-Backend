@@ -120,24 +120,51 @@
 
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Total Amount (₹) <span class="text-rose-500">*</span></label>
-                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" required class="w-full px-3.5 py-2.5 text-xs font-extrabold text-slate-900 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 bg-slate-50/50">
+                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-3.5 py-2.5 text-xs font-extrabold text-slate-900 rounded-xl border border-slate-200 bg-slate-100/80 cursor-not-allowed">
                         </div>
+                    </div>
 
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Payment Method <span class="text-rose-500">*</span></label>
-                            <x-dropdown name="payment_method" id="paymentMethod" required theme="dist">
-                                <option value="upi" {{ old('payment_method') == 'upi' ? 'selected' : '' }}>UPI / QR Transfer</option>
-                                <option value="bank_transfer" {{ old('payment_method') == 'bank_transfer' ? 'selected' : '' }}>Bank NEFT / RTGS / IMPS</option>
-                                <option value="cash" {{ old('payment_method') == 'cash' ? 'selected' : '' }}>Cash Payment</option>
-                                <option value="cheque" {{ old('payment_method') == 'cheque' ? 'selected' : '' }}>Cheque / DD</option>
-                                <option value="online_gateway" {{ old('payment_method') == 'online_gateway' ? 'selected' : '' }}>Online Card / Gateway</option>
-                            </x-dropdown>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Transaction Ref / Notes</label>
-                            <input type="text" name="notes" value="{{ old('notes') }}" placeholder="e.g. UTR #123456 or Inv #09" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 bg-slate-50/50">
-                        </div>
+                    <!-- Active Payment Gateway Only (No Offline/Unverified Bypasses) -->
+                    <div class="pt-2">
+                        <input type="hidden" name="payment_method" id="paymentMethod" value="online_gateway">
+                        <label class="block text-xs font-bold text-slate-700 mb-2">Authorized Payment Channel <span class="text-rose-500">*</span></label>
+                        
+                        @if($activeGatewayRecord && $activeGatewayRecord->is_enabled)
+                            <div class="p-4 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-center space-x-3.5">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold shrink-0">
+                                        @if($activeGatewayRecord->code === 'razorpay')
+                                            <i class="fa-solid fa-bolt text-blue-600 text-lg"></i>
+                                        @elseif($activeGatewayRecord->code === 'icici')
+                                            <i class="fa-solid fa-building-columns text-amber-700 text-lg"></i>
+                                        @else
+                                            <i class="fa-solid fa-credit-card text-emerald-700 text-lg"></i>
+                                        @endif
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center space-x-2">
+                                            <h4 class="text-xs font-extrabold text-slate-900">{{ $activeGatewayRecord->name }}</h4>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1"></span> Active Gateway
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-500 mt-0.5">Secure online processing. Offline / manual payment is disabled.</p>
+                                    </div>
+                                </div>
+                                <div class="text-xs font-bold text-emerald-700 shrink-0 flex items-center space-x-1">
+                                    <i class="fa-solid fa-shield-halved"></i>
+                                    <span>Verified Only</span>
+                                </div>
+                            </div>
+                        @else
+                            <div class="p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 flex items-center space-x-3 text-rose-800">
+                                <i class="fa-solid fa-triangle-exclamation text-lg shrink-0"></i>
+                                <div class="text-xs">
+                                    <p class="font-bold">No Active Payment Gateway</p>
+                                    <p class="text-[11px] text-rose-700">Please enable a payment gateway in Super Admin settings before purchasing.</p>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -172,19 +199,19 @@
                     <div class="p-3.5 rounded-xl bg-[#FEF9EE] border border-[#E5A93C]/30 text-[11px] text-[#004B87] space-y-1">
                         <div class="font-bold flex items-center space-x-1.5">
                             <i class="fa-solid fa-bolt text-[#E5A93C]"></i>
-                            <span>Instant TV License Extension</span>
+                            <span>Mandatory Payment Verification</span>
                         </div>
-                        <p class="text-[#64748B] text-[10px] leading-relaxed">Submitting this form immediately activates the plan, updates room limits, and records this sale under your distributor ledger.</p>
+                        <p class="text-[#64748B] text-[10px] leading-relaxed">License and TV room limits are activated only after payment is completed and verified through the active gateway.</p>
                     </div>
 
-                    <button type="submit" id="saleSubmitBtn" class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20">
-                        <i class="fa-solid fa-check text-xs"></i>
-                        <span id="saleSubmitLabel">Confirm Sale & Activate License</span>
+                    <button type="submit" id="saleSubmitBtn" {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fa-solid fa-lock text-xs"></i>
+                        <span id="saleSubmitLabel">Proceed to Pay ₹<span id="btnPayAmount">0</span> & Activate</span>
                     </button>
 
                     <p class="text-[10px] text-slate-400 text-center leading-relaxed">
-                        <i class="fa-solid fa-lock mr-1"></i>
-                        Online gateway payments are verified server-side via Razorpay before the license is activated.
+                        <i class="fa-solid fa-shield-check text-emerald-600 mr-1"></i>
+                        Online gateway payments are verified server-side via {{ $activeGatewayRecord ? $activeGatewayRecord->name : 'active gateway' }} before license activation.
                     </p>
                 </div>
             </div>
@@ -220,6 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
             summaryPlanRate.textContent = `₹${price.toLocaleString()}/mo`;
             summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
             summaryTotal.textContent = `₹${total.toLocaleString()}`;
+
+            const btnPayAmount = document.getElementById('btnPayAmount');
+            if (btnPayAmount) btnPayAmount.textContent = total.toLocaleString();
         }
     }
 
@@ -228,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     calculateTotal();
 
     // ---------------------------------------------------------------
-    // Online Gateway (Razorpay) checkout flow
+    // Online Gateway (Active Gateway) checkout flow
     // ---------------------------------------------------------------
     const form = document.getElementById('saleForm');
     const paymentMethodSelect = document.getElementById('paymentMethod');
@@ -241,7 +271,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function setSubmitting(state) {
         if (!submitBtn) return;
         submitBtn.disabled = state;
-        if (submitLabel) submitLabel.textContent = state ? 'Processing Payment…' : 'Confirm Sale & Activate License';
+        if (submitLabel) {
+            submitLabel.innerHTML = state 
+                ? '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Opening Gateway...' 
+                : 'Proceed to Pay ₹<span id="btnPayAmount">' + (amountInput ? parseFloat(amountInput.value || 0).toLocaleString() : '0') + '</span> & Activate';
+        }
     }
 
     function showError(message) {
@@ -293,55 +327,61 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(orderData.message || 'Could not create payment order.');
             }
 
-            // 2. Open Razorpay Checkout
-            if (typeof Razorpay === 'undefined') {
-                throw new Error('Razorpay checkout script failed to load. Please refresh the page and try again.');
-            }
+            // 2. Route by active gateway
+            if (orderData.gateway === 'razorpay') {
+                if (typeof Razorpay === 'undefined') {
+                    throw new Error('Razorpay checkout script failed to load. Please refresh the page and try again.');
+                }
 
-            const rzp = new Razorpay({
-                key: orderData.key_id,
-                order_id: orderData.order_id,
-                amount: Math.round(parseFloat(orderData.amount) * 100), // paise
-                currency: orderData.currency || 'INR',
-                name: 'PaxTV Hospitality',
-                description: 'Package Activation',
-                prefill: {
-                    name: orderData.name || '',
-                    email: orderData.email || '',
-                    contact: orderData.phone || '',
-                },
-                theme: { color: '#E5A93C' },
-                handler: function(response) {
-                    // 3. Append gateway response to the form and submit for server-side verification
-                    ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {
-                        let input = form.querySelector('input[name="' + field + '"]');
-                        if (!input) {
-                            input = document.createElement('input');
-                            input.type = 'hidden';
-                            input.name = field;
-                            form.appendChild(input);
-                        }
-                        input.value = response[field] || '';
-                    });
-
-                    checkoutSubmitting = false; // allow real submit through
-                    form.submit();
-                },
-                modal: {
-                    ondismiss: function() {
-                        checkoutSubmitting = false;
-                        setSubmitting(false);
+                const rzp = new Razorpay({
+                    key: orderData.key_id,
+                    order_id: orderData.order_id,
+                    amount: Math.round(parseFloat(orderData.amount) * 100), // paise
+                    currency: orderData.currency || 'INR',
+                    name: 'PaxTV Hospitality',
+                    description: 'Package Activation',
+                    prefill: {
+                        name: orderData.name || '',
+                        email: orderData.email || '',
+                        contact: orderData.phone || '',
                     },
-                },
-            });
+                    theme: { color: '#E5A93C' },
+                    handler: function(response) {
+                        // 3. Append gateway response to the form and submit for server-side verification
+                        ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {
+                            let input = form.querySelector('input[name="' + field + '"]');
+                            if (!input) {
+                                input = document.createElement('input');
+                                input.type = 'hidden';
+                                input.name = field;
+                                form.appendChild(input);
+                            }
+                            input.value = response[field] || '';
+                        });
 
-            rzp.on('payment.failed', function(response) {
-                checkoutSubmitting = false;
-                setSubmitting(false);
-                showError('Payment failed: ' + (response.error?.description || 'Unknown error. Please try again.'));
-            });
+                        checkoutSubmitting = false; // allow real submit through
+                        form.submit();
+                    },
+                    modal: {
+                        ondismiss: function() {
+                            checkoutSubmitting = false;
+                            setSubmitting(false);
+                        },
+                    },
+                });
 
-            rzp.open();
+                rzp.on('payment.failed', function(response) {
+                    checkoutSubmitting = false;
+                    setSubmitting(false);
+                    showError('Payment failed: ' + (response.error?.description || 'Unknown error. Please try again.'));
+                });
+
+                rzp.open();
+            } else if (orderData.checkout_url && orderData.checkout_url !== '#') {
+                window.location.href = orderData.checkout_url;
+            } else {
+                throw new Error('Active gateway (' + (orderData.gateway || 'Unknown') + ') returned no checkout endpoint. Please contact support.');
+            }
         } catch (err) {
             checkoutSubmitting = false;
             setSubmitting(false);

@@ -24,7 +24,7 @@ class StoreDistributorSaleRequest extends FormRequest
             'plan_id' => 'required|exists:plans,id',
             'duration_months' => 'required|integer|in:1,3,6,12',
             'amount' => 'required|numeric|min:0',
-            'payment_method' => 'required|string|max:50',
+            'payment_method' => 'required|in:online_gateway',
             'notes' => 'nullable|string|max:500',
         ];
     }
