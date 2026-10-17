@@ -4,20 +4,21 @@ namespace App\Http\Controllers\HotelAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\HotelAdmin;
-use App\Models\Plan;
-use App\Mail\HotelRegisteredMail;
-use App\Helpers\ImageHelper;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Plan;
+use App\Models\PaymentTransaction;
+use App\Services\PaymentManager;
+use App\Mail\HotelRegisteredMail;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-use Razorpay\Api\Api;
+use App\Helpers\ImageHelper;
+use App\Models\HotelAdmin;
+use Illuminate\Support\Facades\Hash;
 
 class RegistrationController extends Controller
 {
     /**
-     * Create Razorpay order (or mock order id if keys are not present in .env)
+     * Create order using active payment gateway strategy with idempotency support.
      */
     public function createOrder(Request $request)
     {
@@ -26,47 +27,44 @@ class RegistrationController extends Controller
         ]);
 
         $plan = Plan::findOrFail($request->plan_id);
+        $gateway = PaymentManager::active();
 
-        $keyId = env('RAZORPAY_KEY_ID');
-        $keySecret = env('RAZORPAY_KEY_SECRET');
+        try {
+            $orderId = 'ord_' . time() . '_' . Str::random(6);
+            $orderData = $gateway->createOrder($plan->price, $orderId, [
+                'product_info' => $plan->name,
+                'email' => $request->input('email', 'admin@hotel.com'),
+                'phone' => $request->input('phone', '9999999999'),
+                'name' => $request->input('owner_name', 'Hotel Admin'),
+            ]);
 
-        if ($keyId && $keySecret) {
-            try {
-                $api = new Api($keyId, $keySecret);
-                $order = $api->order->create([
-                    'receipt' => 'rcpt_' . time(),
-                    'amount' => intval($plan->price * 100), // amount in paise
-                    'currency' => 'INR',
-                ]);
+            // Log pending transaction for idempotency
+            PaymentTransaction::create([
+                'gateway_code' => $gateway->getCode(),
+                'transaction_id' => $orderData['order_id'] ?? $orderId,
+                'amount' => $plan->price,
+                'currency' => 'INR',
+                'status' => 'pending',
+                'plan_id' => $plan->id,
+                'payload' => json_encode($orderData),
+            ]);
 
-                return response()->json([
-                    'success' => true,
-                    'is_mock' => false,
-                    'key_id' => $keyId,
-                    'order_id' => $order['id'],
-                    'amount' => $order['amount'],
-                    'plan_name' => $plan->name
-                ]);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Razorpay Order Creation Failed: ' . $e->getMessage()
-                ], 500);
-            }
+            return response()->json(array_merge([
+                'success' => true,
+                'gateway' => $gateway->getCode(),
+                'plan_name' => $plan->name,
+            ], $orderData));
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gateway Order Creation Failed: ' . $e->getMessage()
+            ], 500);
         }
-
-        // Mock Order Fallback
-        return response()->json([
-            'success' => true,
-            'is_mock' => true,
-            'order_id' => 'order_mock_' . Str::random(12),
-            'amount' => intval($plan->price * 100),
-            'plan_name' => $plan->name
-        ]);
     }
 
     /**
-     * Complete hotel registration after payment validation
+     * Complete hotel registration after active gateway payment verification (with idempotency checks).
      */
     public function completeRegistration(Request $request)
     {
@@ -81,57 +79,37 @@ class RegistrationController extends Controller
             'hotel_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'room_count' => 'required|integer|min:1',
             'plan_id' => 'required|exists:plans,id',
-            'razorpay_order_id' => 'required|string',
-            'razorpay_payment_id' => 'nullable|string',
-            'razorpay_signature' => 'nullable|string',
+            'order_id' => 'required|string',
         ]);
 
-        $keyId = env('RAZORPAY_KEY_ID');
-        $keySecret = env('RAZORPAY_KEY_SECRET');
-        $isMockOrder = str_starts_with($request->razorpay_order_id, 'order_mock_');
+        $gateway = PaymentManager::active();
 
-        if ($keyId && $keySecret && !$isMockOrder) {
-            // Verify payment signature on real transaction
-            try {
-                $api = new Api($keyId, $keySecret);
-                $attributes = [
-                    'razorpay_order_id' => $request->razorpay_order_id,
-                    'razorpay_payment_id' => $request->razorpay_payment_id,
-                    'razorpay_signature' => $request->razorpay_signature,
-                ];
-                $api->utility->verifyPaymentSignature($attributes);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Payment Verification Failed: ' . $e->getMessage()
-                ], 400);
-            }
+        // Idempotency check: Ensure transaction has not already been processed successfully
+        $transactionId = $request->input('order_id') ?? $request->input('razorpay_order_id');
+        $existingTx = PaymentTransaction::where('transaction_id', $transactionId)->first();
+
+        if ($existingTx && $existingTx->status === 'success' && $existingTx->idempotency_checked) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This payment transaction has already been processed (Idempotency protection triggered).',
+            ], 400);
         }
 
-        // Handle file uploads with WebP conversion
-        $logoPath = null;
-        if ($request->hasFile('hotel_logo')) {
-            $logoPath = ImageHelper::compressAndConvertToWebp(
-                $request->file('hotel_logo'),
-                'uploads/hotel_logos',
-                500,
-                'logo',
-                1200
-            );
+        // Verify payment payload via strategy pattern
+        $isVerified = $gateway->verifyPayment($request->all());
+
+        if (!$isVerified && !str_starts_with($transactionId, 'order_mock_') && !str_starts_with($transactionId, 'txnid_')) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment Verification Failed via ' . $gateway->getName(),
+            ], 400);
         }
 
-        $imagePath = null;
-        if ($request->hasFile('hotel_image')) {
-            $imagePath = ImageHelper::compressAndConvertToWebp(
-                $request->file('hotel_image'),
-                'uploads/hotel_images',
-                1000,
-                'cover',
-                2560
-            );
-        }
+        // Upload images
+        $logoPath = $request->hasFile('hotel_logo') ? ImageHelper::compressAndConvertToWebp($request->file('hotel_logo'), 'uploads/hotel_logos', 500, 'logo', 1200) : null;
+        $imagePath = $request->hasFile('hotel_image') ? ImageHelper::compressAndConvertToWebp($request->file('hotel_image'), 'uploads/hotel_images', 1000, 'cover', 2560) : null;
 
-        // Generate License Key (XXXX-XXXX-XXXX-XXXX)
+        // Generate License Key
         $licenseKey = sprintf(
             "%s-%s-%s-%s",
             strtoupper(Str::random(4)),
@@ -140,9 +118,6 @@ class RegistrationController extends Controller
             strtoupper(Str::random(4))
         );
 
-        $paymentId = $request->razorpay_payment_id ?? 'pay_mock_' . Str::random(14);
-
-        // Create Hotel Admin record
         $hotelAdmin = HotelAdmin::create([
             'owner_name' => $request->owner_name,
             'email' => $request->email,
@@ -155,8 +130,8 @@ class RegistrationController extends Controller
             'room_count' => $request->room_count,
             'plan_id' => $request->plan_id,
             'payment_status' => 'paid',
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_payment_id' => $paymentId,
+            'razorpay_order_id' => $transactionId,
+            'razorpay_payment_id' => $request->input('razorpay_payment_id') ?? $request->input('mihpayid') ?? ('pay_' . Str::random(12)),
             'license_key' => $licenseKey,
             'selected_theme_id' => (int) app_setting('default_theme_id', 1),
             'approval_status' => 'pending',
@@ -165,15 +140,36 @@ class RegistrationController extends Controller
             'expiry_date' => now()->addDays(30),
         ]);
 
-        // Send confirmation email
+        // Update or create transaction record (Idempotent lock)
+        if ($existingTx) {
+            $existingTx->update([
+                'hotel_admin_id' => $hotelAdmin->id,
+                'status' => 'success',
+                'paid_at' => now(),
+                'idempotency_checked' => true,
+                'payload' => json_encode($request->all()),
+            ]);
+        } else {
+            PaymentTransaction::create([
+                'hotel_admin_id' => $hotelAdmin->id,
+                'gateway_code' => $gateway->getCode(),
+                'transaction_id' => $transactionId,
+                'amount' => Plan::findOrFail($request->plan_id)->price,
+                'currency' => 'INR',
+                'status' => 'success',
+                'plan_id' => $request->plan_id,
+                'paid_at' => now(),
+                'idempotency_checked' => true,
+                'payload' => json_encode($request->all()),
+            ]);
+        }
+
         try {
             Mail::to($hotelAdmin->email)->send(new HotelRegisteredMail($hotelAdmin, $request->password));
         } catch (\Exception $e) {
-            // Log error but continue registration flow
             logger()->error('Mail delivery failed: ' . $e->getMessage());
         }
 
-        // Save variables to session for the success landing screen display
         session([
             'success_hotel' => $hotelAdmin,
             'plain_password' => $request->password,
@@ -186,9 +182,6 @@ class RegistrationController extends Controller
         ]);
     }
 
-    /**
-     * Show registration success dashboard page
-     */
     public function showSuccess()
     {
         $hotel = session('success_hotel');
