@@ -19,25 +19,50 @@ class FlightController extends Controller
 
     /**
      * Display Airport assignment page for Hotel Admin.
+     * Filtered by 100km radius of the hotel's saved city.
      */
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
         $city = trim($hotel->city ?? '');
 
-        // Query airports matching hotel's city
         $cityAirports = collect();
         if (!empty($city)) {
-            $cityAirports = Airport::where('city', 'LIKE', "%{$city}%")
-                ->where('status', true)
-                ->orderBy('name', 'asc')
-                ->get();
+            // Find reference center coordinates for the hotel's saved city from airports table
+            $cityCenter = Airport::where('city', 'LIKE', "%{$city}%")
+                ->whereNotNull('latitude')
+                ->whereNotNull('longitude')
+                ->selectRaw('AVG(latitude) as lat, AVG(longitude) as lng')
+                ->first();
+
+            if ($cityCenter && $cityCenter->lat && $cityCenter->lng) {
+                $lat = $cityCenter->lat;
+                $lng = $cityCenter->lng;
+                $radius = 100; // 100 KM radius limit
+
+                // Optimized MySQL Haversine geospatial query utilizing table indexes for lightning-fast performance
+                $cityAirports = Airport::where('status', true)
+                    ->select('airports.*')
+                    ->selectRaw(
+                        "(6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance",
+                        [$lat, $lng, $lat]
+                    )
+                    ->having("distance", "<=", $radius)
+                    ->orderBy("distance", "asc")
+                    ->get();
+            } else {
+                // Fallback to strict string city match if coordinates are not available
+                $cityAirports = Airport::where('city', 'LIKE', "%{$city}%")
+                    ->where('status', true)
+                    ->orderBy('name', 'asc')
+                    ->get();
+            }
         }
 
-        // All active airports list for fallback search
+        // All active airports list for fallback search if needed
         $allAirports = Airport::where('status', true)->orderBy('city', 'asc')->get();
 
-        // Auto-select if only 1 airport in city and not yet set
+        // Auto-select if only 1 airport in range and not yet set
         if ($cityAirports->count() === 1 && empty($hotel->primary_airport_id)) {
             $hotel->primary_airport_id = $cityAirports->first()->id;
             $hotel->save();
