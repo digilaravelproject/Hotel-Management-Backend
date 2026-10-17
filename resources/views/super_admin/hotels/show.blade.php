@@ -76,6 +76,39 @@
 
         <!-- Details Content -->
         <div class="p-4 sm:p-8 space-y-6">
+            <!-- Distributor Information Card -->
+            @if($hotel->distributor)
+            <div class="bg-gradient-to-r from-slate-50 via-white to-slate-50 border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div class="flex items-center space-x-4 min-w-0">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[#D4AF37] flex items-center justify-center font-bold shrink-0 text-lg shadow-xs">
+                            <i class="fa-solid fa-user-tie"></i>
+                        </div>
+                        <div class="min-w-0 space-y-0.5">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[11px] font-extrabold text-[#D4AF37] uppercase tracking-wider">Associated Distributor</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold {{ $hotel->distributor->status ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
+                                    {{ $hotel->distributor->status ? 'Active' : 'Inactive' }}
+                                </span>
+                            </div>
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 truncate">{{ $hotel->distributor->name }}</h3>
+                            <p class="text-xs text-slate-500 flex items-center gap-3 truncate">
+                                <span><i class="fa-regular fa-envelope mr-1 text-slate-400"></i> {{ $hotel->distributor->email }}</span>
+                                @if($hotel->distributor->phone)
+                                    <span><i class="fa-solid fa-phone mr-1 text-slate-400"></i> {{ $hotel->distributor->phone }}</span>
+                                @endif
+                            </p>
+                        </div>
+                    </div>
+                    <div class="shrink-0">
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 shadow-xs">
+                            <i class="fa-solid fa-id-badge mr-1.5 text-[#D4AF37]"></i> ID: #DIST-{{ $hotel->distributor->id }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- 2-Column Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <!-- Owner Credentials Box -->
