@@ -129,10 +129,19 @@ class HotelAdmin extends Authenticatable
 
     /**
      * Get the allowed device limit (room_count).
+     * Returns 0 if hotel has no active plan, unpaid status, or has expired.
      */
     public function getAllowedDeviceLimitAttribute()
     {
-        return $this->room_count;
+        if (!$this->plan_id || $this->payment_status !== 'paid') {
+            return 0;
+        }
+
+        if ($this->expiry_date && $this->expiry_date->isPast()) {
+            return 0;
+        }
+
+        return (int) ($this->room_count ?? 0);
     }
 
     /**

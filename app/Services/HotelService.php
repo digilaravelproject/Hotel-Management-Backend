@@ -27,7 +27,7 @@ class HotelService
         $roomCount = $this->resolveRoomCount(
             !empty($data['room_count']) ? (int) $data['room_count'] : null,
             $plan,
-            25
+            0
         );
 
         // License Key & Billing Dates
@@ -144,7 +144,7 @@ class HotelService
         $roomCount = $this->resolveRoomCount(
             !empty($data['room_count']) ? (int) $data['room_count'] : null,
             $plan,
-            $hotel->room_count ?: 25
+            $hotel->room_count ?: ($plan ? (int) $plan->room_count : 0)
         );
 
         $updateData = [
@@ -276,7 +276,7 @@ class HotelService
             'expiry_date' => $newExpiry,
             'auto_renew' => $saleData['auto_renew'] ?? false,
             'renewal_type' => ($saleData['auto_renew'] ?? false) ? 'auto' : 'manual',
-            'room_count' => $this->resolveRoomCount($hotel->room_count, $plan, $hotel->room_count ?: 25),
+            'room_count' => $this->resolveRoomCount($hotel->room_count, $plan, (int) $plan->room_count),
         ]);
 
         $sale = DistributorSale::create([
@@ -348,7 +348,7 @@ class HotelService
     /**
      * Resolve final room count based on plan capacity and requested capacity (DRY helper).
      */
-    public function resolveRoomCount(?int $requestedRoomCount, ?Plan $plan, int $currentRoomCount = 25): int
+    public function resolveRoomCount(?int $requestedRoomCount, ?Plan $plan, int $currentRoomCount = 0): int
     {
         if (!$requestedRoomCount) {
             return $plan ? (int) $plan->room_count : $currentRoomCount;

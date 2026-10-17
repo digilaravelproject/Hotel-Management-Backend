@@ -203,4 +203,51 @@ class HotelDeviceAddTest extends TestCase
         ]);
         $tvResponse2->assertStatus(200);
     }
+
+    public function test_hotel_without_plan_or_unpaid_has_zero_allowed_devices(): void
+    {
+        $hotelWithoutPlan = HotelAdmin::create([
+            'owner_name' => 'Firoz Khan',
+            'email' => 'firoz@hoteltest.com',
+            'password' => bcrypt('password123'),
+            'phone' => '+91 91111 22222',
+            'hotel_name' => 'Firoz Hotel',
+            'hotel_location' => 'Lucknow',
+            'room_count' => 25,
+            'plan_id' => null,
+            'payment_status' => 'pending',
+            'approval_status' => 'approved',
+            'status' => true,
+        ]);
+
+        $this->assertEquals(0, $hotelWithoutPlan->allowed_device_limit);
+
+        // Dashboard renders 0 / 0
+        $response = $this->actingAs($hotelWithoutPlan, 'hotel_admin')
+                         ->get(route('hotel.dashboard'));
+        $response->assertStatus(200);
+        $response->assertSee('0 / 0');
+    }
+
+    public function test_hotel_with_expired_plan_has_zero_allowed_devices(): void
+    {
+        $plan = Plan::first();
+        $expiredHotel = HotelAdmin::create([
+            'owner_name' => 'Expired Owner',
+            'email' => 'expired@hoteltest.com',
+            'password' => bcrypt('password123'),
+            'phone' => '+91 93333 44444',
+            'hotel_name' => 'Expired Palace',
+            'hotel_location' => 'Delhi',
+            'room_count' => 30,
+            'plan_id' => $plan->id,
+            'payment_status' => 'paid',
+            'license_key' => 'EXP-HOTEL-KEY-001',
+            'expiry_date' => now()->subDay(),
+            'approval_status' => 'approved',
+            'status' => true,
+        ]);
+
+        $this->assertEquals(0, $expiredHotel->allowed_device_limit);
+    }
 }
