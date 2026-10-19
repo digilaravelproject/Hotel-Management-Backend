@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -61,12 +61,12 @@
             margin: 20px 0;
         }
         .footer {
-            background-color: #f8fafc;
+            background-color: #F4F5F7;
             padding: 24px 30px;
             text-align: center;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #E5E7EB;
             font-size: 12px;
-            color: #64748b;
+            color: #6B7280;
         }
     </style>
 </head>

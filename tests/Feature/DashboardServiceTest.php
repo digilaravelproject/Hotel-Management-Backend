@@ -4,11 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\SuperAdmin;
 use App\Services\DashboardService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
 class DashboardServiceTest extends TestCase
 {
+    use RefreshDatabase;
     private function getOrCreateSuperAdmin(): SuperAdmin
     {
         return SuperAdmin::first() ?? SuperAdmin::create([

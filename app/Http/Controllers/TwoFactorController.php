@@ -74,6 +74,7 @@ class TwoFactorController extends Controller
 
         // Store temporary secret in session until confirmed
         session(['2fa_setup_secret' => $secret]);
+        session()->save();
 
         return response()->json([
             'secret' => $secret,
@@ -94,13 +95,14 @@ class TwoFactorController extends Controller
         $secret = session('2fa_setup_secret');
 
         if (!$user || !$secret) {
-            return response()->json(['message' => 'Setup session expired. Please try again.'], 422);
+            return response()->json(['message' => 'Setup session expired. Please close this modal, click Enable 2FA again to generate a fresh QR code.'], 422);
         }
 
-        $valid = $this->google2fa->verifyKey($secret, $request->one_time_password);
+        // Window = 2 allows +-60s drift between phone and server time
+        $valid = $this->google2fa->verifyKey($secret, $request->one_time_password, 2);
 
         if (!$valid) {
-            return response()->json(['message' => 'Invalid OTP code. Please check your authenticator app.'], 422);
+            return response()->json(['message' => 'Invalid OTP code. Please check that the time on your phone is synced and try the current 6-digit code.'], 422);
         }
 
         // Generate 8 emergency recovery codes
@@ -115,6 +117,7 @@ class TwoFactorController extends Controller
         $user->save();
 
         session()->forget('2fa_setup_secret');
+        session()->save();
 
         return response()->json([
             'message' => 'Two-Factor Authentication enabled successfully!',
@@ -141,7 +144,7 @@ class TwoFactorController extends Controller
             return response()->json(['message' => 'The provided password does not match.'], 422);
         }
 
-        $valid = $this->google2fa->verifyKey($user->google2fa_secret, $request->one_time_password);
+        $valid = $this->google2fa->verifyKey($user->google2fa_secret, $request->one_time_password, 2);
         if (!$valid) {
             return response()->json(['message' => 'Invalid OTP code.'], 422);
         }
@@ -202,9 +205,9 @@ class TwoFactorController extends Controller
         $otpInput = trim($request->one_time_password);
         $verified = false;
 
-        // 1. Try TOTP code check
+        // 1. Try TOTP code check with window tolerance
         if (strlen($otpInput) === 6 && ctype_digit($otpInput)) {
-            $verified = $this->google2fa->verifyKey($user->google2fa_secret, $otpInput);
+            $verified = $this->google2fa->verifyKey($user->google2fa_secret, $otpInput, 2);
         }
 
         // 2. Fallback check for emergency recovery codes

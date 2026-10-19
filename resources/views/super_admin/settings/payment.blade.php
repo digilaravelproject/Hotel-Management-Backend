@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Payment Gateway Settings - Super Admin')
 @section('page_title', 'Payment Gateway Settings')
@@ -52,7 +52,7 @@
                 <div class="border border-slate-200/80 rounded-2xl overflow-hidden shadow-xs">
                     <div class="bg-gradient-to-r from-slate-50 via-white to-slate-50 px-5 py-4 border-b border-slate-200/60 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-[#D4AF37] flex items-center justify-center shadow-xs font-extrabold text-sm">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500/10 text-[#C5A880] flex items-center justify-center shadow-xs font-extrabold text-sm">
                                 @switch($code)
                                     @case('icici')<i class="fa-solid fa-building-columns"></i>@break
                                     @case('razorpay')<i class="fa-solid fa-bolt"></i>@break
@@ -67,7 +67,7 @@
                         </div>
                         <label class="inline-flex items-center gap-2 cursor-pointer select-none">
                             <input type="hidden" name="gateways[{{ $code }}][is_enabled]" value="0">
-                            <input type="checkbox" name="gateways[{{ $code }}][is_enabled]" value="1" {{ $isEnabled ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#D4AF37] focus:ring-[#D4AF37]/30">
+                            <input type="checkbox" name="gateways[{{ $code }}][is_enabled]" value="1" {{ $isEnabled ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#C5A880] focus:ring-[#C5A880]/30">
                             <span class="text-xs font-extrabold text-slate-700">Active</span>
                         </label>
                     </div>
@@ -105,7 +105,7 @@
 
             <div class="pt-4 flex items-center justify-end space-x-3">
                 <a href="{{ route('super-admin.dashboard') }}" class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold transition-all shadow-xs">Cancel</a>
-                <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+                <button type="submit" class="px-6 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk text-xs"></i>
                     <span>Save Gateway Settings</span>
                 </button>

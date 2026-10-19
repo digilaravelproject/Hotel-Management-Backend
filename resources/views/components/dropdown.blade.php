@@ -1,11 +1,11 @@
-@props([
+﻿@props([
     'name' => '',
     'label' => '',
     'options' => [],
     'selected' => '',
     'id' => null,
     'required' => false,
-    'theme' => 'sa', // 'sa' (Super Admin #D4AF37), 'dist' (Distributor #E5A93C), 'hotel' (Hotel #C5A059), 'default'
+    'theme' => 'sa', // 'sa' (Super Admin #C5A880), 'dist' (Distributor #C5A880), 'hotel' (Hotel #C5A880), 'default'
     'selectClass' => '',
     'wrapClass' => '',
 ])

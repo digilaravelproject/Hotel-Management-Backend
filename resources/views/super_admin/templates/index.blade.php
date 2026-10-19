@@ -8,7 +8,7 @@
     <div id="js-alert-container"></div>
 
     @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
+        <div class="p-4 rounded-2xl bg-[#FEF2F2] border border-[#FEE2E2] text-[#B91C1C] text-xs space-y-1">
             <ul class="list-disc pl-4 space-y-1">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -21,7 +21,7 @@
     <div class="space-y-3">
         <div class="flex items-center justify-between">
             <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center space-x-2">
-                <i class="fa-solid fa-layer-group text-indigo-600"></i>
+                <i class="fa-solid fa-layer-group text-[#A68A64]"></i>
                 <span>Registered TV Themes Catalog</span>
             </h3>
             <span class="text-xs text-slate-500 font-medium">{{ $existingThemes->count() }} Theme(s) Configured</span>
@@ -33,10 +33,10 @@
                     $latestBuild = $templates->where('theme_id', $theme->theme_id)->where('is_active', true)->first() 
                                     ?? $templates->where('theme_id', $theme->theme_id)->first();
                 @endphp
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-indigo-300 transition-all">
+                <div class="bg-white border border-[#E5E7EB] rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4 hover:border-[#C5A880] transition-all">
                     <div class="flex items-start justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg overflow-hidden shrink-0">
+                            <div class="w-12 h-12 rounded-2xl bg-[#F5F2EB] border border-[#E5E7EB] flex items-center justify-center text-[#8C7250] font-black text-lg overflow-hidden shrink-0">
                                 @if($theme->preview_image && Storage::disk('public')->exists($theme->preview_image))
                                     <img src="{{ Storage::url($theme->preview_image) }}" alt="Preview" class="w-full h-full object-cover">
                                 @else
@@ -47,8 +47,8 @@
                                 <div class="flex items-center space-x-2">
                                     <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">Theme ID: {{ $theme->theme_id }}</span>
                                     @if($theme->theme_id == $defaultThemeId)
-                                        <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-300 flex items-center space-x-1">
-                                            <i class="fa-solid fa-star text-[8px] text-amber-500"></i>
+                                        <span class="text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFFBEB] text-[#B45309] border border-[#FEF3C7] flex items-center space-x-1">
+                                            <i class="fa-solid fa-star text-[8px] text-[#B45309]"></i>
                                             <span>Default</span>
                                         </span>
                                     @endif
@@ -57,7 +57,7 @@
                             </div>
                         </div>
                         @if($latestBuild && $latestBuild->is_active)
-                            <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] uppercase">Active</span>
+                            <span class="px-2.5 py-1 rounded-full bg-[#F0FDF4] text-[#15803D] border border-[#DCFCE7] font-bold text-[10px] uppercase">Active</span>
                         @else
                             <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase">Inactive</span>
                         @endif
@@ -76,13 +76,13 @@
 
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2 rounded-xl border border-indigo-200 text-indigo-600 hover:bg-indigo-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                            <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2 rounded-xl border border-[#E5E7EB] text-slate-700 hover:text-[#A68A64] hover:bg-[#F9FAFB] font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
                                 <span>Upload Update</span>
                             </button>
                             @if($latestBuild && $latestBuild->extracted_path)
                                 <a href="{{ route('super-admin.templates.preview', $latestBuild->id) }}" target="_blank"
-                                   class="flex-1 py-2 rounded-xl border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                   class="flex-1 py-2 rounded-xl border border-[#DCFCE7] text-[#15803D] hover:bg-[#F0FDF4] font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
                                     <i class="fa-solid fa-eye"></i>
                                     <span>Preview</span>
                                 </a>
@@ -95,14 +95,14 @@
                         </div>
 
                         @if($theme->theme_id == $defaultThemeId)
-                            <div class="w-full py-2 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-800 font-bold text-xs flex items-center justify-center space-x-1.5">
-                                <i class="fa-solid fa-circle-check text-amber-600"></i>
+                            <div class="w-full py-2 rounded-xl bg-[#FFFBEB] border border-[#FEF3C7] text-[#B45309] font-bold text-xs flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-circle-check text-[#15803D]"></i>
                                 <span>Default Theme for New Hotels</span>
                             </div>
                         @else
                             <form action="{{ route('super-admin.templates.set-default', $theme->theme_id) }}" method="POST">
                                 @csrf
-                                <button type="submit" class="w-full py-2 rounded-xl border border-slate-200 hover:border-amber-400 text-slate-600 hover:text-amber-700 hover:bg-amber-50/50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                                <button type="submit" class="w-full py-2 rounded-xl border border-slate-200 hover:border-[#C5A880] text-slate-600 hover:text-[#A68A64] hover:bg-[#F5F2EB] font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
                                     <i class="fa-regular fa-star"></i>
                                     <span>Set as Global Default</span>
                                 </button>
@@ -120,10 +120,10 @@
     </div>
 
     <!-- Upload / Update Theme Card -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
         <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-600">
+                <div class="w-10 h-10 rounded-2xl bg-[#F5F2EB] border border-[#E5E7EB] flex items-center justify-center text-[#8C7250]">
                     <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
                 </div>
                 <div>
@@ -131,7 +131,7 @@
                     <p class="text-xs text-slate-500 font-medium">Upload a ZIP package for Theme ID 1 (replace/update) or Theme ID 2+ (new theme).</p>
                 </div>
             </div>
-            <button type="button" onclick="resetFormToNewTheme({{ $nextThemeId }})" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-xl transition-all">
+            <button type="button" onclick="resetFormToNewTheme({{ $nextThemeId }})" class="text-xs font-bold text-[#8C7250] hover:text-[#725C3E] bg-[#F5F2EB] hover:bg-[#EAE4D6] border border-[#E5E7EB] px-3 py-1.5 rounded-xl transition-all">
                 + Create New Theme #{{ $nextThemeId }}
             </button>
         </div>
@@ -146,14 +146,14 @@
                         <span>Theme ID *</span>
                         <span class="text-[10px] text-slate-400 font-normal">e.g. 1, 2, 3</span>
                     </label>
-                    <input type="number" id="themeIdField" name="theme_id" value="{{ $existingThemes->count() > 0 ? 1 : 1 }}" min="1" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-xs font-extrabold text-slate-900">
+                    <input type="number" id="themeIdField" name="theme_id" value="{{ $existingThemes->count() > 0 ? 1 : 1 }}" min="1" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-extrabold text-slate-900">
                     <span class="text-[11px] text-slate-400 font-medium block">Use <strong>1</strong> to update Theme 1, or <strong>2+</strong> for additional themes.</span>
                 </div>
 
                 <!-- Theme Name -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">Theme Name</label>
-                    <input type="text" id="themeNameField" name="theme_name" placeholder="e.g. Classic Luxury / Modern Dark" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-xs font-medium text-slate-800">
+                    <input type="text" id="themeNameField" name="theme_name" placeholder="e.g. Classic Luxury / Modern Dark" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-medium text-slate-800">
                     <span class="text-[11px] text-slate-400 font-medium block">Displayed to Hotel Admin when choosing themes.</span>
                 </div>
 
@@ -163,7 +163,7 @@
                         <span>Version (Optional)</span>
                         <span class="text-[10px] text-slate-400 font-normal">Auto: +0.5</span>
                     </label>
-                    <input type="text" id="customVersionField" name="custom_version" placeholder="e.g. 1.0 or 2.0" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 text-xs font-medium text-slate-800">
+                    <input type="text" id="customVersionField" name="custom_version" placeholder="e.g. 1.0 or 2.0" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-medium text-slate-800">
                     <span class="text-[11px] text-slate-400 font-medium block">Leave blank to auto-increment for this theme.</span>
                 </div>
             </div>
@@ -179,13 +179,13 @@
                 <!-- Template Package ZIP -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">Template Package (.zip) *</label>
-                    <input type="file" id="templateFileField" name="template_file" required accept=".zip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-rose-600 file:text-white">
+                    <input type="file" id="templateFileField" name="template_file" required accept=".zip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#A68A64] hover:file:bg-[#8C7250] file:text-white">
                     <span class="text-[11px] text-slate-400 font-medium block">ZIP build package containing web assets for Android TV.</span>
                 </div>
             </div>
 
             <div class="pt-2 flex justify-end">
-                <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all flex items-center justify-center space-x-2">
+                <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-upload"></i>
                     <span>Upload & Deploy Theme Build</span>
                 </button>
@@ -194,10 +194,10 @@
     </div>
 
     <!-- Template History List -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+                <div class="w-10 h-10 rounded-2xl bg-[#F5F2EB] border border-[#E5E7EB] flex items-center justify-center text-[#8C7250] shrink-0">
                     <i class="fa-solid fa-history text-lg"></i>
                 </div>
                 <div>
@@ -208,11 +208,11 @@
 
             <!-- Filter by Theme -->
             <div class="flex items-center flex-wrap gap-1.5">
-                <a href="{{ route('super-admin.templates.index') }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ !request('theme_id') ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                <a href="{{ route('super-admin.templates.index') }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ !request('theme_id') ? 'bg-[#A68A64] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     All Themes
                 </a>
                 @foreach($existingThemes as $t)
-                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-600/20' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#A68A64] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                         Theme #{{ $t->theme_id }}
                     </a>
                 @endforeach
@@ -249,13 +249,13 @@
                                             <div class="font-extrabold text-slate-900">
                                                 {{ $template->theme_name ?? ('Theme ' . $template->theme_id) }}
                                             </div>
-                                            <span class="text-[10px] font-bold text-indigo-600">Theme ID: {{ $template->theme_id }}</span>
+                                            <span class="text-[10px] font-bold text-[#8C7250]">Theme ID: {{ $template->theme_id }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-4 font-extrabold text-rose-600 text-sm">v{{ $template->version }}</td>
+                                <td class="px-4 py-4 font-extrabold text-[#A68A64] text-sm">v{{ $template->version }}</td>
                                 <td class="px-4 py-4 font-mono">
-                                    <a href="{{ Storage::url($template->file_path) }}" target="_blank" class="text-indigo-600 hover:underline font-semibold flex items-center space-x-1">
+                                    <a href="{{ Storage::url($template->file_path) }}" target="_blank" class="text-[#8C7250] hover:text-[#725C3E] hover:underline font-semibold flex items-center space-x-1">
                                         <i class="fa-solid fa-file-zipper text-slate-400"></i>
                                         <span>{{ basename($template->file_path) }}</span>
                                     </a>
@@ -283,7 +283,7 @@
                                 </td>
                                 <td class="px-4 py-4 text-center">
                                     @if($template->is_active)
-                                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[10px] uppercase">Active for Theme #{{ $template->theme_id }}</span>
+                                        <span class="px-3 py-1 rounded-full bg-[#F0FDF4] text-[#15803D] border border-[#DCFCE7] font-bold text-[10px] uppercase">Active for Theme #{{ $template->theme_id }}</span>
                                     @else
                                         <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase">Inactive</span>
                                     @endif
@@ -292,11 +292,11 @@
                                     <form action="{{ route('super-admin.templates.toggle-active', $template->id) }}" method="POST" class="inline">
                                         @csrf
                                         @if($template->is_active)
-                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-[11px]">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-[#FEE2E2] text-[#B91C1C] hover:bg-[#FEF2F2] font-bold text-[11px] transition-colors">
                                                 Deactivate
                                             </button>
                                         @else
-                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-emerald-200 text-emerald-600 hover:bg-emerald-50 font-bold text-[11px]">
+                                            <button type="submit" class="px-3 py-1.5 rounded-lg border border-[#DCFCE7] text-[#15803D] hover:bg-[#F0FDF4] font-bold text-[11px] transition-colors">
                                                 Activate
                                             </button>
                                         @endif
@@ -322,13 +322,13 @@
 
 <!-- Upload Progress Modal Overlay -->
 <div id="uploadProgressModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-950/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white border border-slate-200 rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
+    <div class="bg-white border border-[#E5E7EB] rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
         <div class="flex items-center justify-between">
             <h4 id="progressStatusText" class="text-sm font-extrabold text-slate-900">Uploading Theme Build...</h4>
-            <span id="progressPercentageText" class="text-xs font-mono font-bold text-rose-600">0%</span>
+            <span id="progressPercentageText" class="text-xs font-mono font-bold text-[#A68A64]">0%</span>
         </div>
         <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-            <div id="progressBarFill" class="h-full bg-rose-600 rounded-full transition-all duration-200" style="width: 0%;"></div>
+            <div id="progressBarFill" class="h-full bg-[#A68A64] rounded-full transition-all duration-200" style="width: 0%;"></div>
         </div>
         <p id="progressSubText" class="text-[11px] text-slate-400 font-medium">Deploying theme assets onto production storage...</p>
     </div>
@@ -409,9 +409,9 @@
                         if (res.errors) {
                             errMsg = Object.values(res.errors).flat().join('<br>');
                         }
-                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">${errMsg}</div>`;
+                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-[#FEF2F2] border border-[#FEE2E2] text-[#B91C1C] text-xs font-semibold">${errMsg}</div>`;
                     } catch(err) {
-                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">Upload failed with status code ${xhr.status}.</div>`;
+                        alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-[#FEF2F2] border border-[#FEE2E2] text-[#B91C1C] text-xs font-semibold">Upload failed with status code ${xhr.status}.</div>`;
                     }
                 }
             });
@@ -419,7 +419,7 @@
             xhr.addEventListener('error', function() {
                 modal.classList.add('hidden');
                 submitBtn.disabled = false;
-                alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold">Network error during upload.</div>`;
+                alertContainer.innerHTML = `<div class="p-4 rounded-2xl bg-[#FEF2F2] border border-[#FEE2E2] text-[#B91C1C] text-xs font-semibold">Network error during upload.</div>`;
             });
 
             xhr.open('POST', form.action, true);

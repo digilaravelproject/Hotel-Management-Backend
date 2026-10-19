@@ -1,4 +1,4 @@
-@extends('layouts.distributor')
+﻿@extends('layouts.distributor')
 
 @section('title', 'Connected TVs - Distributor Portal')
 @section('page_title', 'Connected TVs Network')
@@ -500,7 +500,7 @@
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#e11d48',
-                cancelButtonColor: '#64748b',
+                cancelButtonColor: '#6B7280',
                 confirmButtonText: 'Yes, Disconnect',
                 cancelButtonText: 'Cancel',
                 customClass: {

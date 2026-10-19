@@ -38,7 +38,11 @@ class HotelAdminController extends Controller
     public function create()
     {
         $plans = Plan::query()->where('status', '=', true)->get();
-        $distributors = User::role('distributor')->where('status', true)->get();
+        try {
+            $distributors = User::role('distributor')->where('status', true)->get();
+        } catch (\Throwable $e) {
+            $distributors = User::whereHas('roles', fn ($q) => $q->where('name', 'distributor'))->where('status', true)->get();
+        }
         $themes = \App\Models\TvTemplate::select('theme_id', 'theme_name')->orderBy('theme_id', 'asc')->get()->unique('theme_id')->values();
         $defaultThemeId = (int) app_setting('default_theme_id', 1);
 
@@ -77,7 +81,11 @@ class HotelAdminController extends Controller
     {
         $hotel = HotelAdmin::findOrFail($id);
         $plans = Plan::query()->where('status', '=', true)->get();
-        $distributors = User::role('distributor')->where('status', true)->get();
+        try {
+            $distributors = User::role('distributor')->where('status', true)->get();
+        } catch (\Throwable $e) {
+            $distributors = User::whereHas('roles', fn ($q) => $q->where('name', 'distributor'))->where('status', true)->get();
+        }
         $themes = \App\Models\TvTemplate::select('theme_id', 'theme_name')->orderBy('theme_id', 'asc')->get()->unique('theme_id')->values();
         $defaultThemeId = (int) app_setting('default_theme_id', 1);
 

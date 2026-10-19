@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Application Branding & Settings - Super Admin')
 @section('page_title', 'System Settings & Branding')
@@ -7,24 +7,24 @@
 <div class="max-w-4xl mx-auto space-y-8">
 
     <!-- Top Alert / Header -->
-    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E2E8F0] shadow-sm relative overflow-hidden">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-[#E5E7EB] shadow-sm relative overflow-hidden">
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div class="space-y-2">
-                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#FBF8F1] border border-[#D4AF37]/30 text-[#0F2537] text-xs font-bold">
-                    <i class="fa-solid fa-wand-magic-sparkles text-[#D4AF37]"></i>
+                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-[#F5F2EB] border border-[#C5A880]/30 text-[#111827] text-xs font-bold">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[#C5A880]"></i>
                     <span>Global White-label Configuration</span>
                 </div>
-                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#1E293B] tracking-tight">Application Identity & Media</h2>
-                <p class="text-xs sm:text-sm text-[#64748B] max-w-xl">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">Application Identity & Media</h2>
+                <p class="text-xs sm:text-sm text-[#6B7280] max-w-xl">
                     Configure your platform branding, portal logos, and browser favicons. Updates applied here instantly reflect across Super Admin, Hotel Portals, Distributor Hubs, and Guest Landing screens.
                 </p>
             </div>
             <div class="flex items-center space-x-3 shrink-0">
-                <div class="p-3 bg-[#FBF8F1] border border-[#D4AF37]/20 rounded-2xl flex items-center space-x-3">
-                    <img src="{{ app_favicon_url() }}" alt="Favicon" class="w-8 h-8 rounded-lg object-contain bg-white p-1 border border-[#E2E8F0]">
+                <div class="p-3 bg-[#F5F2EB] border border-[#C5A880]/20 rounded-2xl flex items-center space-x-3">
+                    <img src="{{ app_favicon_url() }}" alt="Favicon" class="w-8 h-8 rounded-lg object-contain bg-white p-1 border border-[#E5E7EB]">
                     <div>
-                        <div class="text-[11px] text-[#64748B] uppercase font-bold tracking-wider">Active Brand</div>
-                        <div class="text-sm font-extrabold text-[#1E293B] truncate max-w-[120px]">{{ app_setting('app_name', 'DigiHotel') }}</div>
+                        <div class="text-[11px] text-[#6B7280] uppercase font-bold tracking-wider">Active Brand</div>
+                        <div class="text-sm font-extrabold text-[#111827] truncate max-w-[120px]">{{ app_setting('app_name', 'DigiHotel') }}</div>
                     </div>
                 </div>
             </div>
@@ -327,10 +327,10 @@
 
         <!-- Action Buttons -->
         <div class="pt-4 flex items-center justify-end space-x-4">
-            <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3.5 rounded-2xl bg-white border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] text-xs font-bold transition-all">
+            <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3.5 rounded-2xl bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] text-xs font-bold transition-all">
                 Cancel
             </a>
-            <button type="submit" class="px-8 py-3.5 rounded-2xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+            <button type="submit" class="px-8 py-3.5 rounded-2xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                 <i class="fa-solid fa-floppy-disk"></i>
                 <span>Save & Apply Platform Branding</span>
             </button>

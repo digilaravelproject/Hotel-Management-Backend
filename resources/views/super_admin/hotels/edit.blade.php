@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Edit Hotel Vendor - Super Admin')
 @section('page_title', 'Modify Hotel Vendor')
@@ -333,7 +333,7 @@ function deleteAdminSlide(path) {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#DC2626',
-        cancelButtonColor: '#64748B',
+        cancelButtonColor: '#6B7280',
         confirmButtonText: 'Yes, remove it',
         cancelButtonText: 'Cancel',
         customClass: {

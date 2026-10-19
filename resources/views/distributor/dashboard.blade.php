@@ -1,70 +1,70 @@
-@extends('layouts.distributor')
+﻿@extends('layouts.distributor')
 
 @section('title', 'Dashboard - Distributor Hub')
 @section('page_title', 'Distributor Control Dashboard')
 
 @section('content')
 <div class="space-y-8">
-    <!-- Welcome Banner & Quick Action Buttons (colors.md: Pure White #FFFFFF Card, Warm Amber Gold #E5A93C CTA) -->
-    <div class="bg-[#FFFFFF] rounded-3xl p-6 sm:p-8 text-[#1E293B] border border-[#E2E8F0] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+    <!-- Welcome Banner & Quick Action Buttons (colors.md: Pure White #FFFFFF Card, Warm Amber Gold #C5A880 CTA) -->
+    <div class="bg-[#FFFFFF] rounded-3xl p-6 sm:p-8 text-[#111827] border border-[#E5E7EB] shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div class="space-y-2">
-            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FEF9EE] text-[#E5A93C] font-bold text-xs border border-[#E5A93C]/40">
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#F1F5F9] text-[#C5A880] font-bold text-xs border border-[#C5A880]/40">
                 <i class="fa-solid fa-sparkles mr-1.5"></i> Distributor Business Workspace
             </span>
-            <h2 class="text-2xl font-extrabold tracking-tight text-[#1E293B]">Welcome, {{ auth()->user()->name }}!</h2>
-            <p class="text-xs text-[#64748B] max-w-xl">Register partner hotels under your distributor account, sell licensing packages, and manage your hotel portfolio in real-time.</p>
+            <h2 class="text-2xl font-extrabold tracking-tight text-[#111827]">Welcome, {{ auth()->user()->name }}!</h2>
+            <p class="text-xs text-[#6B7280] max-w-xl">Register partner hotels under your distributor account, sell licensing packages, and manage your hotel portfolio in real-time.</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-3">
-            <!-- Primary CTA Button (colors.md: Warm Amber Gold #E5A93C, Hover #C88E26) -->
-            <a href="{{ route('distributor.hotels.create') }}" class="px-5 py-3 rounded-2xl bg-[#E5A93C] hover:bg-[#C88E26] text-[#FFFFFF] font-extrabold text-xs shadow-md shadow-[#E5A93C]/25 transition-all flex items-center space-x-2">
+            <!-- Primary CTA Button (colors.md: Warm Amber Gold #C5A880, Hover #8C7250) -->
+            <a href="{{ route('distributor.hotels.create') }}" class="px-5 py-3 rounded-2xl bg-[#27374D] hover:bg-[#8C7250] text-[#FFFFFF] font-extrabold text-xs shadow-md shadow-[#C5A880]/25 transition-all flex items-center space-x-2">
                 <i class="fa-solid fa-hotel text-xs"></i>
                 <span>+ Onboard Hotel</span>
             </a>
-            <!-- Secondary Button (colors.md: White #FFFFFF, Border #CBD5E1, Text #1E293B) -->
-            <a href="{{ route('distributor.sales.create') }}" class="px-5 py-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#1E293B] border border-[#CBD5E1] font-bold text-xs transition-all flex items-center space-x-2">
-                <i class="fa-solid fa-box-open text-xs text-[#E5A93C]"></i>
+            <!-- Secondary Button (colors.md: White #FFFFFF, Border #CBD5E1, Text #111827) -->
+            <a href="{{ route('distributor.sales.create') }}" class="px-5 py-3 rounded-2xl bg-[#FFFFFF] hover:bg-[#F4F5F7] text-[#111827] border border-[#CBD5E1] font-bold text-xs transition-all flex items-center space-x-2">
+                <i class="fa-solid fa-box-open text-xs text-[#C5A880]"></i>
                 <span>Sell Package</span>
             </a>
         </div>
     </div>
 
-    <!-- Metrics Grid (colors.md: Pure White Cards, Dark Slate Numbers, Cream Gold #FEF9EE Icon Box with Gold #E5A93C) -->
+    <!-- Metrics Grid (colors.md: Pure White Cards, Dark Slate Numbers, Cream Gold #F1F5F9 Icon Box with Gold #C5A880) -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <!-- Metric 1: Total Hotels -->
-        <div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Hotels Onboarded</p>
-                <div class="text-3xl font-extrabold text-[#1E293B] mt-1">{{ $totalHotels }}</div>
-                <div class="text-xs text-[#16A34A] font-bold mt-1">
+                <p class="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Hotels Onboarded</p>
+                <div class="text-3xl font-extrabold text-[#111827] mt-1">{{ $totalHotels }}</div>
+                <div class="text-xs text-[#15803D] font-bold mt-1">
                     <i class="fa-solid fa-circle-check text-[10px]"></i> {{ $activeHotels }} Active Currently
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/35 text-[#E5A93C] flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#F1F5F9] border border-[#C5A880]/35 text-[#C5A880] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-hotel"></i>
             </div>
         </div>
 
         <!-- Metric 2: Packages Sold -->
-        <div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Packages Sold</p>
-                <div class="text-3xl font-extrabold text-[#1E293B] mt-1">{{ $totalSalesCount }}</div>
-                <div class="text-xs text-[#64748B] font-medium mt-1">Completed transactions</div>
+                <p class="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Packages Sold</p>
+                <div class="text-3xl font-extrabold text-[#111827] mt-1">{{ $totalSalesCount }}</div>
+                <div class="text-xs text-[#6B7280] font-medium mt-1">Completed transactions</div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/35 text-[#E5A93C] flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#F1F5F9] border border-[#C5A880]/35 text-[#C5A880] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
         </div>
 
         <!-- Metric 3: Total Sales Volume -->
-        <div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between">
+        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 shadow-xs flex items-center justify-between">
             <div>
-                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Total Sales Volume</p>
-                <div class="text-3xl font-extrabold text-[#1E293B] mt-1">₹{{ number_format($totalRevenue, 0) }}</div>
-                <div class="text-xs text-[#16A34A] font-bold mt-1">Cumulative sales</div>
+                <p class="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Total Sales Volume</p>
+                <div class="text-3xl font-extrabold text-[#111827] mt-1">₹{{ number_format($totalRevenue, 0) }}</div>
+                <div class="text-xs text-[#15803D] font-bold mt-1">Cumulative sales</div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/35 text-[#E5A93C] flex items-center justify-center text-lg">
+            <div class="w-12 h-12 rounded-2xl bg-[#F1F5F9] border border-[#C5A880]/35 text-[#C5A880] flex items-center justify-center text-lg">
                 <i class="fa-solid fa-indian-rupee-sign"></i>
             </div>
         </div>
@@ -74,15 +74,15 @@
             $dashWallet = auth()->user()->wallet;
             $dashBalance = $dashWallet ? $dashWallet->available_balance : 0.00;
         @endphp
-        <a href="{{ route('distributor.wallet.index') }}" class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl p-6 shadow-xs flex items-center justify-between hover:border-[#E5A93C]/60 transition-all group">
+        <a href="{{ route('distributor.wallet.index') }}" class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl p-6 shadow-xs flex items-center justify-between hover:border-[#C5A880]/60 transition-all group">
             <div>
-                <p class="text-[11px] font-bold text-[#64748B] uppercase tracking-wider">Wallet Balance</p>
-                <div class="text-3xl font-extrabold text-[#E5A93C] mt-1">₹{{ number_format($dashBalance, 2) }}</div>
-                <div class="text-xs text-[#C88E26] font-bold mt-1 group-hover:underline">
+                <p class="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Wallet Balance</p>
+                <div class="text-3xl font-extrabold text-[#C5A880] mt-1">₹{{ number_format($dashBalance, 2) }}</div>
+                <div class="text-xs text-[#8C7250] font-bold mt-1 group-hover:underline">
                     Rate: {{ auth()->user()->effective_commission_percentage }}% • Payout <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </div>
             </div>
-            <div class="w-12 h-12 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/35 text-[#E5A93C] flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
+            <div class="w-12 h-12 rounded-2xl bg-[#F1F5F9] border border-[#C5A880]/35 text-[#C5A880] flex items-center justify-center text-lg group-hover:scale-105 transition-transform">
                 <i class="fa-solid fa-wallet"></i>
             </div>
         </a>
@@ -91,88 +91,88 @@
     <!-- Recent Hotels & Sales Grids (colors.md: Pure White Cards, Soft Gray Borders) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Recent Hotels -->
-        <div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl overflow-hidden shadow-xs">
-            <div class="p-6 border-b border-[#E2E8F0] flex items-center justify-between">
+        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl overflow-hidden shadow-xs">
+            <div class="p-6 border-b border-[#E5E7EB] flex items-center justify-between">
                 <div>
-                    <h3 class="font-extrabold text-[#1E293B] text-base">Recent Hotels Onboarded</h3>
-                    <p class="text-xs text-[#64748B]">Hotels under your distributor franchise</p>
+                    <h3 class="font-extrabold text-[#111827] text-base">Recent Hotels Onboarded</h3>
+                    <p class="text-xs text-[#6B7280]">Hotels under your distributor franchise</p>
                 </div>
-                <a href="{{ route('distributor.hotels.index') }}" class="text-xs font-bold text-[#E5A93C] hover:text-[#C88E26]">View All</a>
+                <a href="{{ route('distributor.hotels.index') }}" class="text-xs font-bold text-[#C5A880] hover:text-[#8C7250]">View All</a>
             </div>
 
-            <div class="divide-y divide-[#E2E8F0]">
+            <div class="divide-y divide-[#E5E7EB]">
                 @forelse($recentHotels as $hotel)
-                    <div class="p-5 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors">
+                    <div class="p-5 flex items-center justify-between hover:bg-[#F4F5F7] transition-colors">
                         <div class="flex items-center space-x-3.5">
-                            <div class="w-10 h-10 rounded-2xl bg-[#FEF9EE] border border-[#E5A93C]/35 text-[#E5A93C] flex items-center justify-center font-bold text-sm">
+                            <div class="w-10 h-10 rounded-2xl bg-[#F1F5F9] border border-[#C5A880]/35 text-[#C5A880] flex items-center justify-center font-bold text-sm">
                                 <i class="fa-solid fa-hotel"></i>
                             </div>
                             <div>
-                                <h4 class="font-extrabold text-[#1E293B] text-xs">{{ $hotel->hotel_name }}</h4>
-                                <p class="text-[11px] text-[#64748B]">{{ $hotel->hotel_location }} • {{ $hotel->room_count }} Rooms</p>
-                                <span class="font-mono text-[10px] text-[#64748B] bg-[#F8FAFC] border border-[#E2E8F0] px-1.5 py-0.5 rounded">Key: {{ $hotel->license_key }}</span>
+                                <h4 class="font-extrabold text-[#111827] text-xs">{{ $hotel->hotel_name }}</h4>
+                                <p class="text-[11px] text-[#6B7280]">{{ $hotel->hotel_location }} • {{ $hotel->room_count }} Rooms</p>
+                                <span class="font-mono text-[10px] text-[#6B7280] bg-[#F4F5F7] border border-[#E5E7EB] px-1.5 py-0.5 rounded">Key: {{ $hotel->license_key }}</span>
                             </div>
                         </div>
 
                         <div class="text-right">
                             @if($hotel->plan)
-                                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FEF9EE] text-[#C88E26] border border-[#E5A93C]/35">
+                                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F1F5F9] text-[#8C7250] border border-[#C5A880]/35">
                                     {{ $hotel->plan->name }}
                                 </span>
                             @else
-                                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F8FAFC] text-[#64748B] border border-[#E2E8F0]">
+                                <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F4F5F7] text-[#6B7280] border border-[#E5E7EB]">
                                     No Plan
                                 </span>
                             @endif
                             <div class="mt-1">
-                                <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="text-[11px] font-bold text-[#E5A93C] hover:text-[#C88E26]">
+                                <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="text-[11px] font-bold text-[#C5A880] hover:text-[#8C7250]">
                                     + Sell Package
                                 </a>
                             </div>
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-[#64748B] text-xs">
-                        No hotels onboarded yet. <a href="{{ route('distributor.hotels.create') }}" class="text-[#E5A93C] font-bold hover:underline">Onboard your first hotel</a>.
+                    <div class="p-8 text-center text-[#6B7280] text-xs">
+                        No hotels onboarded yet. <a href="{{ route('distributor.hotels.create') }}" class="text-[#C5A880] font-bold hover:underline">Onboard your first hotel</a>.
                     </div>
                 @endforelse
             </div>
         </div>
 
         <!-- Recent Sales Ledger -->
-        <div class="bg-[#FFFFFF] border border-[#E2E8F0] rounded-3xl overflow-hidden shadow-xs">
-            <div class="p-6 border-b border-[#E2E8F0] flex items-center justify-between">
+        <div class="bg-[#FFFFFF] border border-[#E5E7EB] rounded-3xl overflow-hidden shadow-xs">
+            <div class="p-6 border-b border-[#E5E7EB] flex items-center justify-between">
                 <div>
-                    <h3 class="font-extrabold text-[#1E293B] text-base">Recent Package Sales</h3>
-                    <p class="text-xs text-[#64748B]">Transactions processed by your account</p>
+                    <h3 class="font-extrabold text-[#111827] text-base">Recent Package Sales</h3>
+                    <p class="text-xs text-[#6B7280]">Transactions processed by your account</p>
                 </div>
-                <a href="{{ route('distributor.sales.index') }}" class="text-xs font-bold text-[#E5A93C] hover:text-[#C88E26]">View All</a>
+                <a href="{{ route('distributor.sales.index') }}" class="text-xs font-bold text-[#C5A880] hover:text-[#8C7250]">View All</a>
             </div>
 
-            <div class="divide-y divide-[#E2E8F0]">
+            <div class="divide-y divide-[#E5E7EB]">
                 @forelse($recentSales as $sale)
-                    <div class="p-5 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors">
+                    <div class="p-5 flex items-center justify-between hover:bg-[#F4F5F7] transition-colors">
                         <div class="flex items-center space-x-3.5">
-                            <div class="w-10 h-10 rounded-2xl bg-[#DCFCE7] border border-[#16A34A]/30 text-[#16A34A] flex items-center justify-center font-bold text-sm">
+                            <div class="w-10 h-10 rounded-2xl bg-[#F0FDF4] border border-[#16A34A]/30 text-[#15803D] flex items-center justify-center font-bold text-sm">
                                 <i class="fa-solid fa-receipt"></i>
                             </div>
                             <div>
-                                <h4 class="font-extrabold text-[#1E293B] text-xs">{{ $sale->hotel->hotel_name ?? 'Hotel Client' }}</h4>
-                                <p class="text-[11px] text-[#64748B]">{{ $sale->plan->name ?? 'Package' }} • {{ $sale->payment_method }}</p>
-                                <span class="text-[10px] text-[#64748B]">{{ $sale->created_at->format('M d, Y • h:i A') }}</span>
+                                <h4 class="font-extrabold text-[#111827] text-xs">{{ $sale->hotel->hotel_name ?? 'Hotel Client' }}</h4>
+                                <p class="text-[11px] text-[#6B7280]">{{ $sale->plan->name ?? 'Package' }} • {{ $sale->payment_method }}</p>
+                                <span class="text-[10px] text-[#6B7280]">{{ $sale->created_at->format('M d, Y • h:i A') }}</span>
                             </div>
                         </div>
 
                         <div class="text-right">
-                            <div class="text-sm font-extrabold text-[#1E293B]">₹{{ number_format($sale->amount, 0) }}</div>
-                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#DCFCE7] text-[#16A34A] border border-[#16A34A]/30">
+                            <div class="text-sm font-extrabold text-[#111827]">₹{{ number_format($sale->amount, 0) }}</div>
+                            <span class="inline-flex px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#16A34A]/30">
                                 Completed
                             </span>
                         </div>
                     </div>
                 @empty
-                    <div class="p-8 text-center text-[#64748B] text-xs">
-                        No packages sold yet. <a href="{{ route('distributor.sales.create') }}" class="text-[#E5A93C] font-bold hover:underline">Sell your first package</a>.
+                    <div class="p-8 text-center text-[#6B7280] text-xs">
+                        No packages sold yet. <a href="{{ route('distributor.sales.create') }}" class="text-[#C5A880] font-bold hover:underline">Sell your first package</a>.
                     </div>
                 @endforelse
             </div>

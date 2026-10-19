@@ -1,4 +1,4 @@
-@extends('layouts.hotel_admin')
+﻿@extends('layouts.hotel_admin')
 
 @section('title', 'Room Menu Configuration - Hotel Admin')
 @section('page_title', 'Room ' . $device->room_no . ' Menu Configuration')
@@ -21,21 +21,21 @@
         @endif
     </div>
 
-    <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-[#E2E8F0] pb-6 gap-4">
+    <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-[#E5E7EB] pb-6 gap-4">
             <div class="space-y-1">
-                <h3 class="text-xl font-extrabold text-[#1E293B] tracking-tight">Room {{ $device->room_no }} Menu Items</h3>
-                <p class="text-xs text-[#64748B] font-medium font-mono">Device ID: {{ $device->device_id }} | MAC: {{ $device->mac_address }}</p>
+                <h3 class="text-xl font-extrabold text-[#111827] tracking-tight">Room {{ $device->room_no }} Menu Items</h3>
+                <p class="text-xs text-[#6B7280] font-medium font-mono">Device ID: {{ $device->device_id }} | MAC: {{ $device->mac_address }}</p>
             </div>
             
             <div>
                 @if($hasOverride)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FFEDD5] text-[#EA580C] text-xs font-bold border border-[#EA580C]/20">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#FFFBEB] text-[#B45309] text-xs font-bold border border-[#EA580C]/20">
                         <i class="fa-solid fa-sliders mr-1.5 text-xs"></i> Custom Override Active
                     </span>
                 @else
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#F9F5EB] text-[#6E1841] text-xs font-bold border border-[#C5A059]/30">
-                        <i class="fa-solid fa-globe mr-1.5 text-xs text-[#C5A059]"></i> Inheriting Hotel Global Default
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-[#F7F3F5] text-[#2A1820] text-xs font-bold border border-[#C5A880]/30">
+                        <i class="fa-solid fa-globe mr-1.5 text-xs text-[#8C7250]"></i> Inheriting Hotel Global Default
                     </span>
                 @endif
             </div>
@@ -49,22 +49,22 @@
                     @php
                         $isShown = !isset($currentSettings[$menuId]) || $currentSettings[$menuId] !== 'hide';
                     @endphp
-                    <div class="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] flex items-center justify-between">
+                    <div class="p-4 rounded-xl bg-[#F4F5F7] border border-[#E5E7EB] flex items-center justify-between">
                         <div>
-                            <h4 class="text-xs font-bold text-[#1E293B]">{{ $menu['name'] }}</h4>
-                            <span class="text-[10px] font-mono text-[#64748B]">id: {{ $menuId }}</span>
+                            <h4 class="text-xs font-bold text-[#111827]">{{ $menu['name'] }}</h4>
+                            <span class="text-[10px] font-mono text-[#6B7280]">id: {{ $menuId }}</span>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" name="menus[{{ $menuId }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
-                            <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#C5A059]"></div>
+                            <div class="w-9 h-5 bg-[#CBD5E1] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#3D242F]"></div>
                         </label>
                     </div>
                 @endforeach
             </div>
 
-            <div class="pt-6 border-t border-[#E2E8F0] flex items-center justify-end space-x-4">
-                <a href="{{ route('hotel.devices.index') }}" class="px-6 py-3 rounded-xl border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" id="saveRoomMenuBtn" class="px-8 py-3 rounded-xl bg-[#C5A059] hover:bg-[#A88440] text-white font-bold text-xs shadow-md shadow-[#C5A059]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
+            <div class="pt-6 border-t border-[#E5E7EB] flex items-center justify-end space-x-4">
+                <a href="{{ route('hotel.devices.index') }}" class="px-6 py-3 rounded-xl border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] text-xs font-bold transition-all">Cancel</a>
+                <button type="submit" id="saveRoomMenuBtn" class="px-8 py-3 rounded-xl bg-[#3D242F] hover:bg-[#8C7250] text-white font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 flex items-center space-x-2">
                     <i class="fa-solid fa-floppy-disk"></i>
                     <span>Save Room Menu Settings</span>
                 </button>

@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Hotel Vendor Details - Super Admin')
 @section('page_title', 'Hotel Client Profile')
@@ -16,7 +16,7 @@
             <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="hidden sm:inline-flex items-center px-3.5 py-2.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 hover:text-slate-900 text-xs font-bold transition-all shadow-xs">
                 <i class="fa-solid fa-tv mr-1.5 text-emerald-500"></i> TVs ({{ $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0 }})
             </a>
-            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="inline-flex items-center px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#D4AF37] hover:bg-[#B5952F] text-[#0F2537] font-bold text-xs shadow-md shadow-[#D4AF37]/20 transition-all hover:-translate-y-0.5 whitespace-nowrap">
+            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="inline-flex items-center px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 whitespace-nowrap">
                 <i class="fa-solid fa-pen-to-square mr-1.5"></i>
                 <span class="hidden sm:inline">Edit Vendor Account</span>
                 <span class="sm:hidden">Edit Account</span>
@@ -25,22 +25,22 @@
     </div>
 
     <!-- Main Profile Card -->
-    <div class="bg-white border border-[#E2E8F0] rounded-3xl overflow-hidden shadow-sm">
+    <div class="bg-white border border-[#E5E7EB] rounded-3xl overflow-hidden shadow-sm">
         <!-- Hero Branding Header (Pure White Card adhering to colors.md) -->
-        <div class="relative bg-white p-5 sm:p-8 overflow-hidden border-b border-[#E2E8F0]">
+        <div class="relative bg-white p-5 sm:p-8 overflow-hidden border-b border-[#E5E7EB]">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                 <div class="flex items-center space-x-3.5 sm:space-x-5 min-w-0">
-                    <div class="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] overflow-hidden shrink-0 flex items-center justify-center p-2 shadow-xs">
+                    <div class="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] overflow-hidden shrink-0 flex items-center justify-center p-2 shadow-xs">
                         @if($hotel->hotel_logo)
                             <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-contain">
                         @else
-                            <i class="fa-solid fa-hotel text-xl sm:text-2xl text-[#D4AF37]"></i>
+                            <i class="fa-solid fa-hotel text-xl sm:text-2xl text-[#C5A880]"></i>
                         @endif
                     </div>
                     <div class="min-w-0 space-y-1">
-                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#1E293B] tracking-tight truncate">{{ $hotel->hotel_name }}</h1>
-                        <p class="text-[#64748B] text-xs font-medium flex items-center truncate">
-                            <i class="fa-solid fa-location-dot mr-1.5 text-[#D4AF37] shrink-0"></i>
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] tracking-tight truncate">{{ $hotel->hotel_name }}</h1>
+                        <p class="text-[#6B7280] text-xs font-medium flex items-center truncate">
+                            <i class="fa-solid fa-location-dot mr-1.5 text-[#C5A880] shrink-0"></i>
                             <span class="truncate">{{ $hotel->city ?? $hotel->hotel_location }}</span>
                         </p>
                     </div>
@@ -48,12 +48,12 @@
 
                 <div class="flex items-center flex-wrap gap-2 shrink-0">
                     @if($hotel->approval_status === 'approved')
-                        <span class="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#DCFCE7] border border-[#16A34A]/20 text-[#16A34A] text-[11px] sm:text-xs font-extrabold tracking-wider uppercase">
-                            <i class="fa-solid fa-circle-check mr-1 text-[#16A34A]"></i> Approved
+                        <span class="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#F0FDF4] border border-[#16A34A]/20 text-[#15803D] text-[11px] sm:text-xs font-extrabold tracking-wider uppercase">
+                            <i class="fa-solid fa-circle-check mr-1 text-[#15803D]"></i> Approved
                         </span>
                     @elseif($hotel->approval_status === 'disapproved')
-                        <span class="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#FEE2E2] border border-[#DC2626]/20 text-[#DC2626] text-[11px] sm:text-xs font-extrabold tracking-wider uppercase">
-                            <i class="fa-solid fa-circle-xmark mr-1 text-[#DC2626]"></i> Disapproved
+                        <span class="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-[#FEF2F2] border border-[#DC2626]/20 text-[#B91C1C] text-[11px] sm:text-xs font-extrabold tracking-wider uppercase">
+                            <i class="fa-solid fa-circle-xmark mr-1 text-[#B91C1C]"></i> Disapproved
                         </span>
                     @else
                         <span class="px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 text-[11px] sm:text-xs font-extrabold tracking-wider uppercase backdrop-blur-sm">
@@ -81,12 +81,12 @@
             <div class="bg-gradient-to-r from-slate-50 via-white to-slate-50 border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="flex items-center space-x-4 min-w-0">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[#D4AF37] flex items-center justify-center font-bold shrink-0 text-lg shadow-xs">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[#C5A880] flex items-center justify-center font-bold shrink-0 text-lg shadow-xs">
                             <i class="fa-solid fa-user-tie"></i>
                         </div>
                         <div class="min-w-0 space-y-0.5">
                             <div class="flex items-center space-x-2">
-                                <span class="text-[11px] font-extrabold text-[#D4AF37] uppercase tracking-wider">Associated Distributor</span>
+                                <span class="text-[11px] font-extrabold text-[#C5A880] uppercase tracking-wider">Associated Distributor</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold {{ $hotel->distributor->status ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
                                     {{ $hotel->distributor->status ? 'Active' : 'Inactive' }}
                                 </span>
@@ -102,7 +102,7 @@
                     </div>
                     <div class="shrink-0">
                         <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 shadow-xs">
-                            <i class="fa-solid fa-id-badge mr-1.5 text-[#D4AF37]"></i> ID: #DIST-{{ $hotel->distributor->id }}
+                            <i class="fa-solid fa-id-badge mr-1.5 text-[#C5A880]"></i> ID: #DIST-{{ $hotel->distributor->id }}
                         </span>
                     </div>
                 </div>
@@ -190,16 +190,16 @@
             </div>
 
             <!-- License Key Callout Box (Soft Gold Tint adhering to colors.md) -->
-            <div class="relative overflow-hidden rounded-2xl bg-[#FBF8F1] p-5 sm:p-7 text-[#1E293B] border border-[#D4AF37]/30 shadow-xs">
+            <div class="relative overflow-hidden rounded-2xl bg-[#F5F2EB] p-5 sm:p-7 text-[#111827] border border-[#C5A880]/30 shadow-xs">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="space-y-1 min-w-0">
-                        <span class="text-[11px] font-bold text-[#D4AF37] uppercase tracking-widest block">Connected TV License Key</span>
+                        <span class="text-[11px] font-bold text-[#C5A880] uppercase tracking-widest block">Connected TV License Key</span>
                         @if($hotel->license_key)
                             <div class="flex items-center space-x-2 pt-0.5">
-                                <span class="font-mono text-xl sm:text-2xl font-extrabold text-[#0F2537] tracking-widest break-all select-all">
+                                <span class="font-mono text-xl sm:text-2xl font-extrabold text-[#111827] tracking-widest break-all select-all">
                                     {{ $hotel->license_key }}
                                 </span>
-                                <button type="button" onclick="copyKey('{{ $hotel->license_key }}')" class="p-1.5 rounded-lg bg-white border border-[#CBD5E1] text-[#1E293B] hover:bg-[#F8FAFC] transition-all text-xs shrink-0 cursor-pointer" title="Copy License Key">
+                                <button type="button" onclick="copyKey('{{ $hotel->license_key }}')" class="p-1.5 rounded-lg bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] transition-all text-xs shrink-0 cursor-pointer" title="Copy License Key">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
@@ -209,7 +209,7 @@
                                 </p>
                             @endif
                         @else
-                            <span class="text-xs text-[#64748B] italic">No key generated yet. Complete payment first.</span>
+                            <span class="text-xs text-[#6B7280] italic">No key generated yet. Complete payment first.</span>
                         @endif
                     </div>
                     

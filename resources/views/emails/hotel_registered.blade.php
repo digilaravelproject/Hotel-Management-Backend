@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -47,8 +47,8 @@
             margin-bottom: 30px;
         }
         .card {
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background-color: #F4F5F7;
+            border: 1px solid #E5E7EB;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 30px;
@@ -56,12 +56,12 @@
         .card-title {
             font-weight: 700;
             font-size: 16px;
-            color: #1e293b;
+            color: #111827;
             margin-top: 0;
             margin-bottom: 16px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #E5E7EB;
             padding-bottom: 8px;
         }
         .detail-row {
@@ -73,7 +73,7 @@
             display: table-cell;
             width: 35%;
             font-weight: 600;
-            color: #64748b;
+            color: #6B7280;
         }
         .detail-value {
             display: table-cell;
@@ -117,12 +117,12 @@
             box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
         }
         .footer {
-            background-color: #f8fafc;
+            background-color: #F4F5F7;
             padding: 24px;
             text-align: center;
             font-size: 12px;
             color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid #E5E7EB;
         }
         .footer p {
             margin: 4px 0;

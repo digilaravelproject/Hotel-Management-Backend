@@ -1,4 +1,4 @@
-@extends('layouts.distributor')
+﻿@extends('layouts.distributor')
 
 @section('title', 'Sell Package - Distributor Hub')
 @section('page_title', 'Sell Subscription Package')
@@ -171,40 +171,40 @@
 
             <!-- Summary / Checkout Card (1 column) -->
             <div class="space-y-6">
-                <div class="bg-white border border-[#E2E8F0] rounded-2xl p-6 shadow-sm space-y-6 sticky top-28">
-                    <div class="border-b border-[#E2E8F0] pb-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#FEF9EE] text-[#004B87] border border-[#E5A93C]/30">Order Summary</span>
-                        <div class="text-xl font-extrabold text-[#1E293B] mt-1.5">Package Activation</div>
+                <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm space-y-6 sticky top-28">
+                    <div class="border-b border-[#E5E7EB] pb-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F1F5F9] text-[#111827] border border-[#C5A880]/30">Order Summary</span>
+                        <div class="text-xl font-extrabold text-[#111827] mt-1.5">Package Activation</div>
                     </div>
 
                     <div class="space-y-3 text-xs">
-                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
-                            <span class="text-[#64748B]">Package:</span>
-                            <span id="summaryPlanName" class="font-bold text-[#1E293B]">Select plan</span>
+                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
+                            <span class="text-[#6B7280]">Package:</span>
+                            <span id="summaryPlanName" class="font-bold text-[#111827]">Select plan</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
-                            <span class="text-[#64748B]">Monthly Rate:</span>
-                            <span id="summaryPlanRate" class="font-bold text-[#1E293B]">₹0</span>
+                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
+                            <span class="text-[#6B7280]">Monthly Rate:</span>
+                            <span id="summaryPlanRate" class="font-bold text-[#111827]">₹0</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-[#E2E8F0]">
-                            <span class="text-[#64748B]">Duration:</span>
-                            <span id="summaryDuration" class="font-bold text-[#1E293B]">1 Month</span>
+                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
+                            <span class="text-[#6B7280]">Duration:</span>
+                            <span id="summaryDuration" class="font-bold text-[#111827]">1 Month</span>
                         </div>
                         <div class="flex justify-between py-2 text-sm pt-2">
-                            <span class="text-[#1E293B] font-bold">Total Payable:</span>
-                            <span id="summaryTotal" class="font-black text-[#004B87] text-lg">₹0</span>
+                            <span class="text-[#111827] font-bold">Total Payable:</span>
+                            <span id="summaryTotal" class="font-black text-[#111827] text-lg">₹0</span>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-[#FEF9EE] border border-[#E5A93C]/30 text-[11px] text-[#004B87] space-y-1">
+                    <div class="p-3.5 rounded-xl bg-[#F1F5F9] border border-[#C5A880]/30 text-[11px] text-[#111827] space-y-1">
                         <div class="font-bold flex items-center space-x-1.5">
-                            <i class="fa-solid fa-bolt text-[#E5A93C]"></i>
+                            <i class="fa-solid fa-bolt text-[#C5A880]"></i>
                             <span>Mandatory Payment Verification</span>
                         </div>
-                        <p class="text-[#64748B] text-[10px] leading-relaxed">License and TV room limits are activated only after payment is completed and verified through the active gateway.</p>
+                        <p class="text-[#6B7280] text-[10px] leading-relaxed">License and TV room limits are activated only after payment is completed and verified through the active gateway.</p>
                     </div>
 
-                    <button type="submit" id="saleSubmitBtn" {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#E5A93C]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="submit" id="saleSubmitBtn" {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#C5A880]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
                         <i class="fa-solid fa-lock text-xs"></i>
                         <span id="saleSubmitLabel">Proceed to Pay ₹<span id="btnPayAmount">0</span> & Activate</span>
                     </button>
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         email: orderData.email || '',
                         contact: orderData.phone || '',
                     },
-                    theme: { color: '#E5A93C' },
+                    theme: { color: '#C5A880' },
                     handler: function(response) {
                         // 3. Append gateway response to the form and submit for server-side verification
                         ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {

@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Manage TV Menus - ' . $hotel->hotel_name)
 @section('page_title', 'Smart TV Menu Builder - ' . $hotel->hotel_name)
@@ -137,7 +137,7 @@
 
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isShown ? 'checked' : '' }}>
-                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0F2537]"></div>
+                                <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#111827]"></div>
                             </label>
                             <span class="status-badge text-[11px] font-bold {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                 {{ $isShown ? 'Visible' : 'Hidden' }}
@@ -254,7 +254,7 @@
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''}>
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0F2537]"></div>
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#111827]"></div>
                         </label>
                         <span class="status-badge text-[11px] font-bold ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
                             ${isChecked ? 'Visible' : 'Hidden'}
@@ -425,7 +425,7 @@
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#e11d48',
-            cancelButtonColor: '#64748b',
+            cancelButtonColor: '#6B7280',
             confirmButtonText: 'Yes, reset to default'
         }).then((result) => {
             if (result.isConfirmed) {

@@ -1,4 +1,4 @@
-@extends('layouts.super_admin')
+﻿@extends('layouts.super_admin')
 
 @section('title', 'Manage Applications & OTT Master - Super Admin')
 @section('page_title', 'Manage OTTs / Applications Master Catalog')
@@ -51,10 +51,10 @@
                     <td>{{ $index + 1 }}</td>
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 32px; height: 32px; background: #e0f2fe; color: #0369a1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
+                            <div style="width: 32px; height: 32px; background: #94A3B8; color: #0369a1; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 700;">
                                 <i class="fa-solid fa-play" style="font-size: 12px;"></i>
                             </div>
-                            <span style="font-weight: 700; color: #1e293b;">{{ $app->name }}</span>
+                            <span style="font-weight: 700; color: #111827;">{{ $app->name }}</span>
                         </div>
                     </td>
                     <td>
