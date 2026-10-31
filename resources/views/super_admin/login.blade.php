@@ -51,7 +51,7 @@
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
+                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-12 sm:h-14 w-auto object-contain drop-shadow-md transition-transform group-hover:scale-105">
                     </picture>
                 </a>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-amber-500/15 text-amber-200 border border-amber-400/30">
