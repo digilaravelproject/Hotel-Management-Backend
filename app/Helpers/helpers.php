@@ -45,7 +45,7 @@ if (!function_exists('app_logo_url')) {
         try {
             return AppSetting::getSettings()->logo_url;
         } catch (\Throwable $e) {
-            return asset('images/logo/logo.png');
+            return asset('images/logo/pax-tv-launcher.webp');
         }
     }
 }

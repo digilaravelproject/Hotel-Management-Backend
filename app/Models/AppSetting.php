@@ -71,6 +71,14 @@ class AppSetting extends Model
             }
         }
 
+        if (file_exists(public_path('images/logo/pax-tv-launcher.webp'))) {
+            return asset('images/logo/pax-tv-launcher.webp');
+        }
+
+        if (file_exists(public_path('images/logo/pax-tv-launcher.png'))) {
+            return asset('images/logo/pax-tv-launcher.png');
+        }
+
         if (file_exists(public_path('images/logo/logo.png'))) {
             return asset('images/logo/logo.png');
         }

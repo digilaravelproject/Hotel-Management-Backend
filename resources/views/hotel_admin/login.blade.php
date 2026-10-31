@@ -45,11 +45,14 @@
     <div class="absolute bottom-16 left-12 w-48 h-48 border border-indigo-500/10 rounded-full pointer-events-none hidden xl:block"></div>
 
     <!-- Professional Top Navigation Header -->
-    <header class="w-full px-6 lg:px-12 py-3.5 bg-[#0D091B]/70 backdrop-blur-xl border-b border-white/[0.08] relative z-20 shrink-0">
+    <header class="w-full px-6 lg:px-12 py-3 bg-[#0D091B]/70 backdrop-blur-xl border-b border-white/[0.08] relative z-20 shrink-0">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center space-x-3.5">
+            <div class="flex items-center space-x-4">
                 <a href="{{ route('landing') }}" class="flex items-center space-x-3 group">
-                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-8 sm:h-9 w-auto object-contain transition-transform group-hover:scale-105">
+                    <picture>
+                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
+                    </picture>
                 </a>
                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase bg-purple-500/15 text-purple-200 border border-purple-400/30">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
