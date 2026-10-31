@@ -6,10 +6,10 @@
 <!-- Typography & Custom Theme Styling -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 <style>
-    .font-display {
-        font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    .font-display, .font-mono {
+        font-family: 'Space Mono', monospace;
     }
     .purple-mesh-bg {
         background: radial-gradient(circle at 15% 15%, rgba(124, 58, 237, 0.22) 0%, transparent 40%),

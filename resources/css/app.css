@@ -8,6 +8,7 @@
 
 @theme {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
     /* Global Soft Neutrals (colors.md Section 1 - 90%) */
     --color-ui-bg: #F4F5F7;
