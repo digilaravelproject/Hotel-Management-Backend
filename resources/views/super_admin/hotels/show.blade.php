@@ -1,4 +1,4 @@
-﻿@extends('layouts.super_admin')
+@extends('layouts.super_admin')
 
 @section('title', 'Hotel Vendor Details - Super Admin')
 @section('page_title', 'Hotel Client Profile')
@@ -16,8 +16,8 @@
             <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="hidden sm:inline-flex items-center px-3.5 py-2.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 hover:text-slate-900 text-xs font-bold transition-all shadow-xs">
                 <i class="fa-solid fa-tv mr-1.5 text-emerald-500"></i> TVs ({{ $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0 }})
             </a>
-            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="inline-flex items-center px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 whitespace-nowrap">
-                <i class="fa-solid fa-pen-to-square mr-1.5"></i>
+            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="inline-flex items-center px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/25 transition-all hover:-translate-y-0.5 whitespace-nowrap space-x-1.5">
+                <i class="fa-solid fa-pen-to-square"></i>
                 <span class="hidden sm:inline">Edit Vendor Account</span>
                 <span class="sm:hidden">Edit Account</span>
             </a>
@@ -30,17 +30,17 @@
         <div class="relative bg-white p-5 sm:p-8 overflow-hidden border-b border-[#E5E7EB]">
             <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
                 <div class="flex items-center space-x-3.5 sm:space-x-5 min-w-0">
-                    <div class="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] overflow-hidden shrink-0 flex items-center justify-center p-2 shadow-xs">
+                    <div class="w-14 h-14 sm:w-20 sm:h-20 rounded-2xl bg-[#F8F9FD] border border-slate-200 overflow-hidden shrink-0 flex items-center justify-center p-2 shadow-xs">
                         @if($hotel->hotel_logo)
                             <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-contain">
                         @else
-                            <i class="fa-solid fa-hotel text-xl sm:text-2xl text-[#C5A880]"></i>
+                            <i class="fa-solid fa-hotel text-xl sm:text-2xl text-purple-400"></i>
                         @endif
                     </div>
                     <div class="min-w-0 space-y-1">
-                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-[#111827] tracking-tight truncate">{{ $hotel->hotel_name }}</h1>
-                        <p class="text-[#6B7280] text-xs font-medium flex items-center truncate">
-                            <i class="fa-solid fa-location-dot mr-1.5 text-[#C5A880] shrink-0"></i>
+                        <h1 class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight truncate">{{ $hotel->hotel_name }}</h1>
+                        <p class="text-slate-500 text-xs font-medium flex items-center truncate">
+                            <i class="fa-solid fa-location-dot mr-1.5 text-purple-500 shrink-0"></i>
                             <span class="truncate">{{ $hotel->city ?? $hotel->hotel_location }}</span>
                         </p>
                     </div>
@@ -81,12 +81,12 @@
             <div class="bg-gradient-to-r from-slate-50 via-white to-slate-50 border border-slate-200/80 rounded-2xl p-4 sm:p-6 shadow-xs">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="flex items-center space-x-4 min-w-0">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-[#C5A880] flex items-center justify-center font-bold shrink-0 text-lg shadow-xs">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-bold shrink-0 text-lg shadow-xs">
                             <i class="fa-solid fa-user-tie"></i>
                         </div>
                         <div class="min-w-0 space-y-0.5">
                             <div class="flex items-center space-x-2">
-                                <span class="text-[11px] font-extrabold text-[#C5A880] uppercase tracking-wider">Associated Distributor</span>
+                                <span class="text-[11px] font-extrabold text-[#150A42] uppercase tracking-wider font-mono">Associated Distributor</span>
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold {{ $hotel->distributor->status ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600' }}">
                                     {{ $hotel->distributor->status ? 'Active' : 'Inactive' }}
                                 </span>
@@ -101,8 +101,8 @@
                         </div>
                     </div>
                     <div class="shrink-0">
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 shadow-xs">
-                            <i class="fa-solid fa-id-badge mr-1.5 text-[#C5A880]"></i> ID: #DIST-{{ $hotel->distributor->id }}
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-slate-200/80 text-xs font-bold text-slate-700 shadow-xs font-mono">
+                            <i class="fa-solid fa-id-badge mr-1.5 text-[#150A42]"></i> ID: #DIST-{{ $hotel->distributor->id }}
                         </span>
                     </div>
                 </div>
@@ -189,17 +189,17 @@
                 </div>
             </div>
 
-            <!-- License Key Callout Box (Soft Gold Tint adhering to colors.md) -->
-            <div class="relative overflow-hidden rounded-2xl bg-[#F5F2EB] p-5 sm:p-7 text-[#111827] border border-[#C5A880]/30 shadow-xs">
+            <!-- License Key Callout Box -->
+            <div class="relative overflow-hidden rounded-2xl bg-[#F8F9FD] p-5 sm:p-7 text-slate-900 border border-purple-100 shadow-xs">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                     <div class="space-y-1 min-w-0">
-                        <span class="text-[11px] font-bold text-[#C5A880] uppercase tracking-widest block">Connected TV License Key</span>
+                        <span class="text-[11px] font-bold text-[#150A42] uppercase tracking-widest block font-mono">Connected TV License Key</span>
                         @if($hotel->license_key)
                             <div class="flex items-center space-x-2 pt-0.5">
-                                <span class="font-mono text-xl sm:text-2xl font-extrabold text-[#111827] tracking-widest break-all select-all">
+                                <span class="font-mono text-xl sm:text-2xl font-extrabold text-[#150A42] tracking-widest break-all select-all">
                                     {{ $hotel->license_key }}
                                 </span>
-                                <button type="button" onclick="copyKey('{{ $hotel->license_key }}')" class="p-1.5 rounded-lg bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] transition-all text-xs shrink-0 cursor-pointer" title="Copy License Key">
+                                <button type="button" onclick="copyKey('{{ $hotel->license_key }}')" class="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 transition-all text-xs shrink-0 cursor-pointer" title="Copy License Key">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>

@@ -1,4 +1,4 @@
-﻿@extends('layouts.super_admin')
+@extends('layouts.super_admin')
 
 @section('title', 'Hotel Vendors Directory - Super Admin')
 @section('page_title', 'Hotel Vendors Directory')
@@ -21,6 +21,40 @@
         color: #be123c !important;
         border-color: #fecdd3 !important;
     }
+
+    /* Filter Pills Sleek Modern Styling & Hover Fix */
+    .filter-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.4rem 0.95rem;
+        border-radius: 0.85rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #64748B;
+        background-color: transparent;
+        border: 1px solid transparent;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        user-select: none;
+    }
+    .filter-pill:hover:not(.active) {
+        background-color: #F1F5F9 !important;
+        color: #0F172A !important;
+        border-color: #E2E8F0 !important;
+        transform: translateY(-1px);
+    }
+    .filter-pill.active {
+        background-color: #150A42 !important;
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        box-shadow: 0 4px 14px rgba(21, 10, 66, 0.25) !important;
+        border-color: transparent !important;
+    }
+    .filter-pill.active:hover {
+        background-color: #201063 !important;
+        color: #FFFFFF !important;
+        box-shadow: 0 6px 18px rgba(21, 10, 66, 0.35) !important;
+    }
 </style>
 @endsection
 
@@ -29,87 +63,91 @@
     <!-- Header Summary & Primary Action -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-lg font-extrabold text-[#111827] tracking-tight">Registered Hotels Directory</h2>
-            <p class="text-xs text-[#6B7280] font-medium mt-0.5">Manage hotel clients, pairing licenses, channel partners, and live streaming status.</p>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Registered Hotels Directory</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage hotel clients, pairing licenses, channel partners, and live streaming status.</p>
         </div>
-        <a href="{{ route('super-admin.hotels.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5 space-x-2">
+        <a href="{{ route('super-admin.hotels.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/25 transition-all hover:-translate-y-0.5 space-x-2">
             <i class="fa-solid fa-plus text-xs"></i>
             <span>Add New Hotel Vendor</span>
         </a>
     </div>
 
     <!-- Quick Stats Metric Cards -->
-    <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <!-- Total Hotels -->
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F5F2EB] border border-[#C5A880]/20 text-[#C5A880] flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-hotel text-[#C5A880]"></i>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-hotel"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-[#111827] leading-tight" id="statTotalHotels">{{ $hotels->count() }}</div>
-                <div class="text-[11px] font-semibold text-[#6B7280] truncate">Total Hotels</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight" id="statTotalHotels">{{ $hotels->count() }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Properties</div>
             </div>
         </div>
 
         <!-- Active Hotels -->
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F0FDF4] text-[#15803D] flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-circle-check text-[#15803D]"></i>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-[#15803D] leading-tight">{{ $hotels->where('status', true)->count() }}</div>
-                <div class="text-[11px] font-semibold text-[#6B7280] truncate">Active Platforms</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">{{ $hotels->where('status', true)->count() }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Platforms</div>
             </div>
         </div>
 
         <!-- Pending Review -->
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#FFFBEB] text-[#B45309] flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-clock text-[#B45309]"></i>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-clock"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-[#B45309] leading-tight">{{ $hotels->where('approval_status', 'pending')->count() }}</div>
-                <div class="text-[11px] font-semibold text-[#6B7280] truncate">Pending Review</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono tracking-tight leading-tight">{{ $hotels->where('approval_status', 'pending')->count() }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Pending Review</div>
             </div>
         </div>
 
         <!-- Paid Subscriptions -->
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5">
-            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F5F2EB] border border-[#C5A880]/20 text-[#C5A880] flex items-center justify-center text-sm font-bold shrink-0">
-                <i class="fa-solid fa-credit-card text-[#C5A880]"></i>
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-layer-group"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-xl sm:text-2xl font-black text-[#111827] leading-tight">{{ $hotels->where('payment_status', 'paid')->count() }}</div>
-                <div class="text-[11px] font-semibold text-[#6B7280] truncate">Paid Packages</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $hotels->where('payment_status', 'paid')->count() }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Paid Packages</div>
             </div>
         </div>
     </div>
 
     <!-- Search & Filter Controls -->
-    <div class="bg-white border border-[#E5E7EB] rounded-2xl p-3 sm:p-4 shadow-xs space-y-3">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs space-y-3">
         <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <!-- Search Input -->
             <div class="relative flex-1">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B7280] text-xs"></i>
-                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-9 pr-8 py-2 text-xs rounded-xl border border-[#E5E7EB] bg-[#F4F5F7] focus:outline-none focus:ring-2 focus:ring-[#C5A880]/25 focus:border-[#C5A880] placeholder-[#6B7280] text-[#111827] transition-all">
-                <button type="button" id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#111827] p-1 cursor-pointer">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-10 pr-9 py-2.5 text-xs rounded-2xl border border-slate-200 bg-[#F3F5FA] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] placeholder:text-slate-400 text-slate-800 font-medium transition-all shadow-inner">
+                <button type="button" id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
 
             <!-- Filter Pills -->
             <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-                <button type="button" class="filter-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-[#111827] text-white shadow-xs" data-filter="all">
-                    All <span class="ml-1 opacity-80 font-normal">({{ $hotels->count() }})</span>
+                <button type="button" class="filter-pill active" data-filter="all">
+                    <span>All</span>
+                    <span class="ml-1 opacity-80 font-mono">({{ $hotels->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-[#F4F5F7] transition-all" data-filter="active">
-                    Active <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('status', true)->count() }})</span>
+                <button type="button" class="filter-pill" data-filter="active">
+                    <span>Active</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('status', true)->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-[#F4F5F7] transition-all" data-filter="pending">
-                    Pending <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
+                <button type="button" class="filter-pill" data-filter="pending">
+                    <span>Pending</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill px-3 py-1.5 rounded-lg text-xs font-semibold text-[#6B7280] hover:bg-[#F4F5F7] transition-all" data-filter="paid">
-                    Paid <span class="ml-1 opacity-70 font-normal">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
+                <button type="button" class="filter-pill" data-filter="paid">
+                    <span>Paid</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
                 </button>
             </div>
         </div>
@@ -117,23 +155,23 @@
 
     <!-- Empty State for 0 total hotels in system -->
     @if($hotels->isEmpty())
-        <div class="bg-white border border-[#E5E7EB] rounded-3xl p-12 text-center shadow-xs">
-            <div class="w-16 h-16 rounded-2xl bg-[#F5F2EB] text-[#C5A880] mx-auto flex items-center justify-center text-2xl mb-4 border border-[#C5A880]/20">
+        <div class="bg-white border border-slate-200/80 rounded-3xl p-12 text-center shadow-xs">
+            <div class="w-16 h-16 rounded-2xl bg-purple-50 text-[#150A42] mx-auto flex items-center justify-center text-2xl mb-4 border border-purple-100 shadow-xs">
                 <i class="fa-solid fa-hotel"></i>
             </div>
-            <h3 class="text-base font-extrabold text-[#111827] mb-1">No Hotel Vendors Registered</h3>
-            <p class="text-xs text-[#6B7280] max-w-md mx-auto mb-6">Get started by creating your first hotel client. You can assign TV limit plans, logos, and distributor channels.</p>
-            <a href="{{ route('super-admin.hotels.create') }}" class="inline-flex items-center space-x-2 px-6 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all">
+            <h3 class="text-base font-extrabold text-slate-900 mb-1">No Hotel Vendors Registered</h3>
+            <p class="text-xs text-slate-500 max-w-md mx-auto mb-6">Get started by creating your first hotel client. You can assign TV limit plans, logos, and distributor channels.</p>
+            <a href="{{ route('super-admin.hotels.create') }}" class="inline-flex items-center space-x-2 px-6 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/25 transition-all">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Add First Hotel Vendor</span>
             </a>
         </div>
     @else
         <!-- DESKTOP / TABLET VIEW: High-density responsive table with 3-dot Action Menu -->
-        <div class="hidden lg:block bg-white border border-[#E5E7EB] rounded-3xl shadow-xs overflow-visible">
+        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-visible">
             <div class="overflow-visible">
-                <table class="w-full text-left text-xs text-[#111827]">
-                    <thead class="bg-[#F4F5F7] border-b border-[#E5E7EB] text-[#6B7280] font-bold uppercase tracking-wider text-[10px] xl:text-[11px]">
+                <table class="w-full text-left text-xs text-slate-800">
+                    <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
                             <th class="px-2.5 py-3 xl:px-4 xl:py-3.5">Hotel Client</th>
                             <th class="px-2 py-3 xl:px-4 xl:py-3.5">Owner & Contact</th>
@@ -152,7 +190,7 @@
                                 $deviceCount = $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0;
                             @endphp
                             <tr id="hotel-desktop-row-{{ $hotel->id }}" 
-                                class="hotel-item hotel-desktop-row hover:bg-slate-50/80 transition-colors"
+                                class="hotel-item hotel-desktop-row hover:bg-purple-50/20 transition-colors"
                                 data-search="{{ $hotelSearchText }}"
                                 data-status="{{ $hotel->status ? 'active' : 'inactive' }}"
                                 data-approval="{{ $hotel->approval_status }}"
@@ -168,7 +206,7 @@
                                             @endif
                                         </div>
                                         <div class="min-w-0 max-w-[100px] xl:max-w-[160px]">
-                                            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-xs hover:text-rose-600 transition-colors truncate block" title="{{ $hotel->hotel_name }}">
+                                            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-xs hover:text-[#150A42] transition-colors truncate block" title="{{ $hotel->hotel_name }}">
                                                 {{ $hotel->hotel_name }}
                                             </a>
                                             <div class="text-[10px] text-slate-400 font-medium truncate flex items-center mt-0.5">
@@ -176,7 +214,7 @@
                                                 <span class="truncate">{{ $hotel->city ?? $hotel->hotel_location }}</span>
                                             </div>
                                             @if($hotel->distributor)
-                                                <span class="inline-flex items-center text-[9px] font-semibold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded mt-0.5 truncate max-w-[95px] xl:max-w-[120px]" title="Distributor: {{ $hotel->distributor->name }}">
+                                                <span class="inline-flex items-center text-[9px] font-semibold text-[#150A42] bg-purple-50 border border-purple-100 px-1.5 py-0.2 rounded mt-0.5 truncate max-w-[95px] xl:max-w-[120px]" title="Distributor: {{ $hotel->distributor->name }}">
                                                     <i class="fa-solid fa-handshake mr-1 text-[8px]"></i> {{ Str::limit($hotel->distributor->name, 10) }}
                                                 </span>
                                             @endif
@@ -188,10 +226,10 @@
                                 <td class="px-2 py-3 xl:px-4 xl:py-3.5 space-y-0.5">
                                     <div class="font-bold text-slate-800 text-xs truncate max-w-[95px] xl:max-w-[130px]">{{ $hotel->owner_name }}</div>
                                     <div class="hidden xl:block text-[10px] text-slate-500 font-mono truncate max-w-[130px]">
-                                        <a href="mailto:{{ $hotel->email }}" class="hover:text-rose-600 transition-colors" title="{{ $hotel->email }}">{{ $hotel->email }}</a>
+                                        <a href="mailto:{{ $hotel->email }}" class="hover:text-[#150A42] transition-colors" title="{{ $hotel->email }}">{{ $hotel->email }}</a>
                                     </div>
                                     <div class="text-[10px] text-slate-500">
-                                        <a href="tel:{{ $hotel->phone }}" class="hover:text-rose-600 transition-colors flex items-center">
+                                        <a href="tel:{{ $hotel->phone }}" class="hover:text-[#150A42] transition-colors flex items-center">
                                             <i class="fa-solid fa-phone mr-1 text-[8px] text-slate-400"></i><span class="truncate max-w-[85px] xl:max-w-none">{{ $hotel->phone }}</span>
                                         </a>
                                     </div>
@@ -202,22 +240,22 @@
                                     <div class="font-extrabold text-slate-900 text-xs whitespace-nowrap">{{ $hotel->room_count }} Rms</div>
                                     <div class="flex items-center space-x-1 mt-0.5">
                                         @if($hotel->plan)
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-rose-50 text-rose-600 border border-rose-200 truncate max-w-[80px]">
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-50 text-[#150A42] border border-purple-200/60 font-mono truncate max-w-[80px]">
                                                 {{ $hotel->plan->name }}
                                             </span>
                                         @else
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-100 text-slate-500">
+                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-100 text-slate-500 font-mono">
                                                 Trial
                                             </span>
                                         @endif
                                     </div>
-                                    <div class="text-[10px] text-slate-400 mt-0.5 flex items-center whitespace-nowrap">
+                                    <div class="text-[10px] text-slate-400 mt-0.5 flex items-center whitespace-nowrap font-mono">
                                         <i class="fa-solid fa-tv text-[8px] mr-1 text-slate-400"></i>{{ $deviceCount }} paired
                                     </div>
                                     @if($hotel->license_key)
                                         <div class="xl:hidden mt-1 inline-flex items-center space-x-1 px-1.5 py-0.2 rounded bg-slate-100/90 border border-slate-200 text-slate-700 font-mono text-[9px]">
                                             <span class="truncate max-w-[50px]">{{ $hotel->license_key }}</span>
-                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-rose-600 p-0.5" title="Copy Key">
+                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-[#150A42] p-0.5" title="Copy Key">
                                                 <i class="fa-regular fa-copy text-[8px]"></i>
                                             </button>
                                         </div>
@@ -229,7 +267,7 @@
                                     @if($hotel->license_key)
                                         <div class="inline-flex items-center space-x-1 px-1.5 xl:px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-slate-800 font-mono text-[10px]">
                                             <span class="tracking-tight select-all truncate max-w-[70px] xl:max-w-[85px]">{{ $hotel->license_key }}</span>
-                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-rose-600 transition-colors p-0.5" title="Copy Key">
+                                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-[#150A42] transition-colors p-0.5" title="Copy Key">
                                                 <i class="fa-regular fa-copy text-[10px]"></i>
                                             </button>
                                         </div>
@@ -241,11 +279,11 @@
                                 <!-- 5. Payment Status -->
                                 <td class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center whitespace-nowrap">
                                     @if($hotel->payment_status === 'paid')
-                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider">
+                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider font-mono">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span> Paid
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider">
+                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider font-mono">
                                             <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1"></span> Unpaid
                                         </span>
                                     @endif
@@ -255,21 +293,21 @@
                                 <td class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center">
                                     <label class="relative inline-flex items-center cursor-pointer" title="Toggle active status">
                                         <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
-                                        <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#111827]"></div>
+                                        <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#150A42]"></div>
                                     </label>
                                 </td>
 
                                 <!-- 7. Approval Status -->
                                 <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center">
-                                    <x-dropdown name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-28 xl:w-32 mx-auto" selectClass="py-1 px-2.5 text-[11px] font-bold" theme="sa" />
+                                    <x-dropdown id="approval_status_desktop_{{ $hotel->id }}" name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-28 xl:w-32 mx-auto" selectClass="py-1 px-2.5 text-[11px] font-bold" theme="sa" />
                                 </td>
 
                                 <!-- 8. 3-Dots Action Menu (Compact, No Horizontal Overflow) -->
                                 <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center relative">
                                     <div class="relative inline-block text-left action-dropdown-container">
                                         <button type="button" 
-                                                onclick="toggleActionMenu(event, {{ $hotel->id }})" 
-                                                class="action-menu-btn w-7 h-7 xl:w-8 xl:h-8 rounded-xl border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-50 text-slate-500 hover:text-slate-800 flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-rose-500/20" 
+                                                onclick="toggleActionMenu(event, {{ $hotel->id }}, this)" 
+                                                class="action-menu-btn w-7 h-7 xl:w-8 xl:h-8 rounded-xl border border-slate-200 hover:border-purple-200 bg-white hover:bg-purple-50 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 cursor-pointer" 
                                                 title="Actions">
                                             <i class="fa-solid fa-ellipsis-vertical text-xs pointer-events-none"></i>
                                         </button>
@@ -278,12 +316,12 @@
                                         <div id="action-dropdown-{{ $hotel->id }}" 
                                              class="action-menu-dropdown hidden absolute right-0 top-full mt-1.5 w-44 xl:w-48 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 divide-y divide-slate-100 text-left">
                                             <div class="py-1">
-                                                <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                                                <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors">
                                                     <i class="fa-regular fa-eye w-4 text-center text-slate-400"></i>
                                                     <span>View Details</span>
                                                 </a>
-                                                <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">
-                                                    <i class="fa-regular fa-pen-to-square w-4 text-center text-violet-500"></i>
+                                                <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors">
+                                                    <i class="fa-regular fa-pen-to-square w-4 text-center text-purple-600"></i>
                                                     <span>Edit Account</span>
                                                 </a>
                                             </div>
@@ -297,8 +335,8 @@
                                                     <i class="fa-solid fa-list-check w-4 text-center text-amber-500"></i>
                                                     <span>TV Menus</span>
                                                 </a>
-                                                <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
-                                                    <i class="fa-solid fa-spa w-4 text-center text-indigo-500"></i>
+                                                <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-700 transition-colors">
+                                                    <i class="fa-solid fa-spa w-4 text-center text-sky-500"></i>
                                                     <span>Hotel Amenities</span>
                                                 </a>
                                             </div>
@@ -307,7 +345,7 @@
                                                 <form id="delete-form-{{ $hotel->id }}" action="{{ route('super-admin.hotels.destroy', $hotel->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="w-full flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left">
+                                                    <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="w-full flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors text-left cursor-pointer">
                                                         <i class="fa-regular fa-trash-can w-4 text-center text-rose-500"></i>
                                                         <span>Delete Vendor</span>
                                                     </button>
@@ -348,7 +386,7 @@
                                 @endif
                             </div>
                             <div class="min-w-0">
-                                <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-base hover:text-rose-600 transition-colors truncate block">
+                                <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-base hover:text-[#150A42] transition-colors truncate block">
                                     {{ $hotel->hotel_name }}
                                 </a>
                                 <div class="text-xs text-slate-400 font-medium truncate flex items-center mt-0.5">
@@ -361,21 +399,21 @@
                         <!-- Top Status Pill -->
                         <div class="shrink-0 flex flex-col items-end space-y-1">
                             @if($hotel->status)
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase font-mono">
                                     Live
                                 </span>
                             @else
-                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-500 border border-slate-200 uppercase">
+                                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-slate-100 text-slate-500 border border-slate-200 uppercase font-mono">
                                     Inactive
                                 </span>
                             @endif
 
                             @if($hotel->payment_status === 'paid')
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-indigo-50 text-indigo-700 border border-indigo-200 uppercase">
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase font-mono">
                                     Paid
                                 </span>
                             @else
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 uppercase">
+                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 uppercase font-mono">
                                     Unpaid
                                 </span>
                             @endif
@@ -384,8 +422,8 @@
 
                     <!-- Distributor Partner if attached -->
                     @if($hotel->distributor)
-                        <div class="p-2 rounded-xl bg-amber-50/70 border border-amber-200/60 flex items-center space-x-2 text-xs text-amber-800">
-                            <i class="fa-solid fa-handshake text-amber-600"></i>
+                        <div class="p-2.5 rounded-xl bg-purple-50/70 border border-purple-100 flex items-center space-x-2 text-xs text-[#150A42]">
+                            <i class="fa-solid fa-handshake text-purple-600"></i>
                             <span class="text-[11px] font-semibold">Partner: <strong class="font-bold">{{ $hotel->distributor->name }}</strong></span>
                         </div>
                     @endif
@@ -394,9 +432,9 @@
                     <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100 text-xs">
                         <!-- Owner Info -->
                         <div class="space-y-1">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Owner Contact</span>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider font-mono">Owner Contact</span>
                             <div class="font-bold text-slate-800 text-xs truncate">{{ $hotel->owner_name }}</div>
-                            <a href="tel:{{ $hotel->phone }}" class="text-rose-600 font-semibold text-xs flex items-center hover:underline">
+                            <a href="tel:{{ $hotel->phone }}" class="text-[#150A42] font-semibold text-xs flex items-center hover:underline">
                                 <i class="fa-solid fa-phone mr-1 text-[10px]"></i> {{ $hotel->phone }}
                             </a>
                             <a href="mailto:{{ $hotel->email }}" class="text-slate-500 font-mono text-[11px] truncate block hover:underline">
@@ -406,14 +444,14 @@
 
                         <!-- Capacity & Plan -->
                         <div class="space-y-1">
-                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Plan & TVs</span>
-                            <div class="font-bold text-slate-800 text-xs">{{ $hotel->room_count }} Rooms Limit</div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider font-mono">Plan & TVs</span>
+                            <div class="font-bold text-slate-800 text-xs font-mono">{{ $hotel->room_count }} Rooms Limit</div>
                             @if($hotel->plan)
-                                <div class="text-[11px] font-bold text-rose-600">{{ $hotel->plan->name }}</div>
+                                <div class="text-[11px] font-bold text-[#150A42] font-mono">{{ $hotel->plan->name }}</div>
                             @else
-                                <div class="text-[11px] text-slate-400">Custom / Trial</div>
+                                <div class="text-[11px] text-slate-400 font-mono">Custom / Trial</div>
                             @endif
-                            <div class="text-[11px] text-slate-500 flex items-center">
+                            <div class="text-[11px] text-slate-500 flex items-center font-mono">
                                 <i class="fa-solid fa-tv mr-1 text-[10px] text-slate-400"></i>
                                 <span>{{ $deviceCount }} paired TVs</span>
                             </div>
@@ -422,12 +460,12 @@
 
                     <!-- License Key Bar -->
                     @if($hotel->license_key)
-                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#F8F9FD] border border-slate-200/80">
                             <div class="flex items-center space-x-2 min-w-0">
                                 <i class="fa-solid fa-key text-slate-400 text-xs"></i>
                                 <span class="font-mono text-xs font-bold text-slate-700 truncate select-all">{{ $hotel->license_key }}</span>
                             </div>
-                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 text-[11px] font-bold hover:text-rose-600 shadow-xs flex items-center space-x-1 shrink-0">
+                            <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-600 text-[11px] font-bold hover:text-[#150A42] hover:border-purple-300 shadow-xs flex items-center space-x-1 shrink-0 cursor-pointer">
                                 <i class="fa-regular fa-copy text-[10px]"></i>
                                 <span>Copy</span>
                             </button>
@@ -435,30 +473,30 @@
                     @endif
 
                     <!-- Interactive Controls (Status & Approval) -->
-                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-3 rounded-xl bg-slate-50/70 border border-slate-100">
+                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 p-3 rounded-xl bg-[#F8F9FD] border border-slate-200/60">
                         <div class="flex items-center justify-between sm:justify-start space-x-3">
                             <span class="text-xs font-bold text-slate-700">Live Status:</span>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
-                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#111827]"></div>
+                                <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#150A42]"></div>
                             </label>
                         </div>
 
                         <div class="flex items-center justify-between sm:justify-start space-x-2">
                             <span class="text-xs font-bold text-slate-700">Approval:</span>
-                            <x-dropdown name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-32" selectClass="py-1 px-2.5 text-xs font-bold" theme="sa" />
+                            <x-dropdown id="approval_status_mobile_{{ $hotel->id }}" name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-32" selectClass="py-1 px-2.5 text-xs font-bold" theme="sa" />
                         </div>
                     </div>
 
                     <!-- Touch-Friendly Action Buttons Grid -->
                     <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1 border-t border-slate-100">
-                        <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
+                        <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-[#150A42] text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
                             <i class="fa-regular fa-eye text-xs text-slate-500"></i>
                             <span>Details</span>
                         </a>
 
-                        <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-violet-50 hover:bg-violet-100 text-violet-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
-                            <i class="fa-regular fa-pen-to-square text-xs text-violet-600"></i>
+                        <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
+                            <i class="fa-regular fa-pen-to-square text-xs text-purple-600"></i>
                             <span>Edit</span>
                         </a>
 
@@ -472,12 +510,12 @@
                             <span>Menus</span>
                         </a>
 
-                        <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
-                            <i class="fa-solid fa-spa text-xs text-indigo-600"></i>
+                        <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
+                            <i class="fa-solid fa-spa text-xs text-sky-600"></i>
                             <span>Spa</span>
                         </a>
 
-                        <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="py-2 px-1 text-center rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
+                        <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="py-2 px-1 text-center rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1 cursor-pointer">
                             <i class="fa-regular fa-trash-can text-xs text-rose-600"></i>
                             <span>Delete</span>
                         </button>
@@ -517,29 +555,45 @@
     });
 
     // 0. Toggle 3-Dots Action Menu Dropdown with Smart Viewport Positioning
-    function toggleActionMenu(event, id) {
-        event.stopPropagation();
+    function toggleActionMenu(event, id, btnEl) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
         const dropdown = document.getElementById(`action-dropdown-${id}`);
         if (!dropdown) return;
         const isClosed = dropdown.classList.contains('hidden');
 
-        // Close any currently open menus
+        // Close any currently open menus & reset z-index
         document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
+        document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
+        document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
+        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
 
         if (isClosed) {
-            // Flip upwards if close to viewport bottom
-            const btn = event.currentTarget;
-            const rect = btn.getBoundingClientRect();
-            if (window.innerHeight - rect.bottom < 240) {
-                dropdown.classList.remove('top-full', 'mt-1.5');
-                dropdown.classList.add('bottom-full', 'mb-1.5');
-            } else {
-                dropdown.classList.remove('bottom-full', 'mb-1.5');
-                dropdown.classList.add('top-full', 'mt-1.5');
-            }
             dropdown.classList.remove('hidden');
-            btn.closest('tr')?.classList.add('z-30', 'relative');
+
+            const btn = btnEl || (event ? (event.currentTarget || event.target?.closest('button')) : null);
+            if (btn) {
+                try {
+                    const rect = btn.getBoundingClientRect();
+                    if (window.innerHeight - rect.bottom < 250) {
+                        dropdown.classList.remove('top-full', 'mt-1.5');
+                        dropdown.classList.add('bottom-full', 'mb-1.5');
+                    } else {
+                        dropdown.classList.remove('bottom-full', 'mb-1.5');
+                        dropdown.classList.add('top-full', 'mt-1.5');
+                    }
+                } catch (e) {
+                    dropdown.classList.remove('bottom-full', 'mb-1.5');
+                    dropdown.classList.add('top-full', 'mt-1.5');
+                }
+
+                // Elevate container, td and tr stacking contexts
+                btn.closest('.action-dropdown-container')?.classList.add('z-50');
+                btn.closest('td')?.classList.add('z-50', 'relative');
+                btn.closest('tr')?.classList.add('z-50', 'relative');
+            }
         }
     }
 
@@ -547,7 +601,9 @@
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.action-dropdown-container')) {
             document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
+            document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
+            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
         }
     });
 
@@ -555,7 +611,9 @@
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-30', 'relative'));
+            document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
+            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
         }
     });
 
@@ -648,14 +706,17 @@
                     title: data.message || 'Approval status updated'
                 });
 
-                // Update styling on all select elements for this hotel
-                const allSelects = document.querySelectorAll(`select[onchange*="updateHotelApproval(${id}"]`);
+                // Update styling on all select elements and custom dropdowns for this hotel
+                const allSelects = document.querySelectorAll(`select[name*="approval_status_${id}"]`);
                 allSelects.forEach(sel => {
                     sel.value = status;
-                    sel.classList.remove('approval-select-approved', 'approval-select-pending', 'approval-select-disapproved');
-                    if (status === 'approved') sel.classList.add('approval-select-approved');
-                    else if (status === 'pending') sel.classList.add('approval-select-pending');
-                    else if (status === 'disapproved') sel.classList.add('approval-select-disapproved');
+                    const selectId = sel.id;
+                    const labelText = status.charAt(0).toUpperCase() + status.slice(1);
+                    const labelEl = document.getElementById('label_' + selectId);
+                    if (labelEl) labelEl.textContent = labelText;
+                    if (typeof syncDropdownStatusStyle === 'function') {
+                        syncDropdownStatusStyle(selectId, status);
+                    }
                 });
 
                 // Synchronize data attribute
@@ -776,14 +837,8 @@
 
         filterPills.forEach(pill => {
             pill.addEventListener('click', function () {
-                filterPills.forEach(p => {
-                    p.classList.remove('active', 'bg-rose-600', 'text-white', 'shadow-xs');
-                    p.classList.add('text-slate-600');
-                });
-
-                this.classList.add('active', 'bg-rose-600', 'text-white', 'shadow-xs');
-                this.classList.remove('text-slate-600');
-
+                filterPills.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
                 currentFilter = this.getAttribute('data-filter');
                 applyFilters();
             });
@@ -798,13 +853,14 @@
 
             filterPills.forEach((p, idx) => {
                 if (idx === 0) {
-                    p.classList.add('active', 'bg-rose-600', 'text-white', 'shadow-xs');
-                    p.classList.remove('text-slate-600');
+                    p.classList.add('active');
                 } else {
-                    p.classList.remove('active', 'bg-rose-600', 'text-white', 'shadow-xs');
-                    p.classList.add('text-slate-600');
+                    p.classList.remove('active');
                 }
             });
+            currentFilter = 'all';
+            applyFilters();
+        };
             currentFilter = 'all';
             applyFilters();
         };
