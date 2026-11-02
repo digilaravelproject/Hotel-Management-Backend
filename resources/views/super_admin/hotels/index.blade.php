@@ -170,7 +170,7 @@
         <!-- DESKTOP / TABLET VIEW: High-density responsive table with 3-dot Action Menu -->
         <div class="hidden lg:block bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-visible">
             <div class="overflow-visible">
-                <table class="w-full text-left text-xs text-slate-800">
+                <table class="w-full text-left text-xs text-slate-800 border-separate border-spacing-0">
                     <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
                             <th class="px-2.5 py-3 xl:px-4 xl:py-3.5">Hotel Client</th>
@@ -303,9 +303,10 @@
                                 </td>
 
                                 <!-- 8. 3-Dots Action Menu (Compact, No Horizontal Overflow) -->
-                                <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center relative">
+                                <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center relative action-cell">
                                     <div class="relative inline-block text-left action-dropdown-container">
                                         <button type="button" 
+                                                id="action-btn-{{ $hotel->id }}"
                                                 onclick="toggleActionMenu(event, {{ $hotel->id }}, this)" 
                                                 class="action-menu-btn w-7 h-7 xl:w-8 xl:h-8 rounded-xl border border-slate-200 hover:border-purple-200 bg-white hover:bg-purple-50 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 cursor-pointer" 
                                                 title="Actions">
@@ -314,7 +315,7 @@
 
                                         <!-- Floating Action Dropdown Menu -->
                                         <div id="action-dropdown-{{ $hotel->id }}" 
-                                             class="action-menu-dropdown hidden absolute right-0 top-full mt-1.5 w-44 xl:w-48 bg-white border border-slate-200/90 rounded-2xl shadow-xl shadow-slate-900/10 p-1.5 z-50 divide-y divide-slate-100 text-left">
+                                             class="action-menu-dropdown hidden absolute right-0 top-full mt-1.5 w-48 bg-white border border-slate-200/90 rounded-2xl shadow-2xl shadow-slate-900/15 p-1.5 z-[99999] divide-y divide-slate-100 text-left">
                                             <div class="py-1">
                                                 <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors">
                                                     <i class="fa-regular fa-eye w-4 text-center text-slate-400"></i>
@@ -557,27 +558,38 @@
     // 0. Toggle 3-Dots Action Menu Dropdown with Smart Viewport Positioning
     function toggleActionMenu(event, id, btnEl) {
         if (event) {
-            event.preventDefault();
-            event.stopPropagation();
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof event.stopPropagation === 'function') event.stopPropagation();
         }
         const dropdown = document.getElementById(`action-dropdown-${id}`);
-        if (!dropdown) return;
-        const isClosed = dropdown.classList.contains('hidden');
+        if (!dropdown) {
+            console.warn('Action dropdown not found for ID:', id);
+            return;
+        }
+
+        const isVisible = dropdown.style.display === 'block' && !dropdown.classList.contains('hidden');
 
         // Close any currently open menus & reset z-index
-        document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-        document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
-        document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
-        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
+        document.querySelectorAll('.action-menu-dropdown').forEach(d => {
+            d.classList.add('hidden');
+            d.style.display = 'none';
+        });
+        document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
+        document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
+        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
 
-        if (isClosed) {
+        if (!isVisible) {
             dropdown.classList.remove('hidden');
+            dropdown.style.display = 'block';
+            dropdown.style.visibility = 'visible';
+            dropdown.style.opacity = '1';
+            dropdown.style.zIndex = '99999';
 
-            const btn = btnEl || (event ? (event.currentTarget || event.target?.closest('button')) : null);
+            const btn = btnEl || document.getElementById(`action-btn-${id}`) || (event ? event.target?.closest('button') : null);
             if (btn) {
                 try {
                     const rect = btn.getBoundingClientRect();
-                    if (window.innerHeight - rect.bottom < 250) {
+                    if (window.innerHeight - rect.bottom < 260) {
                         dropdown.classList.remove('top-full', 'mt-1.5');
                         dropdown.classList.add('bottom-full', 'mb-1.5');
                     } else {
@@ -589,31 +601,49 @@
                     dropdown.classList.add('top-full', 'mt-1.5');
                 }
 
-                // Elevate container, td and tr stacking contexts
-                btn.closest('.action-dropdown-container')?.classList.add('z-50');
-                btn.closest('td')?.classList.add('z-50', 'relative');
-                btn.closest('tr')?.classList.add('z-50', 'relative');
+                const container = btn.closest('.action-dropdown-container');
+                if (container) {
+                    container.style.position = 'relative';
+                    container.style.zIndex = '99999';
+                }
+                const td = btn.closest('td');
+                if (td) {
+                    td.style.position = 'relative';
+                    td.style.zIndex = '99999';
+                }
+                const tr = btn.closest('tr');
+                if (tr) {
+                    tr.style.position = 'relative';
+                    tr.style.zIndex = '99999';
+                }
             }
         }
     }
+    window.toggleActionMenu = toggleActionMenu;
 
     // Dismiss dropdown when clicking anywhere outside
     document.addEventListener('click', function (e) {
         if (!e.target.closest('.action-dropdown-container')) {
-            document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-            document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
-            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
+            document.querySelectorAll('.action-menu-dropdown').forEach(d => {
+                d.classList.add('hidden');
+                d.style.display = 'none';
+            });
+            document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
+            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
         }
     });
 
     // Dismiss dropdown on Escape key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            document.querySelectorAll('.action-menu-dropdown').forEach(d => d.classList.add('hidden'));
-            document.querySelectorAll('.action-dropdown-container').forEach(c => c.classList.remove('z-50'));
-            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.classList.remove('z-50', 'relative'));
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.classList.remove('z-50', 'relative'));
+            document.querySelectorAll('.action-menu-dropdown').forEach(d => {
+                d.classList.add('hidden');
+                d.style.display = 'none';
+            });
+            document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
+            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
+            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
         }
     });
 
