@@ -3,18 +3,69 @@
 @section('title', 'Modify Pricing Plan - Super Admin')
 @section('page_title', 'Edit Subscription Plan')
 
+@section('styles')
+<style>
+    .ott-card.is-selected {
+        border-color: #150A42 !important;
+        background-color: #F8F5FF !important;
+        box-shadow: 0 4px 14px rgba(21, 10, 66, 0.08) !important;
+    }
+    .ott-card.is-selected .ott-check-indicator {
+        background-color: #150A42 !important;
+        border-color: #150A42 !important;
+        color: #FFFFFF !important;
+    }
+</style>
+@endsection
+
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
-    <div class="flex items-center justify-between">
-        <a href="{{ route('super-admin.plans.index') }}" class="text-xs font-bold text-slate-500 hover:text-[#150A42] transition-colors inline-flex items-center">
-            <i class="fa-solid fa-arrow-left mr-2"></i> Back to Plans List
-        </a>
-        <span class="text-[11px] font-mono text-slate-400">Plan ID: #{{ $plan->id }}</span>
+<div class="max-w-5xl mx-auto space-y-6 sm:space-y-8">
+
+    <!-- Top Navigation & Breadcrumb Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
+                <a href="{{ route('super-admin.plans.index') }}" class="hover:text-[#150A42] transition-colors flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1.5 text-[11px]"></i>
+                    <span>Subscription Plans</span>
+                </a>
+                <span>/</span>
+                <span class="text-[#150A42]">Edit Plan</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">{{ $plan->name }}</h1>
+                <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 font-mono text-xs font-bold">
+                    Plan ID: #{{ $plan->id }}
+                </span>
+                @if($plan->status)
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Active
+                    </span>
+                @else
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-slate-100 text-slate-500 border border-slate-200">
+                        Inactive
+                    </span>
+                @endif
+            </div>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Customize pricing limits, TV capacity allowance, and authorized OTT streaming platforms.</p>
+        </div>
+
+        <div class="flex items-center space-x-2 shrink-0">
+            <a href="{{ route('super-admin.plans.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
+                <i class="fa-solid fa-xmark text-xs"></i>
+                <span>Cancel</span>
+            </a>
+        </div>
     </div>
 
-    @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
-            <ul class="list-disc pl-4 space-y-1">
+    <!-- Error Banner -->
+    @if(isset($errors) && $errors->any())
+        <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm space-y-2 shadow-xs animate-shake">
+            <div class="font-bold flex items-center space-x-2 text-rose-900">
+                <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                <span>Please correct the errors below before saving:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-1 pl-4 text-rose-700 text-xs">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -22,92 +73,516 @@
         </div>
     @endif
 
-    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs space-y-6">
-        <form action="{{ route('super-admin.plans.update', $plan->id) }}" method="POST" class="space-y-6">
+    <!-- Main Card Form -->
+    <div class="bg-white border border-slate-200/80 rounded-[28px] p-5 sm:p-8 lg:p-10 shadow-xs">
+        <form action="{{ route('super-admin.plans.update', $plan->id) }}" method="POST" class="space-y-8 sm:space-y-10">
             @csrf
             @method('PUT')
-            
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-700">Plan Title / Name <span class="text-rose-500">*</span></label>
-                <input type="text" name="name" required value="{{ old('name', $plan->name) }}" class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all">
-            </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-700">Max Room / TV Limit <span class="text-rose-500">*</span></label>
-                    <input type="number" name="room_count" required min="1" value="{{ old('room_count', $plan->room_count) }}" class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all font-mono">
-                </div>
-                
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-700">Monthly Cost (INR) <span class="text-rose-500">*</span></label>
-                    <input type="number" name="price" required min="0" step="1" value="{{ old('price', intval($plan->price)) }}" class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-semibold text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all font-mono">
-                </div>
-            </div>
-
-            <div class="space-y-1.5">
-                <label class="text-xs font-bold text-slate-700">Plan Description <span class="text-xs font-normal text-slate-400">(Optional)</span></label>
-                <textarea name="description" rows="3" class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-medium text-slate-800 placeholder-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all resize-y">{{ old('description', $plan->description) }}</textarea>
-            </div>
-
-            <!-- Features / OTT Section -->
-            <div class="pt-6 border-t border-slate-100 space-y-4">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h4 class="text-xs font-extrabold text-slate-900 font-mono uppercase tracking-wider">Included OTT Platforms</h4>
-                        <p class="text-[11px] text-slate-500 font-medium">Streaming services enabled under this package.</p>
+            <!-- Section 1: Plan Specifications & Pricing -->
+            <div class="space-y-5">
+                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 1</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Plan Details & Financials</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Define tier title, device ceiling limits, and monthly recurring price.</p>
+                        </div>
                     </div>
-                    <label class="inline-flex items-center space-x-2 text-xs font-bold text-[#150A42] hover:text-[#201063] cursor-pointer select-none">
-                        <input type="checkbox" id="selectAllOtt" class="rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20">
-                        <span>Select All</span>
+                </div>
+
+                <!-- Plan Name -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                        Plan Title / Package Name <span class="text-rose-500 font-black">*</span>
                     </label>
+                    <div class="relative">
+                        <i class="fa-solid fa-tag absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" 
+                               name="name" 
+                               required 
+                               value="{{ old('name', $plan->name) }}" 
+                               placeholder="e.g. Deluxe Enterprise Hospitality Tier" 
+                               class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-semibold placeholder:text-slate-400">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+                    <!-- Max Rooms / TV Limit -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Max Room / TV Capacity Limit <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-tv absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="number" 
+                                   name="room_count" 
+                                   required 
+                                   min="1" 
+                                   value="{{ old('room_count', $plan->room_count) }}" 
+                                   placeholder="e.g. 50" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Maximum TVs hotel vendors under this tier are permitted to pair.</p>
+                    </div>
+
+                    <!-- Monthly Cost -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Monthly Subscription Fee (INR) <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
+                            <input type="number" 
+                                   name="price" 
+                                   required 
+                                   min="0" 
+                                   step="1" 
+                                   value="{{ old('price', intval($plan->price)) }}" 
+                                   placeholder="e.g. 2999" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
+                        </div>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Billed every 30 days to the subscribed hotel property.</p>
+                    </div>
+                </div>
+
+                <!-- Plan Description -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                        Plan Description & Coverage Highlights <span class="text-xs font-semibold text-slate-400 font-sans">(Optional)</span>
+                    </label>
+                    <textarea name="description" 
+                              rows="3" 
+                              placeholder="Describe hotel amenities, bandwidth entitlements, and exclusive streaming services provided..." 
+                              class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description', $plan->description) }}</textarea>
+                </div>
+            </div>
+
+            <!-- Section 2: Included OTT Platforms (With Real Official Icons & Live Edit/Add/Delete) -->
+            <div class="space-y-5 pt-6 border-t border-slate-100">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 2</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Included OTT Platforms</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Streaming entertainment applications unlocked and pre-installed for this tier.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls: Add App Button, Master Catalog Link, Counter, and Select All -->
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <!-- Add New OTT Button -->
+                        <button type="button" 
+                                onclick="openAddOttModal()" 
+                                class="btn-sa-primary px-3.5 py-2 text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer">
+                            <i class="fa-solid fa-plus text-[11px]"></i>
+                            <span>Add New OTT</span>
+                        </button>
+
+                        <!-- Link to Master Catalog (Same tab navigation) -->
+                        <a href="{{ route('super-admin.ott-master.index') }}" 
+                           class="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5"
+                           title="Open Applications Master Catalog">
+                            <i class="fa-solid fa-list-check text-[11px] text-purple-600"></i>
+                            <span class="hidden sm:inline">Master Catalog</span>
+                        </a>
+
+                        <span id="selectedCountBadge" class="px-2.5 py-1.5 rounded-xl text-xs font-bold font-mono bg-purple-50 text-[#150A42] border border-purple-100 shadow-2xs">
+                            0 selected
+                        </span>
+
+                        <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#F8F9FD] border border-slate-200 text-xs font-bold text-slate-700 hover:text-[#150A42] hover:bg-purple-50 cursor-pointer select-none transition-colors">
+                            <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
+                            <span>Select All</span>
+                        </label>
+                    </div>
                 </div>
 
                 @php
                     $selectedPlatforms = old('ott_platforms', $plan->ott_platforms ?? []);
+                    if (!is_array($selectedPlatforms)) {
+                        $selectedPlatforms = [];
+                    }
                 @endphp
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 p-4 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl">
+                <!-- Real Image Icon Grid with Inline Edit / Delete Controls -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-4 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
                     @foreach($ottPlatforms as $ott)
-                        <label class="p-3 bg-white border border-slate-200/90 rounded-xl flex items-start space-x-2.5 cursor-pointer hover:border-purple-200 transition-colors shadow-2xs">
-                            <input type="checkbox" name="ott_platforms[]" value="{{ $ott['package'] }}" class="ott-checkbox mt-0.5 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20" {{ in_array($ott['package'], $selectedPlatforms) ? 'checked' : '' }}>
-                            <div class="overflow-hidden">
-                                <h5 class="text-xs font-bold text-slate-800">{{ $ott['name'] }}</h5>
-                                <span class="text-[10px] font-mono text-slate-400 truncate block" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
+                        @php
+                            $ottId = $ott['id'] ?? 0;
+                            $package = $ott['package'] ?? '';
+                            $name = $ott['name'] ?? '';
+                            $iconPath = $ott['icon'] ?? null;
+                            $isSelected = in_array($package, $selectedPlatforms);
+
+                            // Reliable image resolution
+                            $iconSrc = null;
+                            if (!empty($iconPath)) {
+                                $iconSrc = asset(ltrim($iconPath, '/'));
+                            } elseif (file_exists(public_path('images/ott/' . Str::slug($name) . '.svg'))) {
+                                $iconSrc = asset('images/ott/' . Str::slug($name) . '.svg');
+                            }
+                        @endphp
+                        <div id="ott-card-wrapper-{{ $ottId ?: Str::slug($package) }}" 
+                             class="ott-card group relative p-3.5 bg-white border border-slate-200/90 rounded-2xl flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'is-selected' : '' }}"
+                             onclick="handleCardClick(event, this)">
+                            
+                            <!-- Checkbox -->
+                            <div class="relative shrink-0">
+                                <input type="checkbox" 
+                                       name="ott_platforms[]" 
+                                       value="{{ $package }}" 
+                                       class="ott-checkbox sr-only" 
+                                       {{ $isSelected ? 'checked' : '' }}
+                                       onchange="handleOttCheckboxChange(this)">
+                                <div class="ott-check-indicator w-5 h-5 rounded-lg border-2 border-slate-300 flex items-center justify-center transition-all bg-white group-hover:border-purple-400">
+                                    <i class="fa-solid fa-check text-[10px] {{ $isSelected ? 'block' : 'hidden' }}"></i>
+                                </div>
                             </div>
-                        </label>
+
+                            <!-- Real Official Icon Image -->
+                            <div class="w-12 h-12 rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
+                                @if($iconSrc)
+                                    <img src="{{ $iconSrc }}" 
+                                         alt="{{ $name }}" 
+                                         class="w-full h-full object-contain"
+                                         loading="lazy"
+                                         onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                                    <div class="hidden w-full h-full bg-[#150A42] rounded-lg flex items-center justify-center text-white text-xs">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                @else
+                                    <div class="w-full h-full bg-[#150A42] rounded-lg flex items-center justify-center text-white text-xs">
+                                        <i class="fa-solid fa-play"></i>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Platform Details -->
+                            <div class="min-w-0 flex-1 pr-14">
+                                <h3 class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-[#150A42] transition-colors truncate">
+                                    {{ $name }}
+                                </h3>
+                                <span class="text-[10px] sm:text-[11px] font-mono text-slate-400 truncate block mt-0.5" title="{{ $package }}">
+                                    {{ $package }}
+                                </span>
+                            </div>
+
+                            <!-- Hover Action Buttons: Edit & Delete -->
+                            <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center space-x-1 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                                @if($ottId)
+                                    <!-- Edit OTT Button -->
+                                    <button type="button" 
+                                            onclick="openEditOttModal(event, {{ $ottId }}, '{{ addslashes($name) }}', '{{ addslashes($package) }}', '{{ $iconSrc }}')" 
+                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-colors shadow-2xs" 
+                                            title="Edit OTT details or icon">
+                                        <i class="fa-regular fa-pen-to-square text-[11px]"></i>
+                                    </button>
+
+                                    <!-- Delete OTT Button -->
+                                    <button type="button" 
+                                            onclick="confirmDeleteOtt(event, {{ $ottId }}, '{{ addslashes($name) }}')" 
+                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors shadow-2xs" 
+                                            title="Delete OTT from Master Catalog">
+                                        <i class="fa-regular fa-trash-can text-[11px]"></i>
+                                    </button>
+                                @endif
+                            </div>
+                        </div>
                     @endforeach
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="{{ route('super-admin.plans.index') }}" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" class="btn-sa-primary px-7 py-2.5 text-xs shadow-md">Update Pricing Plan</button>
+            <!-- Sticky-Friendly Bottom Action Bar -->
+            <div class="pt-6 sm:pt-8 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                <a href="{{ route('super-admin.plans.index') }}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold text-center transition-all">
+                    Discard Changes
+                </a>
+
+                <div class="flex items-center space-x-3">
+                    <button type="submit" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk text-xs"></i>
+                        <span>Update Pricing Plan</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
+<!-- ========================================================== -->
+<!-- 1. ADD NEW OTT MODAL (Multipart Form with Icon Upload) -->
+<!-- ========================================================== -->
+<div id="addOttModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-[26px] max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold">
+                    <i class="fa-solid fa-plus"></i>
+                </div>
+                <h4 class="text-sm font-extrabold text-slate-900">Add New OTT / App</h4>
+            </div>
+            <button type="button" onclick="closeAddOttModal()" class="w-8 h-8 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form action="{{ route('super-admin.ott-master.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-700">Application Name <span class="text-rose-500">*</span></label>
+                <input type="text" name="name" required placeholder="e.g. JioCinema / Sony LIV" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-medium">
+            </div>
+
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
+                <input type="text" name="package_name" required placeholder="e.g. com.sony.liv" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
+            </div>
+
+            <!-- Icon Upload Field -->
+            <div class="space-y-1.5 pt-1">
+                <label class="block text-xs font-bold text-slate-700">App Icon / Logo Image <span class="text-slate-400 font-normal">(PNG, SVG, WebP)</span></label>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#F8F9FD] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                        <img id="addIconPreview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
+                        <i id="addIconPlaceholder" class="fa-solid fa-image text-slate-400 text-sm"></i>
+                    </div>
+                    <input type="file" 
+                           name="icon" 
+                           accept="image/*,.svg" 
+                           onchange="previewOttImage(this, 'addIconPreview', 'addIconPlaceholder')"
+                           class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer">
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-2.5">
+                <button type="button" onclick="closeAddOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</button>
+                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs">Add Application</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ========================================================== -->
+<!-- 2. EDIT OTT MODAL (Multipart Form with Icon Upload) -->
+<!-- ========================================================== -->
+<div id="editOttModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-[26px] max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                </div>
+                <h4 class="text-sm font-extrabold text-slate-900">Edit OTT / Application</h4>
+            </div>
+            <button type="button" onclick="closeEditOttModal()" class="w-8 h-8 rounded-xl hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer transition-colors">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="editOttForm" method="POST" enctype="multipart/form-data" class="space-y-4">
+            @csrf
+            @method('PUT')
+            
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-700">Application Name <span class="text-rose-500">*</span></label>
+                <input type="text" id="edit_ott_name" name="name" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-medium">
+            </div>
+
+            <div class="space-y-1">
+                <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
+                <input type="text" id="edit_ott_package" name="package_name" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
+            </div>
+
+            <!-- Icon Upload Field -->
+            <div class="space-y-1.5 pt-1">
+                <label class="block text-xs font-bold text-slate-700">Change App Icon / Logo <span class="text-slate-400 font-normal">(leave blank to keep current)</span></label>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#F8F9FD] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                        <img id="editIconPreview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
+                        <i id="editIconPlaceholder" class="fa-solid fa-image text-slate-400 text-sm"></i>
+                    </div>
+                    <input type="file" 
+                           name="icon" 
+                           accept="image/*,.svg" 
+                           onchange="previewOttImage(this, 'editIconPreview', 'editIconPlaceholder')"
+                           class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer">
+                </div>
+            </div>
+
+            <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-2.5">
+                <button type="button" onclick="closeEditOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</button>
+                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Hidden Delete OTT Form -->
+<form id="deleteOttMasterForm" method="POST" class="hidden">
+    @csrf
+    @method('DELETE')
+</form>
+@endsection
+
+@section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const selectAllCheckbox = document.getElementById('selectAllOtt');
     const ottCheckboxes = document.querySelectorAll('.ott-checkbox');
+    const countBadge = document.getElementById('selectedCountBadge');
 
-    function updateSelectAllState() {
-        const total = ottCheckboxes.length;
-        const checkedCount = document.querySelectorAll('.ott-checkbox:checked').length;
-        if (selectAllCheckbox) {
-            selectAllCheckbox.checked = (total > 0 && total === checkedCount);
+    function syncCardState(cb) {
+        const card = cb.closest('.ott-card');
+        const indicator = card ? card.querySelector('.ott-check-indicator') : null;
+        const icon = indicator ? indicator.querySelector('i') : null;
+
+        if (card) {
+            if (cb.checked) {
+                card.classList.add('is-selected');
+                if (icon) icon.classList.remove('hidden');
+            } else {
+                card.classList.remove('is-selected');
+                if (icon) icon.classList.add('hidden');
+            }
         }
     }
 
+    function updateCounterAndSelectAll() {
+        const total = ottCheckboxes.length;
+        const checkedCount = document.querySelectorAll('.ott-checkbox:checked').length;
+
+        if (countBadge) {
+            countBadge.textContent = `${checkedCount} of ${total} selected`;
+        }
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = (total > 0 && total === checkedCount);
+            selectAllCheckbox.indeterminate = (checkedCount > 0 && checkedCount < total);
+        }
+    }
+
+    window.handleCardClick = function(event, card) {
+        // If clicked on an action button or link, don't toggle checkbox
+        if (event.target.closest('button') || event.target.closest('a') || event.target.closest('input')) {
+            return;
+        }
+        const cb = card.querySelector('.ott-checkbox');
+        if (cb) {
+            cb.checked = !cb.checked;
+            syncCardState(cb);
+            updateCounterAndSelectAll();
+        }
+    };
+
+    window.handleOttCheckboxChange = function(cb) {
+        syncCardState(cb);
+        updateCounterAndSelectAll();
+    };
+
     if (selectAllCheckbox) {
         selectAllCheckbox.addEventListener('change', function () {
-            ottCheckboxes.forEach(cb => { cb.checked = selectAllCheckbox.checked; });
+            const isChecked = this.checked;
+            ottCheckboxes.forEach(cb => {
+                cb.checked = isChecked;
+                syncCardState(cb);
+            });
+            updateCounterAndSelectAll();
         });
     }
 
-    ottCheckboxes.forEach(cb => { cb.addEventListener('change', updateSelectAllState); });
-    updateSelectAllState();
+    ottCheckboxes.forEach(cb => {
+        cb.addEventListener('change', function() {
+            syncCardState(this);
+            updateCounterAndSelectAll();
+        });
+        syncCardState(cb);
+    });
+
+    updateCounterAndSelectAll();
 });
+
+// Modal Helpers
+function openAddOttModal() {
+    document.getElementById('addOttModal').classList.remove('hidden');
+}
+function closeAddOttModal() {
+    document.getElementById('addOttModal').classList.add('hidden');
+}
+
+function openEditOttModal(event, id, name, package, iconSrc) {
+    if (event) event.stopPropagation();
+    document.getElementById('editOttForm').action = '/super-admin/ott-master/' + id;
+    document.getElementById('edit_ott_name').value = name;
+    document.getElementById('edit_ott_package').value = package;
+
+    const preview = document.getElementById('editIconPreview');
+    const placeholder = document.getElementById('editIconPlaceholder');
+    if (iconSrc) {
+        preview.src = iconSrc;
+        preview.classList.remove('hidden');
+        if (placeholder) placeholder.classList.add('hidden');
+    } else {
+        preview.classList.add('hidden');
+        if (placeholder) placeholder.classList.remove('hidden');
+    }
+
+    document.getElementById('editOttModal').classList.remove('hidden');
+}
+function closeEditOttModal() {
+    document.getElementById('editOttModal').classList.add('hidden');
+}
+
+function previewOttImage(input, previewId, placeholderId) {
+    const preview = document.getElementById(previewId);
+    const placeholder = document.getElementById(placeholderId);
+    if (!input || !preview) return;
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function confirmDeleteOtt(event, id, name) {
+    if (event) event.stopPropagation();
+    Swal.fire({
+        title: 'Delete OTT Platform?',
+        html: `Are you sure you want to remove <strong>"${name}"</strong> from the master catalog?<br><span class="text-xs text-rose-500 mt-1 block font-semibold">It will no longer appear in subscription plans.</span>`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#DC2626',
+        cancelButtonColor: '#6B7280',
+        confirmButtonText: 'Yes, delete',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            popup: 'rounded-3xl border border-slate-200 shadow-2xl font-sans',
+            confirmButton: 'px-5 py-2.5 rounded-xl font-bold text-xs shadow-md bg-rose-600',
+            cancelButton: 'px-5 py-2.5 rounded-xl font-bold text-xs bg-slate-200 text-slate-800'
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.getElementById('deleteOttMasterForm');
+            form.action = '/super-admin/ott-master/' + id;
+            form.submit();
+        }
+    });
+}
 </script>
 @endsection

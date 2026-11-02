@@ -23,25 +23,16 @@
     }
 
     /* Filter Pills Sleek Modern Styling & Hover Fix */
-    .filter-pills-scroll {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-        touch-action: pan-x;
-    }
-    .filter-pills-scroll::-webkit-scrollbar {
-        display: none;
-    }
     .filter-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.45rem 1rem;
+        padding: 0.45rem 0.85rem;
         border-radius: 0.85rem;
         font-size: 0.75rem;
-        font-weight: 600;
-        color: #64748B;
-        background-color: transparent;
-        border: 1px solid transparent;
+        font-weight: 700;
+        color: #475569;
+        background-color: #F8FAFC;
+        border: 1px solid #E2E8F0;
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         user-select: none;
@@ -49,17 +40,17 @@
         flex-shrink: 0;
     }
     .filter-pill:hover:not(.active) {
-        background-color: #F1F5F9 !important;
-        color: #0F172A !important;
-        border-color: #E2E8F0 !important;
+        background-color: #EDE9FE !important;
+        color: #150A42 !important;
+        border-color: #DDD6FE !important;
         transform: translateY(-1px);
     }
     .filter-pill.active {
         background-color: #150A42 !important;
         color: #FFFFFF !important;
-        font-weight: 700 !important;
+        font-weight: 800 !important;
         box-shadow: 0 4px 14px rgba(21, 10, 66, 0.25) !important;
-        border-color: transparent !important;
+        border-color: #150A42 !important;
     }
     .filter-pill.active:hover {
         background-color: #201063 !important;
@@ -131,8 +122,8 @@
     </div>
 
     <!-- Search & Filter Controls -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs space-y-3 overflow-hidden">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-w-0">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-xs space-y-3">
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 min-w-0">
             <!-- Search Input -->
             <div class="relative flex-1 min-w-0">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -142,23 +133,27 @@
                 </button>
             </div>
 
-            <!-- Filter Pills (Scrollable on Mobile) -->
-            <div class="w-full sm:w-auto min-w-0 overflow-x-auto filter-pills-scroll scrollbar-none flex items-center space-x-2 py-0.5">
-                <button type="button" class="filter-pill active shrink-0" data-filter="all">
+            <!-- Filter Pills (Wraps gracefully on all screens, never cut off) -->
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <button type="button" class="filter-pill active" data-filter="all">
                     <span>All</span>
                     <span class="ml-1 opacity-80 font-mono">({{ $hotels->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill shrink-0" data-filter="active">
+                <button type="button" class="filter-pill" data-filter="active">
                     <span>Active</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('status', true)->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill shrink-0" data-filter="pending">
+                <button type="button" class="filter-pill" data-filter="pending">
                     <span>Pending</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill shrink-0" data-filter="paid">
+                <button type="button" class="filter-pill" data-filter="paid">
                     <span>Paid</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
+                </button>
+                <button type="button" class="filter-pill" data-filter="unpaid">
+                    <span>Unpaid</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', '!=', 'paid')->count() }})</span>
                 </button>
             </div>
         </div>
@@ -179,19 +174,19 @@
         </div>
     @else
         <!-- DESKTOP / TABLET VIEW: High-density responsive table with 3-dot Action Menu -->
-        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-visible">
-            <div class="overflow-visible">
+        <div class="hidden lg:block bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-x-auto">
+            <div class="min-w-[1080px]">
                 <table class="w-full text-left text-xs text-slate-800 border-separate border-spacing-0">
                     <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
-                            <th class="px-2.5 py-3 xl:px-4 xl:py-3.5">Hotel Client</th>
-                            <th class="px-2 py-3 xl:px-4 xl:py-3.5">Owner & Contact</th>
-                            <th class="px-2 py-3 xl:px-3 xl:py-3.5">Plan & TVs</th>
-                            <th class="hidden xl:table-cell px-2.5 py-3 xl:px-3 xl:py-3.5">License Key</th>
-                            <th class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center">Payment</th>
-                            <th class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center">Status</th>
-                            <th class="px-2 py-3 xl:px-3 xl:py-3.5 text-center">Approval</th>
-                            <th class="px-2 py-3 xl:px-3 xl:py-3.5 text-center w-10">Actions</th>
+                            <th class="px-4 py-3.5 min-w-[240px]">Hotel Client</th>
+                            <th class="px-4 py-3.5 min-w-[180px]">Owner & Contact</th>
+                            <th class="px-3.5 py-3.5 min-w-[160px]">Plan & TVs</th>
+                            <th class="hidden xl:table-cell px-3.5 py-3.5 min-w-[120px]">License Key</th>
+                            <th class="px-3 py-3.5 text-center min-w-[95px]">Payment</th>
+                            <th class="px-3 py-3.5 text-center min-w-[85px]">Status</th>
+                            <th class="px-3 py-3.5 text-center min-w-[130px]">Approval</th>
+                            <th class="px-3 py-3.5 text-center w-14">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100" id="desktopHotelTableBody">
@@ -207,16 +202,16 @@
                                 data-approval="{{ $hotel->approval_status }}"
                                 data-payment="{{ $hotel->payment_status }}">
                                 <!-- 1. Hotel Client -->
-                                <td class="px-2.5 py-3 xl:px-4 xl:py-3.5">
-                                    <div class="flex items-center space-x-2 xl:space-x-2.5">
-                                        <div class="w-8 h-8 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
+                                <td class="px-4 py-3.5">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-9 h-9 rounded-xl bg-slate-100 border border-slate-200 overflow-hidden flex items-center justify-center shrink-0">
                                             @if($hotel->hotel_logo)
                                                 <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-cover">
                                             @else
-                                                <i class="fa-solid fa-hotel text-slate-400 text-xs"></i>
+                                                <i class="fa-solid fa-hotel text-slate-400 text-sm"></i>
                                             @endif
                                         </div>
-                                        <div class="min-w-0 max-w-[100px] xl:max-w-[160px]">
+                                        <div class="min-w-0 max-w-[280px]">
                                             <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="font-extrabold text-slate-900 text-xs hover:text-[#150A42] transition-colors truncate block" title="{{ $hotel->hotel_name }}">
                                                 {{ $hotel->hotel_name }}
                                             </a>
@@ -225,8 +220,8 @@
                                                 <span class="truncate">{{ $hotel->city ?? $hotel->hotel_location }}</span>
                                             </div>
                                             @if($hotel->distributor)
-                                                <span class="inline-flex items-center text-[9px] font-semibold text-[#150A42] bg-purple-50 border border-purple-100 px-1.5 py-0.2 rounded mt-0.5 truncate max-w-[95px] xl:max-w-[120px]" title="Distributor: {{ $hotel->distributor->name }}">
-                                                    <i class="fa-solid fa-handshake mr-1 text-[8px]"></i> {{ Str::limit($hotel->distributor->name, 10) }}
+                                                <span class="inline-flex items-center text-[9px] font-semibold text-[#150A42] bg-purple-50 border border-purple-100 px-1.5 py-0.5 rounded mt-0.5 truncate max-w-[160px]" title="Distributor: {{ $hotel->distributor->name }}">
+                                                    <i class="fa-solid fa-handshake mr-1 text-[8px]"></i> {{ Str::limit($hotel->distributor->name, 16) }}
                                                 </span>
                                             @endif
                                         </div>
@@ -234,28 +229,28 @@
                                 </td>
 
                                 <!-- 2. Owner & Contact -->
-                                <td class="px-2 py-3 xl:px-4 xl:py-3.5 space-y-0.5">
-                                    <div class="font-bold text-slate-800 text-xs truncate max-w-[95px] xl:max-w-[130px]">{{ $hotel->owner_name }}</div>
-                                    <div class="hidden xl:block text-[10px] text-slate-500 font-mono truncate max-w-[130px]">
+                                <td class="px-4 py-3.5 space-y-0.5">
+                                    <div class="font-bold text-slate-800 text-xs truncate max-w-[180px]">{{ $hotel->owner_name }}</div>
+                                    <div class="hidden xl:block text-[10px] text-slate-500 font-mono truncate max-w-[180px]">
                                         <a href="mailto:{{ $hotel->email }}" class="hover:text-[#150A42] transition-colors" title="{{ $hotel->email }}">{{ $hotel->email }}</a>
                                     </div>
-                                    <div class="text-[10px] text-slate-500">
+                                    <div class="text-[10px] text-slate-500 font-mono">
                                         <a href="tel:{{ $hotel->phone }}" class="hover:text-[#150A42] transition-colors flex items-center">
-                                            <i class="fa-solid fa-phone mr-1 text-[8px] text-slate-400"></i><span class="truncate max-w-[85px] xl:max-w-none">{{ $hotel->phone }}</span>
+                                            <i class="fa-solid fa-phone mr-1 text-[8px] text-slate-400"></i><span>{{ $hotel->phone }}</span>
                                         </a>
                                     </div>
                                 </td>
 
                                 <!-- 3. Plan & Capacity -->
-                                <td class="px-2 py-3 xl:px-3 xl:py-3.5">
+                                <td class="px-3.5 py-3.5">
                                     <div class="font-extrabold text-slate-900 text-xs whitespace-nowrap">{{ $hotel->room_count }} Rms</div>
                                     <div class="flex items-center space-x-1 mt-0.5">
                                         @if($hotel->plan)
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-purple-50 text-[#150A42] border border-purple-200/60 font-mono truncate max-w-[80px]">
+                                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-[#150A42] border border-purple-200/80 font-mono whitespace-nowrap" title="{{ $hotel->plan->name }}">
                                                 {{ $hotel->plan->name }}
                                             </span>
                                         @else
-                                            <span class="px-1.5 py-0.2 rounded text-[9px] font-medium bg-slate-100 text-slate-500 font-mono">
+                                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 font-mono whitespace-nowrap">
                                                 Trial
                                             </span>
                                         @endif
@@ -264,8 +259,8 @@
                                         <i class="fa-solid fa-tv text-[8px] mr-1 text-slate-400"></i>{{ $deviceCount }} paired
                                     </div>
                                     @if($hotel->license_key)
-                                        <div class="xl:hidden mt-1 inline-flex items-center space-x-1 px-1.5 py-0.2 rounded bg-slate-100/90 border border-slate-200 text-slate-700 font-mono text-[9px]">
-                                            <span class="truncate max-w-[50px]">{{ $hotel->license_key }}</span>
+                                        <div class="xl:hidden mt-1 inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-slate-100/90 border border-slate-200 text-slate-700 font-mono text-[9px]">
+                                            <span class="truncate max-w-[70px]">{{ $hotel->license_key }}</span>
                                             <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-[#150A42] p-0.5" title="Copy Key">
                                                 <i class="fa-regular fa-copy text-[8px]"></i>
                                             </button>
@@ -274,10 +269,10 @@
                                 </td>
 
                                 <!-- 4. License Key (Desktop only) -->
-                                <td class="hidden xl:table-cell px-2.5 py-3 xl:px-3 xl:py-3.5">
+                                <td class="hidden xl:table-cell px-3.5 py-3.5">
                                     @if($hotel->license_key)
-                                        <div class="inline-flex items-center space-x-1 px-1.5 xl:px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-slate-800 font-mono text-[10px]">
-                                            <span class="tracking-tight select-all truncate max-w-[70px] xl:max-w-[85px]">{{ $hotel->license_key }}</span>
+                                        <div class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-lg bg-slate-100/90 border border-slate-200 text-slate-800 font-mono text-[10px]">
+                                            <span class="tracking-tight select-all truncate max-w-[110px]">{{ $hotel->license_key }}</span>
                                             <button type="button" onclick="copyLicenseKey('{{ $hotel->license_key }}')" class="text-slate-400 hover:text-[#150A42] transition-colors p-0.5" title="Copy Key">
                                                 <i class="fa-regular fa-copy text-[10px]"></i>
                                             </button>
@@ -288,20 +283,20 @@
                                 </td>
 
                                 <!-- 5. Payment Status -->
-                                <td class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center whitespace-nowrap">
+                                <td class="px-3 py-3.5 text-center whitespace-nowrap">
                                     @if($hotel->payment_status === 'paid')
-                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider font-mono">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1"></span> Paid
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider font-mono">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Paid
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-1.5 xl:px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider font-mono">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1"></span> Unpaid
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider font-mono">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span> Unpaid
                                         </span>
                                     @endif
                                 </td>
 
                                 <!-- 6. Live Status Toggle -->
-                                <td class="px-1.5 py-3 xl:px-2.5 xl:py-3.5 text-center">
+                                <td class="px-3 py-3.5 text-center whitespace-nowrap">
                                     <label class="relative inline-flex items-center cursor-pointer" title="Toggle active status">
                                         <input type="checkbox" onchange="toggleHotelStatus({{ $hotel->id }}, this)" {{ $hotel->status ? 'checked' : '' }} class="sr-only peer">
                                         <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#150A42]"></div>
@@ -309,17 +304,17 @@
                                 </td>
 
                                 <!-- 7. Approval Status -->
-                                <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center">
+                                <td class="px-3 py-3.5 text-center">
                                     <x-dropdown id="approval_status_desktop_{{ $hotel->id }}" name="approval_status_{{ $hotel->id }}" label="Approval" :options="['approved'=>'Approved','pending'=>'Pending','disapproved'=>'Disapproved']" :selected="$hotel->approval_status" onchange="updateHotelApproval({{ $hotel->id }}, this.value, this)" wrapClass="w-28 xl:w-32 mx-auto" selectClass="py-1 px-2.5 text-[11px] font-bold" theme="sa" />
                                 </td>
 
-                                <!-- 8. 3-Dots Action Menu (Compact, No Horizontal Overflow) -->
-                                <td class="px-2 py-3 xl:px-3 xl:py-3.5 text-center relative action-cell">
+                                <!-- 8. 3-Dots Action Menu (Compact, Fixed Viewport Positioning) -->
+                                <td class="px-3 py-3.5 text-center relative action-cell">
                                     <div class="relative inline-block text-left action-dropdown-container">
                                         <button type="button" 
                                                 id="action-btn-{{ $hotel->id }}"
                                                 onclick="toggleActionMenu(event, {{ $hotel->id }}, this)" 
-                                                class="action-menu-btn w-7 h-7 xl:w-8 xl:h-8 rounded-xl border border-slate-200 hover:border-purple-200 bg-white hover:bg-purple-50 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 cursor-pointer" 
+                                                class="action-menu-btn w-8 h-8 rounded-xl border border-slate-200 hover:border-purple-300 bg-white hover:bg-purple-50 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all shadow-xs focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 cursor-pointer" 
                                                 title="Actions">
                                             <i class="fa-solid fa-ellipsis-vertical text-xs pointer-events-none"></i>
                                         </button>
@@ -566,7 +561,15 @@
         }
     });
 
-    // 0. Toggle 3-Dots Action Menu Dropdown with Smart Viewport Positioning
+    // 0. Toggle 3-Dots Action Menu Dropdown with Bulletproof Viewport (Fixed) Positioning
+    function closeAllActionMenus() {
+        document.querySelectorAll('.action-menu-dropdown').forEach(d => {
+            d.classList.add('hidden');
+            d.style.display = 'none';
+        });
+    }
+    window.closeAllActionMenus = closeAllActionMenus;
+
     function toggleActionMenu(event, id, btnEl) {
         if (event) {
             if (typeof event.preventDefault === 'function') event.preventDefault();
@@ -578,85 +581,62 @@
             return;
         }
 
-        const isVisible = dropdown.style.display === 'block' && !dropdown.classList.contains('hidden');
+        const isCurrentlyOpen = dropdown.style.display === 'block';
 
-        // Close any currently open menus & reset z-index
-        document.querySelectorAll('.action-menu-dropdown').forEach(d => {
-            d.classList.add('hidden');
-            d.style.display = 'none';
-        });
-        document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
-        document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
-        document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
+        // Close any currently open menus
+        closeAllActionMenus();
 
-        if (!isVisible) {
+        if (!isCurrentlyOpen) {
+            const btn = btnEl || document.getElementById(`action-btn-${id}`) || (event ? event.target?.closest('button') : null);
+            if (!btn) return;
+
+            const rect = btn.getBoundingClientRect();
+            const dropdownHeight = 240;
+            const dropdownWidth = 192; // 12rem
+
+            dropdown.style.position = 'fixed';
+            dropdown.style.zIndex = '999999';
+
+            // Top vs Bottom placement depending on available screen viewport
+            if (window.innerHeight - rect.bottom < dropdownHeight && rect.top > dropdownHeight) {
+                dropdown.style.top = (rect.top - dropdownHeight - 6) + 'px';
+            } else {
+                dropdown.style.top = (rect.bottom + 6) + 'px';
+            }
+
+            // Align right edge of menu with right edge of action button
+            let leftPos = rect.right - dropdownWidth;
+            if (leftPos < 10) leftPos = 10;
+            if (leftPos + dropdownWidth > window.innerWidth - 10) {
+                leftPos = window.innerWidth - dropdownWidth - 10;
+            }
+            dropdown.style.left = leftPos + 'px';
+
             dropdown.classList.remove('hidden');
             dropdown.style.display = 'block';
             dropdown.style.visibility = 'visible';
             dropdown.style.opacity = '1';
-            dropdown.style.zIndex = '99999';
-
-            const btn = btnEl || document.getElementById(`action-btn-${id}`) || (event ? event.target?.closest('button') : null);
-            if (btn) {
-                try {
-                    const rect = btn.getBoundingClientRect();
-                    if (window.innerHeight - rect.bottom < 260) {
-                        dropdown.classList.remove('top-full', 'mt-1.5');
-                        dropdown.classList.add('bottom-full', 'mb-1.5');
-                    } else {
-                        dropdown.classList.remove('bottom-full', 'mb-1.5');
-                        dropdown.classList.add('top-full', 'mt-1.5');
-                    }
-                } catch (e) {
-                    dropdown.classList.remove('bottom-full', 'mb-1.5');
-                    dropdown.classList.add('top-full', 'mt-1.5');
-                }
-
-                const container = btn.closest('.action-dropdown-container');
-                if (container) {
-                    container.style.position = 'relative';
-                    container.style.zIndex = '99999';
-                }
-                const td = btn.closest('td');
-                if (td) {
-                    td.style.position = 'relative';
-                    td.style.zIndex = '99999';
-                }
-                const tr = btn.closest('tr');
-                if (tr) {
-                    tr.style.position = 'relative';
-                    tr.style.zIndex = '99999';
-                }
-            }
         }
     }
     window.toggleActionMenu = toggleActionMenu;
 
     // Dismiss dropdown when clicking anywhere outside
     document.addEventListener('click', function (e) {
-        if (!e.target.closest('.action-dropdown-container')) {
-            document.querySelectorAll('.action-menu-dropdown').forEach(d => {
-                d.classList.add('hidden');
-                d.style.display = 'none';
-            });
-            document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
-            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
+        if (!e.target.closest('.action-dropdown-container') && !e.target.closest('.action-menu-dropdown')) {
+            closeAllActionMenus();
         }
     });
 
     // Dismiss dropdown on Escape key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            document.querySelectorAll('.action-menu-dropdown').forEach(d => {
-                d.classList.add('hidden');
-                d.style.display = 'none';
-            });
-            document.querySelectorAll('.action-dropdown-container').forEach(c => c.style.zIndex = '');
-            document.querySelectorAll('#desktopHotelTableBody td').forEach(td => td.style.zIndex = '');
-            document.querySelectorAll('#desktopHotelTableBody tr').forEach(tr => tr.style.zIndex = '');
+            closeAllActionMenus();
         }
     });
+
+    // Close dropdown on window resize or scroll
+    window.addEventListener('resize', closeAllActionMenus);
+    window.addEventListener('scroll', closeAllActionMenus, true);
 
     // 1. Copy License Key to Clipboard
     function copyLicenseKey(key) {
@@ -833,6 +813,8 @@
                     matchesFilter = itemApproval === 'pending';
                 } else if (currentFilter === 'paid') {
                     matchesFilter = itemPayment === 'paid';
+                } else if (currentFilter === 'unpaid') {
+                    matchesFilter = itemPayment !== 'paid';
                 }
 
                 if (matchesQuery && matchesFilter) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\OttPlatform;
+use Illuminate\Support\Str;
 
 class OttMasterController extends Controller
 {
@@ -25,18 +26,47 @@ class OttMasterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'package_name' => 'required|string|max:255|unique:ott_platforms,package_name',
-            'icon' => 'nullable|string|max:500',
+            'icon' => 'nullable',
         ]);
 
-        OttPlatform::create([
+        $iconPath = null;
+
+        // Check if an image file was uploaded
+        if ($request->hasFile('icon')) {
+            $file = $request->file('icon');
+            $filename = Str::slug($request->name) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('images/ott');
+            if (!is_dir($destination)) {
+                mkdir($destination, 0777, true);
+            }
+            $file->move($destination, $filename);
+            $iconPath = 'images/ott/' . $filename;
+        } elseif (is_string($request->icon) && !empty($request->icon)) {
+            $iconPath = $request->icon;
+        } else {
+            // Check if default SVG exists for this name
+            $defaultSvg = 'images/ott/' . Str::slug($request->name) . '.svg';
+            if (file_exists(public_path($defaultSvg))) {
+                $iconPath = $defaultSvg;
+            }
+        }
+
+        $platform = OttPlatform::create([
             'name' => $request->name,
             'package_name' => $request->package_name,
-            'icon' => $request->icon,
+            'icon' => $iconPath,
             'status' => true,
         ]);
 
-        return redirect()->route('super-admin.ott-master.index')
-                         ->with('success', 'Application added to master catalog successfully.');
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Application added to master catalog successfully.',
+                'platform' => $platform
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Application added to master catalog successfully.');
     }
 
     /**
@@ -49,17 +79,39 @@ class OttMasterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'package_name' => 'required|string|max:255|unique:ott_platforms,package_name,' . $id,
-            'icon' => 'nullable|string|max:500',
+            'icon' => 'nullable',
         ]);
 
-        $platform->update([
+        $updateData = [
             'name' => $request->name,
             'package_name' => $request->package_name,
-            'icon' => $request->icon,
-        ]);
+        ];
 
-        return redirect()->route('super-admin.ott-master.index')
-                         ->with('success', 'Application updated successfully.');
+        // Handle new icon upload if provided
+        if ($request->hasFile('icon')) {
+            $file = $request->file('icon');
+            $filename = Str::slug($request->name) . '-' . time() . '.' . $file->getClientOriginalExtension();
+            $destination = public_path('images/ott');
+            if (!is_dir($destination)) {
+                mkdir($destination, 0777, true);
+            }
+            $file->move($destination, $filename);
+            $updateData['icon'] = 'images/ott/' . $filename;
+        } elseif (is_string($request->icon) && !empty($request->icon)) {
+            $updateData['icon'] = $request->icon;
+        }
+
+        $platform->update($updateData);
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Application updated successfully.',
+                'platform' => $platform
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Application updated successfully.');
     }
 
     /**
@@ -86,7 +138,13 @@ class OttMasterController extends Controller
         $platform = OttPlatform::findOrFail($id);
         $platform->delete();
 
-        return redirect()->route('super-admin.ott-master.index')
-                         ->with('success', 'Application deleted from master catalog.');
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Application deleted from master catalog.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Application deleted from master catalog.');
     }
 }

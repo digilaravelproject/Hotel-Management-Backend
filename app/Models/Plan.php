@@ -45,7 +45,7 @@ class Plan extends Model
         return OttPlatform::query()
             ->where('status', true)
             ->orderBy('id', 'asc')
-            ->get(['name', 'package_name as package', 'icon'])
+            ->get(['id', 'name', 'package_name as package', 'icon'])
             ->toArray();
     }
 

@@ -119,9 +119,9 @@
                     </div>
                 </div>
 
-                <!-- 3. Fleet & Tech Operations (Connected TVs, OTA Builds, FCM) -->
+                <!-- 3. Fleet & Tech Operations (Connected TVs, OTA Builds, OTT Master, FCM) -->
                 @php
-                    $isFleetActive = Request::routeIs('super-admin.devices.*') || Request::routeIs('super-admin.templates.*') || Request::routeIs('super-admin.firebase-settings.*');
+                    $isFleetActive = Request::routeIs('super-admin.devices.*') || Request::routeIs('super-admin.templates.*') || Request::routeIs('super-admin.ott-master.*') || Request::routeIs('super-admin.firebase-settings.*');
                 @endphp
                 <div>
                     <button type="button" onclick="toggleSubmenu('submenu-fleet')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFleetActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
@@ -139,6 +139,10 @@
                         <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.templates.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
                             <span class="truncate">OTA App Builds</span>
+                        </a>
+                        <a href="{{ route('super-admin.ott-master.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.ott-master.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.ott-master.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">OTT & TV Apps</span>
                         </a>
                         <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>

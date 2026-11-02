@@ -62,10 +62,23 @@
                             </td>
                             <td class="px-5 py-3.5 font-extrabold text-slate-900 text-xs">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-8 h-8 rounded-xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center shrink-0 shadow-2xs">
-                                        <i class="fa-solid fa-play text-xs"></i>
+                                    <div class="w-10 h-10 rounded-xl border border-slate-200/80 bg-white p-1 overflow-hidden shrink-0 shadow-2xs flex items-center justify-center">
+                                        @if($app->icon)
+                                            <img src="{{ asset(ltrim($app->icon, '/')) }}" 
+                                                 alt="{{ $app->name }}" 
+                                                 class="w-full h-full object-contain"
+                                                 loading="lazy"
+                                                 onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                                            <div class="hidden w-full h-full bg-[#150A42] rounded-lg flex items-center justify-center text-white text-xs">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        @else
+                                            <div class="w-full h-full bg-[#150A42] rounded-lg flex items-center justify-center text-white text-xs">
+                                                <i class="fa-solid fa-play"></i>
+                                            </div>
+                                        @endif
                                     </div>
-                                    <span>{{ $app->name }}</span>
+                                    <span class="font-bold text-slate-900">{{ $app->name }}</span>
                                 </div>
                             </td>
                             <td class="px-5 py-3.5">
@@ -112,14 +125,14 @@
 
 <!-- Add App Modal -->
 <div id="addAppModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-[26px] max-w-md w-full p-6 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
+    <div class="bg-white rounded-[26px] max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <h4 class="text-sm font-extrabold text-slate-900">Add New Application / OTT</h4>
             <button type="button" onclick="closeAddAppModal()" class="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <form action="{{ route('super-admin.ott-master.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('super-admin.ott-master.store') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700">Application Name <span class="text-rose-500">*</span></label>
@@ -128,6 +141,22 @@
             <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
                 <input type="text" name="package_name" required placeholder="e.g. com.netflix.ninja" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
+            </div>
+
+            <!-- Icon Upload Field -->
+            <div class="space-y-1.5 pt-1">
+                <label class="block text-xs font-bold text-slate-700">App Icon / Logo Image <span class="text-slate-400 font-normal">(PNG, SVG, WebP)</span></label>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#F8F9FD] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                        <img id="masterAddIconPreview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
+                        <i id="masterAddIconPlaceholder" class="fa-solid fa-image text-slate-400 text-sm"></i>
+                    </div>
+                    <input type="file" 
+                           name="icon" 
+                           accept="image/*,.svg" 
+                           onchange="previewOttImage(this, 'masterAddIconPreview', 'masterAddIconPlaceholder')"
+                           class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer">
+                </div>
             </div>
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2.5">
@@ -140,14 +169,14 @@
 
 <!-- Edit App Modal -->
 <div id="editAppModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-[26px] max-w-md w-full p-6 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
+    <div class="bg-white rounded-[26px] max-w-md w-full p-6 sm:p-7 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
         <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <h4 class="text-sm font-extrabold text-slate-900">Edit Application / OTT</h4>
             <button type="button" onclick="closeEditAppModal()" class="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
-        <form id="editAppForm" method="POST" class="space-y-4">
+        <form id="editAppForm" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
             <div class="space-y-1">
@@ -157,6 +186,22 @@
             <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
                 <input type="text" id="edit_package_name" name="package_name" required class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
+            </div>
+
+            <!-- Icon Upload Field -->
+            <div class="space-y-1.5 pt-1">
+                <label class="block text-xs font-bold text-slate-700">Change App Icon / Logo <span class="text-slate-400 font-normal">(leave blank to keep current)</span></label>
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 rounded-xl bg-[#F8F9FD] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
+                        <img id="masterEditIconPreview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
+                        <i id="masterEditIconPlaceholder" class="fa-solid fa-image text-slate-400 text-sm"></i>
+                    </div>
+                    <input type="file" 
+                           name="icon" 
+                           accept="image/*,.svg" 
+                           onchange="previewOttImage(this, 'masterEditIconPreview', 'masterEditIconPlaceholder')"
+                           class="block w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer">
+                </div>
             </div>
 
             <div class="pt-3 border-t border-slate-100 flex items-center justify-end space-x-2.5">
@@ -180,10 +225,38 @@
         document.getElementById('editAppForm').action = '/super-admin/ott-master/' + app.id;
         document.getElementById('edit_name').value = app.name;
         document.getElementById('edit_package_name').value = app.package_name;
+
+        const preview = document.getElementById('masterEditIconPreview');
+        const placeholder = document.getElementById('masterEditIconPlaceholder');
+        if (app.icon) {
+            preview.src = '/' + app.icon.replace(/^\//, '');
+            preview.classList.remove('hidden');
+            if (placeholder) placeholder.classList.add('hidden');
+        } else {
+            preview.classList.add('hidden');
+            if (placeholder) placeholder.classList.remove('hidden');
+        }
+
         document.getElementById('editAppModal').classList.remove('hidden');
     }
     function closeEditAppModal() {
         document.getElementById('editAppModal').classList.add('hidden');
+    }
+
+    function previewOttImage(input, previewId, placeholderId) {
+        const preview = document.getElementById(previewId);
+        const placeholder = document.getElementById(placeholderId);
+        if (!input || !preview) return;
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.classList.remove('hidden');
+                if (placeholder) placeholder.classList.add('hidden');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
     }
 
     function confirmDeleteApp(btn) {
