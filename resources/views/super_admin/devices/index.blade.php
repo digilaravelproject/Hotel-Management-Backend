@@ -1,4 +1,4 @@
-﻿@extends('layouts.super_admin')
+@extends('layouts.super_admin')
 
 @section('title', 'Connected Devices - Super Admin')
 @section('page_title', 'Connected TVs Network')
@@ -14,24 +14,24 @@
                 $queryParams = array_filter(['hotel_id' => request('hotel_id'), 'search' => request('search')]);
             @endphp
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'all'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'all' ? 'bg-[#111827] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'all' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-tv text-xs"></i>
                 <span>All Screens</span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'all' ? 'bg-[#A68A64] text-[#111827]' : 'bg-slate-200 text-slate-700' }}">{{ $totalCount }}</span>
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'all' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $totalCount }}</span>
             </a>
 
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'live'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'live' ? 'bg-[#111827] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'live' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-hotel text-xs"></i>
                 <span>Live Hotel TVs</span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'live' ? 'bg-[#A68A64] text-[#111827]' : 'bg-slate-200 text-slate-700' }}">{{ $liveCount }}</span>
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'live' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $liveCount }}</span>
             </a>
 
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'demo'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-[#A68A64] text-[#111827] shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-flask text-xs"></i>
                 <span>Demo TVs</span>
-                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-[#111827] text-white' : 'bg-amber-100 text-amber-800' }}">{{ $demoCount }}</span>
+                <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-purple-600 text-white' : 'bg-amber-100 text-amber-800' }}">{{ $demoCount }}</span>
             </a>
         </div>
 
@@ -82,7 +82,7 @@
                     <label for="searchInput" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Search Devices</label>
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Search room no, device ID, MAC, IP, brand, demo status..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#C5A880]/30 focus:border-[#C5A880] transition-all placeholder:text-slate-400">
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Search room no, device ID, MAC, IP, brand, demo status..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-[#F8F9FD] text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all placeholder:text-slate-400">
                         @if(request('search'))
                             <a href="{{ route('super-admin.devices.index', array_filter(['hotel_id' => request('hotel_id'), 'type' => $type])) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                 <i class="fa-solid fa-circle-xmark"></i>
@@ -101,16 +101,16 @@
 
             <!-- Stats / Counter Indicator -->
             <div class="flex items-center justify-between sm:justify-end gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
-                <div class="px-4 py-2.5 rounded-2xl bg-[#F7F3F5] border border-[#C5A880]/30 text-[#111827] flex items-center space-x-3">
-                    <div class="w-9 h-9 rounded-xl bg-[#111827] text-[#C5A880] flex items-center justify-center text-sm font-bold shadow-xs">
+                <div class="px-4 py-2.5 rounded-2xl bg-purple-50/70 border border-purple-100 text-slate-900 flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#150A42] text-white flex items-center justify-center text-sm font-bold shadow-xs">
                         <i class="fa-solid fa-tv"></i>
                     </div>
                     <div>
-                        <div class="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Filtered TV Count</div>
-                        <div class="text-sm font-extrabold text-[#111827]">
-                            {{ $devices->total() }} <span class="text-xs font-semibold text-slate-500">screens</span>
+                        <div class="text-[10px] uppercase font-bold text-slate-400 tracking-wider font-mono">Filtered Screens</div>
+                        <div class="text-sm font-extrabold text-slate-900 font-mono">
+                            {{ $devices->total() }} <span class="text-xs font-semibold text-slate-500 font-sans">screens</span>
                             @if(isset($selectedHotel))
-                                <span class="text-xs font-bold text-[#C5A880]">/ {{ $selectedHotel->allowed_device_limit }} cap</span>
+                                <span class="text-xs font-bold text-[#150A42]">/ {{ $selectedHotel->allowed_device_limit }} cap</span>
                             @endif
                         </div>
                     </div>
@@ -122,7 +122,7 @@
     <!-- Desktop Table View -->
     <div class="hidden md:block bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-700">
+            <table class="w-full text-left text-xs text-slate-700 border-separate border-spacing-0">
                 <thead class="bg-slate-50/90 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
                     <tr>
                         <th class="px-3.5 py-3.5 w-10 text-center">#</th>
@@ -475,7 +475,7 @@
         <!-- Modal Header -->
         <div class="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
             <div class="flex items-center space-x-3 min-w-0 pr-2">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#111827] text-[#C5A880] flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-[#150A42] text-white flex items-center justify-center font-bold text-base sm:text-lg shrink-0 shadow-xs">
                     <i class="fa-solid fa-tv"></i>
                 </div>
                 <div class="min-w-0">
@@ -515,11 +515,11 @@
             <!-- License Key Highlight Box -->
             <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-50 via-slate-100/60 to-slate-50 border border-slate-200 space-y-2.5 sm:space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#111827] flex items-center space-x-1.5">
-                        <i class="fa-solid fa-key text-[10px] text-[#C5A880]"></i>
+                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-800 flex items-center space-x-1.5 font-mono">
+                        <i class="fa-solid fa-key text-[10px] text-purple-600"></i>
                         <span>License Key / Master Credential</span>
                     </span>
-                    <span class="px-2 py-0.5 rounded-md bg-[#A68A64]/20 text-[#111827] text-[10px] font-bold">Authorized</span>
+                    <span class="px-2 py-0.5 rounded-md bg-purple-50 text-[#150A42] text-[10px] font-extrabold font-mono border border-purple-100">Authorized</span>
                 </div>
                 
                 <div class="flex items-center justify-between gap-2 bg-white rounded-xl p-2.5 border border-slate-200 shadow-2xs">

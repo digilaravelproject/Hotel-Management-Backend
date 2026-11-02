@@ -7,7 +7,7 @@
 <div class="max-w-2xl mx-auto space-y-8">
     <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
         <div class="border-b border-[#E5E7EB] pb-6 flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-[#F5F2EB] border border-[#C5A880]/30 flex items-center justify-center text-[#C5A880]">
+            <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42]">
                 <i class="fa-regular fa-user text-lg"></i>
             </div>
             <div>
@@ -32,31 +32,31 @@
             <div class="space-y-1.5">
                 <label class="text-xs font-bold text-[#111827]">Master Email Address</label>
                 <input type="email" name="email" value="{{ old('email', $superAdmin->email) }}" required 
-                    class="w-full px-4 py-3 bg-[#F4F5F7] border border-[#E5E7EB] rounded-xl text-sm font-medium focus:outline-none focus:border-[#C5A880] focus:bg-white transition-all text-[#111827]">
+                    class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all text-slate-900 font-mono">
             </div>
 
-            <div class="pt-4 border-t border-[#E5E7EB]">
-                <h4 class="text-xs font-extrabold text-[#6B7280] uppercase tracking-wider mb-4">
-                    Update Password <span class="text-[#6B7280] font-normal lowercase">(leave blank to keep current)</span>
+            <div class="pt-4 border-t border-slate-100">
+                <h4 class="text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-4 font-mono">
+                    Update Password <span class="text-slate-400 font-normal lowercase font-sans">(leave blank to keep current)</span>
                 </h4>
 
                 <div class="grid sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-[#111827]">New Password</label>
+                        <label class="text-xs font-bold text-slate-800">New Password</label>
                         <input type="password" name="password" placeholder="Min 6 characters" 
-                            class="w-full px-4 py-3 bg-[#F4F5F7] border border-[#E5E7EB] rounded-xl text-sm font-medium focus:outline-none focus:border-[#C5A880] focus:bg-white transition-all text-[#111827]">
+                            class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all text-slate-900">
                     </div>
                     <div class="space-y-1.5">
-                        <label class="text-xs font-bold text-[#111827]">Confirm New Password</label>
+                        <label class="text-xs font-bold text-slate-800">Confirm New Password</label>
                         <input type="password" name="password_confirmation" placeholder="Confirm new password" 
-                            class="w-full px-4 py-3 bg-[#F4F5F7] border border-[#E5E7EB] rounded-xl text-sm font-medium focus:outline-none focus:border-[#C5A880] focus:bg-white transition-all text-[#111827]">
+                            class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-sm font-medium focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 focus:bg-white transition-all text-slate-900">
                     </div>
                 </div>
             </div>
 
-            <div class="pt-6 border-t border-[#E5E7EB] flex items-center justify-end space-x-4">
-                <a href="{{ route('super-admin.dashboard') }}" class="px-6 py-3 rounded-xl bg-white border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] text-xs font-bold transition-all">Cancel</a>
-                <button type="submit" class="px-8 py-3 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all hover:-translate-y-0.5">
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
+                <a href="{{ route('super-admin.dashboard') }}" class="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all">Cancel</a>
+                <button type="submit" class="btn-sa-primary px-6 py-2.5 text-xs shadow-md shadow-[#150A42]/20">
                     Save Account Changes
                 </button>
             </div>
@@ -67,7 +67,7 @@
     <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-10 shadow-sm space-y-6">
         <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-6">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-[#F5F2EB] border border-[#C5A880]/30 flex items-center justify-center text-[#C5A880]">
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42]">
                     <i class="fa-solid fa-shield-halved text-lg"></i>
                 </div>
                 <div>
@@ -99,7 +99,7 @@
                         Disable 2FA
                     </button>
                 @else
-                    <button type="button" onclick="start2FASetup()" class="px-6 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-[#111827] text-xs font-bold shadow-md shadow-[#C5A880]/20 transition-all cursor-pointer">
+                    <button type="button" onclick="start2FASetup()" class="btn-sa-primary px-6 py-2.5 text-xs shadow-md">
                         Enable 2FA
                     </button>
                 @endif
@@ -116,7 +116,7 @@
         </button>
 
         <div class="space-y-2 text-center">
-            <div class="w-12 h-12 rounded-2xl bg-[#F5F2EB] text-[#C5A880] mx-auto flex items-center justify-center text-xl border border-[#C5A880]/20">
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 text-[#150A42] mx-auto flex items-center justify-center text-xl border border-purple-100">
                 <i class="fa-solid fa-qrcode"></i>
             </div>
             <h3 class="text-xl font-extrabold text-[#111827]">Set Up Google Authenticator</h3>
@@ -127,7 +127,7 @@
             <div id="qrCodeSvg" class="p-3 bg-white border border-[#E5E7EB] rounded-2xl shadow-inner"></div>
             <div class="text-center">
                 <span class="text-xs text-[#6B7280] font-semibold uppercase tracking-wider block mb-1">Manual Secret Key</span>
-                <code id="secretKeyDisplay" class="px-3 py-1.5 bg-[#F4F5F7] rounded-lg text-sm font-mono text-[#111827] font-bold tracking-widest select-all border border-[#E5E7EB]">Loading...</code>
+                <code id="secretKeyDisplay" class="px-3 py-1.5 bg-[#F8F9FD] rounded-lg text-sm font-mono text-[#150A42] font-bold tracking-widest select-all border border-slate-200">Loading...</code>
             </div>
         </div>
 
@@ -137,10 +137,10 @@
             <div class="space-y-1">
                 <label class="text-xs font-bold text-[#111827]">Enter 6-Digit Authenticator Code</label>
                 <input type="text" id="setupOtpInput" maxlength="6" required placeholder="123456" 
-                    class="w-full px-4 py-3 bg-[#F4F5F7] border border-[#E5E7EB] rounded-xl text-center font-mono text-lg font-bold tracking-widest focus:outline-none focus:border-[#C5A880] text-[#111827]">
+                    class="w-full px-4 py-3 bg-[#F8F9FD] border border-slate-200 rounded-xl text-center font-mono text-lg font-bold tracking-widest focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 text-slate-900">
             </div>
 
-            <button type="submit" id="setup2FASubmitBtn" class="w-full py-3 bg-[#A68A64] hover:bg-[#8C7250] text-[#FFFFFF] rounded-xl font-bold text-xs shadow-md shadow-[#C5A880]/20 transition-all cursor-pointer flex items-center justify-center space-x-2">
+            <button type="submit" id="setup2FASubmitBtn" class="btn-sa-primary w-full py-3 text-xs shadow-md">
                 <span>Verify Code & Activate 2FA</span>
             </button>
         </form>

@@ -42,7 +42,7 @@
         <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
                 <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-key text-[#A68A64]"></i>
+                    <i class="fa-solid fa-key text-[#150A42]"></i>
                     <span>Flight API Configuration</span>
                 </h2>
                 <p class="text-xs text-slate-500 mt-1">Configure your 3rd-party commercial flight tracking API credentials.</p>
@@ -67,7 +67,7 @@
                     <button type="button" 
                             id="providerDropdownTrigger" 
                             onclick="toggleProviderDropdown(event)" 
-                            class="w-full flex items-center justify-between p-2.5 sm:p-3 bg-white border border-slate-200/90 hover:border-slate-300 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 rounded-2xl cursor-pointer shadow-2xs transition-all select-none text-left group">
+                            class="w-full flex items-center justify-between p-2.5 sm:p-3 bg-white border border-slate-200/90 hover:border-slate-300 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 rounded-2xl cursor-pointer shadow-2xs transition-all select-none text-left group">
                         <div class="flex items-center space-x-3 min-w-0 pr-2">
                             <div id="providerTriggerIcon" class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80 transition-colors">
                                 <i class="fa-solid fa-cloud-arrow-down text-base"></i>
@@ -175,10 +175,10 @@
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
                 <label class="inline-flex items-center cursor-pointer space-x-3 select-none">
-                    <input type="checkbox" name="is_active" value="1" {{ ($setting->is_active ?? true) ? 'checked' : '' }} class="rounded border-slate-300 text-[#A68A64] focus:ring-[#C5A880] h-4 w-4">
+                    <input type="checkbox" name="is_active" value="1" {{ ($setting->is_active ?? true) ? 'checked' : '' }} class="rounded border-slate-300 text-[#150A42] focus:ring-[#150A42] h-4 w-4">
                     <span class="text-xs font-bold text-slate-700">Enable Live Flight API Fetching</span>
                 </label>
-                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-white font-bold text-sm transition-all shadow-xs hover:shadow-md text-center">
+                <button type="submit" class="btn-sa-primary w-full sm:w-auto px-6 py-2.5 text-xs shadow-md">
                     Save API Configuration
                 </button>
             </div>
@@ -190,7 +190,7 @@
         <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
                 <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-plane-arrival text-[#8C7250]"></i>
+                    <i class="fa-solid fa-plane-arrival text-[#150A42]"></i>
                     <span>Airports Master Catalog</span>
                 </h2>
                 <p class="text-xs text-slate-500 mt-1">Airports available for hotels across all regions.</p>
@@ -198,7 +198,7 @@
             
             <div>
                 <!-- Add Airport Modal Trigger -->
-                <button onclick="openAddAirportModal()" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-white text-xs font-bold transition-all shadow-xs hover:shadow-md flex items-center justify-center space-x-2">
+                <button onclick="openAddAirportModal()" class="btn-sa-primary w-full sm:w-auto px-4 py-2.5 text-xs shadow-md flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-plus"></i>
                     <span>Add New Airport</span>
                 </button>
@@ -330,34 +330,34 @@
             @csrf
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1">Airport Name *</label>
-                <input type="text" name="name" required placeholder="e.g. Pune International Airport" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                <input type="text" name="name" required placeholder="e.g. Pune International Airport" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">IATA Code (3 letters) *</label>
-                    <input type="text" name="iata_code" maxlength="3" required placeholder="PNQ" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <input type="text" name="iata_code" maxlength="3" required placeholder="PNQ" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">ICAO Code (Optional)</label>
-                    <input type="text" name="icao_code" maxlength="4" placeholder="VAPO" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <input type="text" name="icao_code" maxlength="4" placeholder="VAPO" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">City *</label>
-                    <input type="text" name="city" required placeholder="Pune" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <input type="text" name="city" required placeholder="Pune" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Country *</label>
-                    <input type="text" name="country" required value="India" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <input type="text" name="country" required value="India" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
                 </div>
             </div>
 
             <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-100">
                 <button type="button" onclick="closeAddAirportModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 text-center">Cancel</button>
-                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-white text-xs font-bold shadow-xs hover:shadow-md text-center">Add Airport</button>
+                <button type="submit" class="btn-sa-primary w-full sm:w-auto px-6 py-2.5 text-xs shadow-md">Add Airport</button>
             </div>
         </form>
     </div>
@@ -406,11 +406,11 @@
         if (isOpen) {
             menu.classList.add('hidden');
             chevron.style.transform = 'rotate(0deg)';
-            trigger.classList.remove('border-[#C5A880]', 'ring-2', 'ring-[#C5A880]/20');
+            trigger.classList.remove('border-[#150A42]', 'ring-2', 'ring-[#150A42]/15');
         } else {
             menu.classList.remove('hidden');
             chevron.style.transform = 'rotate(180deg)';
-            trigger.classList.add('border-[#C5A880]', 'ring-2', 'ring-[#C5A880]/20');
+            trigger.classList.add('border-[#150A42]', 'ring-2', 'ring-[#150A42]/15');
         }
     }
 
@@ -433,7 +433,7 @@
 
         // Update active checkmarks and highlights
         document.querySelectorAll('.provider-opt').forEach(opt => {
-            opt.classList.remove('bg-[#F5F2EB]', 'border-[#E5E7EB]', 'shadow-2xs');
+            opt.classList.remove('bg-purple-50/70', 'border-purple-100', 'shadow-2xs');
             opt.classList.add('border-transparent');
             const check = opt.querySelector('.check-icon');
             if (check) check.classList.add('hidden');
@@ -442,7 +442,7 @@
         const activeOpt = document.getElementById('opt_' + providerKey);
         if (activeOpt) {
             activeOpt.classList.remove('border-transparent');
-            activeOpt.classList.add('bg-[#F5F2EB]', 'border-[#E5E7EB]', 'shadow-2xs');
+            activeOpt.classList.add('bg-purple-50/70', 'border-purple-100', 'shadow-2xs');
             const check = activeOpt.querySelector('.check-icon');
             if (check) check.classList.remove('hidden');
         }
@@ -453,7 +453,7 @@
         const trigger = document.getElementById('providerDropdownTrigger');
         menu.classList.add('hidden');
         chevron.style.transform = 'rotate(0deg)';
-        trigger.classList.remove('border-[#C5A880]', 'ring-2', 'ring-[#C5A880]/20');
+        trigger.classList.remove('border-[#150A42]', 'ring-2', 'ring-[#150A42]/15');
     }
 
     // Close on outside click
@@ -466,7 +466,7 @@
             if (menu && !menu.classList.contains('hidden')) {
                 menu.classList.add('hidden');
                 if (chevron) chevron.style.transform = 'rotate(0deg)';
-                if (trigger) trigger.classList.remove('border-[#C5A880]', 'ring-2', 'ring-[#C5A880]/20');
+                if (trigger) trigger.classList.remove('border-[#150A42]', 'ring-2', 'ring-[#150A42]/15');
             }
         }
     });
@@ -480,7 +480,7 @@
             if (menu && !menu.classList.contains('hidden')) {
                 menu.classList.add('hidden');
                 if (chevron) chevron.style.transform = 'rotate(0deg)';
-                if (trigger) trigger.classList.remove('border-[#C5A880]', 'ring-2', 'ring-[#C5A880]/20');
+                if (trigger) trigger.classList.remove('border-[#150A42]', 'ring-2', 'ring-[#150A42]/15');
             }
             closeAddAirportModal();
         }

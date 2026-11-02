@@ -891,9 +891,6 @@
             currentFilter = 'all';
             applyFilters();
         };
-            currentFilter = 'all';
-            applyFilters();
-        };
     });
 </script>
 @endsection

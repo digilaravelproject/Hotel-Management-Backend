@@ -20,8 +20,8 @@
     <!-- Active Registered Themes Overview -->
     <div class="space-y-3">
         <div class="flex items-center justify-between">
-            <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center space-x-2">
-                <i class="fa-solid fa-layer-group text-[#A68A64]"></i>
+            <h3 class="text-sm font-extrabold text-slate-800 uppercase tracking-wider flex items-center space-x-2 font-mono">
+                <i class="fa-solid fa-layer-group text-[#150A42]"></i>
                 <span>Registered TV Themes Catalog</span>
             </h3>
             <span class="text-xs text-slate-500 font-medium">{{ $existingThemes->count() }} Theme(s) Configured</span>
@@ -76,7 +76,7 @@
 
                     <div class="space-y-2">
                         <div class="flex items-center gap-2">
-                            <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2 rounded-xl border border-[#E5E7EB] text-slate-700 hover:text-[#A68A64] hover:bg-[#F9FAFB] font-bold text-xs transition-all flex items-center justify-center space-x-1.5">
+                            <button type="button" onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" class="flex-1 py-2 rounded-xl border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 font-bold text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
                                 <i class="fa-solid fa-cloud-arrow-up"></i>
                                 <span>Upload Update</span>
                             </button>
@@ -146,14 +146,14 @@
                         <span>Theme ID *</span>
                         <span class="text-[10px] text-slate-400 font-normal">e.g. 1, 2, 3</span>
                     </label>
-                    <input type="number" id="themeIdField" name="theme_id" value="{{ $existingThemes->count() > 0 ? 1 : 1 }}" min="1" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-extrabold text-slate-900">
+                    <input type="number" id="themeIdField" name="theme_id" value="{{ $existingThemes->count() > 0 ? 1 : 1 }}" min="1" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 text-xs font-extrabold text-slate-900 bg-[#F8F9FD] focus:bg-white transition-all font-mono">
                     <span class="text-[11px] text-slate-400 font-medium block">Use <strong>1</strong> to update Theme 1, or <strong>2+</strong> for additional themes.</span>
                 </div>
 
                 <!-- Theme Name -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">Theme Name</label>
-                    <input type="text" id="themeNameField" name="theme_name" placeholder="e.g. Classic Luxury / Modern Dark" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-medium text-slate-800">
+                    <input type="text" id="themeNameField" name="theme_name" placeholder="e.g. Classic Luxury / Modern Dark" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 text-xs font-medium text-slate-800 bg-[#F8F9FD] focus:bg-white transition-all">
                     <span class="text-[11px] text-slate-400 font-medium block">Displayed to Hotel Admin when choosing themes.</span>
                 </div>
 
@@ -163,7 +163,7 @@
                         <span>Version (Optional)</span>
                         <span class="text-[10px] text-slate-400 font-normal">Auto: +0.5</span>
                     </label>
-                    <input type="text" id="customVersionField" name="custom_version" placeholder="e.g. 1.0 or 2.0" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#C5A880] focus:ring-2 focus:ring-[#C5A880]/20 text-xs font-medium text-slate-800">
+                    <input type="text" id="customVersionField" name="custom_version" placeholder="e.g. 1.0 or 2.0" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 text-xs font-medium text-slate-800 bg-[#F8F9FD] focus:bg-white transition-all font-mono">
                     <span class="text-[11px] text-slate-400 font-medium block">Leave blank to auto-increment for this theme.</span>
                 </div>
             </div>
@@ -172,20 +172,20 @@
                 <!-- Theme Preview Image -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">Theme Preview Screenshot (Optional)</label>
-                    <input type="file" id="previewImageField" name="preview_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200">
+                    <input type="file" id="previewImageField" name="preview_image" accept="image/*" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 cursor-pointer">
                     <span class="text-[11px] text-slate-400 font-medium block">PNG, JPG, or WEBP up to 5MB. Visual mockup for hotels.</span>
                 </div>
 
                 <!-- Template Package ZIP -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700">Template Package (.zip) *</label>
-                    <input type="file" id="templateFileField" name="template_file" required accept=".zip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-[#A68A64] hover:file:bg-[#8C7250] file:text-white">
+                    <input type="file" id="templateFileField" name="template_file" required accept=".zip" class="w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] hover:file:bg-[#201063] file:text-white cursor-pointer transition-colors">
                     <span class="text-[11px] text-slate-400 font-medium block">ZIP build package containing web assets for Android TV.</span>
                 </div>
             </div>
 
             <div class="pt-2 flex justify-end">
-                <button type="submit" id="submitBtn" class="w-full sm:w-auto px-8 py-3 rounded-xl bg-[#A68A64] hover:bg-[#8C7250] text-white font-bold text-xs shadow-xs hover:shadow-md transition-all flex items-center justify-center space-x-2">
+                <button type="submit" id="submitBtn" class="btn-sa-primary w-full sm:w-auto px-8 py-3 text-xs shadow-md flex items-center justify-center space-x-2">
                     <i class="fa-solid fa-upload"></i>
                     <span>Upload & Deploy Theme Build</span>
                 </button>
@@ -194,10 +194,10 @@
     </div>
 
     <!-- Template History List -->
-    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
+    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs space-y-6">
         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-2xl bg-[#F5F2EB] border border-[#E5E7EB] flex items-center justify-center text-[#8C7250] shrink-0">
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] shrink-0 shadow-2xs">
                     <i class="fa-solid fa-history text-lg"></i>
                 </div>
                 <div>
@@ -208,11 +208,11 @@
 
             <!-- Filter by Theme -->
             <div class="flex items-center flex-wrap gap-1.5">
-                <a href="{{ route('super-admin.templates.index') }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ !request('theme_id') ? 'bg-[#A68A64] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                <a href="{{ route('super-admin.templates.index') }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ !request('theme_id') ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                     All Themes
                 </a>
                 @foreach($existingThemes as $t)
-                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#A68A64] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                         Theme #{{ $t->theme_id }}
                     </a>
                 @endforeach
@@ -253,7 +253,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-4 py-4 font-extrabold text-[#A68A64] text-sm">v{{ $template->version }}</td>
+                                <td class="px-4 py-4 font-mono font-extrabold text-[#150A42] text-sm">v{{ $template->version }}</td>
                                 <td class="px-4 py-4 font-mono">
                                     <a href="{{ Storage::url($template->file_path) }}" target="_blank" class="text-[#8C7250] hover:text-[#725C3E] hover:underline font-semibold flex items-center space-x-1">
                                         <i class="fa-solid fa-file-zipper text-slate-400"></i>
@@ -325,10 +325,10 @@
     <div class="bg-white border border-[#E5E7EB] rounded-3xl w-full max-w-md p-6 space-y-4 shadow-2xl">
         <div class="flex items-center justify-between">
             <h4 id="progressStatusText" class="text-sm font-extrabold text-slate-900">Uploading Theme Build...</h4>
-            <span id="progressPercentageText" class="text-xs font-mono font-bold text-[#A68A64]">0%</span>
+            <span id="progressPercentageText" class="text-xs font-mono font-bold text-[#150A42]">0%</span>
         </div>
         <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-            <div id="progressBarFill" class="h-full bg-[#A68A64] rounded-full transition-all duration-200" style="width: 0%;"></div>
+            <div id="progressBarFill" class="h-full bg-[#150A42] rounded-full transition-all duration-200" style="width: 0%;"></div>
         </div>
         <p id="progressSubText" class="text-[11px] text-slate-400 font-medium">Deploying theme assets onto production storage...</p>
     </div>

@@ -1,4 +1,4 @@
-﻿@extends('layouts.super_admin')
+@extends('layouts.super_admin')
 
 @section('title', 'Edit Hotel Vendor - Super Admin')
 @section('page_title', 'Modify Hotel Vendor')
@@ -7,10 +7,11 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Header Navigation -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('super-admin.hotels.index') }}" class="inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
+        <a href="{{ route('super-admin.hotels.index') }}" class="inline-flex items-center text-xs font-bold text-slate-500 hover:text-[#150A42] transition-colors">
             <i class="fa-solid fa-arrow-left mr-2"></i>
             <span>Back to Hotels Directory</span>
         </a>
+        <span class="text-[11px] font-mono text-slate-400">Hotel ID: #{{ $hotel->id }}</span>
     </div>
 
     @if(isset($errors) && $errors->any())
@@ -28,7 +29,7 @@
     @endif
 
     <!-- Main Card Form -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs">
+    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs">
         <form action="{{ route('super-admin.hotels.update', $hotel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8">
             @csrf
             @method('PUT')
@@ -36,7 +37,7 @@
             <!-- Section 1: Owner Credentials -->
             <div class="space-y-5">
                 <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xs font-bold">
+                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
                         <i class="fa-regular fa-user"></i>
                     </div>
                     <div>
@@ -48,25 +49,25 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Owner Full Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="owner_name" value="{{ old('owner_name', $hotel->owner_name) }}" required placeholder="e.g. Rajesh Sharma" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="text" name="owner_name" value="{{ old('owner_name', $hotel->owner_name) }}" required placeholder="e.g. Rajesh Sharma" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Address <span class="text-rose-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email', $hotel->email) }}" required placeholder="e.g. admin@grandhotel.com" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="email" name="email" value="{{ old('email', $hotel->email) }}" required placeholder="e.g. admin@grandhotel.com" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Phone Number <span class="text-rose-500">*</span></label>
-                        <input type="text" name="phone" value="{{ old('phone', $hotel->phone) }}" required placeholder="e.g. +91 98765 43210" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="text" name="phone" value="{{ old('phone', $hotel->phone) }}" required placeholder="e.g. +91 98765 43210" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
                     </div>
                 </div>
 
                 <div class="max-w-md">
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Change Password <span class="text-slate-400 font-normal">(leave blank to keep current)</span></label>
                     <div class="relative">
-                        <input type="password" id="passwordInput" name="password" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none">
+                        <input type="password" id="passwordInput" name="password" placeholder="••••••••" class="w-full pl-3.5 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
                             <i id="passwordEyeIcon" class="fa-regular fa-eye text-xs"></i>
                         </button>
                     </div>
@@ -76,7 +77,7 @@
             <!-- Section 2: Hotel Identity -->
             <div class="space-y-5 pt-4 border-t border-slate-100">
                 <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xs font-bold">
+                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
                         <i class="fa-solid fa-hotel"></i>
                     </div>
                     <div>
@@ -88,23 +89,23 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel / Property Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="hotel_name" value="{{ old('hotel_name', $hotel->hotel_name) }}" required placeholder="e.g. The Grand Palace & Suites" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="text" name="hotel_name" value="{{ old('hotel_name', $hotel->hotel_name) }}" required placeholder="e.g. The Grand Palace & Suites" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">City</label>
-                        <input type="text" name="city" value="{{ old('city', $hotel->city) }}" placeholder="e.g. Mumbai" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="text" name="city" value="{{ old('city', $hotel->city) }}" placeholder="e.g. Mumbai" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
                     </div>
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Location / Full Address <span class="text-rose-500">*</span></label>
-                    <input type="text" name="hotel_location" value="{{ old('hotel_location', $hotel->hotel_location) }}" required placeholder="e.g. Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                    <input type="text" name="hotel_location" value="{{ old('hotel_location', $hotel->hotel_location) }}" required placeholder="e.g. Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
                 </div>
 
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Welcome Message / Tagline</label>
-                    <textarea name="description" rows="2" placeholder="e.g. Welcome to The Grand Palace. Enjoy our luxurious suites, dining, and smart in-room TV experience." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">{{ old('description', $hotel->description) }}</textarea>
+                    <textarea name="description" rows="2" placeholder="e.g. Welcome to The Grand Palace. Enjoy our luxurious suites, dining, and smart in-room TV experience." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium resize-y">{{ old('description', $hotel->description) }}</textarea>
                     <p class="text-[11px] text-slate-400 mt-1">Displayed on the TV dashboard header as a personalized welcome greeting for guests.</p>
                 </div>
             </div>
@@ -112,7 +113,7 @@
             <!-- Section 3: Subscription & Assignment -->
             <div class="space-y-5 pt-4 border-t border-slate-100">
                 <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xs font-bold">
+                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
                         <i class="fa-solid fa-credit-card"></i>
                     </div>
                     <div>
@@ -136,7 +137,7 @@
                                 </option>
                             @endforeach
                         </x-dropdown>
-                        <p class="text-[11px] text-slate-400 mt-1">Current room limit: <span class="font-bold text-slate-700">{{ $hotel->room_count }} rooms</span>.</p>
+                        <p class="text-[11px] text-slate-400 mt-1">Current room limit: <span class="font-bold text-slate-700 font-mono">{{ $hotel->room_count }} rooms</span>.</p>
                     </div>
 
                     <!-- 2. Distributor Partner Custom Dropdown -->
@@ -209,11 +210,11 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Subscription Purchase Date</label>
-                        <input type="datetime-local" name="purchase_date" value="{{ old('purchase_date', $hotel->purchase_date ? $hotel->purchase_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="datetime-local" name="purchase_date" value="{{ old('purchase_date', $hotel->purchase_date ? $hotel->purchase_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Subscription Expiry Date <span class="text-slate-400 font-normal">(Extend Access)</span></label>
-                        <input type="datetime-local" name="expiry_date" value="{{ old('expiry_date', $hotel->expiry_date ? $hotel->expiry_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:border-rose-500 bg-slate-50/50">
+                        <input type="datetime-local" name="expiry_date" value="{{ old('expiry_date', $hotel->expiry_date ? $hotel->expiry_date->format('Y-m-d\TH:i') : '') }}" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
                     </div>
                 </div>
             </div>
@@ -221,7 +222,7 @@
             <!-- Section 4: Branding & Media -->
             <div class="space-y-5 pt-4 border-t border-slate-100">
                 <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-xs font-bold">
+                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
                         <i class="fa-regular fa-image"></i>
                     </div>
                     <div>
@@ -234,10 +235,10 @@
                     <!-- Logo Upload -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Logo</label>
-                        <input type="file" name="hotel_logo" id="hotelLogoInput" accept="image/*" onchange="previewImage(this, 'logoPreview', 'logoPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer">
+                        <input type="file" name="hotel_logo" id="hotelLogoInput" accept="image/*" onchange="previewImage(this, 'logoPreview', 'logoPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
                         <div class="mt-3 flex items-center space-x-3">
                             <img id="logoPreview" src="{{ $hotel->hotel_logo ? asset($hotel->hotel_logo) : '#' }}" alt="Logo" class="{{ $hotel->hotel_logo ? '' : 'hidden' }} h-16 w-16 rounded-2xl border border-slate-200 object-cover shadow-xs">
-                            <div id="logoPlaceholder" class="{{ $hotel->hotel_logo ? 'hidden' : '' }} w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                            <div id="logoPlaceholder" class="{{ $hotel->hotel_logo ? 'hidden' : '' }} w-16 h-16 rounded-2xl bg-[#F8F9FD] border border-slate-200 flex items-center justify-center text-slate-400">
                                 <i class="fa-regular fa-image text-lg"></i>
                             </div>
                             <p class="text-[11px] text-slate-400">Square PNG or WebP recommended (up to 5MB).</p>
@@ -247,10 +248,10 @@
                     <!-- Cover Upload -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Cover Image</label>
-                        <input type="file" name="hotel_image" id="hotelCoverInput" accept="image/*" onchange="previewImage(this, 'coverPreview', 'coverPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer">
+                        <input type="file" name="hotel_image" id="hotelCoverInput" accept="image/*" onchange="previewImage(this, 'coverPreview', 'coverPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
                         <div class="mt-3 flex items-center space-x-3">
                             <img id="coverPreview" src="{{ $hotel->hotel_image ? asset($hotel->hotel_image) : '#' }}" alt="Cover" class="{{ $hotel->hotel_image ? '' : 'hidden' }} h-16 w-24 rounded-2xl border border-slate-200 object-cover shadow-xs">
-                            <div id="coverPlaceholder" class="{{ $hotel->hotel_image ? 'hidden' : '' }} w-24 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400">
+                            <div id="coverPlaceholder" class="{{ $hotel->hotel_image ? 'hidden' : '' }} w-24 h-16 rounded-2xl bg-[#F8F9FD] border border-slate-200 flex items-center justify-center text-slate-400">
                                 <i class="fa-solid fa-panorama text-lg"></i>
                             </div>
                             <p class="text-[11px] text-slate-400">16:9 Landscape image for TV backdrop (up to 10MB).</p>
@@ -261,7 +262,7 @@
                 <!-- TV Slider Images -->
                 <div class="space-y-2 pt-2">
                     <label class="block text-xs font-bold text-slate-700">Add TV Slider Images <span class="text-slate-400 font-normal">(Multi-select, max 10 total)</span></label>
-                    <input type="file" name="slider_images[]" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-slate-900 file:text-white hover:file:bg-slate-800 cursor-pointer">
+                    <input type="file" name="slider_images[]" accept="image/*" multiple class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
 
                     @if($hotel->slider_images && count($hotel->slider_images) > 0)
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3">
@@ -295,7 +296,6 @@
 </div>
 
 <script>
-
 function togglePasswordVisibility() {
     const input = document.getElementById('passwordInput');
     const icon = document.getElementById('passwordEyeIcon');
