@@ -4,22 +4,39 @@
 @section('page_title', 'Create Hotel Vendor')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
-    <!-- Header Navigation -->
-    <div class="flex items-center justify-between">
-        <a href="{{ route('super-admin.hotels.index') }}" class="inline-flex items-center text-xs font-bold text-slate-500 hover:text-[#150A42] transition-colors">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-            <span>Back to Hotels Directory</span>
-        </a>
+<div class="max-w-5xl mx-auto space-y-6 sm:space-y-8">
+
+    <!-- Top Navigation & Breadcrumb Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
+                <a href="{{ route('super-admin.hotels.index') }}" class="hover:text-[#150A42] transition-colors flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1.5 text-[11px]"></i>
+                    <span>Hotels Directory</span>
+                </a>
+                <span>/</span>
+                <span class="text-[#150A42]">New Registration</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Onboard New Hotel Vendor</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Register a new client property, assign TV limits, licensing plan, and distributor partner.</p>
+        </div>
+
+        <div class="flex items-center space-x-2 shrink-0">
+            <a href="{{ route('super-admin.hotels.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-2">
+                <i class="fa-solid fa-xmark text-xs"></i>
+                <span>Cancel</span>
+            </a>
+        </div>
     </div>
 
+    <!-- Error Banner -->
     @if(isset($errors) && $errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
-            <div class="font-bold flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>Please fix the following validation errors:</span>
+        <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm space-y-2 shadow-xs animate-shake">
+            <div class="font-bold flex items-center space-x-2 text-rose-900">
+                <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                <span>Please fix the following validation errors before saving:</span>
             </div>
-            <ul class="list-disc list-inside space-y-0.5 pl-4">
+            <ul class="list-disc list-inside space-y-1 pl-4 text-rose-700 text-xs">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -28,106 +45,206 @@
     @endif
 
     <!-- Main Card Form -->
-    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs">
-        <form action="{{ route('super-admin.hotels.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8">
+    <div class="bg-white border border-slate-200/80 rounded-[28px] p-5 sm:p-8 lg:p-10 shadow-xs">
+        <form action="{{ route('super-admin.hotels.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8 sm:space-y-10">
             @csrf
 
-            <!-- Section 1: Owner Credentials -->
+            <!-- Section 1: Owner Profile & Credentials -->
             <div class="space-y-5">
-                <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
-                        <i class="fa-regular fa-user"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">1. Owner Profile & Credentials</h3>
-                        <p class="text-xs text-slate-400">Primary administrative account credentials for hotel portal access.</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Owner Full Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="owner_name" value="{{ old('owner_name') }}" required placeholder="e.g. Rajesh Sharma" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Email Address <span class="text-rose-500">*</span></label>
-                        <input type="email" name="email" value="{{ old('email') }}" required placeholder="e.g. admin@grandhotel.com" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Phone Number <span class="text-rose-500">*</span></label>
-                        <input type="text" name="phone" value="{{ old('phone') }}" required placeholder="e.g. +91 98765 43210" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
+                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-regular fa-user"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 1</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Owner Profile & Credentials</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Primary administrative credentials for the hotel manager portal.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="max-w-md">
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Account Password <span class="text-rose-500">*</span></label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                    <!-- Owner Full Name -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Owner Full Name <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" 
+                                   name="owner_name" 
+                                   value="{{ old('owner_name') }}" 
+                                   required 
+                                   placeholder="e.g. Rajesh Sharma" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                        </div>
+                    </div>
+
+                    <!-- Email Address -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Email Address <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="email" 
+                                   name="email" 
+                                   value="{{ old('email') }}" 
+                                   required 
+                                   placeholder="e.g. admin@grandhotel.com" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="sm:col-span-2 lg:col-span-1">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Phone Number <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" 
+                                   name="phone" 
+                                   value="{{ old('phone') }}" 
+                                   required 
+                                   placeholder="e.g. +91 98765 43210" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium placeholder:text-slate-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Account Password Field -->
+                <div class="max-w-md pt-1">
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                        Portal Login Password <span class="text-rose-500 font-black">*</span>
+                    </label>
                     <div class="relative">
-                        <input type="password" id="passwordInput" name="password" required placeholder="Minimum 6 characters" class="w-full pl-3.5 pr-10 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
-                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
-                            <i id="passwordEyeIcon" class="fa-regular fa-eye text-xs"></i>
+                        <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="password" 
+                               id="passwordInput" 
+                               name="password" 
+                               required 
+                               placeholder="Minimum 6 characters" 
+                               class="w-full pl-10 pr-11 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                        <button type="button" 
+                                onclick="togglePasswordVisibility()" 
+                                class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none p-1 cursor-pointer transition-colors"
+                                title="Toggle visibility">
+                            <i id="passwordEyeIcon" class="fa-regular fa-eye text-sm"></i>
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-400 mt-1">This password will be used by the hotel admin to log in to their management panel.</p>
+                    <p class="text-xs text-slate-400 mt-1.5 font-medium">Used by hotel management to authenticate into their dashboard portal.</p>
                 </div>
             </div>
 
-            <!-- Section 2: Hotel Identity -->
-            <div class="space-y-5 pt-4 border-t border-slate-100">
-                <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
-                        <i class="fa-solid fa-hotel"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">2. Hotel Identity & Property Details</h3>
-                        <p class="text-xs text-slate-400">Establish property name, geography, and in-room greeting details.</p>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel / Property Name <span class="text-rose-500">*</span></label>
-                        <input type="text" name="hotel_name" value="{{ old('hotel_name') }}" required placeholder="e.g. The Grand Palace & Suites" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">City</label>
-                        <input type="text" name="city" value="{{ old('city') }}" placeholder="e.g. Mumbai" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
+            <!-- Section 2: Hotel Identity & Property Details -->
+            <div class="space-y-5 pt-6 border-t border-slate-100">
+                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-solid fa-hotel"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 2</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Hotel Identity & Property Details</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Define property branding, geographic location, and TV greeting message.</p>
+                        </div>
                     </div>
                 </div>
 
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                    <!-- Hotel Name -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Hotel / Property Name <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-building absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" 
+                                   name="hotel_name" 
+                                   value="{{ old('hotel_name') }}" 
+                                   required 
+                                   placeholder="e.g. The Oberoi Grand View & Suites" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                        </div>
+                    </div>
+
+                    <!-- City -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            City / Destination
+                        </label>
+                        <div class="relative">
+                            <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" 
+                                   name="city" 
+                                   value="{{ old('city') }}" 
+                                   placeholder="e.g. Mumbai" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Full Address -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Location / Full Address <span class="text-rose-500">*</span></label>
-                    <input type="text" name="hotel_location" value="{{ old('hotel_location') }}" required placeholder="e.g. Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051" class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium">
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                        Hotel Physical Address <span class="text-rose-500 font-black">*</span>
+                    </label>
+                    <div class="relative">
+                        <i class="fa-solid fa-map-pin absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" 
+                               name="hotel_location" 
+                               value="{{ old('hotel_location') }}" 
+                               required 
+                               placeholder="e.g. Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051" 
+                               class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                    </div>
                 </div>
 
+                <!-- Welcome Description / Tagline -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Welcome Message / Tagline</label>
-                    <textarea name="description" rows="2" placeholder="e.g. Welcome to The Grand Palace. Enjoy our luxurious suites, dining, and smart in-room TV experience." class="w-full px-3.5 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium resize-y">{{ old('description') }}</textarea>
-                    <p class="text-[11px] text-slate-400 mt-1">Displayed on the TV dashboard header as a personalized welcome greeting for guests.</p>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                        Welcome Greeting / TV Header Tagline
+                    </label>
+                    <textarea name="description" 
+                              rows="3" 
+                              placeholder="e.g. Welcome to The Oberoi Grand View. Experience premier comfort, in-room gourmet dining, and smart entertainment." 
+                              class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description') }}</textarea>
+                    <p class="text-xs text-slate-400 mt-1.5 font-medium">Broadcasted on the in-room TV home banner as a personalized greeting message.</p>
                 </div>
             </div>
 
-            <!-- Section 3: Subscription & Assignment -->
-            <div class="space-y-5 pt-4 border-t border-slate-100">
-                <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
-                        <i class="fa-solid fa-credit-card"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">3. Subscription Tier & Distributor Assignment</h3>
-                        <p class="text-xs text-slate-400">Choose software licensing package and attach a distribution channel partner.</p>
+            <!-- Section 3: Subscription, Partner & TV Settings -->
+            <div class="space-y-5 pt-6 border-t border-slate-100">
+                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-solid fa-layer-group"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 3</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Subscription Plan & Channel Partner</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Configure software licensing, distributor ownership, and TV theme assignment.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
                     <!-- 1. Subscription Plan Custom Dropdown -->
                     @php
                         $selectedPlanId = old('plan_id', '');
                     @endphp
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Subscription Plan</label>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Subscription Tier
+                        </label>
                         <x-dropdown name="plan_id" label="None (Custom / Trial Package)" :selected="$selectedPlanId" theme="sa">
                             <option value="">None (Custom / Trial Package)</option>
                             @foreach($plans as $plan)
@@ -136,7 +253,7 @@
                                 </option>
                             @endforeach
                         </x-dropdown>
-                        <p class="text-[11px] text-slate-400 mt-1">Room / TV pairing limit will be automatically applied from the selected plan.</p>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Room & TV pairing limit is automatically enforced from the plan.</p>
                     </div>
 
                     <!-- 2. Distributor Partner Custom Dropdown -->
@@ -144,9 +261,11 @@
                         $selectedDistId = old('distributor_id', '');
                     @endphp
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Onboarded By (Distributor Partner)</label>
-                        <x-dropdown name="distributor_id" label="Direct Vendor (No Distributor Attached)" :selected="$selectedDistId" theme="sa">
-                            <option value="">Direct Vendor (No Distributor Attached)</option>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Assigned Distributor / Partner
+                        </label>
+                        <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor)" :selected="$selectedDistId" theme="sa">
+                            <option value="">Direct Enterprise (No Distributor)</option>
                             @if(isset($distributors))
                                 @foreach($distributors as $distributor)
                                     <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
@@ -155,7 +274,7 @@
                                 @endforeach
                             @endif
                         </x-dropdown>
-                        <p class="text-[11px] text-slate-400 mt-1">Associate this hotel under a registered channel partner for sales tracking.</p>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Link this hotel under a channel partner for commission tracking.</p>
                     </div>
 
                     <!-- 3. Payment Status Custom Dropdown -->
@@ -163,11 +282,14 @@
                         $currentPayment = old('payment_status', 'paid');
                     @endphp
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Payment Status <span class="text-rose-500">*</span></label>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Payment Status <span class="text-rose-500 font-black">*</span>
+                        </label>
                         <x-dropdown name="payment_status" required theme="sa">
-                            <option value="paid" {{ $currentPayment === 'paid' ? 'selected' : '' }}>Paid (License Key Generated & Active)</option>
-                            <option value="pending" {{ $currentPayment === 'pending' ? 'selected' : '' }}>Pending (Awaiting Payment Confirmation)</option>
+                            <option value="paid" {{ $currentPayment === 'paid' ? 'selected' : '' }}>Paid (License Key Activated Immediately)</option>
+                            <option value="pending" {{ $currentPayment === 'pending' ? 'selected' : '' }}>Pending (Awaiting Settlement)</option>
                         </x-dropdown>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Controls whether devices can authenticate and stream content.</p>
                     </div>
 
                     <!-- 4. Approval Status Custom Dropdown -->
@@ -175,94 +297,145 @@
                         $currentApproval = old('approval_status', 'approved');
                     @endphp
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Approval Status <span class="text-rose-500">*</span></label>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Approval Status <span class="text-rose-500 font-black">*</span>
+                        </label>
                         <x-dropdown name="approval_status" required theme="sa">
-                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active immediately)</option>
+                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active on Network)</option>
                             <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
                             <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
                         </x-dropdown>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Platform compliance gate for in-room TV hardware pairing.</p>
                     </div>
 
                     <!-- 5. TV Interface Theme -->
                     @php
                         $selectedTheme = old('selected_theme_id', $defaultThemeId ?? 1);
                     @endphp
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Assigned TV Theme <span class="text-rose-500">*</span></label>
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Default In-Room TV Theme Style <span class="text-rose-500 font-black">*</span>
+                        </label>
                         <x-dropdown name="selected_theme_id" required theme="sa">
                             @if(isset($themes) && $themes->isNotEmpty())
                                 @foreach($themes as $th)
                                     <option value="{{ $th->theme_id }}" {{ (int)$selectedTheme === (int)$th->theme_id ? 'selected' : '' }}>
-                                        Theme #{{ $th->theme_id }} - {{ $th->theme_name ?? 'Default Layout' }} {{ (int)$th->theme_id === (int)($defaultThemeId ?? 1) ? '(Default)' : '' }}
+                                        Theme #{{ $th->theme_id }} - {{ $th->theme_name ?? 'Standard Layout' }} {{ (int)$th->theme_id === (int)($defaultThemeId ?? 1) ? '(Recommended Default)' : '' }}
                                     </option>
                                 @endforeach
                             @else
-                                <option value="1" {{ (int)$selectedTheme === 1 ? 'selected' : '' }}>Theme #1 (Default Classic)</option>
-                                <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury)</option>
+                                <option value="1" {{ (int)$selectedTheme === 1 ? 'selected' : '' }}>Theme #1 (Default Classic Cosmos)</option>
+                                <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury Noir)</option>
                             @endif
                         </x-dropdown>
-                        <p class="text-[11px] text-slate-400 mt-1">Smart TVs in this hotel will run this interface style.</p>
+                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Smart TVs assigned to this hotel will render this interface layout.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Section 4: Branding & Media (Optional) -->
-            <div class="space-y-5 pt-4 border-t border-slate-100">
-                <div class="border-b border-slate-100 pb-3 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100/80 flex items-center justify-center text-xs font-bold">
-                        <i class="fa-regular fa-image"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900">4. Branding & Media Assets <span class="text-xs font-normal text-slate-400">(Optional)</span></h3>
-                        <p class="text-xs text-slate-400">Upload hotel logo and cover image for the TV interface.</p>
+            <!-- Section 4: Branding & Media Assets -->
+            <div class="space-y-5 pt-6 border-t border-slate-100">
+                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-regular fa-image"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 4</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Branding & Media Assets <span class="text-xs font-semibold text-slate-400 font-sans">(Optional)</span></h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Upload property logo and 16:9 backdrop picture for the TV launcher.</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Logo</label>
-                        <input type="file" name="hotel_logo" id="hotelLogoInput" accept="image/*" onchange="previewImage(this, 'logoPreview', 'logoPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
-                        <div id="logoPreviewWrapper" class="mt-3 flex items-center space-x-3">
-                            <div id="logoPlaceholder" class="w-16 h-16 rounded-2xl bg-[#F8F9FD] border border-slate-200 flex items-center justify-center text-slate-400">
-                                <i class="fa-regular fa-image text-lg"></i>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
+                    <!-- Hotel Logo Dropzone Card -->
+                    <div class="p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs sm:text-sm font-bold text-slate-700">Hotel Logo</label>
+                            <span class="text-[11px] font-mono text-slate-400">1:1 Square PNG/WebP</span>
+                        </div>
+
+                        <div class="flex items-center space-x-4">
+                            <!-- Visual Preview Box -->
+                            <div class="relative w-20 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-xs group">
+                                <div id="logoPlaceholder" class="text-center p-2 text-slate-400">
+                                    <i class="fa-regular fa-image text-xl mb-1 block"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider">Logo</span>
+                                </div>
+                                <img id="logoPreview" src="#" alt="Logo Preview" class="hidden w-full h-full object-cover">
                             </div>
-                            <img id="logoPreview" src="#" alt="Logo Preview" class="hidden h-16 w-16 rounded-2xl border border-slate-200 object-cover shadow-xs">
-                            <p class="text-[11px] text-slate-400">Square PNG or WebP recommended (up to 5MB).</p>
+
+                            <div class="flex-1 min-w-0 space-y-2">
+                                <input type="file" 
+                                       name="hotel_logo" 
+                                       id="hotelLogoInput" 
+                                       accept="image/*" 
+                                       onchange="previewImage(this, 'logoPreview', 'logoPlaceholder')" 
+                                       class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
+                                <p class="text-xs text-slate-400">Recommended 512×512px. Max file size: 5MB.</p>
+                            </div>
                         </div>
                     </div>
 
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotel Cover Image</label>
-                        <input type="file" name="hotel_image" id="hotelCoverInput" accept="image/*" onchange="previewImage(this, 'coverPreview', 'coverPlaceholder')" class="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
-                        <div id="coverPreviewWrapper" class="mt-3 flex items-center space-x-3">
-                            <div id="coverPlaceholder" class="w-24 h-16 rounded-2xl bg-[#F8F9FD] border border-slate-200 flex items-center justify-center text-slate-400">
-                                <i class="fa-solid fa-panorama text-lg"></i>
+                    <!-- Hotel Cover Backdrop Dropzone Card -->
+                    <div class="p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-3">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs sm:text-sm font-bold text-slate-700">TV Cover Backdrop</label>
+                            <span class="text-[11px] font-mono text-slate-400">16:9 HD 1920×1080</span>
+                        </div>
+
+                        <div class="flex items-center space-x-4">
+                            <!-- Visual Preview Box -->
+                            <div class="relative w-28 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-xs group">
+                                <div id="coverPlaceholder" class="text-center p-2 text-slate-400">
+                                    <i class="fa-solid fa-panorama text-xl mb-1 block"></i>
+                                    <span class="text-[9px] font-bold uppercase tracking-wider">Cover</span>
+                                </div>
+                                <img id="coverPreview" src="#" alt="Cover Preview" class="hidden w-full h-full object-cover">
                             </div>
-                            <img id="coverPreview" src="#" alt="Cover Preview" class="hidden h-16 w-24 rounded-2xl border border-slate-200 object-cover shadow-xs">
-                            <p class="text-[11px] text-slate-400">16:9 Landscape image for TV backdrop (up to 10MB).</p>
+
+                            <div class="flex-1 min-w-0 space-y-2">
+                                <input type="file" 
+                                       name="hotel_image" 
+                                       id="hotelCoverInput" 
+                                       accept="image/*" 
+                                       onchange="previewImage(this, 'coverPreview', 'coverPlaceholder')" 
+                                       class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
+                                <p class="text-xs text-slate-400">Recommended 1920×1080px landscape. Max: 10MB.</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Action Buttons Footer -->
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="{{ route('super-admin.hotels.index') }}" class="btn-secondary">
-                    Cancel
+            <!-- Sticky-Friendly Bottom Action Bar -->
+            <div class="pt-6 sm:pt-8 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+                <a href="{{ route('super-admin.hotels.index') }}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold text-center transition-all">
+                    Discard & Return
                 </a>
-                <button type="submit" class="btn-sa-primary shadow-sm">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span>Create Hotel Vendor</span>
-                </button>
+
+                <div class="flex items-center space-x-3">
+                    <button type="submit" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-plus text-xs"></i>
+                        <span>Register Hotel Vendor</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
 function togglePasswordVisibility() {
     const input = document.getElementById('passwordInput');
     const icon = document.getElementById('passwordEyeIcon');
+    if (!input || !icon) return;
+    
     if (input.type === 'password') {
         input.type = 'text';
         icon.classList.remove('fa-eye');
@@ -277,6 +450,8 @@ function togglePasswordVisibility() {
 function previewImage(input, previewId, placeholderId) {
     const preview = document.getElementById(previewId);
     const placeholder = document.getElementById(placeholderId);
+    if (!input || !preview) return;
+
     if (input.files && input.files[0]) {
         const reader = new FileReader();
         reader.onload = function(e) {

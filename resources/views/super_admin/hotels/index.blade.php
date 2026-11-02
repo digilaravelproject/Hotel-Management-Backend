@@ -23,10 +23,19 @@
     }
 
     /* Filter Pills Sleek Modern Styling & Hover Fix */
+    .filter-pills-scroll {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        touch-action: pan-x;
+    }
+    .filter-pills-scroll::-webkit-scrollbar {
+        display: none;
+    }
     .filter-pill {
         display: inline-flex;
         align-items: center;
-        padding: 0.4rem 0.95rem;
+        padding: 0.45rem 1rem;
         border-radius: 0.85rem;
         font-size: 0.75rem;
         font-weight: 600;
@@ -36,6 +45,8 @@
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         user-select: none;
+        white-space: nowrap;
+        flex-shrink: 0;
     }
     .filter-pill:hover:not(.active) {
         background-color: #F1F5F9 !important;
@@ -120,32 +131,32 @@
     </div>
 
     <!-- Search & Filter Controls -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs space-y-3">
-        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs space-y-3 overflow-hidden">
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 min-w-0">
             <!-- Search Input -->
-            <div class="relative flex-1">
+            <div class="relative flex-1 min-w-0">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-10 pr-9 py-2.5 text-xs rounded-2xl border border-slate-200 bg-[#F3F5FA] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] placeholder:text-slate-400 text-slate-800 font-medium transition-all shadow-inner">
+                <input type="text" id="hotelSearchInput" placeholder="Search by hotel name, owner, city, email, phone, or license key..." class="w-full pl-10 pr-9 py-2.5 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-[#F3F5FA] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] placeholder:text-slate-400 text-slate-800 font-medium transition-all shadow-inner">
                 <button type="button" id="clearSearchBtn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer">
                     <i class="fa-solid fa-xmark text-xs"></i>
                 </button>
             </div>
 
-            <!-- Filter Pills -->
-            <div class="flex items-center space-x-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
-                <button type="button" class="filter-pill active" data-filter="all">
+            <!-- Filter Pills (Scrollable on Mobile) -->
+            <div class="w-full sm:w-auto min-w-0 overflow-x-auto filter-pills-scroll scrollbar-none flex items-center space-x-2 py-0.5">
+                <button type="button" class="filter-pill active shrink-0" data-filter="all">
                     <span>All</span>
                     <span class="ml-1 opacity-80 font-mono">({{ $hotels->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill" data-filter="active">
+                <button type="button" class="filter-pill shrink-0" data-filter="active">
                     <span>Active</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('status', true)->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill" data-filter="pending">
+                <button type="button" class="filter-pill shrink-0" data-filter="pending">
                     <span>Pending</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
                 </button>
-                <button type="button" class="filter-pill" data-filter="paid">
+                <button type="button" class="filter-pill shrink-0" data-filter="paid">
                     <span>Paid</span>
                     <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
                 </button>

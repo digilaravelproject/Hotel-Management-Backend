@@ -9,26 +9,26 @@
     <!-- Top Segmented TV Type Tabs & Statistics -->
     <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
         <!-- Filter Tabs: All, Live, Demo -->
-        <div class="inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80 overflow-x-auto">
+        <div class="w-full md:w-auto inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200/80 overflow-x-auto scrollbar-none" style="-webkit-overflow-scrolling: touch;">
             @php
                 $queryParams = array_filter(['hotel_id' => request('hotel_id'), 'search' => request('search')]);
             @endphp
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'all'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'all' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-2 {{ $type === 'all' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-tv text-xs"></i>
                 <span>All Screens</span>
                 <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'all' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $totalCount }}</span>
             </a>
 
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'live'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ $type === 'live' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-2 {{ $type === 'live' ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-hotel text-xs"></i>
                 <span>Live Hotel TVs</span>
                 <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ $type === 'live' ? 'bg-purple-600 text-white' : 'bg-slate-200 text-slate-700' }}">{{ $liveCount }}</span>
             </a>
 
             <a href="{{ route('super-admin.devices.index', array_merge($queryParams, ['type' => 'demo'])) }}"
-               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center space-x-2 {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap shrink-0 flex items-center space-x-2 {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-[#150A42] text-white shadow-xs' : 'text-slate-600 hover:text-slate-900 hover:bg-white/60' }}">
                 <i class="fa-solid fa-flask text-xs"></i>
                 <span>Demo TVs</span>
                 <span class="px-1.5 py-0.5 rounded-md text-[10px] font-black {{ in_array($type, ['demo', 'active_demo', 'expired_demo']) ? 'bg-purple-600 text-white' : 'bg-amber-100 text-amber-800' }}">{{ $demoCount }}</span>
