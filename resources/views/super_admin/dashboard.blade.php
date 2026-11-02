@@ -31,25 +31,25 @@
         </div>
     @endif
 
-    <!-- Top 4 Vibrant Stat Cards (Jobie Aesthetics: Royal Blue, Cyan, Emerald Green, Lime Green) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+    <!-- Top 4 Vibrant Stat Cards (2 per row on mobile, 4 on desktop) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         
         <!-- 1. Connected TV Fleet (Royal Blue #2835EB) -->
-        <div class="relative overflow-hidden rounded-[26px] bg-[#2835EB] text-white p-6 shadow-md shadow-[#2835EB]/20 flex flex-col justify-between h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
-            <div class="flex items-center justify-between">
-                <div class="w-13 h-13 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl backdrop-blur-xs">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-[26px] bg-[#2835EB] text-white p-3.5 sm:p-6 shadow-md shadow-[#2835EB]/20 flex flex-col justify-between min-h-[135px] sm:h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
+            <div class="flex items-start sm:items-center justify-between">
+                <div class="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-white/20 flex items-center justify-center text-white text-sm sm:text-xl backdrop-blur-xs shrink-0">
                     <i class="fa-solid fa-tv"></i>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs font-semibold text-white/80">Connected TV Fleet</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono mt-1 tracking-tight">
+                <div class="text-right ml-2 min-w-0">
+                    <div class="text-[10px] sm:text-xs font-semibold text-white/80 truncate">Connected Fleet</div>
+                    <div class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white font-mono mt-0.5 sm:mt-1 tracking-tight truncate">
                         {{ number_format($metrics['total_devices'] ?? 0) }}
                     </div>
                 </div>
             </div>
-            <div class="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] text-white/80">
-                <span>Fleet Hardware Status</span>
-                <span class="font-bold text-white flex items-center space-x-1">
+            <div class="pt-2 sm:pt-3 border-t border-white/15 flex items-center justify-between text-[9px] sm:text-[11px] text-white/80">
+                <span class="truncate">Fleet Status</span>
+                <span class="font-bold text-white flex items-center space-x-1 shrink-0">
                     <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
                     <span>ONLINE</span>
                 </span>
@@ -57,61 +57,61 @@
         </div>
 
         <!-- 2. Properties Network (Sky Blue #1EAAEB) -->
-        <div class="relative overflow-hidden rounded-[26px] bg-[#1EAAEB] text-white p-6 shadow-md shadow-[#1EAAEB]/20 flex flex-col justify-between h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
-            <div class="flex items-center justify-between">
-                <div class="w-13 h-13 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl backdrop-blur-xs">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-[26px] bg-[#1EAAEB] text-white p-3.5 sm:p-6 shadow-md shadow-[#1EAAEB]/20 flex flex-col justify-between min-h-[135px] sm:h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
+            <div class="flex items-start sm:items-center justify-between">
+                <div class="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-white/20 flex items-center justify-center text-white text-sm sm:text-xl backdrop-blur-xs shrink-0">
                     <i class="fa-solid fa-hotel"></i>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs font-semibold text-white/80">Properties Network</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono mt-1 tracking-tight">
+                <div class="text-right ml-2 min-w-0">
+                    <div class="text-[10px] sm:text-xs font-semibold text-white/80 truncate">Properties</div>
+                    <div class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white font-mono mt-0.5 sm:mt-1 tracking-tight truncate">
                         {{ number_format($metrics['total_hotels'] ?? 0) }}
                     </div>
                 </div>
             </div>
-            <div class="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] text-white/80">
-                <span>Verified Active</span>
-                <span class="font-bold text-white font-mono">
-                    {{ $metrics['active_hotels'] ?? 0 }} / {{ $metrics['total_hotels'] ?? 0 }}
+            <div class="pt-2 sm:pt-3 border-t border-white/15 flex items-center justify-between text-[9px] sm:text-[11px] text-white/80">
+                <span class="truncate">Verified</span>
+                <span class="font-bold text-white font-mono shrink-0">
+                    {{ $metrics['active_hotels'] ?? 0 }}/{{ $metrics['total_hotels'] ?? 0 }}
                 </span>
             </div>
         </div>
 
         <!-- 3. Licensed Rooms Capacity (Emerald Green #05C586) -->
-        <div class="relative overflow-hidden rounded-[26px] bg-[#05C586] text-white p-6 shadow-md shadow-[#05C586]/20 flex flex-col justify-between h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
-            <div class="flex items-center justify-between">
-                <div class="w-13 h-13 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl backdrop-blur-xs">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-[26px] bg-[#05C586] text-white p-3.5 sm:p-6 shadow-md shadow-[#05C586]/20 flex flex-col justify-between min-h-[135px] sm:h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
+            <div class="flex items-start sm:items-center justify-between">
+                <div class="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-white/20 flex items-center justify-center text-white text-sm sm:text-xl backdrop-blur-xs shrink-0">
                     <i class="fa-solid fa-door-open"></i>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs font-semibold text-white/80">Licensed Rooms</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono mt-1 tracking-tight">
+                <div class="text-right ml-2 min-w-0">
+                    <div class="text-[10px] sm:text-xs font-semibold text-white/80 truncate">Licensed Rooms</div>
+                    <div class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white font-mono mt-0.5 sm:mt-1 tracking-tight truncate">
                         {{ number_format($metrics['total_licensed_rooms'] ?? 0) }}
                     </div>
                 </div>
             </div>
-            <div class="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] text-white/80">
-                <span>Room Capacity</span>
-                <span class="font-bold text-white font-mono">{{ number_format($metrics['total_licensed_rooms'] ?? 0) }} Units</span>
+            <div class="pt-2 sm:pt-3 border-t border-white/15 flex items-center justify-between text-[9px] sm:text-[11px] text-white/80">
+                <span class="truncate">Capacity</span>
+                <span class="font-bold text-white font-mono shrink-0">{{ number_format($metrics['total_licensed_rooms'] ?? 0) }}</span>
             </div>
         </div>
 
         <!-- 4. Monthly Platform Run-Rate (Lime Green #85D638) -->
-        <div class="relative overflow-hidden rounded-[26px] bg-[#85D638] text-white p-6 shadow-md shadow-[#85D638]/20 flex flex-col justify-between h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
-            <div class="flex items-center justify-between">
-                <div class="w-13 h-13 rounded-2xl bg-white/20 flex items-center justify-center text-white text-xl backdrop-blur-xs">
+        <div class="relative overflow-hidden rounded-2xl sm:rounded-[26px] bg-[#85D638] text-white p-3.5 sm:p-6 shadow-md shadow-[#85D638]/20 flex flex-col justify-between min-h-[135px] sm:h-40 transition-all hover:-translate-y-1 hover:shadow-xl">
+            <div class="flex items-start sm:items-center justify-between">
+                <div class="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl bg-white/20 flex items-center justify-center text-white text-sm sm:text-xl backdrop-blur-xs shrink-0">
                     <i class="fa-solid fa-indian-rupee-sign"></i>
                 </div>
-                <div class="text-right">
-                    <div class="text-xs font-semibold text-white/80">Platform Run-Rate</div>
-                    <div class="text-3xl sm:text-4xl font-extrabold text-white font-mono mt-1 tracking-tight">
+                <div class="text-right ml-2 min-w-0">
+                    <div class="text-[10px] sm:text-xs font-semibold text-white/80 truncate">Run-Rate</div>
+                    <div class="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white font-mono mt-0.5 sm:mt-1 tracking-tight truncate">
                         ₹{{ number_format($metrics['total_revenue'] ?? 0, 0) }}
                     </div>
                 </div>
             </div>
-            <div class="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] text-white/80">
-                <span>Distributor Packages</span>
-                <span class="font-bold text-white font-mono">{{ $metrics['sales_count'] ?? 0 }} Logged</span>
+            <div class="pt-2 sm:pt-3 border-t border-white/15 flex items-center justify-between text-[9px] sm:text-[11px] text-white/80">
+                <span class="truncate">Packages</span>
+                <span class="font-bold text-white font-mono shrink-0">{{ $metrics['sales_count'] ?? 0 }} Logged</span>
             </div>
         </div>
 
@@ -133,7 +133,7 @@
                             <!-- Background track circle -->
                             <circle cx="60" cy="60" r="48" stroke="#F1F3F9" stroke-width="8" fill="none" />
                             <!-- Active progress circle stroke -->
-                            <circle cx="60" cy="60" r="48" stroke="#241372" stroke-width="8" stroke-linecap="round" fill="none"
+                            <circle cx="60" cy="60" r="48" stroke="#150A42" stroke-width="8" stroke-linecap="round" fill="none"
                                 stroke-dasharray="301.6"
                                 stroke-dashoffset="{{ 301.6 - (301.6 * ($metrics['overall_health_score'] ?? 74)) / 100 }}"
                                 style="transition: stroke-dashoffset 1.2s ease-in-out;"
@@ -141,7 +141,7 @@
                         </svg>
 
                         <!-- Avatar Center Image -->
-                        <div class="absolute inset-0 m-auto w-20 h-20 rounded-full overflow-hidden bg-gradient-to-tr from-[#241372] to-purple-600 border-4 border-white shadow-md flex items-center justify-center text-white">
+                        <div class="absolute inset-0 m-auto w-20 h-20 rounded-full overflow-hidden bg-gradient-to-tr from-[#150A42] to-purple-600 border-4 border-white shadow-md flex items-center justify-center text-white">
                             <i class="fa-solid fa-user-tie text-3xl"></i>
                         </div>
 
@@ -222,7 +222,7 @@
                     foreach ($recentHotels->take(2) as $h) {
                         $activityList[] = [
                             'icon' => 'fa-hotel',
-                            'color' => 'text-[#241372] bg-purple-50 border-purple-100',
+                            'color' => 'text-[#150A42] bg-purple-50 border-purple-100',
                             'title' => $h->hotel_name,
                             'subtitle' => ($h->city ?? 'Central Hub') . ' • ' . $h->room_count . ' Rooms Capacity',
                             'time' => $h->created_at ? $h->created_at->diffForHumans() : 'Recently',
@@ -244,7 +244,7 @@
                 $sampleFallback = [
                     [
                         'icon' => 'fa-hotel',
-                        'color' => 'text-[#241372] bg-purple-50 border-purple-100',
+                        'color' => 'text-[#150A42] bg-purple-50 border-purple-100',
                         'title' => 'The Grand Horizon Luxury Suites',
                         'subtitle' => 'New Delhi Hub • 120 Rooms Registered',
                         'time' => '12m ago',
@@ -290,12 +290,12 @@
                     <div class="space-y-2.5">
                         @foreach($activityList as $act)
                             <div class="flex items-center space-x-3 group">
-                                <div class="w-8 h-8 rounded-xl {{ $act['color'] }} border flex items-center justify-center shrink-0">
+                                <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center shrink-0">
                                     <i class="fa-solid {{ $act['icon'] }} text-[11px]"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex items-center justify-between">
-                                        <p class="text-xs font-bold text-slate-800 group-hover:text-[#241372] transition-colors truncate max-w-[150px]">
+                                        <p class="text-xs font-bold text-slate-800 group-hover:text-[#150A42] transition-colors truncate max-w-[150px]">
                                             {{ $act['title'] }}
                                         </p>
                                         <span class="text-[9px] text-slate-400 font-mono shrink-0 ml-2">
@@ -313,7 +313,7 @@
 
                 <!-- Down Arrow Circle Button (Anchored cleanly at bottom) -->
                 <div class="pt-2 border-t border-slate-100 flex justify-center">
-                    <a href="{{ route('super-admin.hotels.index') }}" title="View Full Activity Ledger" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#241372] flex items-center justify-center transition-all shadow-xs">
+                    <a href="{{ route('super-admin.hotels.index') }}" title="View Full Activity Ledger" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all shadow-xs">
                         <i class="fa-solid fa-arrow-down text-[10px]"></i>
                     </a>
                 </div>
@@ -339,7 +339,7 @@
                         <div class="flex items-center space-x-3 text-xs font-semibold text-slate-600">
                             <!-- Legend 1: Purple -->
                             <div class="flex items-center space-x-1.5">
-                                <span class="w-2.5 h-2.5 rounded-full bg-[#241372]"></span>
+                                <span class="w-2.5 h-2.5 rounded-full bg-[#150A42]"></span>
                                 <span>Properties</span>
                             </div>
                             <!-- Legend 2: Cyan -->
@@ -469,7 +469,7 @@
                             </div>
 
                             <div class="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-100">
-                                <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-[#241372] text-[10px] font-bold tracking-wider font-mono">
+                                <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-[#150A42] text-[10px] font-bold tracking-wider font-mono">
                                     {{ $dep['status'] }}
                                 </span>
                                 <span class="px-2.5 py-1 rounded-xl bg-blue-50 text-blue-700 text-[10px] font-bold tracking-wider font-mono">
@@ -521,7 +521,7 @@
             <!-- Legend Pills underneath (Economy, Deluxe, Executive, Presidential) -->
             <div class="grid grid-cols-2 gap-2.5 pt-4 border-t border-slate-100 text-xs">
                 @php
-                    $planColors = ['#06B6D4', '#10B981', '#F59E0B', '#241372'];
+                    $planColors = ['#06B6D4', '#10B981', '#F59E0B', '#150A42'];
                     $labels = $planDistribution['labels'] ?? [];
                     $data = $planDistribution['data'] ?? [];
                 @endphp
@@ -570,7 +570,7 @@
                         <span class="font-extrabold text-purple-700 font-mono">{{ $metrics['verified_hotels_pct'] ?? 31 }}%</span>
                     </div>
                     <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
-                        <div class="h-full rounded-full bg-[#241372]" style="width: {{ $metrics['verified_hotels_pct'] ?? 31 }}%"></div>
+                        <div class="h-full rounded-full bg-[#150A42]" style="width: {{ $metrics['verified_hotels_pct'] ?? 31 }}%"></div>
                     </div>
                 </div>
 
@@ -611,13 +611,13 @@
             <div class="flex items-center space-x-4">
                 <!-- Dots Indicator (Jobie style) -->
                 <div class="hidden sm:flex items-center space-x-1.5">
-                    <span class="w-2 h-2 rounded-full bg-[#241372]"></span>
+                    <span class="w-2 h-2 rounded-full bg-[#150A42]"></span>
                     <span class="w-2 h-2 rounded-full bg-slate-300"></span>
                     <span class="w-2 h-2 rounded-full bg-slate-300"></span>
                 </div>
 
                 <!-- View More Button -->
-                <a href="{{ route('super-admin.hotels.index') }}" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#F3F5FA] hover:bg-[#241372] text-slate-700 hover:text-white text-xs font-bold transition-all shadow-xs">
+                <a href="{{ route('super-admin.hotels.index') }}" class="inline-flex items-center space-x-1.5 px-4 py-2 rounded-full bg-[#F3F5FA] hover:bg-[#150A42] text-slate-700 hover:text-white text-xs font-bold transition-all shadow-xs">
                     <span>View More</span>
                     <i class="fa-solid fa-arrow-right text-[10px]"></i>
                 </a>
@@ -634,8 +634,8 @@
             ];
         @endphp
 
-        <!-- 5 Cards Horizontal Grid: Dynamic from Database -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <!-- 5 Cards Horizontal Grid: Dynamic from Database (Responsive 2 cols on mobile) -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
             @forelse($distributors as $index => $part)
                 @php
                     $pBg = $partnerColorPalette[$index % 5];
@@ -682,8 +682,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const chartContext = ctx1.getContext('2d');
         const purpleGradient = chartContext.createLinearGradient(0, 0, 0, 240);
-        purpleGradient.addColorStop(0, 'rgba(36, 19, 114, 0.16)');
-        purpleGradient.addColorStop(1, 'rgba(36, 19, 114, 0.00)');
+        purpleGradient.addColorStop(0, 'rgba(21, 10, 66, 0.22)');
+        purpleGradient.addColorStop(1, 'rgba(21, 10, 66, 0.00)');
 
         new Chart(ctx1, {
             type: 'line',
@@ -693,13 +693,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     {
                         label: 'Properties Onboarded',
                         data: hotelCounts,
-                        borderColor: '#241372',
+                        borderColor: '#150A42',
                         backgroundColor: purpleGradient,
                         borderWidth: 3,
                         fill: true,
                         tension: 0.45,
                         pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#241372',
+                        pointBorderColor: '#150A42',
                         pointBorderWidth: 3,
                         pointRadius: 4,
                         pointHoverRadius: 7
@@ -799,7 +799,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         '#06B6D4', // Economy
                         '#10B981', // Deluxe
                         '#F59E0B', // Executive
-                        '#241372', // Presidential
+                        '#150A42', // Presidential
                     ],
                     borderWidth: 4,
                     borderColor: '#FFFFFF',
@@ -842,8 +842,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     label: 'Licensed Room Capacity',
                     data: roomCounts.length ? roomCounts : [490, 205, 95, 85, 110, 135],
                     backgroundColor: [
-                        '#241372',
-                        '#3B1F9E',
+                        '#150A42',
+                        '#2E1065',
                         '#06B6D4',
                         '#10B981',
                         '#F59E0B',

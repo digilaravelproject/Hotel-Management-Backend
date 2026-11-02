@@ -49,11 +49,11 @@
         <!-- Mobile Sidebar Backdrop Overlay -->
         <div id="sidebarBackdrop" onclick="toggleSidebar()" class="hidden fixed inset-0 bg-[#0A051B]/70 backdrop-blur-sm z-40 md:hidden transition-opacity"></div>
 
-        <!-- Sidebar Navigation (Deep Royal Indigo / Purple matching Jobie UI) -->
-        <aside id="sidebar" class="w-64 bg-gradient-to-b from-[#241372] via-[#1D0C63] to-[#14064B] text-white flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-white/10 shadow-2xl">
+        <!-- Sidebar Navigation (Deep Midnight Cosmic Violet - Ultra Professional & Dark) -->
+        <aside id="sidebar" class="w-64 bg-gradient-to-b from-[#150A42] via-[#0F0631] to-[#090320] text-white flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-white/[0.08] shadow-2xl">
             
             <!-- Sidebar Header & Logo -->
-            <div class="h-24 flex items-center justify-center px-5 border-b border-white/10 relative">
+            <div class="h-24 flex items-center justify-center px-5 border-b border-white/[0.08] relative">
                 <a href="{{ route('super-admin.dashboard') }}" class="flex items-center justify-center group">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
@@ -66,7 +66,7 @@
             </div>
 
             <!-- Director Status Pill (Jobie Style) -->
-            <div class="p-3 mx-4 my-3 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-md flex items-center space-x-3 shadow-inner">
+            <div class="p-3 mx-4 my-3 rounded-2xl bg-white/[0.06] border border-white/10 backdrop-blur-md flex items-center space-x-3 shadow-inner">
                 <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-900 flex items-center justify-center font-extrabold text-sm shadow-md shrink-0">
                     <i class="fa-solid fa-crown text-xs text-white"></i>
                 </div>
@@ -75,111 +75,154 @@
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <h4 class="text-xs font-bold text-white truncate">Platform Director</h4>
                     </div>
-                    <p class="text-[10px] text-purple-200 font-mono truncate font-medium">Root Access</p>
+                    <p class="text-[10px] text-purple-200/80 font-mono truncate font-medium">Root Access</p>
                 </div>
             </div>
 
-            <!-- Menu Navigation Links -->
-            <nav class="flex-1 px-4 space-y-1.5 overflow-y-auto sidebar-scroll pb-4">
-                <div class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/60 font-mono">
-                    Overview
+            <!-- Menu Navigation Links (Clean Grouped Accordion Hierarchy) -->
+            <nav class="flex-1 px-3 space-y-1 overflow-y-auto sidebar-scroll pb-4">
+                <div class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
+                    Navigation
                 </div>
 
-                <!-- Dashboard (Active: White Card with Purple Text matching Jobie) -->
-                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.dashboard') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-house text-sm w-5 text-center {{ Request::routeIs('super-admin.dashboard') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
+                <!-- 1. Direct Dashboard Link -->
+                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.dashboard') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                    <i class="fa-solid fa-house text-sm w-5 text-center {{ Request::routeIs('super-admin.dashboard') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
                     <span>Dashboard</span>
                 </a>
 
-                <!-- Hotels Directory -->
-                <a href="{{ route('super-admin.hotels.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.hotels.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-hotel text-sm w-5 text-center {{ Request::routeIs('super-admin.hotels.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Hotels Directory</span>
-                </a>
-
-                <!-- Users & Permissions -->
-                <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-users-gear text-sm w-5 text-center {{ Request::routeIs('super-admin.users.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Staff & Partners</span>
-                </a>
-
-                <!-- Subscription Plans -->
-                <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-layer-group text-sm w-5 text-center {{ Request::routeIs('super-admin.plans.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Subscription Tiers</span>
-                </a>
-
-                <!-- Connected TVs -->
-                <a href="{{ route('super-admin.devices.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.devices.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-tv text-sm w-5 text-center {{ Request::routeIs('super-admin.devices.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Hardware Fleet</span>
-                </a>
-
-                <!-- TV App OTA Releases -->
-                <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-code-branch text-sm w-5 text-center {{ Request::routeIs('super-admin.templates.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>OTA App Builds</span>
-                </a>
-
-                <!-- Flights & Airports -->
-                <a href="{{ route('super-admin.flights.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.flights.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-plane-departure text-sm w-5 text-center {{ Request::routeIs('super-admin.flights.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Flights & Airports</span>
-                </a>
-
-                <div class="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/60 font-mono">
-                    Financial & System
+                <!-- 2. Hospitality Hub (Hotels, Subscriptions, Flights) -->
+                @php
+                    $isHospitalityActive = Request::routeIs('super-admin.hotels.*') || Request::routeIs('super-admin.plans.*') || Request::routeIs('super-admin.flights.*');
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-hospitality')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isHospitalityActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-hotel text-sm w-5 text-center {{ $isHospitalityActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Hospitality Hub</span>
+                        </div>
+                        <i id="chevron-submenu-hospitality" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isHospitalityActive ? 'rotate-180' : '' }}"></i>
+                    </button>
+                    <div id="submenu-hospitality" class="mt-1 space-y-1 pl-6 pr-1 {{ $isHospitalityActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.hotels.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.hotels.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.hotels.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Hotels Directory</span>
+                        </a>
+                        <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.plans.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Subscription Tiers</span>
+                        </a>
+                        <a href="{{ route('super-admin.flights.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.flights.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.flights.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Flights & Airports</span>
+                        </a>
+                    </div>
                 </div>
 
-                <!-- Withdrawals -->
-                <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-money-bill-transfer text-sm w-5 text-center {{ Request::routeIs('super-admin.withdrawals.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                        <span>Withdrawals</span>
+                <!-- 3. Fleet & Tech Operations (Connected TVs, OTA Builds, FCM) -->
+                @php
+                    $isFleetActive = Request::routeIs('super-admin.devices.*') || Request::routeIs('super-admin.templates.*') || Request::routeIs('super-admin.firebase-settings.*');
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-fleet')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFleetActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-tv text-sm w-5 text-center {{ $isFleetActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Fleet & Systems</span>
+                        </div>
+                        <i id="chevron-submenu-fleet" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isFleetActive ? 'rotate-180' : '' }}"></i>
+                    </button>
+                    <div id="submenu-fleet" class="mt-1 space-y-1 pl-6 pr-1 {{ $isFleetActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.devices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.devices.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.devices.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Hardware Fleet</span>
+                        </a>
+                        <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.templates.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">OTA App Builds</span>
+                        </a>
+                        <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">FCM Realtime</span>
+                        </a>
                     </div>
-                    @php
-                        $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
-                    @endphp
-                    @if($pendingWithdrawalsCount > 0)
-                        <span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[10px] font-mono">
-                            {{ $pendingWithdrawalsCount }}
-                        </span>
-                    @endif
-                </a>
+                </div>
 
-                <!-- Commission Setup -->
-                <a href="{{ route('super-admin.commissions.settings') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.commissions.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-percent text-sm w-5 text-center {{ Request::routeIs('super-admin.commissions.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Commissions</span>
-                </a>
+                <!-- 4. Partners & Finance (Users, Withdrawals, Commissions) -->
+                @php
+                    $isFinanceActive = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.withdrawals.*') || Request::routeIs('super-admin.commissions.*');
+                    $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-finance')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFinanceActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-coins text-sm w-5 text-center {{ $isFinanceActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Partners & Finance</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            @if($pendingWithdrawalsCount > 0)
+                                <span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono">
+                                    {{ $pendingWithdrawalsCount }}
+                                </span>
+                            @endif
+                            <i id="chevron-submenu-finance" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isFinanceActive ? 'rotate-180' : '' }}"></i>
+                        </div>
+                    </button>
+                    <div id="submenu-finance" class="mt-1 space-y-1 pl-6 pr-1 {{ $isFinanceActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.users.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Staff & Partners</span>
+                        </a>
+                        <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <div class="flex items-center space-x-2.5 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                                <span class="truncate">Withdrawals</span>
+                            </div>
+                            @if($pendingWithdrawalsCount > 0)
+                                <span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono shrink-0">
+                                    {{ $pendingWithdrawalsCount }}
+                                </span>
+                            @endif
+                        </a>
+                        <a href="{{ route('super-admin.commissions.settings') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.commissions.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.commissions.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Commissions</span>
+                        </a>
+                    </div>
+                </div>
 
-                <!-- FCM Config & Realtime -->
-                <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-fire text-sm w-5 text-center {{ Request::routeIs('super-admin.firebase-settings.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>FCM Realtime</span>
-                </a>
-
-                <!-- System & Branding -->
-                <a href="{{ route('super-admin.settings.index') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.settings.*') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-sliders text-sm w-5 text-center {{ Request::routeIs('super-admin.settings.*') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>System Branding</span>
-                </a>
-
-                <!-- My Profile & Security -->
-                <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-3 px-4 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('super-admin.profile') ? 'bg-white text-[#241372] shadow-lg shadow-purple-950/20' : 'text-purple-200/80 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-user-gear text-sm w-5 text-center {{ Request::routeIs('super-admin.profile') ? 'text-[#241372]' : 'text-purple-300' }}"></i>
-                    <span>Profile & Security</span>
-                </a>
+                <!-- 5. Platform Settings (Branding, Profile & Security) -->
+                @php
+                    $isSettingsActive = Request::routeIs('super-admin.settings.*') || Request::routeIs('super-admin.profile');
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-settings')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isSettingsActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-sliders text-sm w-5 text-center {{ $isSettingsActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Platform Settings</span>
+                        </div>
+                        <i id="chevron-submenu-settings" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isSettingsActive ? 'rotate-180' : '' }}"></i>
+                    </button>
+                    <div id="submenu-settings" class="mt-1 space-y-1 pl-6 pr-1 {{ $isSettingsActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">System Branding</span>
+                        </a>
+                        <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.profile') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.profile') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Profile & Security</span>
+                        </a>
+                    </div>
+                </div>
             </nav>
 
             <!-- Bottom Brand Info (Jobie style) -->
-            <div class="px-5 py-4 border-t border-white/10 text-center">
-                <p class="text-[10px] text-purple-200/60 font-medium">PAX TV Platform Admin</p>
-                <p class="text-[9px] text-purple-300/40 font-mono mt-0.5">© {{ date('Y') }} All Rights Reserved</p>
+            <div class="px-5 py-4 border-t border-white/[0.08] text-center">
+                <p class="text-[10px] text-purple-200/50 font-medium">PAX TV Platform Admin</p>
+                <p class="text-[9px] text-purple-300/30 font-mono mt-0.5">© {{ date('Y') }} All Rights Reserved</p>
             </div>
 
             <!-- Sign Out Button -->
-            <div class="p-3 border-t border-white/10">
+            <div class="p-3 border-t border-white/[0.08]">
                 <form action="{{ route('super-admin.logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2 px-4 rounded-xl border border-white/10 text-purple-200 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 text-xs font-bold transition-all cursor-pointer">
@@ -198,7 +241,7 @@
                 
                 <!-- Left Title & Mobile Hamburger -->
                 <div class="flex items-center space-x-4">
-                    <button onclick="toggleSidebar()" class="text-slate-700 hover:text-[#241372] p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 md:hidden transition-colors">
+                    <button onclick="toggleSidebar()" class="text-slate-700 hover:text-[#150A42] p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 md:hidden transition-colors">
                         <i class="fa-solid fa-bars text-base"></i>
                     </button>
                     <div>
@@ -222,24 +265,24 @@
                 <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
                     
                     <!-- Chat / Communication Icon with Badge (Jobie 18) -->
-                    <a href="{{ route('super-admin.hotels.index') }}" title="System Messages & Inquiries" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#241372] flex items-center justify-center transition-all">
+                    <a href="{{ route('super-admin.hotels.index') }}" title="System Messages & Inquiries" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
                         <i class="fa-regular fa-comment-dots text-sm"></i>
-                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#241372] text-white text-[9px] font-bold font-mono shadow-xs">
+                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#150A42] text-white text-[9px] font-bold font-mono shadow-xs">
                             18
                         </span>
                     </a>
 
                     <!-- Notification Bell with Badge (Jobie 62) -->
-                    <a href="{{ route('super-admin.hotels.index', ['status' => 'pending']) }}" title="Pending Approvals & Notifications" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#241372] flex items-center justify-center transition-all">
+                    <a href="{{ route('super-admin.hotels.index', ['status' => 'pending']) }}" title="Pending Approvals & Notifications" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
                         <i class="fa-regular fa-bell text-sm"></i>
-                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#241372] text-white text-[9px] font-bold font-mono shadow-xs">
+                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#150A42] text-white text-[9px] font-bold font-mono shadow-xs">
                             62
                         </span>
                     </a>
 
                     <!-- Super Admin Profile (Avatar + Name + Subtitle matching Jobie) -->
                     <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-3 pl-2 py-1 pr-1 rounded-2xl hover:bg-slate-50 transition-all">
-                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#241372] to-purple-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-purple-100 shadow-sm shrink-0">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#150A42] to-purple-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-purple-100 shadow-sm shrink-0">
                             <i class="fa-solid fa-user-tie text-sm"></i>
                         </div>
                         <div class="hidden sm:block text-left">
@@ -255,7 +298,7 @@
             </header>
 
             <!-- Main Content Container -->
-            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto">
+            <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto pb-24 md:pb-8">
                 @if(session('success'))
                     <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2.5 shadow-xs">
                         <i class="fa-solid fa-circle-check text-base text-emerald-600 shrink-0"></i>
@@ -275,12 +318,103 @@
         </div>
     </div>
 
+    <!-- Mobile Bottom App-Style Floating Navigation Bar (5 Core Menus matching sample) -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-3 pt-1 pointer-events-none">
+        <div class="pointer-events-auto bg-white/95 backdrop-blur-md rounded-[26px] border border-slate-200/90 shadow-[0_-6px_25px_rgba(21,10,66,0.12)] px-2 py-1.5 flex items-center justify-around relative">
+            
+            <!-- 1. Dashboard -->
+            @php $isDash = Request::routeIs('super-admin.dashboard'); @endphp
+            <a href="{{ route('super-admin.dashboard') }}" class="relative flex flex-col items-center group transition-all {{ $isDash ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isDash)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-house text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Home</span>
+                @else
+                    <i class="fa-solid fa-house text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Home</span>
+                @endif
+            </a>
+
+            <!-- 2. Hotels Directory -->
+            @php $isHotels = Request::routeIs('super-admin.hotels.*'); @endphp
+            <a href="{{ route('super-admin.hotels.index') }}" class="relative flex flex-col items-center group transition-all {{ $isHotels ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isHotels)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-hotel text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Hotels</span>
+                @else
+                    <i class="fa-solid fa-hotel text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Hotels</span>
+                @endif
+            </a>
+
+            <!-- 3. Subscriptions -->
+            @php $isPlans = Request::routeIs('super-admin.plans.*'); @endphp
+            <a href="{{ route('super-admin.plans.index') }}" class="relative flex flex-col items-center group transition-all {{ $isPlans ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isPlans)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-layer-group text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Plans</span>
+                @else
+                    <i class="fa-solid fa-layer-group text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Plans</span>
+                @endif
+            </a>
+
+            <!-- 4. Staff & Partners -->
+            @php $isPartners = Request::routeIs('super-admin.users.*'); @endphp
+            <a href="{{ route('super-admin.users.index') }}" class="relative flex flex-col items-center group transition-all {{ $isPartners ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isPartners)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-users-gear text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Partners</span>
+                @else
+                    <i class="fa-solid fa-users-gear text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Partners</span>
+                @endif
+            </a>
+
+            <!-- 5. Hardware Fleet -->
+            @php $isFleet = Request::routeIs('super-admin.devices.*'); @endphp
+            <a href="{{ route('super-admin.devices.index') }}" class="relative flex flex-col items-center group transition-all {{ $isFleet ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isFleet)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-tv text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Fleet</span>
+                @else
+                    <i class="fa-solid fa-tv text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Fleet</span>
+                @endif
+            </a>
+
+        </div>
+    </nav>
+
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');
             sidebar.classList.toggle('-translate-x-full');
             if (backdrop) backdrop.classList.toggle('hidden');
+        }
+
+        function toggleSubmenu(id) {
+            const submenu = document.getElementById(id);
+            const chevron = document.getElementById('chevron-' + id);
+            if (!submenu) return;
+            const isHidden = submenu.classList.contains('hidden');
+            if (isHidden) {
+                submenu.classList.remove('hidden');
+                if (chevron) chevron.classList.add('rotate-180');
+            } else {
+                submenu.classList.add('hidden');
+                if (chevron) chevron.classList.remove('rotate-180');
+            }
         }
 
         // Global loader overlay on form submits
