@@ -79,15 +79,14 @@
                         </span>
                     @endif
 
-                    @if($hotel->payment_status === 'paid')
-                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-extrabold uppercase font-mono tracking-wider shadow-xs">
-                            Paid Package
-                        </span>
-                    @else
-                        <span class="inline-flex items-center px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-[11px] font-extrabold uppercase font-mono tracking-wider shadow-xs">
-                            Unpaid
-                        </span>
-                    @endif
+                    @php
+                        $subBadge = $hotel->subscription_badge;
+                    @endphp
+
+                    <span class="inline-flex items-center px-3 py-1 rounded-full {{ $subBadge['badge_class'] }} border text-[11px] font-extrabold uppercase font-mono tracking-wider shadow-xs">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $subBadge['dot_class'] }} mr-1.5 {{ $subBadge['key'] === 'expiring_soon' ? 'animate-pulse' : '' }}"></span>
+                        {{ $subBadge['label'] }} Package
+                    </span>
                 </div>
             </div>
         </div>
@@ -225,16 +224,11 @@
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 border-b border-slate-100/70 pb-2.5">
-                            <span class="text-slate-500 font-semibold shrink-0">Payment State</span>
-                            @if($hotel->payment_status === 'paid')
-                                <span class="font-extrabold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 text-[10px] uppercase font-mono tracking-wider">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block mr-1"></span> Paid
-                                </span>
-                            @else
-                                <span class="font-extrabold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200 text-[10px] uppercase font-mono tracking-wider">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 inline-block mr-1"></span> Awaiting Payment
-                                </span>
-                            @endif
+                            <span class="text-slate-500 font-semibold shrink-0">Subscription State</span>
+                            <span class="font-extrabold {{ $subBadge['badge_class'] }} px-2.5 py-0.5 rounded-full border text-[10px] uppercase font-mono tracking-wider flex items-center">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $subBadge['dot_class'] }} inline-block mr-1.5 {{ $subBadge['key'] === 'expiring_soon' ? 'animate-pulse' : '' }}"></span>
+                                {{ $subBadge['label'] }}
+                            </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 border-b border-slate-100/70 pb-2.5">
                             <span class="text-slate-500 font-semibold shrink-0">Purchase Date</span>

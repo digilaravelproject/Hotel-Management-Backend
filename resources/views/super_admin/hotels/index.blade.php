@@ -74,15 +74,25 @@
         </a>
     </div>
 
+    @php
+        $totalHotelsCount = $hotels->count();
+        $activeHotelsCount = $hotels->where('status', true)->count();
+        $pendingHotelsCount = $hotels->where('approval_status', 'pending')->count();
+        $paidActiveHotelsCount = $hotels->filter(fn($h) => in_array($h->subscription_status, ['active', 'expiring_soon']))->count();
+        $expiringSoonHotelsCount = $hotels->filter(fn($h) => $h->subscription_status === 'expiring_soon')->count();
+        $expiredHotelsCount = $hotels->filter(fn($h) => $h->subscription_status === 'expired')->count();
+        $unpaidHotelsCount = $hotels->filter(fn($h) => in_array($h->subscription_status, ['unpaid', 'pending']))->count();
+    @endphp
+
     <!-- Quick Stats Metric Cards -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <!-- Total Hotels -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
             <div class="w-11 h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-hotel"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight" id="statTotalHotels">{{ $hotels->count() }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight" id="statTotalHotels">{{ $totalHotelsCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Properties</div>
             </div>
         </div>
@@ -93,30 +103,41 @@
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">{{ $hotels->where('status', true)->count() }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">{{ $activeHotelsCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Platforms</div>
             </div>
         </div>
 
-        <!-- Pending Review -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-base shrink-0 shadow-xs">
-                <i class="fa-solid fa-clock"></i>
-            </div>
-            <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono tracking-tight leading-tight">{{ $hotels->where('approval_status', 'pending')->count() }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Pending Review</div>
-            </div>
-        </div>
-
-        <!-- Paid Subscriptions -->
+        <!-- Paid / Active Subscriptions -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
             <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $hotels->where('payment_status', 'paid')->count() }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Paid Packages</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $paidActiveHotelsCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Paid & Active</div>
+            </div>
+        </div>
+
+        <!-- Expiring Soon -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono tracking-tight leading-tight">{{ $expiringSoonHotelsCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Expiring Soon</div>
+            </div>
+        </div>
+
+        <!-- Expired Plans -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all col-span-2 md:col-span-1">
+            <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 border border-rose-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-2xl sm:text-3xl font-extrabold {{ $expiredHotelsCount > 0 ? 'text-rose-600' : 'text-slate-900' }} font-mono tracking-tight leading-tight">{{ $expiredHotelsCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Expired Plans</div>
             </div>
         </div>
     </div>
@@ -137,23 +158,33 @@
             <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
                 <button type="button" class="filter-pill active" data-filter="all">
                     <span>All</span>
-                    <span class="ml-1 opacity-80 font-mono">({{ $hotels->count() }})</span>
+                    <span class="ml-1 opacity-80 font-mono">({{ $totalHotelsCount }})</span>
                 </button>
                 <button type="button" class="filter-pill" data-filter="active">
-                    <span>Active</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('status', true)->count() }})</span>
-                </button>
-                <button type="button" class="filter-pill" data-filter="pending">
-                    <span>Pending</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('approval_status', 'pending')->count() }})</span>
+                    <span>Live</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $activeHotelsCount }})</span>
                 </button>
                 <button type="button" class="filter-pill" data-filter="paid">
                     <span>Paid</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', 'paid')->count() }})</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $paidActiveHotelsCount }})</span>
+                </button>
+                @if($expiringSoonHotelsCount > 0)
+                <button type="button" class="filter-pill text-amber-700 bg-amber-50/60 border-amber-200" data-filter="expiring">
+                    <span>Expiring Soon</span>
+                    <span class="ml-1 opacity-80 font-mono">({{ $expiringSoonHotelsCount }})</span>
+                </button>
+                @endif
+                <button type="button" class="filter-pill {{ $expiredHotelsCount > 0 ? 'text-rose-700 bg-rose-50/60 border-rose-200' : '' }}" data-filter="expired">
+                    <span>Expired</span>
+                    <span class="ml-1 opacity-80 font-mono">({{ $expiredHotelsCount }})</span>
                 </button>
                 <button type="button" class="filter-pill" data-filter="unpaid">
                     <span>Unpaid</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $hotels->where('payment_status', '!=', 'paid')->count() }})</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $unpaidHotelsCount }})</span>
+                </button>
+                <button type="button" class="filter-pill" data-filter="pending">
+                    <span>Pending Approval</span>
+                    <span class="ml-1 opacity-70 font-mono">({{ $pendingHotelsCount }})</span>
                 </button>
             </div>
         </div>
@@ -183,7 +214,7 @@
                             <th class="px-4 py-3.5 min-w-[180px]">Owner & Contact</th>
                             <th class="px-3.5 py-3.5 min-w-[160px]">Plan & TVs</th>
                             <th class="hidden xl:table-cell px-3.5 py-3.5 min-w-[120px]">License Key</th>
-                            <th class="px-3 py-3.5 text-center min-w-[95px]">Payment</th>
+                            <th class="px-3 py-3.5 text-center min-w-[120px]">Subscription</th>
                             <th class="px-3 py-3.5 text-center min-w-[85px]">Status</th>
                             <th class="px-3 py-3.5 text-center min-w-[130px]">Approval</th>
                             <th class="px-3 py-3.5 text-center w-14">Actions</th>
@@ -194,13 +225,15 @@
                             @php
                                 $hotelSearchText = strtolower($hotel->hotel_name . ' ' . $hotel->owner_name . ' ' . $hotel->email . ' ' . $hotel->phone . ' ' . ($hotel->city ?? $hotel->hotel_location) . ' ' . ($hotel->license_key ?? '') . ' ' . ($hotel->distributor ? $hotel->distributor->name : ''));
                                 $deviceCount = $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0;
+                                $subBadge = $hotel->subscription_badge;
                             @endphp
                             <tr id="hotel-desktop-row-{{ $hotel->id }}" 
                                 class="hotel-item hotel-desktop-row hover:bg-purple-50/20 transition-colors"
                                 data-search="{{ $hotelSearchText }}"
                                 data-status="{{ $hotel->status ? 'active' : 'inactive' }}"
                                 data-approval="{{ $hotel->approval_status }}"
-                                data-payment="{{ $hotel->payment_status }}">
+                                data-payment="{{ $hotel->payment_status }}"
+                                data-subscription="{{ $subBadge['key'] }}">
                                 <!-- 1. Hotel Client -->
                                 <td class="px-4 py-3.5">
                                     <div class="flex items-center space-x-3">
@@ -282,17 +315,27 @@
                                     @endif
                                 </td>
 
-                                <!-- 5. Payment Status -->
+                                <!-- 5. Subscription & Expiry Status -->
                                 <td class="px-3 py-3.5 text-center whitespace-nowrap">
-                                    @if($hotel->payment_status === 'paid')
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-[9px] uppercase tracking-wider font-mono">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Paid
+                                    <div class="inline-flex flex-col items-center">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full {{ $subBadge['badge_class'] }} border font-bold text-[9px] uppercase tracking-wider font-mono shadow-2xs">
+                                            <span class="w-1.5 h-1.5 rounded-full {{ $subBadge['dot_class'] }} mr-1.5 {{ $subBadge['key'] === 'expiring_soon' ? 'animate-pulse' : '' }}"></span>
+                                            {{ $subBadge['label'] }}
                                         </span>
-                                    @else
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[9px] uppercase tracking-wider font-mono">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span> Unpaid
-                                        </span>
-                                    @endif
+                                        @if($hotel->expiry_date)
+                                            <span class="text-[9px] font-mono mt-0.5 {{ $subBadge['key'] === 'expired' ? 'text-rose-600 font-bold' : ($subBadge['key'] === 'expiring_soon' ? 'text-amber-600 font-bold' : 'text-slate-400 font-medium') }}" title="Expiry: {{ $hotel->expiry_date->format('d M Y, h:i A') }}">
+                                                @if($subBadge['key'] === 'expired')
+                                                    Exp: {{ $hotel->expiry_date->format('d M Y') }}
+                                                @elseif($subBadge['key'] === 'expiring_soon')
+                                                    {{ $subBadge['subtext'] }}
+                                                @else
+                                                    Exp: {{ $hotel->expiry_date->format('d M Y') }}
+                                                @endif
+                                            </span>
+                                        @else
+                                            <span class="text-[9px] font-mono text-slate-400 mt-0.5">Perpetual</span>
+                                        @endif
+                                    </div>
                                 </td>
 
                                 <!-- 6. Live Status Toggle -->
@@ -374,13 +417,15 @@
                 @php
                     $hotelSearchText = strtolower($hotel->hotel_name . ' ' . $hotel->owner_name . ' ' . $hotel->email . ' ' . $hotel->phone . ' ' . ($hotel->city ?? $hotel->hotel_location) . ' ' . ($hotel->license_key ?? '') . ' ' . ($hotel->distributor ? $hotel->distributor->name : ''));
                     $deviceCount = $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0;
+                    $subBadge = $hotel->subscription_badge;
                 @endphp
                 <div id="hotel-mobile-card-{{ $hotel->id }}" 
                      class="hotel-item hotel-mobile-card bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4 transition-all"
                      data-search="{{ $hotelSearchText }}"
                      data-status="{{ $hotel->status ? 'active' : 'inactive' }}"
                      data-approval="{{ $hotel->approval_status }}"
-                     data-payment="{{ $hotel->payment_status }}">
+                     data-payment="{{ $hotel->payment_status }}"
+                     data-subscription="{{ $subBadge['key'] }}">
                     
                     <!-- Card Header: Logo, Name & Status Badges -->
                     <div class="flex items-start justify-between gap-3">
@@ -415,13 +460,19 @@
                                 </span>
                             @endif
 
-                            @if($hotel->payment_status === 'paid')
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase font-mono">
-                                    Paid
-                                </span>
-                            @else
-                                <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-rose-50 text-rose-700 border border-rose-200 uppercase font-mono">
-                                    Unpaid
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold {{ $subBadge['badge_class'] }} border uppercase font-mono">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $subBadge['dot_class'] }} mr-1 {{ $subBadge['key'] === 'expiring_soon' ? 'animate-pulse' : '' }}"></span>
+                                {{ $subBadge['label'] }}
+                            </span>
+                            @if($hotel->expiry_date)
+                                <span class="text-[9px] font-mono {{ $subBadge['key'] === 'expired' ? 'text-rose-600 font-bold' : ($subBadge['key'] === 'expiring_soon' ? 'text-amber-600 font-bold' : 'text-slate-400') }}">
+                                    @if($subBadge['key'] === 'expired')
+                                        Exp: {{ $hotel->expiry_date->format('d M Y') }}
+                                    @elseif($subBadge['key'] === 'expiring_soon')
+                                        {{ $subBadge['subtext'] }}
+                                    @else
+                                        Exp: {{ $hotel->expiry_date->format('d M Y') }}
+                                    @endif
                                 </span>
                             @endif
                         </div>
@@ -803,6 +854,7 @@
                 const itemStatus = item.getAttribute('data-status') || '';
                 const itemApproval = item.getAttribute('data-approval') || '';
                 const itemPayment = item.getAttribute('data-payment') || '';
+                const itemSubscription = item.getAttribute('data-subscription') || '';
 
                 const matchesQuery = !searchQuery || itemSearch.includes(searchQuery);
 
@@ -812,9 +864,13 @@
                 } else if (currentFilter === 'pending') {
                     matchesFilter = itemApproval === 'pending';
                 } else if (currentFilter === 'paid') {
-                    matchesFilter = itemPayment === 'paid';
+                    matchesFilter = itemSubscription === 'active' || itemSubscription === 'expiring_soon';
+                } else if (currentFilter === 'expiring') {
+                    matchesFilter = itemSubscription === 'expiring_soon';
+                } else if (currentFilter === 'expired') {
+                    matchesFilter = itemSubscription === 'expired';
                 } else if (currentFilter === 'unpaid') {
-                    matchesFilter = itemPayment !== 'paid';
+                    matchesFilter = itemSubscription === 'unpaid' || itemSubscription === 'pending';
                 }
 
                 if (matchesQuery && matchesFilter) {

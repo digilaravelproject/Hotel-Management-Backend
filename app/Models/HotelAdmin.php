@@ -145,6 +145,119 @@ class HotelAdmin extends Authenticatable
     }
 
     /**
+     * Determine computed subscription status.
+     * Returns: 'expired', 'expiring_soon', 'active', 'unpaid', 'pending'
+     */
+    public function getSubscriptionStatusAttribute(): string
+    {
+        if ($this->payment_status === 'pending') {
+            return 'pending';
+        }
+
+        if ($this->payment_status !== 'paid' || !$this->plan_id) {
+            return 'unpaid';
+        }
+
+        if ($this->expiry_date) {
+            if ($this->expiry_date->isPast()) {
+                return 'expired';
+            }
+            if ($this->expiry_date->diffInDays(now()) <= 7) {
+                return 'expiring_soon';
+            }
+        }
+
+        return 'active';
+    }
+
+    /**
+     * Check if subscription has expired.
+     */
+    public function getIsExpiredAttribute(): bool
+    {
+        if ($this->payment_status !== 'paid') {
+            return true;
+        }
+
+        return (bool) ($this->expiry_date && $this->expiry_date->isPast());
+    }
+
+    /**
+     * Check if subscription is expiring soon (within 7 days).
+     */
+    public function getIsExpiringSoonAttribute(): bool
+    {
+        if ($this->payment_status !== 'paid' || !$this->expiry_date) {
+            return false;
+        }
+
+        return !$this->expiry_date->isPast() && $this->expiry_date->diffInDays(now()) <= 7;
+    }
+
+    /**
+     * Get rich presentation meta for subscription status badge.
+     */
+    public function getSubscriptionBadgeAttribute(): array
+    {
+        $status = $this->subscription_status;
+
+        switch ($status) {
+            case 'expired':
+                return [
+                    'key' => 'expired',
+                    'label' => 'Expired',
+                    'subtext' => $this->expiry_date ? 'Expired ' . $this->expiry_date->diffForHumans() : 'Expired',
+                    'date_text' => $this->expiry_date ? $this->expiry_date->format('d M Y') : null,
+                    'badge_class' => 'bg-rose-50 text-rose-700 border-rose-200',
+                    'dot_class' => 'bg-rose-500',
+                    'icon' => 'fa-solid fa-triangle-exclamation',
+                ];
+            case 'expiring_soon':
+                $days = max(1, (int) ceil(now()->diffInHours($this->expiry_date) / 24));
+                return [
+                    'key' => 'expiring_soon',
+                    'label' => 'Expires Soon',
+                    'subtext' => "In {$days} day" . ($days > 1 ? 's' : ''),
+                    'date_text' => $this->expiry_date ? $this->expiry_date->format('d M Y') : null,
+                    'badge_class' => 'bg-amber-50 text-amber-800 border-amber-200',
+                    'dot_class' => 'bg-amber-500',
+                    'icon' => 'fa-solid fa-clock-rotate-left',
+                ];
+            case 'pending':
+                return [
+                    'key' => 'pending',
+                    'label' => 'Pending',
+                    'subtext' => 'Awaiting payment',
+                    'date_text' => null,
+                    'badge_class' => 'bg-amber-50 text-amber-700 border-amber-200',
+                    'dot_class' => 'bg-amber-400',
+                    'icon' => 'fa-solid fa-hourglass-half',
+                ];
+            case 'unpaid':
+                return [
+                    'key' => 'unpaid',
+                    'label' => 'Unpaid',
+                    'subtext' => 'No active plan',
+                    'date_text' => null,
+                    'badge_class' => 'bg-rose-50 text-rose-700 border-rose-200',
+                    'dot_class' => 'bg-rose-500',
+                    'icon' => 'fa-solid fa-circle-xmark',
+                ];
+            case 'active':
+            default:
+                return [
+                    'key' => 'active',
+                    'label' => 'Paid',
+                    'subtext' => $this->expiry_date ? 'Valid till ' . $this->expiry_date->format('d M Y') : 'Active',
+                    'date_text' => $this->expiry_date ? $this->expiry_date->format('d M Y') : 'Perpetual',
+                    'badge_class' => 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    'dot_class' => 'bg-emerald-500',
+                    'icon' => 'fa-solid fa-circle-check',
+                ];
+        }
+    }
+
+    /**
      * Get the distributor who registered this hotel.
      */
     public function distributor()
