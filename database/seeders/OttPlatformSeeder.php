@@ -35,9 +35,14 @@ class OttPlatformSeeder extends Seeder
         ];
 
         foreach ($platforms as $platform) {
+            $icon = OttPlatform::$packageIconMap[$platform['package_name']] ?? null;
             OttPlatform::updateOrCreate(
                 ['package_name' => $platform['package_name']],
-                ['name' => $platform['name'], 'status' => true]
+                [
+                    'name' => $platform['name'], 
+                    'icon' => $icon,
+                    'status' => true
+                ]
             );
         }
     }

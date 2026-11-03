@@ -168,6 +168,22 @@
                 </div>
 
                 <!-- Tax Configuration -->
+                @php
+                    $defaultTaxId = null;
+                    $taxDropdownOptions = ['' => 'No Tax (0%)'];
+                    $taxRatesMap = ['' => 0];
+                    $taxNamesMap = ['' => 'No Tax'];
+                    foreach($taxes as $t) {
+                        if ($t->is_default && !$defaultTaxId) {
+                            $defaultTaxId = (string) $t->id;
+                        }
+                        $splitInfo = $t->is_split ? " - {$t->split_rate_1}% {$t->split_name_1} + {$t->split_rate_2}% {$t->split_name_2}" : '';
+                        $taxDropdownOptions[(string)$t->id] = "{$t->name} (" . number_format($t->rate, 0) . "%{$splitInfo})";
+                        $taxRatesMap[(string)$t->id] = (float) $t->rate;
+                        $taxNamesMap[(string)$t->id] = $t->name;
+                    }
+                    $selectedTaxId = (string) old('tax_id', $defaultTaxId ?? '');
+                @endphp
                 <div class="p-4 sm:p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 space-y-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
@@ -180,24 +196,25 @@
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Select Applicable Tax -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                        <!-- Select Applicable Tax using Global Custom Dropdown -->
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Select Applicable Tax</label>
-                            <select id="select_tax_id" name="tax_id" onchange="calculateFormPreview()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42]">
-                                <option value="" data-rate="0">No Tax (0%)</option>
-                                @foreach($taxes as $tax)
-                                    <option value="{{ $tax->id }}" data-rate="{{ $tax->rate }}" {{ old('tax_id', $tax->is_default ? $tax->id : null) == $tax->id ? 'selected' : '' }}>
-                                        {{ $tax->name }} ({{ number_format($tax->rate, 0) }}%{{ $tax->is_split ? ' - ' . $tax->split_rate_1 . '% ' . $tax->split_name_1 . ' + ' . $tax->split_rate_2 . '% ' . $tax->split_name_2 : '' }})
-                                    </option>
-                                @endforeach
-                            </select>
+                            <x-dropdown 
+                                name="tax_id" 
+                                id="select_tax_id" 
+                                label="No Tax (0%)" 
+                                :options="$taxDropdownOptions" 
+                                :selected="$selectedTaxId" 
+                                wrapClass="w-full" 
+                                selectClass="w-full py-2.5 px-3.5 text-xs font-semibold bg-white border-slate-200 hover:border-purple-300" 
+                                theme="sa" />
                         </div>
 
                         <!-- Tax Treatment (Inclusive vs Exclusive) -->
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Tax Calculation Mode</label>
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
                                     <input type="radio" name="tax_type" value="exclusive" {{ old('tax_type', 'exclusive') === 'exclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
                                     <span>Exclusive (+ Tax)</span>
@@ -212,26 +229,26 @@
 
                     <!-- Real-Time Live Preview Calculation Table -->
                     <div class="mt-3 p-3.5 rounded-xl bg-white border border-slate-200/80 space-y-2">
-                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex items-center justify-between">
+                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex flex-wrap items-center justify-between gap-1">
                             <span><i class="fa-solid fa-calculator mr-1"></i> Live TV Pricing Matrix</span>
-                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold">18% GST (Exclusive)</span>
+                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200">18% GST (Exclusive)</span>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono">
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">10 Connected TVs</div>
-                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹1,770</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">10 Connected TVs</div>
+                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹1,770</div>
                             </div>
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">25 Connected TVs</div>
-                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹4,425</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">25 Connected TVs</div>
+                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹4,425</div>
                             </div>
                             <div class="p-2 rounded-lg bg-purple-50 border border-purple-100">
-                                <div class="text-[10px] text-purple-700 font-sans font-bold">50 Connected TVs</div>
-                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5">₹8,850</div>
+                                <div class="text-[10px] text-purple-700 font-sans font-bold truncate">50 Connected TVs</div>
+                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5 truncate">₹8,850</div>
                             </div>
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">100 Connected TVs</div>
-                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹17,700</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">100 Connected TVs</div>
+                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹17,700</div>
                             </div>
                         </div>
                     </div>
@@ -524,6 +541,47 @@
 
 @section('scripts')
 <script>
+const taxRatesMap = @json($taxRatesMap);
+const taxNamesMap = @json($taxNamesMap);
+
+function calculateFormPreview() {
+    const pricePerTvInput = document.getElementById('input_price_per_tv');
+    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
+
+    const selectTax = document.getElementById('select_tax_id');
+    const selectedTaxId = selectTax ? String(selectTax.value || '') : '';
+    const taxRate = selectedTaxId && taxRatesMap[selectedTaxId] !== undefined ? parseFloat(taxRatesMap[selectedTaxId]) : 0;
+    const taxName = selectedTaxId && taxNamesMap[selectedTaxId] ? taxNamesMap[selectedTaxId] : 'No Tax';
+
+    const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
+    const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
+
+    const badge = document.getElementById('preview_tax_badge');
+    if (badge) {
+        if (taxRate > 0) {
+            badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
+            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}`;
+        } else {
+            badge.textContent = 'No Tax (0%)';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200';
+        }
+    }
+
+    const tiers = [10, 25, 50, 100];
+    tiers.forEach(tvCount => {
+        let total = 0;
+        if (taxType === 'inclusive') {
+            total = Math.round(tvCount * rate * 100) / 100;
+        } else {
+            const subtotal = Math.round(tvCount * rate * 100) / 100;
+            const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
+            total = subtotal + taxAmount;
+        }
+        const el = document.getElementById(`preview_${tvCount}`);
+        if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     const selectAllCheckbox = document.getElementById('selectAllOtt');
     const ottCheckboxes = document.querySelectorAll('.ott-checkbox');
@@ -595,47 +653,14 @@ document.addEventListener('DOMContentLoaded', function () {
         syncCardState(cb);
     });
 
+    const taxSelect = document.getElementById('select_tax_id');
+    if (taxSelect) {
+        taxSelect.addEventListener('change', calculateFormPreview);
+    }
+
     updateCounterAndSelectAll();
     calculateFormPreview();
 });
-
-function calculateFormPreview() {
-    const pricePerTvInput = document.getElementById('input_price_per_tv');
-    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
-
-    const taxSelect = document.getElementById('select_tax_id');
-    const selectedOption = taxSelect ? taxSelect.options[taxSelect.selectedIndex] : null;
-    const taxRate = selectedOption ? (parseFloat(selectedOption.getAttribute('data-rate')) || 0) : 0;
-    const taxName = selectedOption && selectedOption.value ? selectedOption.text.split('(')[0].trim() : 'No Tax';
-
-    const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
-    const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
-
-    const badge = document.getElementById('preview_tax_badge');
-    if (badge) {
-        if (taxRate > 0) {
-            badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
-            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700' : 'bg-purple-50 text-purple-700'}`;
-        } else {
-            badge.textContent = 'No Tax (0%)';
-            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600';
-        }
-    }
-
-    const tiers = [10, 25, 50, 100];
-    tiers.forEach(tvCount => {
-        let total = 0;
-        if (taxType === 'inclusive') {
-            total = Math.round(tvCount * rate * 100) / 100;
-        } else {
-            const subtotal = Math.round(tvCount * rate * 100) / 100;
-            const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
-            total = subtotal + taxAmount;
-        }
-        const el = document.getElementById(`preview_${tvCount}`);
-        if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
-    });
-}
 
 // Modal Helpers
 function openAddOttModal() {

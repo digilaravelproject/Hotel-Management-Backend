@@ -112,7 +112,15 @@ class Plan extends Model
             return OttPlatform::query()
                 ->where('status', true)
                 ->orderBy('id', 'asc')
-                ->get(['id', 'name', 'package_name as package', 'icon'])
+                ->get()
+                ->map(function ($platform) {
+                    return [
+                        'id' => $platform->id,
+                        'name' => $platform->name,
+                        'package' => $platform->package_name,
+                        'icon' => $platform->icon_url,
+                    ];
+                })
                 ->toArray();
         } catch (\Throwable $e) {
             return [];

@@ -23,7 +23,7 @@
 
     <!-- Top Navigation & Breadcrumb Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
+        <div class="min-w-0">
             <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
                 <a href="{{ route('super-admin.plans.index') }}" class="hover:text-[#150A42] transition-colors flex items-center">
                     <i class="fa-solid fa-arrow-left mr-1.5 text-[11px]"></i>
@@ -32,10 +32,10 @@
                 <span>/</span>
                 <span class="text-[#150A42]">Edit Plan</span>
             </div>
-            <div class="flex flex-wrap items-center gap-2.5">
-                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">{{ $plan->name }}</h1>
-                <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 font-mono text-xs font-bold">
-                    Plan ID: #{{ $plan->id }}
+            <div class="flex flex-wrap items-center gap-2">
+                <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight break-words">{{ $plan->name }}</h1>
+                <span class="px-2.5 py-0.5 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 font-mono text-xs font-bold">
+                    Plan #{{ $plan->id }}
                 </span>
                 @if($plan->status)
                     <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
@@ -47,11 +47,11 @@
                     </span>
                 @endif
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Customize pricing limits, TV capacity allowance, and authorized OTT streaming platforms.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Customize per-TV rates, billing cycle, tax treatment, and authorized streaming apps.</p>
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
-            <a href="{{ route('super-admin.plans.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
+            <a href="{{ route('super-admin.plans.index') }}" class="w-full sm:w-auto px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center justify-center space-x-1.5">
                 <i class="fa-solid fa-xmark text-xs"></i>
                 <span>Cancel</span>
             </a>
@@ -60,7 +60,7 @@
 
     <!-- Error Banner -->
     @if(isset($errors) && $errors->any())
-        <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm space-y-2 shadow-xs animate-shake">
+        <div class="p-4 sm:p-5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs sm:text-sm space-y-2 shadow-xs">
             <div class="font-bold flex items-center space-x-2 text-rose-900">
                 <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
                 <span>Please correct the errors below before saving:</span>
@@ -74,13 +74,13 @@
     @endif
 
     <!-- Main Card Form -->
-    <div class="bg-white border border-slate-200/80 rounded-[28px] p-5 sm:p-8 lg:p-10 shadow-xs">
-        <form action="{{ route('super-admin.plans.update', $plan->id) }}" method="POST" class="space-y-8 sm:space-y-10">
+    <div class="bg-white border border-slate-200/80 rounded-[28px] p-4 sm:p-7 lg:p-9 shadow-xs">
+        <form action="{{ route('super-admin.plans.update', $plan->id) }}" method="POST" class="space-y-7 sm:space-y-9">
             @csrf
             @method('PUT')
 
             <!-- Section 1: Per-TV Plan Specifications & Financials -->
-            <div class="space-y-6">
+            <div class="space-y-5 sm:space-y-6">
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
@@ -186,6 +186,18 @@
                 </div>
 
                 <!-- Tax Configuration -->
+                @php
+                    $taxDropdownOptions = ['' => 'No Tax (0%)'];
+                    $taxRatesMap = ['' => 0];
+                    $taxNamesMap = ['' => 'No Tax'];
+                    foreach($taxes as $t) {
+                        $splitInfo = $t->is_split ? " - {$t->split_rate_1}% {$t->split_name_1} + {$t->split_rate_2}% {$t->split_name_2}" : '';
+                        $taxDropdownOptions[(string)$t->id] = "{$t->name} (" . number_format($t->rate, 0) . "%{$splitInfo})";
+                        $taxRatesMap[(string)$t->id] = (float) $t->rate;
+                        $taxNamesMap[(string)$t->id] = $t->name;
+                    }
+                    $selectedTaxId = (string) old('tax_id', $plan->tax_id ?? '');
+                @endphp
                 <div class="p-4 sm:p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 space-y-4">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
@@ -198,18 +210,19 @@
                         </a>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Select Applicable Tax -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+                        <!-- Select Applicable Tax using Global Dropdown -->
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Select Applicable Tax</label>
-                            <select id="select_tax_id" name="tax_id" onchange="calculateFormPreview()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42]">
-                                <option value="" data-rate="0">No Tax (0%)</option>
-                                @foreach($taxes as $tax)
-                                    <option value="{{ $tax->id }}" data-rate="{{ $tax->rate }}" {{ old('tax_id', $plan->tax_id) == $tax->id ? 'selected' : '' }}>
-                                        {{ $tax->name }} ({{ number_format($tax->rate, 0) }}%{{ $tax->is_split ? ' - ' . $tax->split_rate_1 . '% ' . $tax->split_name_1 . ' + ' . $tax->split_rate_2 . '% ' . $tax->split_name_2 : '' }})
-                                    </option>
-                                @endforeach
-                            </select>
+                            <x-dropdown 
+                                name="tax_id" 
+                                id="select_tax_id" 
+                                label="No Tax (0%)" 
+                                :options="$taxDropdownOptions" 
+                                :selected="$selectedTaxId" 
+                                wrapClass="w-full" 
+                                selectClass="w-full py-2.5 px-3.5 text-xs font-semibold bg-white border-slate-200 hover:border-purple-300" 
+                                theme="sa" />
                         </div>
 
                         <!-- Tax Treatment (Inclusive vs Exclusive) -->
@@ -218,7 +231,7 @@
                         @endphp
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Tax Calculation Mode</label>
-                            <div class="grid grid-cols-2 gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
                                     <input type="radio" name="tax_type" value="exclusive" {{ $currentTaxType === 'exclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
                                     <span>Exclusive (+ Tax)</span>
@@ -233,26 +246,26 @@
 
                     <!-- Real-Time Live Preview Calculation Table -->
                     <div class="mt-3 p-3.5 rounded-xl bg-white border border-slate-200/80 space-y-2">
-                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex items-center justify-between">
+                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex flex-wrap items-center justify-between gap-1">
                             <span><i class="fa-solid fa-calculator mr-1"></i> Live TV Pricing Matrix</span>
-                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold">18% GST (Exclusive)</span>
+                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200">18% GST (Exclusive)</span>
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono">
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">10 Connected TVs</div>
-                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹1,770</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">10 Connected TVs</div>
+                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹1,770</div>
                             </div>
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">25 Connected TVs</div>
-                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹4,425</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">25 Connected TVs</div>
+                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹4,425</div>
                             </div>
                             <div class="p-2 rounded-lg bg-purple-50 border border-purple-100">
-                                <div class="text-[10px] text-purple-700 font-sans font-bold">50 Connected TVs</div>
-                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5">₹8,850</div>
+                                <div class="text-[10px] text-purple-700 font-sans font-bold truncate">50 Connected TVs</div>
+                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5 truncate">₹8,850</div>
                             </div>
                             <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
-                                <div class="text-[10px] text-slate-500 font-sans">100 Connected TVs</div>
-                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹17,700</div>
+                                <div class="text-[10px] text-slate-500 font-sans truncate">100 Connected TVs</div>
+                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹17,700</div>
                             </div>
                         </div>
                     </div>
@@ -270,9 +283,9 @@
                 </div>
             </div>
 
-            <!-- Section 2: Included OTT Platforms (With Real Official Icons & Live Edit/Add/Delete) -->
+            <!-- Section 2: Included OTT Platforms -->
             <div class="space-y-5 pt-6 border-t border-slate-100">
-                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
                             <i class="fa-solid fa-play"></i>
@@ -286,17 +299,15 @@
                         </div>
                     </div>
 
-                    <!-- Right Controls: Add App Button, Master Catalog Link, Counter, and Select All -->
-                    <div class="flex flex-wrap items-center gap-2.5">
-                        <!-- Add New OTT Button -->
+                    <!-- Right Controls -->
+                    <div class="flex flex-wrap items-center gap-2">
                         <button type="button" 
                                 onclick="openAddOttModal()" 
-                                class="btn-sa-primary px-3.5 py-2 text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer">
+                                class="btn-sa-primary px-3 py-2 text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer">
                             <i class="fa-solid fa-plus text-[11px]"></i>
-                            <span>Add New OTT</span>
+                            <span>Add OTT</span>
                         </button>
 
-                        <!-- Link to Master Catalog (Same tab navigation) -->
                         <a href="{{ route('super-admin.ott-master.index') }}" 
                            class="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5"
                            title="Open Applications Master Catalog">
@@ -323,25 +334,17 @@
                 @endphp
 
                 <!-- Real Image Icon Grid with Inline Edit / Delete Controls -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-4 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
                     @foreach($ottPlatforms as $ott)
                         @php
                             $ottId = $ott['id'] ?? 0;
                             $package = $ott['package'] ?? '';
                             $name = $ott['name'] ?? '';
-                            $iconPath = $ott['icon'] ?? null;
+                            $iconSrc = $ott['icon'] ?? null;
                             $isSelected = in_array($package, $selectedPlatforms);
-
-                            // Reliable image resolution
-                            $iconSrc = null;
-                            if (!empty($iconPath)) {
-                                $iconSrc = asset(ltrim($iconPath, '/'));
-                            } elseif (file_exists(public_path('images/ott/' . Str::slug($name) . '.svg'))) {
-                                $iconSrc = asset('images/ott/' . Str::slug($name) . '.svg');
-                            }
                         @endphp
                         <div id="ott-card-wrapper-{{ $ottId ?: Str::slug($package) }}" 
-                             class="ott-card group relative p-3.5 bg-white border border-slate-200/90 rounded-2xl flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'is-selected' : '' }}"
+                             class="ott-card group relative p-3 sm:p-3.5 bg-white border border-slate-200/90 rounded-2xl flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'is-selected' : '' }}"
                              onclick="handleCardClick(event, this)">
                             
                             <!-- Checkbox -->
@@ -358,7 +361,7 @@
                             </div>
 
                             <!-- Real Official Icon Image -->
-                            <div class="w-12 h-12 rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
+                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
                                 @if($iconSrc)
                                     <img src="{{ $iconSrc }}" 
                                          alt="{{ $name }}" 
@@ -385,21 +388,19 @@
                                 </span>
                             </div>
 
-                            <!-- Hover Action Buttons: Edit & Delete -->
-                            <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center space-x-1 opacity-80 sm:opacity-0 group-hover:opacity-100 transition-opacity">
+                            <!-- Action Buttons (Visible on mobile, hover on desktop) -->
+                            <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center space-x-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                                 @if($ottId)
-                                    <!-- Edit OTT Button -->
                                     <button type="button" 
                                             onclick="openEditOttModal(event, {{ $ottId }}, '{{ addslashes($name) }}', '{{ addslashes($package) }}', '{{ $iconSrc }}')" 
-                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-colors shadow-2xs" 
+                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-colors shadow-2xs cursor-pointer" 
                                             title="Edit OTT details or icon">
                                         <i class="fa-regular fa-pen-to-square text-[11px]"></i>
                                     </button>
 
-                                    <!-- Delete OTT Button -->
                                     <button type="button" 
                                             onclick="confirmDeleteOtt(event, {{ $ottId }}, '{{ addslashes($name) }}')" 
-                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors shadow-2xs" 
+                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors shadow-2xs cursor-pointer" 
                                             title="Delete OTT from Master Catalog">
                                         <i class="fa-regular fa-trash-can text-[11px]"></i>
                                     </button>
@@ -412,12 +413,12 @@
 
             <!-- Sticky-Friendly Bottom Action Bar -->
             <div class="pt-6 sm:pt-8 border-t border-slate-100 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
-                <a href="{{ route('super-admin.plans.index') }}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold text-center transition-all">
+                <a href="{{ route('super-admin.plans.index') }}" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs sm:text-sm font-bold text-center transition-all cursor-pointer">
                     Discard Changes
                 </a>
 
                 <div class="flex items-center space-x-3">
-                    <button type="submit" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2">
+                    <button type="submit" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2 cursor-pointer">
                         <i class="fa-solid fa-floppy-disk text-xs"></i>
                         <span>Update Pricing Plan</span>
                     </button>
@@ -449,21 +450,20 @@
             
             <div class="space-y-1">
                 <label class="block text-xs font-bold text-slate-700">Application Name <span class="text-rose-500">*</span></label>
-                <input type="text" name="name" required placeholder="e.g. JioCinema / Sony LIV" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-medium">
+                <input type="text" name="name" required placeholder="e.g. Jio Cinema, Hotstar" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-medium">
             </div>
 
             <div class="space-y-1">
-                <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
-                <input type="text" name="package_name" required placeholder="e.g. com.sony.liv" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
+                <label class="block text-xs font-bold text-slate-700">Android Package Name <span class="text-rose-500">*</span></label>
+                <input type="text" name="package_name" required placeholder="e.g. com.jio.media.ondemand" class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
             </div>
 
-            <!-- Icon Upload Field -->
             <div class="space-y-1.5 pt-1">
-                <label class="block text-xs font-bold text-slate-700">App Icon / Logo Image <span class="text-slate-400 font-normal">(PNG, SVG, WebP)</span></label>
+                <label class="block text-xs font-bold text-slate-700">App Icon / Logo Image <span class="text-slate-400 font-normal">(PNG, JPG, SVG)</span></label>
                 <div class="flex items-center space-x-3">
                     <div class="w-12 h-12 rounded-xl bg-[#F8F9FD] border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-2xs">
                         <img id="addIconPreview" src="#" alt="Preview" class="hidden w-full h-full object-cover">
-                        <i id="addIconPlaceholder" class="fa-solid fa-image text-slate-400 text-sm"></i>
+                        <i id="addIconPlaceholder" class="fa-solid fa-cloud-arrow-up text-slate-400 text-sm"></i>
                     </div>
                     <input type="file" 
                            name="icon" 
@@ -474,8 +474,8 @@
             </div>
 
             <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-2.5">
-                <button type="button" onclick="closeAddOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</button>
-                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs">Add Application</button>
+                <button type="button" onclick="closeAddOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs cursor-pointer">Save & Register</button>
             </div>
         </form>
     </div>
@@ -508,11 +508,10 @@
             </div>
 
             <div class="space-y-1">
-                <label class="block text-xs font-bold text-slate-700">Android Package Name (Play Store ID) <span class="text-rose-500">*</span></label>
+                <label class="block text-xs font-bold text-slate-700">Android Package Name <span class="text-rose-500">*</span></label>
                 <input type="text" id="edit_ott_package" name="package_name" required class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 font-mono">
             </div>
 
-            <!-- Icon Upload Field -->
             <div class="space-y-1.5 pt-1">
                 <label class="block text-xs font-bold text-slate-700">Change App Icon / Logo <span class="text-slate-400 font-normal">(leave blank to keep current)</span></label>
                 <div class="flex items-center space-x-3">
@@ -529,8 +528,8 @@
             </div>
 
             <div class="pt-4 border-t border-slate-100 flex items-center justify-end space-x-2.5">
-                <button type="button" onclick="closeEditOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all">Cancel</button>
-                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs">Save Changes</button>
+                <button type="button" onclick="closeEditOttModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-xs font-bold transition-all cursor-pointer">Cancel</button>
+                <button type="submit" class="btn-sa-primary px-5 py-2 text-xs shadow-xs cursor-pointer">Save Changes</button>
             </div>
         </form>
     </div>
@@ -545,43 +544,78 @@
 
 @section('scripts')
 <script>
+const taxRatesMap = @json($taxRatesMap);
+const taxNamesMap = @json($taxNamesMap);
+
+function calculateFormPreview() {
+    const pricePerTvInput = document.getElementById('input_price_per_tv');
+    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
+
+    const selectTax = document.getElementById('select_tax_id');
+    const selectedTaxId = selectTax ? String(selectTax.value || '') : '';
+    const taxRate = selectedTaxId && taxRatesMap[selectedTaxId] !== undefined ? parseFloat(taxRatesMap[selectedTaxId]) : 0;
+    const taxName = selectedTaxId && taxNamesMap[selectedTaxId] ? taxNamesMap[selectedTaxId] : 'No Tax';
+
+    const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
+    const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
+
+    const badge = document.getElementById('preview_tax_badge');
+    if (badge) {
+        if (taxRate > 0) {
+            badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
+            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}`;
+        } else {
+            badge.textContent = 'No Tax (0%)';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200';
+        }
+    }
+
+    const tiers = [10, 25, 50, 100];
+    tiers.forEach(tvCount => {
+        let total = 0;
+        if (taxType === 'inclusive') {
+            total = Math.round(tvCount * rate * 100) / 100;
+        } else {
+            const subtotal = Math.round(tvCount * rate * 100) / 100;
+            const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
+            total = subtotal + taxAmount;
+        }
+        const el = document.getElementById(`preview_${tvCount}`);
+        if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
+    });
+}
+
 document.addEventListener('DOMContentLoaded', function () {
-    const selectAllCheckbox = document.getElementById('selectAllOtt');
     const ottCheckboxes = document.querySelectorAll('.ott-checkbox');
-    const countBadge = document.getElementById('selectedCountBadge');
+    const selectAllCheckbox = document.getElementById('selectAllOtt');
+    const selectedCountBadge = document.getElementById('selectedCountBadge');
 
     function syncCardState(cb) {
         const card = cb.closest('.ott-card');
-        const indicator = card ? card.querySelector('.ott-check-indicator') : null;
-        const icon = indicator ? indicator.querySelector('i') : null;
-
-        if (card) {
-            if (cb.checked) {
-                card.classList.add('is-selected');
-                if (icon) icon.classList.remove('hidden');
-            } else {
-                card.classList.remove('is-selected');
-                if (icon) icon.classList.add('hidden');
-            }
+        if (!card) return;
+        const indicator = card.querySelector('.ott-check-indicator i');
+        if (cb.checked) {
+            card.classList.add('is-selected');
+            if (indicator) indicator.classList.remove('hidden');
+        } else {
+            card.classList.remove('is-selected');
+            if (indicator) indicator.classList.add('hidden');
         }
     }
 
     function updateCounterAndSelectAll() {
         const total = ottCheckboxes.length;
-        const checkedCount = document.querySelectorAll('.ott-checkbox:checked').length;
-
-        if (countBadge) {
-            countBadge.textContent = `${checkedCount} of ${total} selected`;
+        const checkedCount = Array.from(ottCheckboxes).filter(cb => cb.checked).length;
+        if (selectedCountBadge) {
+            selectedCountBadge.textContent = `${checkedCount} selected`;
         }
-
         if (selectAllCheckbox) {
-            selectAllCheckbox.checked = (total > 0 && total === checkedCount);
+            selectAllCheckbox.checked = (total > 0 && checkedCount === total);
             selectAllCheckbox.indeterminate = (checkedCount > 0 && checkedCount < total);
         }
     }
 
     window.handleCardClick = function(event, card) {
-        // If clicked on an action button or link, don't toggle checkbox
         if (event.target.closest('button') || event.target.closest('a') || event.target.closest('input')) {
             return;
         }
@@ -617,47 +651,14 @@ document.addEventListener('DOMContentLoaded', function () {
         syncCardState(cb);
     });
 
+    const taxSelect = document.getElementById('select_tax_id');
+    if (taxSelect) {
+        taxSelect.addEventListener('change', calculateFormPreview);
+    }
+
     updateCounterAndSelectAll();
     calculateFormPreview();
 });
-
-function calculateFormPreview() {
-    const pricePerTvInput = document.getElementById('input_price_per_tv');
-    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
-
-    const taxSelect = document.getElementById('select_tax_id');
-    const selectedOption = taxSelect ? taxSelect.options[taxSelect.selectedIndex] : null;
-    const taxRate = selectedOption ? (parseFloat(selectedOption.getAttribute('data-rate')) || 0) : 0;
-    const taxName = selectedOption && selectedOption.value ? selectedOption.text.split('(')[0].trim() : 'No Tax';
-
-    const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
-    const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
-
-    const badge = document.getElementById('preview_tax_badge');
-    if (badge) {
-        if (taxRate > 0) {
-            badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
-            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700' : 'bg-purple-50 text-purple-700'}`;
-        } else {
-            badge.textContent = 'No Tax (0%)';
-            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600';
-        }
-    }
-
-    const tiers = [10, 25, 50, 100];
-    tiers.forEach(tvCount => {
-        let total = 0;
-        if (taxType === 'inclusive') {
-            total = Math.round(tvCount * rate * 100) / 100;
-        } else {
-            const subtotal = Math.round(tvCount * rate * 100) / 100;
-            const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
-            total = subtotal + taxAmount;
-        }
-        const el = document.getElementById(`preview_${tvCount}`);
-        if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
-    });
-}
 
 // Modal Helpers
 function openAddOttModal() {

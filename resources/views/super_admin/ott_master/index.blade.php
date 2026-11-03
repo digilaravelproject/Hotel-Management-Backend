@@ -63,8 +63,8 @@
                             <td class="px-5 py-3.5 font-extrabold text-slate-900 text-xs">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-10 h-10 rounded-xl border border-slate-200/80 bg-white p-1 overflow-hidden shrink-0 shadow-2xs flex items-center justify-center">
-                                        @if($app->icon)
-                                            <img src="{{ asset(ltrim($app->icon, '/')) }}" 
+                                        @if($app->icon_url)
+                                            <img src="{{ $app->icon_url }}" 
                                                  alt="{{ $app->name }}" 
                                                  class="w-full h-full object-contain"
                                                  loading="lazy"
@@ -228,8 +228,9 @@
 
         const preview = document.getElementById('masterEditIconPreview');
         const placeholder = document.getElementById('masterEditIconPlaceholder');
-        if (app.icon) {
-            preview.src = '/' + app.icon.replace(/^\//, '');
+        const iconSrc = app.icon_url || (app.icon ? '/' + app.icon.replace(/^\//, '') : '');
+        if (iconSrc) {
+            preview.src = iconSrc;
             preview.classList.remove('hidden');
             if (placeholder) placeholder.classList.add('hidden');
         } else {
