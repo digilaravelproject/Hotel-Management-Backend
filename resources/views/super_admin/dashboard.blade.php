@@ -343,45 +343,6 @@
         </div>
 
     </div>
-                                    <div class="text-[11px] text-slate-400 font-semibold truncate">
-                                        {{ $dep['distributor'] }}
-                                    </div>
-                                    <div class="w-10 h-10 rounded-2xl {{ $badgeBg }} text-white flex items-center justify-center font-extrabold text-base shrink-0 shadow-sm">
-                                        {{ $dep['initial'] }}
-                                    </div>
-                                </div>
-
-                                <h5 class="text-sm font-extrabold text-slate-900 mt-2 truncate" title="{{ $dep['name'] }}">
-                                    {{ $dep['name'] }}
-                                </h5>
-                                <div class="text-xs font-bold text-slate-700 font-mono mt-1">
-                                    ₹{{ number_format($dep['price']) }} • {{ $dep['rooms'] }} Rooms
-                                </div>
-
-                                <p class="text-xs text-slate-500 font-medium mt-1.5 truncate leading-relaxed" title="{{ $dep['location'] }}">
-                                    {{ $dep['location'] }}
-                                </p>
-                            </div>
-
-                            <div class="flex flex-wrap items-center gap-1.5 pt-3 border-t border-slate-100">
-                                <span class="px-2.5 py-1 rounded-xl bg-purple-50 text-[#150A42] text-[10px] font-bold tracking-wider font-mono">
-                                    {{ $dep['status'] }}
-                                </span>
-                                <span class="px-2.5 py-1 rounded-xl bg-blue-50 text-blue-700 text-[10px] font-bold tracking-wider font-mono">
-                                    {{ $dep['devices'] }} TVS
-                                </span>
-                                <span class="px-2.5 py-1 rounded-xl bg-slate-100 text-slate-600 text-[10px] font-semibold truncate max-w-[90px]">
-                                    {{ $dep['city'] }}
-                                </span>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-        </div>
-
-    </div>
 
     <!-- ================= BRAND NEW ANALYTICS ROW: 2 GRAPHS + 4 PROGRESS BARS ================= -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
