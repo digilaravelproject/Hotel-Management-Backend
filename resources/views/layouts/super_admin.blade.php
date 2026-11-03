@@ -60,7 +60,7 @@
                         <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-14 sm:h-16 w-auto max-w-[200px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
                     </picture>
                 </a>
-                <button onclick="toggleSidebar()" class="absolute right-4 top-1/2 -translate-y-1/2 md:hidden text-purple-200 hover:text-white p-1.5 rounded-lg">
+                <button type="button" onclick="toggleSidebar()" aria-label="Close Navigation Menu" class="absolute right-4 top-1/2 -translate-y-1/2 md:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border border-white/10 transition-all active:scale-95 cursor-pointer">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
@@ -243,21 +243,17 @@
             <!-- Modern Jobie Topbar Header -->
             <header class="h-20 bg-white border-b border-slate-200/80 sticky top-0 z-40 px-4 sm:px-8 flex items-center justify-between shadow-xs">
                 
-                <!-- Left Title & Mobile Hamburger -->
-                <div class="flex items-center space-x-4">
-                    <button onclick="toggleSidebar()" class="text-slate-700 hover:text-[#150A42] p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 md:hidden transition-colors">
-                        <i class="fa-solid fa-bars text-base"></i>
+                <!-- Left: Mobile Menu Toggle & Clean Search Bar -->
+                <div class="flex items-center space-x-3 sm:space-x-4 flex-1 max-w-xl">
+                    <!-- Modern 44x44 Touch-Point Mobile Menu Button (Jan Mraz UX Cheatsheet: Modern Fries Style) -->
+                    <button type="button" onclick="toggleSidebar()" aria-label="Toggle Navigation Menu" class="w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-[#F8FAFC] hover:bg-purple-50/70 border border-slate-200/90 shadow-xs hover:border-purple-200/80 flex flex-col items-center justify-center gap-[4.5px] focus:outline-hidden active:scale-95 transition-all md:hidden group cursor-pointer shrink-0">
+                        <span class="w-5 h-[2.5px] rounded-full bg-slate-700 group-hover:bg-[#150A42] transition-colors"></span>
+                        <span class="w-3.5 h-[2.5px] rounded-full bg-slate-700 group-hover:w-5 group-hover:bg-[#150A42] transition-all self-start ml-[11px]"></span>
+                        <span class="w-5 h-[2.5px] rounded-full bg-slate-700 group-hover:bg-[#150A42] transition-colors"></span>
                     </button>
-                    <div>
-                        <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
-                            @yield('page_title', 'Dashboard')
-                        </h1>
-                    </div>
-                </div>
 
-                <!-- Center Search Input (Jobie "Search something here...") -->
-                <div class="hidden lg:flex items-center flex-1 max-w-md mx-8">
-                    <div class="relative w-full">
+                    <!-- Search Input (Jobie style) -->
+                    <div class="relative w-full max-w-md hidden sm:block">
                         <input type="text" placeholder="Search properties, hardware, distributors..." class="w-full pl-4 pr-11 py-2.5 rounded-full bg-[#F3F5FA] border border-transparent focus:border-purple-300 focus:bg-white focus:outline-hidden text-xs text-slate-700 placeholder:text-slate-400 font-medium transition-all shadow-inner">
                         <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
@@ -265,17 +261,9 @@
                     </div>
                 </div>
 
-                <!-- Right Action Icons & Profile Info (Jobie Style: Chat 18, Bell 62, User Avatar) -->
+                <!-- Right Action Icons & Profile Info (Neat & Clean - Message Icon Removed) -->
                 <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
                     
-                    <!-- Chat / Communication Icon with Badge (Jobie 18) -->
-                    <a href="{{ route('super-admin.hotels.index') }}" title="System Messages & Inquiries" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
-                        <i class="fa-regular fa-comment-dots text-sm"></i>
-                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#150A42] text-white text-[9px] font-bold font-mono shadow-xs">
-                            18
-                        </span>
-                    </a>
-
                     <!-- Notification Bell with Badge (Jobie 62) -->
                     <a href="{{ route('super-admin.hotels.index', ['status' => 'pending']) }}" title="Pending Approvals & Notifications" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
                         <i class="fa-regular fa-bell text-sm"></i>
