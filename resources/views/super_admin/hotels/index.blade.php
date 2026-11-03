@@ -82,6 +82,16 @@
         $expiringSoonHotelsCount = $hotels->filter(fn($h) => $h->subscription_status === 'expiring_soon')->count();
         $expiredHotelsCount = $hotels->filter(fn($h) => $h->subscription_status === 'expired')->count();
         $unpaidHotelsCount = $hotels->filter(fn($h) => in_array($h->subscription_status, ['unpaid', 'pending']))->count();
+
+        // Build Distributor Filter Options
+        $distributorOptions = ['' => 'All Distributors (Channel Partners)'];
+        $distributorOptions['direct'] = 'Direct Pax TV (No Distributor)';
+        if (isset($distributors)) {
+            foreach ($distributors as $dist) {
+                $countForDist = $hotels->where('distributor_id', $dist->id)->count();
+                $distributorOptions[(string)$dist->id] = $dist->name . ($countForDist > 0 ? " ({$countForDist} hotels)" : '');
+            }
+        }
     @endphp
 
     <!-- Quick Stats Metric Cards -->
@@ -143,8 +153,8 @@
     </div>
 
     <!-- Search & Filter Controls -->
-    <div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-xs space-y-3">
-        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 min-w-0">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-3.5 sm:p-4 shadow-xs space-y-3.5">
+        <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 min-w-0">
             <!-- Search Input -->
             <div class="relative flex-1 min-w-0">
                 <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -154,39 +164,54 @@
                 </button>
             </div>
 
-            <!-- Filter Pills (Wraps gracefully on all screens, never cut off) -->
-            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-                <button type="button" class="filter-pill active" data-filter="all">
-                    <span>All</span>
-                    <span class="ml-1 opacity-80 font-mono">({{ $totalHotelsCount }})</span>
-                </button>
-                <button type="button" class="filter-pill" data-filter="active">
-                    <span>Live</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $activeHotelsCount }})</span>
-                </button>
-                <button type="button" class="filter-pill" data-filter="paid">
-                    <span>Paid</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $paidActiveHotelsCount }})</span>
-                </button>
-                @if($expiringSoonHotelsCount > 0)
-                <button type="button" class="filter-pill text-amber-700 bg-amber-50/60 border-amber-200" data-filter="expiring">
-                    <span>Expiring Soon</span>
-                    <span class="ml-1 opacity-80 font-mono">({{ $expiringSoonHotelsCount }})</span>
-                </button>
-                @endif
-                <button type="button" class="filter-pill {{ $expiredHotelsCount > 0 ? 'text-rose-700 bg-rose-50/60 border-rose-200' : '' }}" data-filter="expired">
-                    <span>Expired</span>
-                    <span class="ml-1 opacity-80 font-mono">({{ $expiredHotelsCount }})</span>
-                </button>
-                <button type="button" class="filter-pill" data-filter="unpaid">
-                    <span>Unpaid</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $unpaidHotelsCount }})</span>
-                </button>
-                <button type="button" class="filter-pill" data-filter="pending">
-                    <span>Pending Approval</span>
-                    <span class="ml-1 opacity-70 font-mono">({{ $pendingHotelsCount }})</span>
-                </button>
+            <!-- Distributor Channel Partner Dropdown Filter -->
+            <div class="w-full md:w-80 shrink-0">
+                <x-dropdown 
+                    id="filter_distributor_id" 
+                    name="filter_distributor_id" 
+                    label="All Distributors" 
+                    :options="$distributorOptions" 
+                    :selected="request('distributor_id', '')" 
+                    onchange="onDistributorFilterChange(this.value)" 
+                    wrapClass="w-full" 
+                    selectClass="py-2.5 px-3 text-xs font-bold" 
+                    theme="sa" 
+                />
             </div>
+        </div>
+
+        <!-- Filter Pills (Wraps gracefully on all screens, never cut off) -->
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 pt-3 border-t border-slate-100">
+            <button type="button" class="filter-pill active" data-filter="all">
+                <span>All</span>
+                <span class="ml-1 opacity-80 font-mono">({{ $totalHotelsCount }})</span>
+            </button>
+            <button type="button" class="filter-pill" data-filter="active">
+                <span>Live</span>
+                <span class="ml-1 opacity-70 font-mono">({{ $activeHotelsCount }})</span>
+            </button>
+            <button type="button" class="filter-pill" data-filter="paid">
+                <span>Paid</span>
+                <span class="ml-1 opacity-70 font-mono">({{ $paidActiveHotelsCount }})</span>
+            </button>
+            @if($expiringSoonHotelsCount > 0)
+            <button type="button" class="filter-pill text-amber-700 bg-amber-50/60 border-amber-200" data-filter="expiring">
+                <span>Expiring Soon</span>
+                <span class="ml-1 opacity-80 font-mono">({{ $expiringSoonHotelsCount }})</span>
+            </button>
+            @endif
+            <button type="button" class="filter-pill {{ $expiredHotelsCount > 0 ? 'text-rose-700 bg-rose-50/60 border-rose-200' : '' }}" data-filter="expired">
+                <span>Expired</span>
+                <span class="ml-1 opacity-80 font-mono">({{ $expiredHotelsCount }})</span>
+            </button>
+            <button type="button" class="filter-pill" data-filter="unpaid">
+                <span>Unpaid</span>
+                <span class="ml-1 opacity-70 font-mono">({{ $unpaidHotelsCount }})</span>
+            </button>
+            <button type="button" class="filter-pill" data-filter="pending">
+                <span>Pending Approval</span>
+                <span class="ml-1 opacity-70 font-mono">({{ $pendingHotelsCount }})</span>
+            </button>
         </div>
     </div>
 
@@ -233,7 +258,8 @@
                                 data-status="{{ $hotel->status ? 'active' : 'inactive' }}"
                                 data-approval="{{ $hotel->approval_status }}"
                                 data-payment="{{ $hotel->payment_status }}"
-                                data-subscription="{{ $subBadge['key'] }}">
+                                data-subscription="{{ $subBadge['key'] }}"
+                                data-distributor="{{ $hotel->distributor_id ?: 'direct' }}">
                                 <!-- 1. Hotel Client -->
                                 <td class="px-4 py-3.5">
                                     <div class="flex items-center space-x-3">
@@ -425,7 +451,8 @@
                      data-status="{{ $hotel->status ? 'active' : 'inactive' }}"
                      data-approval="{{ $hotel->approval_status }}"
                      data-payment="{{ $hotel->payment_status }}"
-                     data-subscription="{{ $subBadge['key'] }}">
+                     data-subscription="{{ $subBadge['key'] }}"
+                     data-distributor="{{ $hotel->distributor_id ?: 'direct' }}">
                     
                     <!-- Card Header: Logo, Name & Status Badges -->
                     <div class="flex items-start justify-between gap-3">
@@ -845,6 +872,19 @@
 
         let currentFilter = 'all';
         let searchQuery = '';
+        let currentDistributor = "{{ request('distributor_id', '') }}";
+
+        window.onDistributorFilterChange = function(distId) {
+            currentDistributor = distId !== undefined && distId !== null ? String(distId).trim() : '';
+            applyFilters();
+        };
+
+        const distSelect = document.getElementById('filter_distributor_id');
+        if (distSelect) {
+            distSelect.addEventListener('change', function() {
+                window.onDistributorFilterChange(this.value);
+            });
+        }
 
         function applyFilters() {
             let visibleCount = 0;
@@ -855,8 +895,14 @@
                 const itemApproval = item.getAttribute('data-approval') || '';
                 const itemPayment = item.getAttribute('data-payment') || '';
                 const itemSubscription = item.getAttribute('data-subscription') || '';
+                const itemDistributor = item.getAttribute('data-distributor') || '';
 
                 const matchesQuery = !searchQuery || itemSearch.includes(searchQuery);
+
+                let matchesDistributor = true;
+                if (currentDistributor !== '' && currentDistributor !== 'all') {
+                    matchesDistributor = itemDistributor === currentDistributor;
+                }
 
                 let matchesFilter = true;
                 if (currentFilter === 'active') {
@@ -873,7 +919,7 @@
                     matchesFilter = itemSubscription === 'unpaid' || itemSubscription === 'pending';
                 }
 
-                if (matchesQuery && matchesFilter) {
+                if (matchesQuery && matchesFilter && matchesDistributor) {
                     item.style.display = '';
                     visibleCount++;
                 } else {
@@ -930,6 +976,17 @@
             }
             if (clearBtn) clearBtn.classList.add('hidden');
 
+            const distSelect = document.getElementById('filter_distributor_id');
+            if (distSelect) {
+                distSelect.value = '';
+                const distLabel = document.getElementById('label_filter_distributor_id');
+                if (distLabel) distLabel.textContent = 'All Distributors (Channel Partners)';
+                if (typeof syncDropdownStatusStyle === 'function') {
+                    syncDropdownStatusStyle('filter_distributor_id', '');
+                }
+            }
+            currentDistributor = '';
+
             filterPills.forEach((p, idx) => {
                 if (idx === 0) {
                     p.classList.add('active');
@@ -940,6 +997,11 @@
             currentFilter = 'all';
             applyFilters();
         };
+
+        // If a distributor was pre-selected via query param, run filter on load
+        if (currentDistributor) {
+            applyFilters();
+        }
     });
 </script>
 @endsection

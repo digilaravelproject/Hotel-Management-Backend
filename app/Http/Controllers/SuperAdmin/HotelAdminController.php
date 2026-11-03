@@ -29,7 +29,13 @@ class HotelAdminController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('super_admin.hotels.index', compact('hotels'));
+        try {
+            $distributors = User::role('distributor')->orderBy('name', 'asc')->get();
+        } catch (\Throwable $e) {
+            $distributors = User::whereHas('roles', fn ($q) => $q->where('name', 'distributor'))->orderBy('name', 'asc')->get();
+        }
+
+        return view('super_admin.hotels.index', compact('hotels', 'distributors'));
     }
 
     /**
