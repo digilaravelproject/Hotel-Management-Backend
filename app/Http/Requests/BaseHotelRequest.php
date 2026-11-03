@@ -29,6 +29,7 @@ abstract class BaseHotelRequest extends FormRequest
             'plan_id' => 'nullable|exists:plans,id',
             'distributor_id' => 'nullable|exists:users,id',
             'payment_status' => 'nullable|in:pending,paid',
+            'payment_action' => 'nullable|string|in:pay_later,pay_now',
             'approval_status' => 'nullable|in:pending,approved,disapproved',
             'description' => 'nullable|string|max:1000',
             'selected_theme_id' => 'nullable|integer|min:1',

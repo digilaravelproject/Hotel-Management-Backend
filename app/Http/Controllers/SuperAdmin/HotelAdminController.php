@@ -43,7 +43,7 @@ class HotelAdminController extends Controller
      */
     public function create()
     {
-        $plans = Plan::query()->where('status', '=', true)->get();
+        $plans = Plan::with('tax')->where('status', '=', true)->orderBy('price', 'asc')->get();
         try {
             $distributors = User::role('distributor')->where('status', true)->get();
         } catch (\Throwable $e) {
@@ -60,14 +60,18 @@ class HotelAdminController extends Controller
      */
     public function store(StoreHotelRequest $request)
     {
-        $this->hotelService->createHotel(
+        $hotel = $this->hotelService->createHotel(
             $request->validated(),
             $request->file('hotel_logo'),
             $request->file('hotel_image')
         );
 
+        if ($request->input('payment_action') === 'pay_now' && $hotel->plan_id) {
+            return redirect()->route('super-admin.hotels.pay', $hotel->id);
+        }
+
         return redirect()->route('super-admin.hotels.index')
-                         ->with('success', 'Hotel Vendor created successfully!');
+                         ->with('success', 'Hotel Vendor registered successfully! (Status: Waiting for Payment)');
     }
 
     /**
@@ -75,7 +79,7 @@ class HotelAdminController extends Controller
      */
     public function show(int $id)
     {
-        $hotel = HotelAdmin::with(['plan', 'distributor', 'connectedDevices'])->findOrFail($id);
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor', 'connectedDevices'])->findOrFail($id);
 
         return view('super_admin.hotels.show', compact('hotel'));
     }
@@ -86,7 +90,7 @@ class HotelAdminController extends Controller
     public function edit(int $id)
     {
         $hotel = HotelAdmin::findOrFail($id);
-        $plans = Plan::query()->where('status', '=', true)->get();
+        $plans = Plan::with('tax')->where('status', '=', true)->orderBy('price', 'asc')->get();
         try {
             $distributors = User::role('distributor')->where('status', true)->get();
         } catch (\Throwable $e) {
@@ -105,7 +109,7 @@ class HotelAdminController extends Controller
     {
         $hotel = HotelAdmin::findOrFail($id);
 
-        $this->hotelService->updateHotel(
+        $updatedHotel = $this->hotelService->updateHotel(
             $hotel,
             $request->validated(),
             $request->file('hotel_logo'),
@@ -113,8 +117,60 @@ class HotelAdminController extends Controller
             $request->file('slider_images', [])
         );
 
+        if ($request->input('payment_action') === 'pay_now' && $updatedHotel->plan_id && $updatedHotel->payment_status !== 'paid') {
+            return redirect()->route('super-admin.hotels.pay', $updatedHotel->id);
+        }
+
         return redirect()->route('super-admin.hotels.index')
-                         ->with('success', 'Hotel Admin updated successfully!');
+                         ->with('success', 'Hotel details updated successfully!');
+    }
+
+    /**
+     * Show Super Admin instant checkout for a hotel subscription.
+     */
+    public function showPayment(int $id)
+    {
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor'])->findOrFail($id);
+
+        if (!$hotel->plan) {
+            return redirect()->route('super-admin.hotels.edit', $hotel->id)
+                ->with('error', 'Please assign a subscription plan first.');
+        }
+
+        $tvCount = max(1, (int) ($hotel->room_count ?: 1));
+        $pricing = $hotel->plan->calculatePricing($tvCount);
+
+        return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing'));
+    }
+
+    /**
+     * Process Super Admin instant checkout and generate license + invoice.
+     */
+    public function processPayment(Request $request, int $id, \App\Services\SubscriptionService $subService)
+    {
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor'])->findOrFail($id);
+        $plan = $hotel->plan;
+
+        if (!$plan) {
+            return redirect()->route('super-admin.hotels.edit', $hotel->id)
+                ->with('error', 'Please assign a subscription plan first.');
+        }
+
+        $tvCount = max(1, (int) ($hotel->room_count ?: 1));
+        $pricing = $plan->calculatePricing($tvCount);
+        $durationMonths = ($plan->billing_cycle === 'yearly') ? 12 : 1;
+
+        $subService->activate($hotel, $plan, $durationMonths, [
+            'tv_count' => $tvCount,
+            'amount' => $pricing['total_amount'],
+            'payment_method' => $request->input('payment_method', 'super_admin_checkout'),
+            'gateway_code' => 'SUPER_ADMIN_PAYMENT',
+            'transaction_id' => 'TXN_' . strtoupper(\Illuminate\Support\Str::random(12)),
+            'notes' => "Super Admin instant checkout for {$tvCount} TVs ({$plan->name})",
+        ]);
+
+        return redirect()->route('super-admin.hotels.show', $hotel->id)
+            ->with('success', "Payment settled successfully! TV Pairing License generated and {$tvCount} TV slots authorized.");
     }
 
     /**

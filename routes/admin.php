@@ -41,12 +41,14 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::post('/2fa/enable', [\App\Http\Controllers\TwoFactorController::class, 'enable'])->name('2fa.enable');
     Route::post('/2fa/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('2fa.disable');
 
-    // Hotels CRUD and Status Toggles
+    // Hotels CRUD, Status Toggles, and Super Admin Checkout
     Route::get('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');
     Route::post('/hotels/{id}/toggle-approval', [SuperHotelController::class, 'toggleApproval'])->name('hotels.toggle-approval');
     Route::get('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'edit'])->name('hotels.menus');
     Route::post('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'update']);
     Route::post('/hotels/{id}/menus/reset', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'reset'])->name('hotels.menus.reset');
+    Route::get('/hotels/{id}/pay', [SuperHotelController::class, 'showPayment'])->name('hotels.pay');
+    Route::post('/hotels/{id}/pay', [SuperHotelController::class, 'processPayment']);
     Route::resource('hotels', SuperHotelController::class);
 
     // Amenities management for Super Admin

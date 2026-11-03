@@ -32,6 +32,11 @@ class HotelService
 
         // License Key & Billing Dates
         $paymentStatus = $data['payment_status'] ?? 'pending';
+        if (!empty($data['payment_action'])) {
+            if ($data['payment_action'] === 'pay_later' || $data['payment_action'] === 'pay_now') {
+                $paymentStatus = 'pending';
+            }
+        }
         $licenseKey = null;
         $purchaseDate = null;
         $expiryDate = null;
@@ -350,11 +355,11 @@ class HotelService
      */
     public function resolveRoomCount(?int $requestedRoomCount, ?Plan $plan, int $currentRoomCount = 0): int
     {
-        if (!$requestedRoomCount) {
-            return $plan ? (int) $plan->room_count : $currentRoomCount;
+        if (!empty($requestedRoomCount) && (int) $requestedRoomCount > 0) {
+            return (int) $requestedRoomCount;
         }
 
-        return $plan ? max($requestedRoomCount, (int) $plan->room_count) : $requestedRoomCount;
+        return $plan && !empty($plan->room_count) ? (int) $plan->room_count : $currentRoomCount;
     }
 
     /**

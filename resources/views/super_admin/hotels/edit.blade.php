@@ -29,7 +29,7 @@
                     </span>
                 @endif
             </div>
-            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Manage administrative credentials, licensing tier, distributor assignment, and media assets.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Manage administrative credentials, per-TV licensing tier, distributor assignment, and device capacity.</p>
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
@@ -61,11 +61,11 @@
 
     <!-- Main Card Form -->
     <div class="bg-white border border-slate-200/80 rounded-[28px] p-5 sm:p-8 lg:p-10 shadow-xs">
-        <form action="{{ route('super-admin.hotels.update', $hotel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8 sm:space-y-10">
+        <form id="editHotelForm" action="{{ route('super-admin.hotels.update', $hotel->id) }}" method="POST" enctype="multipart/form-data" class="space-y-8 sm:space-y-10">
             @csrf
             @method('PUT')
 
-            <!-- Section 1: Owner Profile & Credentials -->
+            <!-- SECTION 1: Owner Profile & Credentials (Responsive) -->
             <div class="space-y-5">
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
@@ -82,7 +82,7 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
                     <!-- Owner Full Name -->
                     <div>
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
@@ -95,7 +95,7 @@
                                    value="{{ old('owner_name', $hotel->owner_name) }}" 
                                    required 
                                    placeholder="e.g. Rajesh Sharma" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
                         </div>
                     </div>
 
@@ -111,12 +111,12 @@
                                    value="{{ old('email', $hotel->email) }}" 
                                    required 
                                    placeholder="e.g. admin@grandhotel.com" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
                         </div>
                     </div>
 
                     <!-- Phone Number -->
-                    <div class="sm:col-span-2 lg:col-span-1">
+                    <div>
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                             Phone Number <span class="text-rose-500 font-black">*</span>
                         </label>
@@ -127,13 +127,13 @@
                                    value="{{ old('phone', $hotel->phone) }}" 
                                    required 
                                    placeholder="e.g. +91 98765 43210" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium placeholder:text-slate-400">
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium placeholder:text-slate-400">
                         </div>
                     </div>
                 </div>
 
                 <!-- Account Password Field -->
-                <div class="max-w-md pt-1">
+                <div class="max-w-lg pt-1">
                     <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                         Change Password <span class="text-xs font-semibold text-slate-400 font-sans">(leave blank to keep current)</span>
                     </label>
@@ -143,7 +143,7 @@
                                id="passwordInput" 
                                name="password" 
                                placeholder="Enter new password (optional)" 
-                               class="w-full pl-10 pr-11 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                               class="w-full pl-10 pr-11 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
                         <button type="button" 
                                 onclick="togglePasswordVisibility()" 
                                 class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 focus:outline-none p-1 cursor-pointer transition-colors"
@@ -155,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- Section 2: Hotel Identity & Property Details -->
+            <!-- SECTION 2: Hotel Identity & Indian Cities Datalist -->
             <div class="space-y-5 pt-6 border-t border-slate-100">
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
@@ -172,9 +172,9 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-5">
                     <!-- Hotel Name -->
-                    <div class="sm:col-span-2">
+                    <div class="md:col-span-2">
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                             Hotel / Property Name <span class="text-rose-500 font-black">*</span>
                         </label>
@@ -185,22 +185,25 @@
                                    value="{{ old('hotel_name', $hotel->hotel_name) }}" 
                                    required 
                                    placeholder="e.g. The Oberoi Grand View & Suites" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
                         </div>
                     </div>
 
-                    <!-- City -->
+                    <!-- City with Indian Cities Autocomplete List -->
                     <div>
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            City / Destination
+                            City / Destination <span class="text-purple-600 font-semibold text-[11px] font-mono">(Select City)</span>
                         </label>
                         <div class="relative">
                             <i class="fa-solid fa-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="text" 
                                    name="city" 
+                                   list="indian_cities_list"
                                    value="{{ old('city', $hotel->city) }}" 
-                                   placeholder="e.g. Mumbai" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                                   placeholder="Select or type Indian city..." 
+                                   autocomplete="off"
+                                   class="w-full pl-10 pr-8 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                            <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none opacity-60"></i>
                         </div>
                     </div>
                 </div>
@@ -217,7 +220,7 @@
                                value="{{ old('hotel_location', $hotel->hotel_location) }}" 
                                required 
                                placeholder="e.g. Bandra Kurla Complex, Bandra East, Mumbai, Maharashtra 400051" 
-                               class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
+                               class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400">
                     </div>
                 </div>
 
@@ -229,13 +232,13 @@
                     <textarea name="description" 
                               rows="3" 
                               placeholder="e.g. Welcome to The Oberoi Grand View. Experience premier comfort, in-room gourmet dining, and smart entertainment." 
-                              class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description', $hotel->description) }}</textarea>
+                              class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description', $hotel->description) }}</textarea>
                     <p class="text-xs text-slate-400 mt-1.5 font-medium">Broadcasted on the in-room TV home banner as a personalized greeting message.</p>
                 </div>
             </div>
 
-            <!-- Section 3: Subscription, Partner & TV Settings -->
-            <div class="space-y-5 pt-6 border-t border-slate-100">
+            <!-- SECTION 3: Distributor, Subscription Plan, TVs & Payment Action -->
+            <div class="space-y-6 pt-6 border-t border-slate-100">
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
@@ -244,90 +247,224 @@
                         <div>
                             <div class="flex items-center space-x-2">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 3</span>
-                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Subscription Plan & Channel Partner</h2>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Subscription Plan, TVs & Channel Partner</h2>
                             </div>
-                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Manage licensing package, distributor association, and access duration.</p>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Select distributor, assign per-TV subscription tier, configure device capacity, and set payment workflow.</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6">
-                    <!-- 1. Subscription Plan Custom Dropdown -->
-                    @php
-                        $selectedPlanId = old('plan_id', $hotel->plan_id);
-                    @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Subscription Tier
-                        </label>
-                        <x-dropdown name="plan_id" label="None (Custom / Trial Package)" :selected="$selectedPlanId" theme="sa">
-                            <option value="">None (Custom / Trial Package)</option>
-                            @foreach($plans as $plan)
-                                <option value="{{ $plan->id }}" {{ (string)$plan->id === (string)$selectedPlanId ? 'selected' : '' }}>
-                                    {{ $plan->name }} (Up to {{ $plan->room_count }} Rooms • ₹{{ number_format($plan->price, 0) }}/mo)
+                <!-- 1. Assigned Distributor / Channel Partner (Top of Step 3) -->
+                @php
+                    $selectedDistId = old('distributor_id', $hotel->distributor_id);
+                @endphp
+                <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-2">
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700">
+                        1. Select Channel Partner / Distributor
+                    </label>
+                    <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor Partner)" :selected="$selectedDistId" theme="sa">
+                        <option value="">Direct Enterprise (No Distributor Partner)</option>
+                        @if(isset($distributors))
+                            @foreach($distributors as $distributor)
+                                <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
+                                    {{ $distributor->name }} — {{ $distributor->email }}
                                 </option>
                             @endforeach
-                        </x-dropdown>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Current registered capacity: <span class="font-bold text-slate-800 font-mono">{{ $hotel->room_count }} rooms</span>.</p>
-                    </div>
+                        @endif
+                    </x-dropdown>
+                    <p class="text-xs text-slate-400 font-medium">Link this hotel under a channel partner for commission tracking.</p>
+                </div>
 
-                    <!-- 2. Distributor Partner Custom Dropdown -->
-                    @php
-                        $selectedDistId = old('distributor_id', $hotel->distributor_id);
-                    @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Assigned Distributor / Partner
+                <!-- 2. Selectable Subscription Plan Cards -->
+                @php
+                    $selectedPlanId = old('plan_id', $hotel->plan_id ?? ($plans->first()?->id));
+                @endphp
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs sm:text-sm font-bold text-slate-700">
+                            2. Choose Per-TV Subscription Tier <span class="text-rose-500 font-black">*</span>
                         </label>
-                        <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor)" :selected="$selectedDistId" theme="sa">
-                            <option value="">Direct Enterprise (No Distributor)</option>
-                            @if(isset($distributors))
-                                @foreach($distributors as $distributor)
-                                    <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
-                                        {{ $distributor->name }} — {{ $distributor->email }}
-                                    </option>
-                                @endforeach
-                            @endif
-                        </x-dropdown>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Link this hotel under a channel partner for commission tracking.</p>
+                        <span class="text-xs text-slate-400 font-medium">Select Monthly or Yearly billing tier</span>
                     </div>
 
-                    <!-- 3. Payment Status Custom Dropdown -->
-                    @php
-                        $currentPayment = old('payment_status', $hotel->payment_status);
-                    @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Payment Status <span class="text-rose-500 font-black">*</span>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="planSelectionContainer">
+                        @foreach($plans as $plan)
+                            @php
+                                $isCurrentPlan = (string)$plan->id === (string)$selectedPlanId;
+                                $taxRate = $plan->tax ? (float)$plan->tax->rate : 0.0;
+                                $taxType = $plan->tax_type ?? 'exclusive';
+                            @endphp
+                            <label class="plan-card-label relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none {{ $isCurrentPlan ? 'border-[#150A42] bg-purple-50/30 shadow-md ring-2 ring-[#150A42]/10' : 'border-slate-200 bg-white hover:border-purple-300 hover:bg-slate-50/60' }}"
+                                   data-plan-id="{{ $plan->id }}"
+                                   data-price-per-tv="{{ $plan->effective_price_per_tv }}"
+                                   data-cycle="{{ $plan->billing_cycle ?? 'monthly' }}"
+                                   data-tax-rate="{{ $taxRate }}"
+                                   data-tax-type="{{ $taxType }}"
+                                   data-tax-name="{{ $plan->tax ? $plan->tax->name : 'No Tax' }}">
+                                <input type="radio" 
+                                       name="plan_id" 
+                                       value="{{ $plan->id }}" 
+                                       {{ $isCurrentPlan ? 'checked' : '' }} 
+                                       class="sr-only plan-radio"
+                                       onchange="onPlanSelected(this)">
+
+                                <div>
+                                    <div class="flex items-center justify-between gap-2 mb-2">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-[#150A42]' }}">
+                                            {{ strtoupper($plan->billing_cycle ?? 'monthly') }} PLAN
+                                        </span>
+                                        <div class="plan-check-icon w-5 h-5 rounded-full flex items-center justify-center text-xs {{ $isCurrentPlan ? 'bg-[#150A42] text-white' : 'bg-slate-100 text-transparent' }}">
+                                            <i class="fa-solid fa-check text-[10px]"></i>
+                                        </div>
+                                    </div>
+                                    <h3 class="text-base font-black text-slate-900 tracking-tight">{{ $plan->name }}</h3>
+                                    <div class="mt-2 flex items-baseline space-x-1 font-mono">
+                                        <span class="text-2xl font-black text-slate-900">₹{{ number_format($plan->effective_price_per_tv, 0) }}</span>
+                                        <span class="text-xs text-slate-500 font-sans">/ TV / {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'yr' : 'mo' }}</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
+                                    <span>
+                                        @if($plan->tax)
+                                            <i class="fa-solid fa-shield-halved text-purple-600 mr-1"></i> {{ $plan->tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                        @else
+                                            <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Tax Exempt (0%)
+                                        @endif
+                                    </span>
+                                    <span class="font-bold text-slate-700 font-mono">{{ $plan->ott_count }} Apps</span>
+                                </div>
+                            </label>
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- 3. Connected TVs Input & Live Pricing Breakdown -->
+                @php
+                    $currentTvCount = old('room_count', $hotel->room_count ?: 30);
+                @endphp
+                <div class="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <label class="block text-xs sm:text-sm font-bold text-slate-700">
+                                3. Number of Connected Smart TVs <span class="text-rose-500 font-black">*</span>
+                            </label>
+                            <span class="text-xs text-slate-400 font-medium">Specify how many hardware TVs will be paired in guest rooms</span>
+                        </div>
+
+                        <!-- Stepper Counter Input -->
+                        <div class="flex items-center space-x-2">
+                            <button type="button" onclick="adjustTvCount(-5)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-base flex items-center justify-center transition-all cursor-pointer">
+                                -
+                            </button>
+                            <input type="number" 
+                                   id="hotel_tv_input" 
+                                   name="room_count" 
+                                   value="{{ $currentTvCount }}" 
+                                   min="1" 
+                                   max="5000" 
+                                   required 
+                                   oninput="recalculatePricing()" 
+                                   class="w-24 text-center py-2 text-base font-black font-mono rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#150A42] bg-[#F8F9FD] text-slate-900">
+                            <button type="button" onclick="adjustTvCount(5)" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-base flex items-center justify-center transition-all cursor-pointer">
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Select Chips -->
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider font-mono mr-1">Quick Select:</span>
+                        @foreach([15, 30, 50, 100, 200] as $preset)
+                            <button type="button" onclick="setTvCount({{ $preset }})" class="px-2.5 py-1 rounded-lg text-xs font-bold font-mono border border-slate-200 bg-[#F8F9FD] hover:bg-purple-50 hover:text-[#150A42] hover:border-purple-200 text-slate-600 transition-all cursor-pointer">
+                                {{ $preset }} TVs
+                            </button>
+                        @endforeach
+                    </div>
+
+                    <!-- Live Dynamic Calculation Card -->
+                    <div class="p-4 rounded-xl bg-gradient-to-r from-purple-50/70 via-indigo-50/40 to-slate-50 border border-purple-100/80 text-xs space-y-2 font-mono">
+                        <div class="flex items-center justify-between text-slate-600">
+                            <span>Base Rate:</span>
+                            <span class="font-bold text-slate-900" id="liveCalcRate">₹150.00 / TV</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-600">
+                            <span>Subtotal (<span id="liveCalcTvCount">30</span> TVs):</span>
+                            <span class="font-bold text-slate-900" id="liveCalcSubtotal">₹4,500.00</span>
+                        </div>
+                        <div class="flex items-center justify-between text-slate-600" id="liveTaxRow">
+                            <span id="liveTaxLabel">GST (18.0% Exclusive):</span>
+                            <span class="font-bold text-slate-900" id="liveTaxAmount">+ ₹810.00</span>
+                        </div>
+                        <div class="pt-2 border-t border-purple-200/60 flex items-center justify-between text-slate-900 font-sans">
+                            <span class="font-black text-sm">Estimated Total Payable:</span>
+                            <span class="font-black text-lg text-[#150A42] font-mono" id="liveCalcTotal">₹5,310.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Payment Timing & Workflow Options -->
+                <div class="space-y-3">
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700">
+                        4. Payment Timing & Activation Workflow
+                    </label>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Option A: Waiting for Payment (DEFAULT) -->
+                        <label class="payment-action-card relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border-2 border-[#150A42] bg-purple-50/20 shadow-xs cursor-pointer transition-all">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0">
+                                        <i class="fa-solid fa-clock-rotate-left"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-extrabold text-slate-900">Waiting for Payment (Self-Pay)</h4>
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-purple-100 text-[#150A42] font-mono mt-0.5">DEFAULT SELECTION</span>
+                                    </div>
+                                </div>
+                                <input type="radio" 
+                                       name="payment_action" 
+                                       value="pay_later" 
+                                       checked 
+                                       class="text-[#150A42] focus:ring-[#150A42] h-4 w-4 mt-1"
+                                       onchange="onPaymentActionChange(this)">
+                            </div>
+                            <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+                                Hotel account is saved immediately with <strong>Waiting for Payment</strong> status. Hotel owner can log in to their dashboard and settle payment securely via UPI, Card, or NetBanking to activate live TV streaming.
+                            </p>
                         </label>
-                        <x-dropdown name="payment_status" required theme="sa">
-                            <option value="paid" {{ $currentPayment === 'paid' ? 'selected' : '' }}>Paid (License Key Activated)</option>
-                            <option value="pending" {{ $currentPayment === 'pending' ? 'selected' : '' }}>Pending (Awaiting Settlement)</option>
-                        </x-dropdown>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Controls active streaming access for connected TV devices.</p>
-                    </div>
 
-                    <!-- 4. Approval Status Custom Dropdown -->
-                    @php
-                        $currentApproval = old('approval_status', $hotel->approval_status);
-                    @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Approval Status <span class="text-rose-500 font-black">*</span>
+                        <!-- Option B: Pay Now via Checkout -->
+                        <label class="payment-action-card relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border-2 border-slate-200 bg-white hover:border-purple-300 shadow-xs cursor-pointer transition-all">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm shrink-0">
+                                        <i class="fa-solid fa-credit-card"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-extrabold text-slate-900">Pay Now (Instant Checkout)</h4>
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 font-mono mt-0.5">SUPER ADMIN CHECKOUT</span>
+                                    </div>
+                                </div>
+                                <input type="radio" 
+                                       name="payment_action" 
+                                       value="pay_now" 
+                                       class="text-[#150A42] focus:ring-[#150A42] h-4 w-4 mt-1"
+                                       onchange="onPaymentActionChange(this)">
+                            </div>
+                            <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+                                Account is updated/saved and immediately redirects to the official Checkout page to record settlement. TV pairing license key is activated and streaming devices unlocked immediately.
+                            </p>
                         </label>
-                        <x-dropdown name="approval_status" required theme="sa">
-                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active on Network)</option>
-                            <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
-                            <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
-                        </x-dropdown>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Platform compliance gate for in-room TV hardware pairing.</p>
                     </div>
+                </div>
 
-                    <!-- 5. TV Interface Theme -->
+                <!-- 5. Default In-Room TV Theme Style & Approval -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pt-2">
                     @php
                         $selectedTheme = old('selected_theme_id', $hotel->selected_theme_id ?? ($defaultThemeId ?? 1));
                     @endphp
-                    <div class="sm:col-span-2">
+                    <div>
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
                             Default In-Room TV Theme Style <span class="text-rose-500 font-black">*</span>
                         </label>
@@ -343,11 +480,24 @@
                                 <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury Noir)</option>
                             @endif
                         </x-dropdown>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Smart TVs assigned to this hotel will render this interface layout.</p>
+                    </div>
+
+                    @php
+                        $currentApproval = old('approval_status', $hotel->approval_status);
+                    @endphp
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Approval Status <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <x-dropdown name="approval_status" required theme="sa">
+                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active on Network)</option>
+                            <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
+                            <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
+                        </x-dropdown>
                     </div>
                 </div>
 
-                <!-- Subscription Timelines -->
+                <!-- 6. Existing License Key & Expiry Date Editor (If paid) -->
                 @php
                     $purchaseFormatted = '';
                     if (old('purchase_date')) {
@@ -367,137 +517,36 @@
                             : \Carbon\Carbon::parse($hotel->expiry_date)->format('Y-m-d\TH:i');
                     }
                 @endphp
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pt-2">
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Subscription Purchase Date
-                        </label>
-                        <input type="datetime-local" 
-                               name="purchase_date" 
-                               value="{{ $purchaseFormatted }}" 
-                               class="w-full px-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
-                    </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Subscription Expiry Date <span class="text-xs font-semibold text-slate-400 font-sans">(Extend Access)</span>
-                        </label>
-                        <input type="datetime-local" 
-                               name="expiry_date" 
-                               value="{{ $expiryFormatted }}" 
-                               class="w-full px-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-medium">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 4: Branding & Media Assets -->
-            <div class="space-y-5 pt-6 border-t border-slate-100">
-                <div class="flex items-start justify-between pb-4 border-b border-slate-100">
-                    <div class="flex items-center space-x-3.5">
-                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
-                            <i class="fa-regular fa-image"></i>
-                        </div>
-                        <div>
-                            <div class="flex items-center space-x-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 4</span>
-                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Branding & Media Assets</h2>
+                @if($hotel->license_key || $hotel->payment_status === 'paid')
+                    <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/90 space-y-4">
+                        <div class="flex items-center justify-between pb-3 border-b border-slate-200/70">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Current Pairing Key</span>
+                                <div class="font-mono font-black text-slate-900 text-sm tracking-wider select-all">{{ $hotel->license_key ?? 'N/A' }}</div>
                             </div>
-                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Update logo, cover backdrop, and interactive TV slider screens.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
-                    <!-- Hotel Logo Dropzone Card -->
-                    <div class="p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs sm:text-sm font-bold text-slate-700">Hotel Logo</label>
-                            <span class="text-[11px] font-mono text-slate-400">1:1 Square PNG/WebP</span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase {{ $hotel->is_expired ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800' }}">
+                                {{ $hotel->subscription_badge['label'] }}
+                            </span>
                         </div>
 
-                        <div class="flex items-center space-x-4">
-                            <!-- Visual Preview Box -->
-                            <div class="relative w-20 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-xs group">
-                                <img id="logoPreview" src="{{ $hotel->hotel_logo ? asset($hotel->hotel_logo) : '#' }}" alt="Logo" class="{{ $hotel->hotel_logo ? '' : 'hidden' }} w-full h-full object-cover">
-                                <div id="logoPlaceholder" class="{{ $hotel->hotel_logo ? 'hidden' : '' }} text-center p-2 text-slate-400">
-                                    <i class="fa-regular fa-image text-xl mb-1 block"></i>
-                                    <span class="text-[9px] font-bold uppercase tracking-wider">Logo</span>
-                                </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Purchase Date</label>
+                                <input type="datetime-local" 
+                                       name="purchase_date" 
+                                       value="{{ $purchaseFormatted }}" 
+                                       class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono">
                             </div>
-
-                            <div class="flex-1 min-w-0 space-y-2">
-                                <input type="file" 
-                                       name="hotel_logo" 
-                                       id="hotelLogoInput" 
-                                       accept="image/*" 
-                                       onchange="previewImage(this, 'logoPreview', 'logoPlaceholder')" 
-                                       class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
-                                <p class="text-xs text-slate-400">Recommended 512×512px. Max file size: 5MB.</p>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-700 mb-1">Expiry Date (Extend Access)</label>
+                                <input type="datetime-local" 
+                                       name="expiry_date" 
+                                       value="{{ $expiryFormatted }}" 
+                                       class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono">
                             </div>
                         </div>
                     </div>
-
-                    <!-- Hotel Cover Backdrop Dropzone Card -->
-                    <div class="p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs sm:text-sm font-bold text-slate-700">TV Cover Backdrop</label>
-                            <span class="text-[11px] font-mono text-slate-400">16:9 HD 1920×1080</span>
-                        </div>
-
-                        <div class="flex items-center space-x-4">
-                            <!-- Visual Preview Box -->
-                            <div class="relative w-28 h-20 rounded-2xl bg-white border-2 border-dashed border-slate-300 flex items-center justify-center overflow-hidden shrink-0 shadow-xs group">
-                                <img id="coverPreview" src="{{ $hotel->hotel_image ? asset($hotel->hotel_image) : '#' }}" alt="Cover" class="{{ $hotel->hotel_image ? '' : 'hidden' }} w-full h-full object-cover">
-                                <div id="coverPlaceholder" class="{{ $hotel->hotel_image ? 'hidden' : '' }} text-center p-2 text-slate-400">
-                                    <i class="fa-solid fa-panorama text-xl mb-1 block"></i>
-                                    <span class="text-[9px] font-bold uppercase tracking-wider">Cover</span>
-                                </div>
-                            </div>
-
-                            <div class="flex-1 min-w-0 space-y-2">
-                                <input type="file" 
-                                       name="hotel_image" 
-                                       id="hotelCoverInput" 
-                                       accept="image/*" 
-                                       onchange="previewImage(this, 'coverPreview', 'coverPlaceholder')" 
-                                       class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
-                                <p class="text-xs text-slate-400">Recommended 1920×1080px landscape. Max: 10MB.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TV Slider Images Gallery -->
-                <div class="p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-3">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                        <label class="text-xs sm:text-sm font-bold text-slate-700">In-Room TV Slider Screens</label>
-                        <span class="text-xs text-slate-400 font-medium">Multi-select files to upload new carousel slides</span>
-                    </div>
-
-                    <input type="file" 
-                           name="slider_images[]" 
-                           accept="image/*" 
-                           multiple 
-                           class="block w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#201063] cursor-pointer transition-colors">
-
-                    @if($hotel->slider_images && count($hotel->slider_images) > 0)
-                        <div class="pt-3">
-                            <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 font-mono">Current Slider Screens ({{ count($hotel->slider_images) }})</h4>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                @foreach($hotel->slider_images as $path)
-                                    <div class="relative group rounded-2xl border border-slate-200 overflow-hidden aspect-video bg-slate-50 shadow-xs">
-                                        <img src="{{ asset($path) }}" alt="Slider" class="w-full h-full object-cover">
-                                        <div onclick="deleteAdminSlide('{{ $path }}')" class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center cursor-pointer p-2 text-center">
-                                            <div class="w-8 h-8 rounded-full bg-rose-600 text-white flex items-center justify-center shadow-md hover:bg-rose-500 transition-all mb-1">
-                                                <i class="fa-regular fa-trash-can text-xs"></i>
-                                            </div>
-                                            <span class="text-[10px] font-bold text-white uppercase tracking-wider">Delete</span>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-                </div>
+                @endif
             </div>
 
             <!-- Sticky-Friendly Bottom Action Bar -->
@@ -507,19 +556,23 @@
                 </a>
 
                 <div class="flex items-center space-x-3">
-                    <button type="submit" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2">
-                        <i class="fa-solid fa-floppy-disk text-xs"></i>
-                        <span>Save Property Changes</span>
+                    <button type="submit" id="saveHotelBtn" class="btn-sa-primary w-full sm:w-auto px-7 py-3 text-xs sm:text-sm font-bold shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-floppy-disk text-xs" id="btnIcon"></i>
+                        <span id="btnText">Save Property Changes</span>
                     </button>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+<!-- Indian Cities Datalist Include -->
+@include('partials.indian_cities_datalist')
 @endsection
 
 @section('scripts')
 <script>
+// Password toggle
 function togglePasswordVisibility() {
     const input = document.getElementById('passwordInput');
     const icon = document.getElementById('passwordEyeIcon');
@@ -536,61 +589,135 @@ function togglePasswordVisibility() {
     }
 }
 
-function previewImage(input, previewId, placeholderId) {
-    const preview = document.getElementById(previewId);
-    const placeholder = document.getElementById(placeholderId);
-    if (!input || !preview) return;
+// Plan selection
+function onPlanSelected(radio) {
+    document.querySelectorAll('.plan-card-label').forEach(label => {
+        label.classList.remove('border-[#150A42]', 'bg-purple-50/30', 'shadow-md', 'ring-2', 'ring-[#150A42]/10');
+        label.classList.add('border-slate-200', 'bg-white');
+        const checkIcon = label.querySelector('.plan-check-icon');
+        if (checkIcon) {
+            checkIcon.classList.remove('bg-[#150A42]', 'text-white');
+            checkIcon.classList.add('bg-slate-100', 'text-transparent');
+        }
+    });
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
-            if (placeholder) {
-                placeholder.classList.add('hidden');
-            }
-        };
-        reader.readAsDataURL(input.files[0]);
+    const activeLabel = radio.closest('.plan-card-label');
+    if (activeLabel) {
+        activeLabel.classList.remove('border-slate-200', 'bg-white');
+        activeLabel.classList.add('border-[#150A42]', 'bg-purple-50/30', 'shadow-md', 'ring-2', 'ring-[#150A42]/10');
+        const checkIcon = activeLabel.querySelector('.plan-check-icon');
+        if (checkIcon) {
+            checkIcon.classList.remove('bg-slate-100', 'text-transparent');
+            checkIcon.classList.add('bg-[#150A42]', 'text-white');
+        }
+    }
+
+    recalculatePricing();
+}
+
+// TV counter stepper
+function adjustTvCount(delta) {
+    const input = document.getElementById('hotel_tv_input');
+    if (!input) return;
+    let current = parseInt(input.value) || 1;
+    current = Math.max(1, Math.min(5000, current + delta));
+    input.value = current;
+    recalculatePricing();
+}
+
+function setTvCount(val) {
+    const input = document.getElementById('hotel_tv_input');
+    if (!input) return;
+    input.value = Math.max(1, Math.min(5000, parseInt(val) || 1));
+    recalculatePricing();
+}
+
+// Live calculation
+function recalculatePricing() {
+    const selectedPlan = document.querySelector('.plan-radio:checked')?.closest('.plan-card-label');
+    const tvInput = document.getElementById('hotel_tv_input');
+    if (!selectedPlan || !tvInput) return;
+
+    const ratePerTv = parseFloat(selectedPlan.getAttribute('data-price-per-tv')) || 0;
+    const cycle = selectedPlan.getAttribute('data-cycle') || 'monthly';
+    const taxRate = parseFloat(selectedPlan.getAttribute('data-tax-rate')) || 0;
+    const taxType = selectedPlan.getAttribute('data-tax-type') || 'exclusive';
+    const taxName = selectedPlan.getAttribute('data-tax-name') || 'No Tax';
+    const tvCount = Math.max(1, parseInt(tvInput.value) || 1);
+
+    const subtotal = ratePerTv * tvCount;
+    let taxAmount = 0;
+    let total = subtotal;
+
+    if (taxRate > 0) {
+        if (taxType === 'inclusive') {
+            taxAmount = subtotal - (subtotal / (1 + (taxRate / 100)));
+            total = subtotal;
+        } else {
+            taxAmount = subtotal * (taxRate / 100);
+            total = subtotal + taxAmount;
+        }
+    }
+
+    const rateEl = document.getElementById('liveCalcRate');
+    if (rateEl) {
+        rateEl.textContent = '₹' + ratePerTv.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' / TV / ' + (cycle === 'yearly' ? 'yr' : 'mo');
+    }
+
+    const countEl = document.getElementById('liveCalcTvCount');
+    if (countEl) countEl.textContent = tvCount;
+
+    const subtotalEl = document.getElementById('liveCalcSubtotal');
+    if (subtotalEl) {
+        subtotalEl.textContent = '₹' + subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    const taxRow = document.getElementById('liveTaxRow');
+    const taxLabel = document.getElementById('liveTaxLabel');
+    const taxAmountEl = document.getElementById('liveTaxAmount');
+
+    if (taxRate > 0) {
+        if (taxRow) taxRow.style.display = 'flex';
+        if (taxLabel) taxLabel.textContent = taxName + ' (' + taxRate.toFixed(1) + '% ' + (taxType.charAt(0).toUpperCase() + taxType.slice(1)) + '):';
+        if (taxAmountEl) taxAmountEl.textContent = '+ ₹' + taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    } else {
+        if (taxRow) taxRow.style.display = 'flex';
+        if (taxLabel) taxLabel.textContent = 'Tax:';
+        if (taxAmountEl) taxAmountEl.textContent = '₹0.00 (Zero Rated)';
+    }
+
+    const totalEl = document.getElementById('liveCalcTotal');
+    if (totalEl) {
+        totalEl.textContent = '₹' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 }
 
-function deleteAdminSlide(path) {
-    Swal.fire({
-        title: 'Remove Slider Image?',
-        text: 'Are you sure you want to remove this slider image from hotel TV?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#DC2626',
-        cancelButtonColor: '#6B7280',
-        confirmButtonText: 'Yes, remove it',
-        cancelButtonText: 'Cancel',
-        customClass: {
-            popup: 'rounded-3xl border border-slate-200 shadow-2xl font-sans',
-            confirmButton: 'px-5 py-2.5 rounded-xl font-bold text-xs shadow-md',
-            cancelButton: 'px-5 py-2.5 rounded-xl font-bold text-xs'
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = "{{ route('hotel.hotel-info.delete-slider') }}";
-            
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = "{{ csrf_token() }}";
-            form.appendChild(csrfInput);
-
-            const pathInput = document.createElement('input');
-            pathInput.type = 'hidden';
-            pathInput.name = 'image_path';
-            pathInput.value = path;
-            form.appendChild(pathInput);
-
-            document.body.appendChild(form);
-            form.submit();
-        }
+// Payment action cards
+function onPaymentActionChange(radio) {
+    document.querySelectorAll('.payment-action-card').forEach(card => {
+        card.classList.remove('border-[#150A42]', 'bg-purple-50/20');
+        card.classList.add('border-slate-200', 'bg-white');
     });
+
+    const activeCard = radio.closest('.payment-action-card');
+    if (activeCard) {
+        activeCard.classList.remove('border-slate-200', 'bg-white');
+        activeCard.classList.add('border-[#150A42]', 'bg-purple-50/20');
+    }
+
+    const btnText = document.getElementById('btnText');
+    const btnIcon = document.getElementById('btnIcon');
+    if (radio.value === 'pay_now') {
+        if (btnText) btnText.textContent = 'Save & Proceed to Payment Checkout →';
+        if (btnIcon) btnIcon.className = 'fa-solid fa-credit-card text-xs';
+    } else {
+        if (btnText) btnText.textContent = 'Save Property Changes';
+        if (btnIcon) btnIcon.className = 'fa-solid fa-floppy-disk text-xs';
+    }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+    recalculatePricing();
+});
 </script>
 @endsection
