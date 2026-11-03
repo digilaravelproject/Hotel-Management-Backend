@@ -226,7 +226,7 @@
                                 <span>24x7 Priority Support for Active Hotels</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed font-normal">
-                                Operating an active property and need immediate TV pairing or sync assistance? Log in directly via your <a href="{{ route('hotel.login') }}" class="font-bold underline text-[#A07F54]">Hotel Admin Portal</a>.
+                                Operating an active property and need immediate TV pairing or sync assistance? Log in directly via your <a href="{{ route('login') }}" class="font-bold underline text-[#A07F54]">Portal Login</a>.
                             </p>
                         </div>
 

@@ -78,9 +78,9 @@
                     <i class="fa-solid fa-arrow-left text-[10px]"></i>
                     <span>Back to Home</span>
                 </a>
-                <a href="{{ route('hotel.login') }}" class="text-xs font-medium text-stone-200 hover:text-[#C5A880] flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#C5A880]/50 transition-all">
-                    <i class="fa-solid fa-hotel text-[11px] text-[#C5A880]"></i>
-                    <span>Hotel Login</span>
+                <a href="{{ route('login') }}" class="text-xs font-medium text-stone-200 hover:text-[#C5A880] flex items-center space-x-1.5 px-3.5 py-2 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 hover:border-[#C5A880]/50 transition-all">
+                    <i class="fa-solid fa-arrow-right-to-bracket text-[11px] text-[#C5A880]"></i>
+                    <span>Portal Login</span>
                 </a>
                 <a href="{{ route('contact-us') }}" class="px-6 py-2.5 btn-gold-pill text-xs tracking-wider flex items-center space-x-1.5">
                     <span>Contact Us</span>
