@@ -5,6 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Plan;
+use App\Models\Tax;
 
 class PlanController extends Controller
 {
@@ -13,8 +14,9 @@ class PlanController extends Controller
      */
     public function index()
     {
-        $plans = Plan::orderBy('room_count', 'asc')->get();
-        return view('super_admin.plans.index', compact('plans'));
+        $plans = Plan::with('tax')->orderBy('billing_cycle', 'asc')->orderBy('price_per_tv', 'asc')->get();
+        $taxes = Tax::where('status', true)->orderBy('name')->get();
+        return view('super_admin.plans.index', compact('plans', 'taxes'));
     }
 
     /**
@@ -23,7 +25,8 @@ class PlanController extends Controller
     public function create()
     {
         $ottPlatforms = Plan::getAvailableOttPlatforms();
-        return view('super_admin.plans.create', compact('ottPlatforms'));
+        $taxes = Tax::where('status', true)->orderBy('name')->get();
+        return view('super_admin.plans.create', compact('ottPlatforms', 'taxes'));
     }
 
     /**
@@ -33,24 +36,33 @@ class PlanController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'room_count' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            'billing_cycle' => 'required|in:monthly,yearly',
+            'price_per_tv' => 'required|numeric|min:0',
+            'tax_id' => 'nullable|exists:taxes,id',
+            'tax_type' => 'required|in:inclusive,exclusive',
+            'room_count' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
         ]);
 
+        $pricePerTv = (float) $request->price_per_tv;
+
         Plan::create([
             'name' => $request->name,
-            'room_count' => $request->room_count,
-            'price' => $request->price,
+            'billing_cycle' => $request->billing_cycle,
+            'price_per_tv' => $pricePerTv,
+            'price' => $pricePerTv, // sync base price
+            'room_count' => $request->input('room_count', 1),
+            'tax_id' => $request->tax_id,
+            'tax_type' => $request->tax_type,
             'description' => $request->description,
             'ott_platforms' => $request->input('ott_platforms', []),
             'status' => true,
         ]);
 
         return redirect()->route('super-admin.plans.index')
-                         ->with('success', 'Plan created successfully!');
+                         ->with('success', 'Per-TV Plan created successfully!');
     }
 
     /**
@@ -58,9 +70,10 @@ class PlanController extends Controller
      */
     public function edit($id)
     {
-        $plan = Plan::findOrFail($id);
+        $plan = Plan::with('tax')->findOrFail($id);
         $ottPlatforms = Plan::getAvailableOttPlatforms();
-        return view('super_admin.plans.edit', compact('plan', 'ottPlatforms'));
+        $taxes = Tax::where('status', true)->orderBy('name')->get();
+        return view('super_admin.plans.edit', compact('plan', 'ottPlatforms', 'taxes'));
     }
 
     /**
@@ -72,23 +85,47 @@ class PlanController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'room_count' => 'required|integer|min:1',
-            'price' => 'required|numeric|min:0',
+            'billing_cycle' => 'required|in:monthly,yearly',
+            'price_per_tv' => 'required|numeric|min:0',
+            'tax_id' => 'nullable|exists:taxes,id',
+            'tax_type' => 'required|in:inclusive,exclusive',
+            'room_count' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
         ]);
 
+        $pricePerTv = (float) $request->price_per_tv;
+
         $plan->update([
             'name' => $request->name,
-            'room_count' => $request->room_count,
-            'price' => $request->price,
+            'billing_cycle' => $request->billing_cycle,
+            'price_per_tv' => $pricePerTv,
+            'price' => $pricePerTv,
+            'room_count' => $request->input('room_count', $plan->room_count ?? 1),
+            'tax_id' => $request->tax_id,
+            'tax_type' => $request->tax_type,
             'description' => $request->description,
             'ott_platforms' => $request->input('ott_platforms', []),
         ]);
 
         return redirect()->route('super-admin.plans.index')
-                         ->with('success', 'Plan updated successfully!');
+                         ->with('success', 'Per-TV Plan updated successfully!');
+    }
+
+    /**
+     * Live JSON price preview endpoint for any plan given a TV count.
+     */
+    public function calculatePreview(Request $request, $id)
+    {
+        $plan = Plan::with('tax')->findOrFail($id);
+        $tvCount = max(1, (int) $request->input('tv_count', 1));
+        $pricing = $plan->calculatePricing($tvCount);
+
+        return response()->json([
+            'success' => true,
+            'pricing' => $pricing,
+        ]);
     }
 
     /**

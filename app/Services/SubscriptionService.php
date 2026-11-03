@@ -65,6 +65,42 @@ class SubscriptionService
             'notes' => $context['notes'] ?? ucfirst($action) . ": {$plan->name} ({$durationMonths} months)",
         ]);
 
+        // Generate Tax-Compliant Invoice
+        $invoice = null;
+        try {
+            $tvCount = (int) ($context['tv_count'] ?? $hotel->room_count ?? $roomCount ?? 1);
+            $calc = $plan->calculatePricing($tvCount);
+            $tax = $plan->tax;
+
+            $invoice = \App\Models\Invoice::create([
+                'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
+                'hotel_admin_id' => $hotel->id,
+                'distributor_id' => $context['distributor_id'] ?? $hotel->distributor_id,
+                'plan_id' => $plan->id,
+                'plan_name' => $plan->name,
+                'billing_cycle' => $plan->billing_cycle ?? 'monthly',
+                'tv_count' => $tvCount,
+                'price_per_tv' => $plan->effective_price_per_tv,
+                'subtotal' => $calc['subtotal'],
+                'tax_id' => $plan->tax_id,
+                'tax_name' => $tax ? $tax->name : null,
+                'tax_rate' => $tax ? $tax->rate : 0.00,
+                'tax_type' => $plan->tax_type ?? 'exclusive',
+                'tax_amount' => $calc['tax_amount'],
+                'cgst_amount' => $calc['cgst_amount'],
+                'sgst_amount' => $calc['sgst_amount'],
+                'total_amount' => $calc['total_amount'],
+                'payment_status' => 'paid',
+                'payment_method' => $context['payment_method'] ?? 'hotel_direct',
+                'paid_at' => $now,
+                'period_start' => $now,
+                'period_end' => $newExpiry,
+                'notes' => ucfirst($action) . " subscription for {$tvCount} Connected TVs ({$plan->name})"
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Invoice auto-generation skipped or failed: " . $e->getMessage());
+        }
+
         if (!empty($context['gateway_code'])) {
             PaymentTransaction::create([
                 'distributor_id' => $context['distributor_id'] ?? $hotel->distributor_id,

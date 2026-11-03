@@ -19,7 +19,7 @@ class SubscriptionController extends Controller
     {
         $hotel = Auth::guard('hotel_admin')->user();
         $hotel->loadMissing('plan');
-        $plans = Plan::where('status', true)->orderBy('price')->get();
+        $plans = Plan::with('tax')->where('status', true)->orderBy('billing_cycle', 'asc')->orderBy('price_per_tv', 'asc')->get();
         $gateway = PaymentManager::active();
 
         return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway'));
@@ -29,12 +29,18 @@ class SubscriptionController extends Controller
     {
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,id',
+            'tv_count' => 'required|integer|min:1|max:1000',
             'duration_months' => 'required|integer|in:1,3,6,12',
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
-        $plan = Plan::findOrFail($validated['plan_id']);
-        $amount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
+        $tvCount = (int) $validated['tv_count'];
+        $durationMonths = (int) $validated['duration_months'];
+
+        // Dynamic Per-TV Tax-compliant calculation
+        $calc = $plan->calculatePricing($tvCount);
+        $amount = round($calc['total_amount'] * ($plan->billing_cycle === 'yearly' ? 1 : $durationMonths), 2);
 
         try {
             $gateway = PaymentManager::active();
@@ -45,11 +51,11 @@ class SubscriptionController extends Controller
                 'name' => $hotel->hotel_name ?? '',
                 'email' => $hotel->email ?? '',
                 'phone' => $hotel->phone ?? '',
-                'product_info' => 'Plan: ' . $plan->name,
+                'product_info' => 'Plan: ' . $plan->name . " ({$tvCount} TVs)",
                 'udf1' => (string) $hotel->id,
                 'udf2' => (string) $plan->id,
-                'udf3' => (string) $validated['duration_months'],
-                'udf4' => (string) $hotel->id,
+                'udf3' => (string) $durationMonths,
+                'udf4' => (string) $tvCount,
                 'udf5' => 'hotel_subscription',
             ]);
         } catch (\Exception $e) {
@@ -76,6 +82,7 @@ class SubscriptionController extends Controller
     {
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,id',
+            'tv_count' => 'nullable|integer|min:1',
             'duration_months' => 'required|integer|in:1,3,6,12',
             'razorpay_order_id' => 'required_without:txnid|nullable|string',
             'razorpay_payment_id' => 'nullable|string',
@@ -90,8 +97,12 @@ class SubscriptionController extends Controller
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
-        $plan = Plan::findOrFail($validated['plan_id']);
-        $computedAmount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
+        $tvCount = (int) ($validated['tv_count'] ?? $hotel->room_count ?? 1);
+        $durationMonths = (int) $validated['duration_months'];
+
+        $calc = $plan->calculatePricing($tvCount);
+        $computedAmount = round($calc['total_amount'] * ($plan->billing_cycle === 'yearly' ? 1 : $durationMonths), 2);
 
         $gateway = PaymentManager::active();
         $gatewayCode = $gateway->getCode();
@@ -118,13 +129,14 @@ class SubscriptionController extends Controller
             return response()->json(['success' => false, 'message' => 'Payment verification failed. Plan not activated.'], 422);
         }
 
-        $result = $this->subscriptionService->activate($hotel, $plan, (int) $validated['duration_months'], [
+        $result = $this->subscriptionService->activate($hotel, $plan, $durationMonths, [
             'amount' => $computedAmount,
+            'tv_count' => $tvCount,
             'payment_method' => 'online_gateway',
             'gateway_code' => $gatewayCode,
             'transaction_id' => $transactionId,
             'payload' => $payload,
-            'notes' => "Online {$gatewayCode} payment: {$transactionId}",
+            'notes' => "Online {$gatewayCode} payment: {$transactionId} for {$tvCount} Connected TVs",
         ]);
 
         return response()->json([

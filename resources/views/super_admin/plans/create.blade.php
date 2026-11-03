@@ -64,8 +64,8 @@
         <form action="{{ route('super-admin.plans.store') }}" method="POST" class="space-y-8 sm:space-y-10">
             @csrf
 
-            <!-- Section 1: Plan Specifications & Pricing -->
-            <div class="space-y-5">
+            <!-- Section 1: Per-TV Plan Specifications & Financials -->
+            <div class="space-y-6">
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
@@ -74,9 +74,9 @@
                         <div>
                             <div class="flex items-center space-x-2">
                                 <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 1</span>
-                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Plan Details & Financials</h2>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Per-TV Pricing & Tax Configuration</h2>
                             </div>
-                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Define tier title, device ceiling limits, and monthly recurring price.</p>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Define subscription cycle, per-TV base rate, and GST tax application rules.</p>
                         </div>
                     </div>
                 </div>
@@ -91,59 +91,160 @@
                         <input type="text" 
                                name="name" 
                                required 
-                               value="{{ old('name') }}" 
-                               placeholder="e.g. Deluxe Enterprise Hospitality Tier" 
+                               value="{{ old('name', 'Hospitality Smart TV Pro') }}" 
+                               placeholder="e.g. Monthly Standard Connected TV Plan" 
                                class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-semibold placeholder:text-slate-400">
                     </div>
                 </div>
 
+                <!-- Billing Cycle Selector (Monthly vs Yearly) -->
+                <div>
+                    <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-2">
+                        Billing Cycle Frequency <span class="text-rose-500 font-black">*</span>
+                    </label>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <label class="relative flex items-center p-3.5 rounded-2xl border-2 cursor-pointer transition-all hover:border-purple-300 has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/50">
+                            <input type="radio" name="billing_cycle" value="monthly" {{ old('billing_cycle', 'monthly') === 'monthly' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0 mr-3">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs sm:text-sm font-extrabold text-slate-900">Monthly Plan</div>
+                                <div class="text-[11px] text-slate-500">Billed per Connected TV every 30 days</div>
+                            </div>
+                        </label>
+
+                        <label class="relative flex items-center p-3.5 rounded-2xl border-2 cursor-pointer transition-all hover:border-purple-300 has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/50">
+                            <input type="radio" name="billing_cycle" value="yearly" {{ old('billing_cycle') === 'yearly' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-sm shrink-0 mr-3">
+                                <i class="fa-solid fa-crown"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs sm:text-sm font-extrabold text-slate-900">Yearly Plan</div>
+                                <div class="text-[11px] text-slate-500">Billed per Connected TV every 365 days</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                    <!-- Max Rooms / TV Limit -->
+                    <!-- Price Per TV -->
                     <div>
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Max Room / TV Capacity Limit <span class="text-rose-500 font-black">*</span>
+                            Price Per Connected TV (₹ INR) <span class="text-rose-500 font-black">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">₹</span>
+                            <input type="number" 
+                                   id="input_price_per_tv"
+                                   name="price_per_tv" 
+                                   required 
+                                   min="0" 
+                                   step="0.01" 
+                                   value="{{ old('price_per_tv', 150) }}" 
+                                   oninput="calculateFormPreview()"
+                                   placeholder="e.g. 150" 
+                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
+                        </div>
+                        <p class="text-[11px] text-slate-500 mt-1 font-medium">Hotel selects TV count during subscription (e.g. 30 TVs × ₹150 = ₹4,500 base).</p>
+                    </div>
+
+                    <!-- Max Room / TV Limit (Optional ceiling) -->
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                            Max TV Capacity Allowance <span class="text-xs font-semibold text-slate-400 font-sans">(Safety Ceiling)</span>
                         </label>
                         <div class="relative">
                             <i class="fa-solid fa-tv absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                             <input type="number" 
                                    name="room_count" 
-                                   required 
                                    min="1" 
-                                   value="{{ old('room_count', 50) }}" 
-                                   placeholder="e.g. 50" 
+                                   value="{{ old('room_count', 500) }}" 
+                                   placeholder="e.g. 500" 
                                    class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
                         </div>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Maximum TVs hotel vendors under this tier are permitted to pair.</p>
+                        <p class="text-[11px] text-slate-500 mt-1 font-medium">Upper limit of TVs a single hotel property can license under this tier.</p>
+                    </div>
+                </div>
+
+                <!-- Tax Configuration -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-shield-halved text-purple-600 text-sm"></i>
+                            <h3 class="text-xs sm:text-sm font-bold text-slate-900">Tax / GST Rules</h3>
+                        </div>
+                        <a href="{{ route('super-admin.taxes.index') }}" target="_blank" class="text-[11px] font-bold text-purple-700 hover:underline flex items-center space-x-1">
+                            <span>Manage Taxes</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                        </a>
                     </div>
 
-                    <!-- Monthly Cost -->
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Monthly Subscription Fee (INR) <span class="text-rose-500 font-black">*</span>
-                        </label>
-                        <div class="relative">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-                            <input type="number" 
-                                   name="price" 
-                                   required 
-                                   min="0" 
-                                   step="1" 
-                                   value="{{ old('price', 1999) }}" 
-                                   placeholder="e.g. 1999" 
-                                   class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Select Applicable Tax -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Select Applicable Tax</label>
+                            <select id="select_tax_id" name="tax_id" onchange="calculateFormPreview()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-white text-xs font-semibold focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42]">
+                                <option value="" data-rate="0">No Tax (0%)</option>
+                                @foreach($taxes as $tax)
+                                    <option value="{{ $tax->id }}" data-rate="{{ $tax->rate }}" {{ old('tax_id', $tax->is_default ? $tax->id : null) == $tax->id ? 'selected' : '' }}>
+                                        {{ $tax->name }} ({{ number_format($tax->rate, 0) }}%{{ $tax->is_split ? ' - ' . $tax->split_rate_1 . '% ' . $tax->split_name_1 . ' + ' . $tax->split_rate_2 . '% ' . $tax->split_name_2 : '' }})
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
-                        <p class="text-xs text-slate-400 mt-1.5 font-medium">Billed every 30 days to the subscribed hotel property.</p>
+
+                        <!-- Tax Treatment (Inclusive vs Exclusive) -->
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1.5">Tax Calculation Mode</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
+                                    <input type="radio" name="tax_type" value="exclusive" {{ old('tax_type', 'exclusive') === 'exclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                                    <span>Exclusive (+ Tax)</span>
+                                </label>
+                                <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
+                                    <input type="radio" name="tax_type" value="inclusive" {{ old('tax_type') === 'inclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                                    <span>Inclusive (Tax in Price)</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-Time Live Preview Calculation Table -->
+                    <div class="mt-3 p-3.5 rounded-xl bg-white border border-slate-200/80 space-y-2">
+                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex items-center justify-between">
+                            <span><i class="fa-solid fa-calculator mr-1"></i> Live TV Pricing Matrix</span>
+                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold">18% GST (Exclusive)</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono">
+                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="text-[10px] text-slate-500 font-sans">10 Connected TVs</div>
+                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹1,770</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="text-[10px] text-slate-500 font-sans">25 Connected TVs</div>
+                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹4,425</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-purple-50 border border-purple-100">
+                                <div class="text-[10px] text-purple-700 font-sans font-bold">50 Connected TVs</div>
+                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5">₹8,850</div>
+                            </div>
+                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                                <div class="text-[10px] text-slate-500 font-sans">100 Connected TVs</div>
+                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5">₹17,700</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Plan Description -->
                 <div>
                     <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                        Plan Description & Coverage Highlights <span class="text-xs font-semibold text-slate-400 font-sans">(Optional)</span>
+                        Plan Description & Hotel Entitlements <span class="text-xs font-semibold text-slate-400 font-sans">(Optional)</span>
                     </label>
                     <textarea name="description" 
                               rows="3" 
-                              placeholder="Describe hotel amenities, bandwidth entitlements, and exclusive streaming services provided..." 
+                              placeholder="Describe hotel amenities, smart launcher features, streaming bundles, and remote management..." 
                               class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description') }}</textarea>
                 </div>
             </div>
@@ -495,7 +596,46 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     updateCounterAndSelectAll();
+    calculateFormPreview();
 });
+
+function calculateFormPreview() {
+    const pricePerTvInput = document.getElementById('input_price_per_tv');
+    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
+
+    const taxSelect = document.getElementById('select_tax_id');
+    const selectedOption = taxSelect ? taxSelect.options[taxSelect.selectedIndex] : null;
+    const taxRate = selectedOption ? (parseFloat(selectedOption.getAttribute('data-rate')) || 0) : 0;
+    const taxName = selectedOption && selectedOption.value ? selectedOption.text.split('(')[0].trim() : 'No Tax';
+
+    const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
+    const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
+
+    const badge = document.getElementById('preview_tax_badge');
+    if (badge) {
+        if (taxRate > 0) {
+            badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
+            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700' : 'bg-purple-50 text-purple-700'}`;
+        } else {
+            badge.textContent = 'No Tax (0%)';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600';
+        }
+    }
+
+    const tiers = [10, 25, 50, 100];
+    tiers.forEach(tvCount => {
+        let total = 0;
+        if (taxType === 'inclusive') {
+            total = Math.round(tvCount * rate * 100) / 100;
+        } else {
+            const subtotal = Math.round(tvCount * rate * 100) / 100;
+            const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
+            total = subtotal + taxAmount;
+        }
+        const el = document.getElementById(`preview_${tvCount}`);
+        if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
+    });
+}
 
 // Modal Helpers
 function openAddOttModal() {

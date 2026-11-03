@@ -151,16 +151,16 @@
                     </div>
                 </div>
 
-                <!-- 4. Partners & Finance (Users, Withdrawals, Commissions) -->
+                <!-- 4. Partners & Finance (Users, Invoices, Taxes, Withdrawals, Commissions) -->
                 @php
-                    $isFinanceActive = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.withdrawals.*') || Request::routeIs('super-admin.commissions.*');
+                    $isFinanceActive = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.invoices.*') || Request::routeIs('super-admin.taxes.*') || Request::routeIs('super-admin.withdrawals.*') || Request::routeIs('super-admin.commissions.*');
                     $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
                 @endphp
                 <div>
                     <button type="button" onclick="toggleSubmenu('submenu-finance')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFinanceActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-coins text-sm w-5 text-center {{ $isFinanceActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
-                            <span>Partners & Finance</span>
+                            <span>Billing & Finance</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             @if($pendingWithdrawalsCount > 0)
@@ -172,6 +172,14 @@
                         </div>
                     </button>
                     <div id="submenu-finance" class="mt-1 space-y-1 pl-6 pr-1 {{ $isFinanceActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.invoices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.invoices.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.invoices.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Tax Invoices</span>
+                        </a>
+                        <a href="{{ route('super-admin.taxes.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.taxes.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.taxes.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Tax Management</span>
+                        </a>
                         <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.users.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
                             <span class="truncate">Staff & Partners</span>

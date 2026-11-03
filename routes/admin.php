@@ -5,6 +5,8 @@ use App\Http\Controllers\SuperAdmin\LoginController as SuperLoginController;
 use App\Http\Controllers\SuperAdmin\DashboardController as SuperDashboardController;
 use App\Http\Controllers\SuperAdmin\HotelAdminController as SuperHotelController;
 use App\Http\Controllers\SuperAdmin\PlanController as SuperPlanController;
+use App\Http\Controllers\SuperAdmin\TaxController as SuperTaxController;
+use App\Http\Controllers\SuperAdmin\InvoiceController as SuperInvoiceController;
 use App\Http\Controllers\SuperAdmin\AmenityController as SuperAmenityController;
 use App\Http\Controllers\SuperAdmin\DeviceController as SuperDeviceController;
 use App\Http\Controllers\SuperAdmin\TemplateController as SuperTemplateController;
@@ -53,9 +55,19 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::put('/amenities/{id}', [SuperAmenityController::class, 'update'])->name('amenities.update');
     Route::delete('/amenities/{id}', [SuperAmenityController::class, 'destroy'])->name('amenities.destroy');
 
-    // Plans CRUD and Status Toggles
+    // Plans CRUD, Status Toggles, and Per-TV live preview
+    Route::get('/plans/{id}/calculate-preview', [SuperPlanController::class, 'calculatePreview'])->name('plans.calculate-preview');
     Route::get('/plans/{id}/toggle-status', [SuperPlanController::class, 'toggleStatus'])->name('plans.toggle-status');
     Route::resource('plans', SuperPlanController::class)->except(['show']);
+
+    // Tax Management System
+    Route::get('taxes/{id}/toggle-status', [SuperTaxController::class, 'toggleStatus'])->name('taxes.toggle-status');
+    Route::resource('taxes', SuperTaxController::class)->except(['create', 'edit', 'show']);
+
+    // Invoices Management System
+    Route::get('invoices', [SuperInvoiceController::class, 'index'])->name('invoices.index');
+    Route::get('invoices/{id}', [SuperInvoiceController::class, 'show'])->name('invoices.show');
+    Route::post('invoices/{id}/mark-paid', [SuperInvoiceController::class, 'markPaid'])->name('invoices.mark-paid');
 
     // User Management & Roles/Permissions
     Route::match(['get', 'post'], 'users/{id}/toggle-status', [SuperUserController::class, 'toggleStatus'])->name('users.toggle-status');
