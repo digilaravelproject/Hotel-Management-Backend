@@ -5,10 +5,20 @@
 
 @section('styles')
 <style>
+    .ott-card {
+        border-color: #E2E8F0 !important;
+        background-color: #FFFFFF !important;
+        transition: all 0.15s ease-in-out !important;
+    }
+    .ott-card:hover {
+        border-color: #CBD5E1 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05) !important;
+    }
     .ott-card.is-selected {
         border-color: #150A42 !important;
-        background-color: #F8F5FF !important;
-        box-shadow: 0 4px 14px rgba(21, 10, 66, 0.08) !important;
+        background-color: #FAF8FF !important;
+        box-shadow: 0 4px 16px rgba(21, 10, 66, 0.08) !important;
     }
     .ott-card.is-selected .ott-check-indicator {
         background-color: #150A42 !important;
@@ -285,7 +295,7 @@
 
             <!-- Section 2: Included OTT Platforms -->
             <div class="space-y-5 pt-6 border-t border-slate-100">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
                             <i class="fa-solid fa-play"></i>
@@ -299,30 +309,30 @@
                         </div>
                     </div>
 
-                    <!-- Right Controls -->
-                    <div class="flex flex-wrap items-center gap-2">
-                        <button type="button" 
-                                onclick="openAddOttModal()" 
-                                class="btn-sa-primary px-3 py-2 text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer">
-                            <i class="fa-solid fa-plus text-[11px]"></i>
-                            <span>Add OTT</span>
-                        </button>
-
-                        <a href="{{ route('super-admin.ott-master.index') }}" 
-                           class="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5"
-                           title="Open Applications Master Catalog">
-                            <i class="fa-solid fa-list-check text-[11px] text-purple-600"></i>
-                            <span class="hidden sm:inline">Master Catalog</span>
-                        </a>
-
-                        <span id="selectedCountBadge" class="px-2.5 py-1.5 rounded-xl text-xs font-bold font-mono bg-purple-50 text-[#150A42] border border-purple-100 shadow-2xs">
-                            0 selected
-                        </span>
-
-                        <label class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-[#F8F9FD] border border-slate-200 text-xs font-bold text-slate-700 hover:text-[#150A42] hover:bg-purple-50 cursor-pointer select-none transition-colors">
+                    <!-- Right Controls: Sleek Single-Line Toolbar -->
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                        <label class="inline-flex items-center space-x-2 px-3 py-2 rounded-xl bg-purple-50/80 border border-purple-200/80 text-xs font-bold text-[#150A42] hover:bg-purple-100/70 cursor-pointer select-none transition-colors shadow-2xs">
                             <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
                             <span>Select All</span>
                         </label>
+
+                        <span id="selectedCountBadge" class="px-3 py-2 rounded-xl text-xs font-bold font-mono bg-white text-slate-700 border border-slate-200 shadow-2xs">
+                            0 selected
+                        </span>
+
+                        <a href="{{ route('super-admin.ott-master.index') }}" 
+                           class="px-3 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5"
+                           title="Open Applications Master Catalog">
+                            <i class="fa-solid fa-layer-group text-[11px] text-purple-600"></i>
+                            <span class="hidden sm:inline">Master Catalog</span>
+                        </a>
+
+                        <button type="button" 
+                                onclick="openAddOttModal()" 
+                                class="btn-sa-primary px-3.5 py-2 text-xs font-bold shadow-xs flex items-center space-x-1.5 cursor-pointer">
+                            <i class="fa-solid fa-plus text-[11px]"></i>
+                            <span>Add OTT</span>
+                        </button>
                     </div>
                 </div>
 
@@ -333,7 +343,7 @@
                     }
                 @endphp
 
-                <!-- Real Image Icon Grid with Inline Edit / Delete Controls -->
+                <!-- Real Image Icon Grid with Generous Title Room & Top-Right Checkmarks -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
                     @foreach($ottPlatforms as $ott)
                         @php
@@ -344,24 +354,19 @@
                             $isSelected = in_array($package, $selectedPlatforms);
                         @endphp
                         <div id="ott-card-wrapper-{{ $ottId ?: Str::slug($package) }}" 
-                             class="ott-card group relative p-3 sm:p-3.5 bg-white border border-slate-200/90 rounded-2xl flex items-center space-x-3 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'is-selected' : '' }}"
+                             class="ott-card group relative p-3.5 sm:p-4 bg-white border-2 border-slate-200/90 rounded-2xl flex items-center space-x-3.5 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'is-selected' : '' }}"
                              onclick="handleCardClick(event, this)">
                             
-                            <!-- Checkbox -->
-                            <div class="relative shrink-0">
-                                <input type="checkbox" 
-                                       name="ott_platforms[]" 
-                                       value="{{ $package }}" 
-                                       class="ott-checkbox sr-only" 
-                                       {{ $isSelected ? 'checked' : '' }}
-                                       onchange="handleOttCheckboxChange(this)">
-                                <div class="ott-check-indicator w-5 h-5 rounded-lg border-2 border-slate-300 flex items-center justify-center transition-all bg-white group-hover:border-purple-400">
-                                    <i class="fa-solid fa-check text-[10px] {{ $isSelected ? 'block' : 'hidden' }}"></i>
-                                </div>
-                            </div>
+                            <!-- Hidden Checkbox for form post -->
+                            <input type="checkbox" 
+                                   name="ott_platforms[]" 
+                                   value="{{ $package }}" 
+                                   class="ott-checkbox sr-only" 
+                                   {{ $isSelected ? 'checked' : '' }}
+                                   onchange="handleOttCheckboxChange(this)">
 
                             <!-- Real Official Icon Image -->
-                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
+                            <div class="w-12 h-12 rounded-xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
                                 @if($iconSrc)
                                     <img src="{{ $iconSrc }}" 
                                          alt="{{ $name }}" 
@@ -378,33 +383,21 @@
                                 @endif
                             </div>
 
-                            <!-- Platform Details -->
-                            <div class="min-w-0 flex-1 pr-14">
-                                <h3 class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-[#150A42] transition-colors truncate">
+                            <!-- Platform Details (Generous full-width text) -->
+                            <div class="min-w-0 flex-1 pr-7">
+                                <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 group-hover:text-[#150A42] transition-colors leading-snug line-clamp-1" title="{{ $name }}">
                                     {{ $name }}
-                                </h3>
-                                <span class="text-[10px] sm:text-[11px] font-mono text-slate-400 truncate block mt-0.5" title="{{ $package }}">
+                                </h4>
+                                <span class="text-[10px] sm:text-[11px] font-mono text-slate-400 block mt-0.5 truncate" title="{{ $package }}">
                                     {{ $package }}
                                 </span>
                             </div>
 
-                            <!-- Action Buttons (Visible on mobile, hover on desktop) -->
-                            <div class="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center space-x-1 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
-                                @if($ottId)
-                                    <button type="button" 
-                                            onclick="openEditOttModal(event, {{ $ottId }}, '{{ addslashes($name) }}', '{{ addslashes($package) }}', '{{ $iconSrc }}')" 
-                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-purple-100 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-colors shadow-2xs cursor-pointer" 
-                                            title="Edit OTT details or icon">
-                                        <i class="fa-regular fa-pen-to-square text-[11px]"></i>
-                                    </button>
-
-                                    <button type="button" 
-                                            onclick="confirmDeleteOtt(event, {{ $ottId }}, '{{ addslashes($name) }}')" 
-                                            class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors shadow-2xs cursor-pointer" 
-                                            title="Delete OTT from Master Catalog">
-                                        <i class="fa-regular fa-trash-can text-[11px]"></i>
-                                    </button>
-                                @endif
+                            <!-- Top-Right Checkbox Badge -->
+                            <div class="absolute top-3.5 right-3.5 shrink-0 pointer-events-none">
+                                <div class="ott-check-indicator w-5 h-5 rounded-full border-2 border-slate-300 flex items-center justify-center transition-all bg-white group-hover:border-[#150A42]">
+                                    <i class="fa-solid fa-check text-[9px] {{ $isSelected ? 'block' : 'hidden' }}"></i>
+                                </div>
                             </div>
                         </div>
                     @endforeach

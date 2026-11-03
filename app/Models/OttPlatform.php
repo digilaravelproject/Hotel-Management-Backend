@@ -28,6 +28,8 @@ class OttPlatform extends Model
      * Package name to default SVG icon mapping
      */
     public static array $packageIconMap = [
+        'com.google.android.youtube.tv' => 'images/ott/youtube.svg',
+        'com.google.android.youtube' => 'images/ott/youtube.svg',
         'com.android.vending' => 'images/ott/google-play.svg',
         'com.netflix.mediaclient' => 'images/ott/netflix.svg',
         'in.startv.hotstar' => 'images/ott/hotstar.svg',

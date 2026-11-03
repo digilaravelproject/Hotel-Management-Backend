@@ -13,6 +13,7 @@ class OttPlatformSeeder extends Seeder
     public function run(): void
     {
         $platforms = [
+            ['name' => 'YouTube', 'package_name' => 'com.google.android.youtube.tv'],
             ['name' => 'Google Play Store', 'package_name' => 'com.android.vending'],
             ['name' => 'Netflix', 'package_name' => 'com.netflix.mediaclient'],
             ['name' => 'Disney+ Hotstar', 'package_name' => 'in.startv.hotstar'],
