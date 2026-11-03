@@ -27,7 +27,7 @@ Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->nam
 Route::match(['get', 'post'], '/payment/success', [\App\Http\Controllers\PaymentCallbackController::class, 'success'])->name('payment.success');
 Route::match(['get', 'post'], '/payment/failure', [\App\Http\Controllers\PaymentCallbackController::class, 'failure'])->name('payment.failure');
 
-// Fallback login route name
-Route::get('/login', function () {
-    return redirect()->route('distributor.login');
-})->name('login');
+// Unified Common Authentication Routes
+Route::get('/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+Route::post('/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('logout');

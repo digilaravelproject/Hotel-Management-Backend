@@ -20,9 +20,9 @@ use App\Http\Controllers\SuperAdmin\PaymentSettingController;
 |--------------------------------------------------------------------------
 */
 
-Route::get('/super-admin/login', [SuperLoginController::class, 'showLoginForm'])->name('super-admin.login');
-Route::post('/super-admin/login', [SuperLoginController::class, 'login']);
-Route::post('/super-admin/logout', [SuperLoginController::class, 'logout'])->name('super-admin.logout');
+Route::get('/super-admin/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('super-admin.login');
+Route::post('/super-admin/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+Route::post('/super-admin/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('super-admin.logout');
 
 // 2FA Auth Routes
 Route::get('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'showVerifyForm'])->name('2fa.verify');

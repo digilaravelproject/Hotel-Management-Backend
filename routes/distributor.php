@@ -12,9 +12,9 @@ use App\Http\Controllers\Distributor\DistributorController;
 
 // Guest authentication routes
 Route::prefix('distributor')->name('distributor.')->group(function () {
-    Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+    Route::post('logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('logout');
 });
 
 // Protected Distributor Routes (requires web auth and distributor/super_admin role)

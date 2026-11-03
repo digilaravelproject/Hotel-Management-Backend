@@ -17,7 +17,7 @@ class HotelAdminMiddleware
         $guard = Auth::guard('hotel_admin');
 
         if (!$guard->check()) {
-            return redirect()->route('landing')->with('error', 'Please log in to access the Hotel Admin panel.');
+            return redirect()->route('login')->with('error', 'Please log in to access the Hotel Admin panel.');
         }
 
         $hotelAdmin = $guard->user();
@@ -25,16 +25,16 @@ class HotelAdminMiddleware
         // 1. Check Approval Status
         if ($hotelAdmin->approval_status === 'pending') {
             Auth::guard('hotel_admin')->logout();
-            return redirect()->route('landing')->with('error', 'Your account is pending Super Admin approval.');
+            return redirect()->route('login')->with('error', 'Your account is pending Super Admin approval.');
         } elseif ($hotelAdmin->approval_status === 'disapproved') {
             Auth::guard('hotel_admin')->logout();
-            return redirect()->route('landing')->with('error', 'Your account has been disapproved by the Super Admin.');
+            return redirect()->route('login')->with('error', 'Your account has been disapproved by the Super Admin.');
         }
 
         // 2. Check Active Status
         if (!$hotelAdmin->status) {
             Auth::guard('hotel_admin')->logout();
-            return redirect()->route('landing')->with('error', 'Your account is currently inactive.');
+            return redirect()->route('login')->with('error', 'Your account is currently inactive.');
         }
 
         // 3. Check Subscription & Payment Status: If no active plan, unpaid, or expired, lock panel and force to Package / Payment page

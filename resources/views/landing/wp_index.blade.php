@@ -261,11 +261,11 @@ class="hfeed site" id="page">
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-53"><a href="#solutions" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Solutions</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-54"><a href="#gallery" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Gallery</a></li>
 <li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-56"><a href="#contactus" class="elementor-item elementor-item-anchor menu-link" tabindex="-1">Contact Us</a></li>
-<li class="menu-item menu-item-type-custom menu-item-object-custom"><a href="{{ route('hotel.login') }}" class="elementor-item menu-link" tabindex="-1">Login</a></li>
+<li class="menu-item menu-item-type-custom menu-item-object-custom"><a href="{{ route('login') }}" class="elementor-item menu-link" tabindex="-1">Login</a></li>
 </ul>			</nav>
 						</div>
 				<div class="elementor-element taj-header-login-wrap">
-					<a href="{{ route('hotel.login') }}" class="taj-login-button">
+					<a href="{{ route('login') }}" class="taj-login-button">
 						<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
 						<span>Login</span>
 					</a>

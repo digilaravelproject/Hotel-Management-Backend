@@ -163,7 +163,7 @@ class TwoFactorController extends Controller
     public function showVerifyForm()
     {
         if (!session()->has('2fa:user:id') || !session()->has('2fa:user:guard')) {
-            return redirect()->route('super-admin.login');
+            return redirect()->route('login');
         }
 
         return view('auth.2fa_verify');
@@ -179,7 +179,7 @@ class TwoFactorController extends Controller
         ]);
 
         if (!session()->has('2fa:user:id') || !session()->has('2fa:user:guard')) {
-            return redirect()->route('super-admin.login')->withErrors(['otp' => 'Session expired. Please log in again.']);
+            return redirect()->route('login')->withErrors(['otp' => 'Session expired. Please log in again.']);
         }
 
         $userId = session('2fa:user:id');
@@ -199,7 +199,7 @@ class TwoFactorController extends Controller
 
         if (!$user || !$user->google2fa_enabled) {
             session()->forget(['2fa:user:id', '2fa:user:guard', '2fa:user:remember']);
-            return redirect()->route('super-admin.login');
+            return redirect()->route('login');
         }
 
         $otpInput = trim($request->one_time_password);

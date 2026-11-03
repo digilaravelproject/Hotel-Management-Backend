@@ -15,7 +15,7 @@ class SuperAdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::guard('super_admin')->check()) {
-            return redirect()->route('super-admin.login')->with('error', 'Please log in to access the Super Admin panel.');
+            return redirect()->route('login')->with('error', 'Please log in to access the Super Admin panel.');
         }
 
         return $next($request);

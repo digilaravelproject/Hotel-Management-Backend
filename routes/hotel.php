@@ -22,9 +22,9 @@ Route::post('/register/complete', [RegistrationController::class, 'completeRegis
 Route::get('/register/success', [RegistrationController::class, 'showSuccess'])->name('register.success');
 
 // Hotel Admin Auth routes
-Route::get('/hotel/login', [HotelLoginController::class, 'showLoginForm'])->name('hotel.login');
-Route::post('/hotel/login', [HotelLoginController::class, 'login']);
-Route::post('/hotel/logout', [HotelLoginController::class, 'logout'])->name('hotel.logout');
+Route::get('/hotel/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('hotel.login');
+Route::post('/hotel/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+Route::post('/hotel/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('hotel.logout');
 Route::get('/hotel/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('hotel.forgot-password');
 Route::post('/hotel/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
 Route::get('/hotel/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('hotel.reset-password');
