@@ -45,7 +45,12 @@
         {{ $required ? 'required' : '' }}
         {{ $attributes->merge(['class' => 'sr-only global-dropdown-native-select']) }}>
         
-        @if($label)
+        @php
+            $slotHtml = (string) $slot;
+            $hasEmptyInSlot = !empty($options) ? false : (bool) preg_match('/<option\s+value=["\']{2}/i', $slotHtml);
+        @endphp
+
+        @if($label && !$hasEmptyInSlot)
             <option value="" {{ empty($selectedVal) && $selectedVal !== '0' && $selectedVal !== 0 ? 'selected' : '' }}>{{ $label }}</option>
         @endif
 
@@ -64,7 +69,7 @@
     <button type="button" 
         id="btn_{{ $selectId }}"
         onclick="toggleGlobalDropdown('{{ $selectId }}', event)"
-        class="global-dropdown-btn w-full flex items-center justify-between gap-1.5 border rounded-xl shadow-xs transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 cursor-pointer {{ $statusPillClasses }} {{ $selectClass }}"
+        class="global-dropdown-btn w-full flex items-center justify-between gap-1.5 border rounded-xl shadow-xs transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 cursor-pointer {{ $statusPillClasses }} {{ $selectClass ?: 'px-3.5 py-2 text-xs font-semibold' }}"
         aria-haspopup="listbox"
         aria-expanded="false"
         title="{{ $initialLabel }}">
@@ -258,9 +263,14 @@
             const listDiv = document.createElement('div');
             listDiv.className = 'py-0.5 space-y-0.5';
 
+            const seenKeys = new Set();
             Array.from(select.options).forEach(opt => {
                 const optVal = opt.value;
-                const optText = opt.text;
+                const optText = opt.text.trim();
+                const dedupeKey = optVal + ':::' + optText;
+                if (seenKeys.has(dedupeKey)) return;
+                seenKeys.add(dedupeKey);
+
                 const isSelected = opt.selected;
 
                 const valLower = optVal.toLowerCase();

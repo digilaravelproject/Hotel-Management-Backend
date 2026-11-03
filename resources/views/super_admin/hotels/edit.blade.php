@@ -258,21 +258,24 @@
                 @php
                     $selectedDistId = old('distributor_id', $hotel->distributor_id);
                 @endphp
-                <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 space-y-2">
-                    <label class="block text-xs sm:text-sm font-bold text-slate-700">
-                        1. Select Channel Partner / Distributor
-                    </label>
-                    <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor Partner)" :selected="$selectedDistId" theme="sa">
-                        <option value="">Direct Enterprise (No Distributor Partner)</option>
-                        @if(isset($distributors))
-                            @foreach($distributors as $distributor)
-                                <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
-                                    {{ $distributor->name }} — {{ $distributor->email }}
-                                </option>
-                            @endforeach
-                        @endif
-                    </x-dropdown>
-                    <p class="text-xs text-slate-400 font-medium">Link this hotel under a channel partner for commission tracking.</p>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#F8F9FD] border border-slate-200/80">
+                    <div class="space-y-0.5">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-800">
+                            1. Select Channel Partner / Distributor
+                        </label>
+                        <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Link this property to a channel partner or Pax TV direct.</p>
+                    </div>
+                    <div class="w-full sm:w-80 md:w-96 shrink-0">
+                        <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor Partner)" :selected="$selectedDistId" theme="sa" wrapClass="w-full" selectClass="px-3.5 py-2 text-xs font-semibold">
+                            @if(isset($distributors))
+                                @foreach($distributors as $distributor)
+                                    <option value="{{ $distributor->id }}" {{ (string)$distributor->id === (string)$selectedDistId ? 'selected' : '' }}>
+                                        {{ $distributor->name }} — {{ $distributor->email }}
+                                    </option>
+                                @endforeach
+                            @endif
+                        </x-dropdown>
+                    </div>
                 </div>
 
                 <!-- 2. Selectable Subscription Plan Cards -->
@@ -460,40 +463,46 @@
                 </div>
 
                 <!-- 5. Default In-Room TV Theme Style & Approval -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5 pt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 pt-2">
                     @php
                         $selectedTheme = old('selected_theme_id', $hotel->selected_theme_id ?? ($defaultThemeId ?? 1));
                     @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700">
                             Default In-Room TV Theme Style <span class="text-rose-500 font-black">*</span>
                         </label>
-                        <x-dropdown name="selected_theme_id" required theme="sa">
-                            @if(isset($themes) && $themes->isNotEmpty())
-                                @foreach($themes as $th)
-                                    <option value="{{ $th->theme_id }}" {{ (int)$selectedTheme === (int)$th->theme_id ? 'selected' : '' }}>
-                                        Theme #{{ $th->theme_id }} - {{ $th->theme_name ?? 'Standard Layout' }} {{ (int)$th->theme_id === (int)($defaultThemeId ?? 1) ? '(Recommended Default)' : '' }}
-                                    </option>
-                                @endforeach
-                            @else
-                                <option value="1" {{ (int)$selectedTheme === 1 ? 'selected' : '' }}>Theme #1 (Default Classic Cosmos)</option>
-                                <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury Noir)</option>
-                            @endif
-                        </x-dropdown>
+                        <div class="max-w-md">
+                            <x-dropdown name="selected_theme_id" required theme="sa" wrapClass="w-full" selectClass="px-3.5 py-2 text-xs font-semibold">
+                                @if(isset($themes) && $themes->isNotEmpty())
+                                    @foreach($themes as $th)
+                                        <option value="{{ $th->theme_id }}" {{ (int)$selectedTheme === (int)$th->theme_id ? 'selected' : '' }}>
+                                            Theme #{{ $th->theme_id }} - {{ $th->theme_name ?? 'Standard Layout' }} {{ (int)$th->theme_id === (int)($defaultThemeId ?? 1) ? '(Recommended Default)' : '' }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option value="1" {{ (int)$selectedTheme === 1 ? 'selected' : '' }}>Theme #1 (Default Classic Cosmos)</option>
+                                    <option value="2" {{ (int)$selectedTheme === 2 ? 'selected' : '' }}>Theme #2 (Modern Luxury Noir)</option>
+                                @endif
+                            </x-dropdown>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-medium">Smart TV UI theme rendered on guest-room hardware.</p>
                     </div>
 
                     @php
                         $currentApproval = old('approval_status', $hotel->approval_status);
                     @endphp
-                    <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
+                    <div class="space-y-1.5">
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700">
                             Approval Status <span class="text-rose-500 font-black">*</span>
                         </label>
-                        <x-dropdown name="approval_status" required theme="sa">
-                            <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active on Network)</option>
-                            <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
-                            <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
-                        </x-dropdown>
+                        <div class="max-w-xs">
+                            <x-dropdown name="approval_status" required theme="sa" wrapClass="w-full" selectClass="px-3.5 py-2 text-xs font-bold">
+                                <option value="approved" {{ $currentApproval === 'approved' ? 'selected' : '' }}>Approved (Active on Network)</option>
+                                <option value="pending" {{ $currentApproval === 'pending' ? 'selected' : '' }}>Pending Review</option>
+                                <option value="disapproved" {{ $currentApproval === 'disapproved' ? 'selected' : '' }}>Disapproved</option>
+                            </x-dropdown>
+                        </div>
+                        <p class="text-[11px] text-slate-400 font-medium">Platform compliance gate for TV hardware pairing.</p>
                     </div>
                 </div>
 
