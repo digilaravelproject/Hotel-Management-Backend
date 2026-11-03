@@ -53,17 +53,23 @@ class DashboardService
         // Total licensed rooms capacity
         $totalLicensedRooms = (clone $hotelQuery)->sum('room_count');
 
-        // 3. Revenue calculations
-        // A) Sales recorded through distributor package sales ledger
-        $recordedSalesRevenue = (clone $salesQuery)->sum('amount');
+        // 3. Dynamic Revenue Calculations (Across Distributor Sales, Paid Hotel Plans, and Gateway Transactions)
+        $recordedSalesRevenue = (float) (clone $salesQuery)->sum('amount');
 
-        // B) Estimated monthly recurring revenue from directly paid plans
-        $activePlanRevenue = (clone $hotelQuery)
+        $activePlanRevenue = (float) (clone $hotelQuery)
             ->where('payment_status', 'paid')
             ->join('plans', 'hotel_admins.plan_id', '=', 'plans.id')
             ->sum('plans.price');
 
-        $totalEstimatedRevenue = max($recordedSalesRevenue, $activePlanRevenue);
+        $gatewayRevenue = 0.0;
+        try {
+            $gatewayRevenue = (float) \App\Models\PaymentTransaction::query()
+                ->where('status', 'success')
+                ->when($distributorId !== null, fn($q) => $q->where('distributor_id', $distributorId))
+                ->sum('amount');
+        } catch (\Throwable $e) {}
+
+        $totalEstimatedRevenue = max($recordedSalesRevenue, $activePlanRevenue, $gatewayRevenue);
 
         // 4. Time-sensitive items: Expiring within 30 days
         $expiringSoon = (clone $hotelQuery)

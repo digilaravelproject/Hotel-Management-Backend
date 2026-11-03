@@ -90,7 +90,7 @@
                     </h2>
 
                     <p id="slideSubtitle" class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md drop-shadow-sm">
-                        Unified smart TV platform empowering luxury hotels, distributors, and fleet managers worldwide.
+                        Unified smart TV platform empowering luxury hotels, distributors, and connected TV operators worldwide.
                     </p>
                 </div>
 
@@ -267,10 +267,10 @@
     const slideData = [
         {
             headline: "Next-Gen Hospitality,<br>Seamless In-Room TV.",
-            subtitle: "Unified smart TV platform empowering luxury hotels, distributors, and fleet managers worldwide."
+            subtitle: "Unified smart TV platform empowering luxury hotels, distributors, and connected TV operators worldwide."
         },
         {
-            headline: "Centralized Fleet,<br>Zero Guest Friction.",
+            headline: "Connected TVs,<br>Zero Guest Friction.",
             subtitle: "Manage connected TV pairing, live app installations, and branded guest menus in real-time."
         },
         {

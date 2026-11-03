@@ -119,7 +119,7 @@
                     </div>
                 </div>
 
-                <!-- 3. Fleet & Tech Operations (Connected TVs, OTA Builds, OTT Master, FCM) -->
+                <!-- 3. Connected TVs & Tech Operations (Connected TVs, OTA Builds, OTT Master, FCM) -->
                 @php
                     $isFleetActive = Request::routeIs('super-admin.devices.*') || Request::routeIs('super-admin.templates.*') || Request::routeIs('super-admin.ott-master.*') || Request::routeIs('super-admin.firebase-settings.*');
                 @endphp
@@ -127,14 +127,14 @@
                     <button type="button" onclick="toggleSubmenu('submenu-fleet')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFleetActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
                         <div class="flex items-center space-x-3">
                             <i class="fa-solid fa-tv text-sm w-5 text-center {{ $isFleetActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
-                            <span>Fleet & Systems</span>
+                            <span>Connected TVs & Systems</span>
                         </div>
                         <i id="chevron-submenu-fleet" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isFleetActive ? 'rotate-180' : '' }}"></i>
                     </button>
                     <div id="submenu-fleet" class="mt-1 space-y-1 pl-6 pr-1 {{ $isFleetActive ? '' : 'hidden' }}">
                         <a href="{{ route('super-admin.devices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.devices.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.devices.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Hardware Fleet</span>
+                            <span class="truncate">Connected TVs</span>
                         </a>
                         <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.templates.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
@@ -254,7 +254,7 @@
 
                     <!-- Search Input (Jobie style) -->
                     <div class="relative w-full max-w-md hidden sm:block">
-                        <input type="text" placeholder="Search properties, hardware, distributors..." class="w-full pl-4 pr-11 py-2.5 rounded-full bg-[#F3F5FA] border border-transparent focus:border-purple-300 focus:bg-white focus:outline-hidden text-xs text-slate-700 placeholder:text-slate-400 font-medium transition-all shadow-inner">
+                        <input type="text" placeholder="Search hotels, connected TVs, distributors..." class="w-full pl-4 pr-11 py-2.5 rounded-full bg-[#F3F5FA] border border-transparent focus:border-purple-300 focus:bg-white focus:outline-hidden text-xs text-slate-700 placeholder:text-slate-400 font-medium transition-all shadow-inner">
                         <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-400">
                             <i class="fa-solid fa-magnifying-glass text-xs"></i>
                         </div>
@@ -370,17 +370,17 @@
                 @endif
             </a>
 
-            <!-- 5. Hardware Fleet -->
+            <!-- 5. Connected TVs -->
             @php $isFleet = Request::routeIs('super-admin.devices.*'); @endphp
             <a href="{{ route('super-admin.devices.index') }}" class="relative flex flex-col items-center group transition-all {{ $isFleet ? '-mt-5' : 'py-1 px-2' }}">
                 @if($isFleet)
                     <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
                         <i class="fa-solid fa-tv text-base"></i>
                     </div>
-                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Fleet</span>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">TVs</span>
                 @else
                     <i class="fa-solid fa-tv text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
-                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Fleet</span>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">TVs</span>
                 @endif
             </a>
 
