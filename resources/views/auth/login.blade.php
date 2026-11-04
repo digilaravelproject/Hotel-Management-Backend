@@ -4,265 +4,221 @@
 
 @section('styles')
 <style>
-    .login-cosmic-canvas {
-        background: radial-gradient(circle at 50% 15%, #1d1148 0%, #0f0828 50%, #060312 100%);
-    }
-    .slide-fade {
-        transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
-    }
-    .carousel-dot.active {
-        width: 2rem;
-        background-color: #FFFFFF;
-    }
-    .carousel-dot:not(.active) {
-        width: 0.5rem;
-        background-color: rgba(255, 255, 255, 0.4);
+    /* Dark Vignette Ambient Background matching Reference Image */
+    .payoneer-ambient-canvas {
+        background: radial-gradient(circle at 50% 30%, #201a18 0%, #130f0e 60%, #090706 100%);
     }
 
-    /* Ambient Floating Glowing Orbs */
-    @keyframes orbFloat1 {
-        0%, 100% { transform: translate(0px, 0px) scale(1); }
-        33% { transform: translate(50px, -35px) scale(1.12); }
-        66% { transform: translate(-35px, 45px) scale(0.95); }
+    /* Concentric Design Rings behind Device Mockup */
+    .concentric-ring-1 {
+        width: 380px;
+        height: 380px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
     }
-    @keyframes orbFloat2 {
-        0%, 100% { transform: translate(0px, 0px) scale(1); }
-        33% { transform: translate(-45px, 50px) scale(1.08); }
-        66% { transform: translate(35px, -30px) scale(0.92); }
-    }
-    @keyframes orbFloat3 {
-        0%, 100% { transform: translate(0px, 0px) scale(1); }
-        50% { transform: translate(30px, -50px) scale(1.15); }
-    }
-    .animate-orb-1 {
-        animation: orbFloat1 18s ease-in-out infinite;
-    }
-    .animate-orb-2 {
-        animation: orbFloat2 22s ease-in-out infinite;
-    }
-    .animate-orb-3 {
-        animation: orbFloat3 26s ease-in-out infinite;
+    .concentric-ring-2 {
+        width: 520px;
+        height: 520px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
     }
 </style>
 @endsection
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 login-cosmic-canvas relative overflow-hidden selection:bg-purple-600 selection:text-white">
+<div class="min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 payoneer-ambient-canvas relative overflow-hidden selection:bg-[#FF5722] selection:text-white">
 
-    <!-- Subtle Tech Dot-Grid Overlay for Depth -->
-    <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none z-0"></div>
+    <!-- Subtle Ambient Lighting Glow -->
+    <div class="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-[140px] pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-[450px] h-[450px] bg-purple-600/10 rounded-full blur-[140px] pointer-events-none"></div>
 
-    <!-- Live Animated Glowing Ambient Orbs -->
-    <div class="animate-orb-1 absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[650px] h-[550px] sm:h-[650px] bg-purple-600/20 rounded-full blur-[140px] pointer-events-none z-0"></div>
-    <div class="animate-orb-2 absolute bottom-12 right-1/4 w-[450px] sm:w-[550px] h-[450px] sm:h-[550px] bg-indigo-600/18 rounded-full blur-[130px] pointer-events-none z-0"></div>
-    <div class="animate-orb-3 absolute top-2/3 left-1/2 -translate-x-1/2 w-[380px] h-[380px] bg-violet-500/12 rounded-full blur-[110px] pointer-events-none z-0"></div>
-
-    <!-- Interactive Floating Particle Stars Canvas -->
-    <canvas id="cosmicParticles" class="absolute inset-0 pointer-events-none z-0"></canvas>
-
-    <!-- Main Floating Login Card -->
-    <!-- On Mobile: Centered max-w-md, compact & clean without slider -->
-    <!-- On Desktop: Expanded max-w-5xl split-screen with visual slider -->
-    <div class="w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white/95 backdrop-blur-2xl border border-white/40 rounded-[28px] sm:rounded-[36px] shadow-[0_25px_70px_rgba(0,0,0,0.55)] p-5 sm:p-7 lg:p-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+    <!-- MAIN FLOATING CARD (Exact Layout matching Reference Image 2) -->
+    <div class="w-full max-w-5xl xl:max-w-[1080px] bg-[#1D1918] rounded-[32px] sm:rounded-[38px] shadow-[0_30px_90px_rgba(0,0,0,0.7)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-white/5">
 
         <!-- ================================================================= -->
-        <!-- LEFT PANEL: Scenic Visual Slider (DESKTOP ONLY: hidden lg:flex)  -->
+        <!-- LEFT PANEL: Dark Editorial Screen (50% Width on Desktop)          -->
         <!-- ================================================================= -->
-        <div class="hidden lg:flex lg:col-span-6 xl:col-span-7 relative rounded-[24px] sm:rounded-[28px] overflow-hidden min-h-[580px] xl:min-h-[640px] flex-col justify-end p-6 sm:p-8 bg-slate-950 shadow-inner select-none">
+        <div class="lg:col-span-6 bg-[#1D1918] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative overflow-hidden select-none min-h-[480px] lg:min-h-[640px]">
 
-            <!-- Background Slide Images -->
-            <div class="absolute inset-0 z-0">
-                <!-- Slide 1 -->
-                <img id="loginSlide1" 
-                     src="{{ asset('images/landing/tv-wallpaper-resort.jpg') }}" 
-                     alt="Luxury Hotel Resort" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-100 scale-100">
-                <!-- Slide 2 -->
-                <img id="loginSlide2" 
-                     src="{{ asset('images/landing/hero-suite-sunset.jpg') }}" 
-                     alt="Smart TV Suite" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
-                <!-- Slide 3 -->
-                <img id="loginSlide3" 
-                     src="{{ asset('images/landing/about-suite-clean.jpg') }}" 
-                     alt="In-Room Hospitality" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
+            <!-- Background Concentric Architectural Rings -->
+            <div class="concentric-ring-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
+            <div class="concentric-ring-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
 
-                <!-- Gradient Vignettes for Atmospheric Depth -->
-                <div class="absolute inset-0 bg-gradient-to-t from-[#090417] via-[#090417]/55 to-black/30 z-10"></div>
-                <div class="absolute inset-0 bg-[#150A42]/30 mix-blend-multiply z-10"></div>
+            <!-- Top Tagline -->
+            <div class="relative z-10">
+                <p class="text-xs sm:text-[13px] text-[#A69E98] font-normal leading-relaxed max-w-sm">
+                    Global hospitality made simple — online in-room TV solutions for luxury hotels & networks.
+                </p>
             </div>
 
-            <!-- Bottom Content Inside Visual: Captions & Slide Dots -->
-            <div class="relative z-20 space-y-4 pt-12">
-                <div class="space-y-2">
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-[11px] font-bold tracking-wider uppercase backdrop-blur-md">
-                        <span class="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                        <span>Smart Hospitality Cloud</span>
+            <!-- Centered Large Editorial Typography -->
+            <div class="relative z-10 my-auto py-8 sm:py-12">
+                <h2 class="text-4xl sm:text-5xl xl:text-6xl font-normal text-white tracking-tight leading-[1.08] font-sans">
+                    Manage<br>
+                    <span class="font-medium text-[#F4F1EE]">your screens</span>
+                </h2>
+            </div>
+
+            <!-- Bottom Graphic: Handheld Device Display with In-Room Launcher Mockup -->
+            <div class="relative z-10 pt-4 flex items-end justify-between">
+                <!-- Device Mockup Card (Styled like Payoneer Hand Phone in Ref Image 2) -->
+                <div class="w-56 sm:w-64 bg-[#14100F] border border-white/10 rounded-[24px] p-3 shadow-2xl backdrop-blur-sm -mb-4 transform hover:-translate-y-1 transition-transform duration-300">
+                    <div class="bg-[#1C1615] rounded-[18px] p-3 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between text-[10px] text-white/50">
+                            <span>Room #304 TV</span>
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                        </div>
+                        <div class="text-lg font-bold text-white tracking-tight">Active Stream</div>
+                        <!-- Mini Bar Graph (like Payoneer reference chart) -->
+                        <div class="flex items-end space-x-1.5 h-10 pt-2">
+                            <div class="w-3 bg-white/20 rounded-xs h-4"></div>
+                            <div class="w-3 bg-white/30 rounded-xs h-6"></div>
+                            <div class="w-3 bg-[#FF5722] rounded-xs h-9"></div>
+                            <div class="w-3 bg-[#FF5722] rounded-xs h-7"></div>
+                            <div class="w-3 bg-white/25 rounded-xs h-5"></div>
+                            <div class="w-3 bg-white/15 rounded-xs h-3"></div>
+                        </div>
                     </div>
-
-                    <h2 id="slideHeadline" class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
-                        Next-Gen Hospitality,<br>Seamless In-Room TV.
-                    </h2>
-
-                    <p id="slideSubtitle" class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md drop-shadow-sm">
-                        Unified smart TV platform empowering luxury hotels, distributors, and connected TV operators worldwide.
-                    </p>
                 </div>
 
-                <!-- Slide Dots Indicators -->
-                <div class="flex items-center space-x-2 pt-2">
-                    <button type="button" onclick="goToSlide(0)" class="carousel-dot active h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 1"></button>
-                    <button type="button" onclick="goToSlide(1)" class="carousel-dot h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 2"></button>
-                    <button type="button" onclick="goToSlide(2)" class="carousel-dot h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 3"></button>
+                <!-- Bottom Circular Hospitality Icon (as in Ref Image 2) -->
+                <div class="w-8 h-8 rounded-full border border-orange-500/50 text-[#FF5722] flex items-center justify-center text-xs shrink-0 mb-1">
+                    <i class="fa-solid fa-hotel text-[10px]"></i>
                 </div>
             </div>
         </div>
 
         <!-- ================================================================= -->
-        <!-- RIGHT PANEL: Sleek Authentication Form (Light Elevated Card)      -->
+        <!-- RIGHT PANEL: Crisp White Payoneer-Style Card (50% Width)         -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 xl:col-span-5 flex flex-col justify-center px-2 sm:px-4 lg:px-4 xl:px-6 py-2 sm:py-4 text-left">
+        <div class="lg:col-span-6 bg-white lg:rounded-l-[38px] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative shadow-xl">
 
-            <!-- Brand Logo (Prominent on Mobile & Desktop) -->
-            <div class="flex items-center justify-center lg:justify-start mb-5 sm:mb-6">
-                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-block transition-transform hover:scale-105">
+            <!-- Top Header Row: Brand Logo & Sign Up -->
+            <div class="flex items-center justify-between pb-6 sm:pb-8">
+                <!-- Brand Logo (Pura Left-Aligned) -->
+                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-flex items-center transition-transform hover:scale-105">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
                         <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
                              alt="{{ app_name() }}" 
-                             class="h-14 sm:h-16 w-auto max-w-[220px] sm:max-w-[240px] object-contain drop-shadow-md">
+                             class="h-10 sm:h-12 w-auto max-w-[170px] sm:max-w-[190px] object-contain">
                     </picture>
+                </a>
+
+                <!-- Top Right Sign Up Link (matching Reference Image 2) -->
+                <a href="{{ url('/') }}" class="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center space-x-1.5 transition-colors group">
+                    <i class="fa-regular fa-user text-xs text-slate-400 group-hover:text-slate-700"></i>
+                    <span>Sign Up</span>
                 </a>
             </div>
 
-            <!-- Title & Subtitle -->
-            <div class="space-y-1 mb-5 sm:mb-6 text-center lg:text-left">
-                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-sans">
-                    Welcome back
+            <!-- Main Form Body: Centered & Pill Inputs (Pixel-to-Pixel match) -->
+            <div class="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto">
+
+                <!-- Headline -->
+                <h1 class="text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight font-sans mb-8">
+                    Sign In
                 </h1>
-                <p class="text-xs sm:text-sm text-slate-500 font-medium">
-                    Sign in with your email to access your dashboard.
-                </p>
-            </div>
 
-            <!-- Flash & Error Alerts -->
-            @if(session('success'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
-                    <span>{{ session('success') }}</span>
-                </div>
-            @endif
-
-            @if(session('status'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-info text-purple-600 text-sm shrink-0"></i>
-                    <span>{{ session('status') }}</span>
-                </div>
-            @endif
-
-            @if(session('error'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm shrink-0"></i>
-                    <span>{{ session('error') }}</span>
-                </div>
-            @endif
-
-            @if(isset($errors) && $errors->any())
-                <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
-                    <div class="flex items-center space-x-2 font-bold text-rose-900">
-                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
-                        <span>Authentication failed:</span>
+                <!-- Flash & Error Alerts -->
+                @if(session('success'))
+                    <div class="mb-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2 font-medium">
+                        <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
+                        <span>{{ session('success') }}</span>
                     </div>
-                    <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-700 text-xs font-medium">
-                        @foreach($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+                @endif
 
-            <!-- Common Multi-Role Login Form -->
-            <form action="{{ route('login') }}" method="POST" class="space-y-4">
-                @csrf
+                @if(session('status'))
+                    <div class="mb-4 p-3 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs flex items-center space-x-2 font-medium">
+                        <i class="fa-solid fa-circle-info text-purple-600 text-sm shrink-0"></i>
+                        <span>{{ session('status') }}</span>
+                    </div>
+                @endif
 
-                <!-- Email Input -->
-                <div class="space-y-1.5">
-                    <label for="loginEmail" class="block text-xs font-bold text-slate-700">
-                        Email Address <span class="text-rose-500 font-black">*</span>
-                    </label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-regular fa-envelope text-xs"></i>
+                @if(session('error'))
+                    <div class="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2 font-medium">
+                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm shrink-0"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
+                @endif
+
+                @if(isset($errors) && $errors->any())
+                    <div class="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
+                        <div class="flex items-center space-x-2 font-bold text-rose-900">
+                            <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
+                            <span>Sign in failed:</span>
                         </div>
-                        <input type="email" 
+                        <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-700 text-xs font-medium">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <!-- Common Authentication Form with Pill Inputs -->
+                <form action="{{ route('login') }}" method="POST" class="space-y-4">
+                    @csrf
+
+                    <!-- 1. Email or Username (Rounded Pill Input) -->
+                    <div>
+                        <input type="text" 
                                id="loginEmail" 
                                name="email" 
                                required 
                                value="{{ old('email') }}" 
-                               placeholder="name@company.com" 
+                               placeholder="Email or Username" 
                                autocomplete="email" 
                                autofocus
-                               class="w-full pl-10 pr-4 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
+                               class="w-full px-5 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-400 bg-white transition-all">
                     </div>
-                </div>
 
-                <!-- Password Input -->
-                <div class="space-y-1.5">
-                    <div class="flex items-center justify-between">
-                        <label for="loginPassword" class="block text-xs font-bold text-slate-700">
-                            Password <span class="text-rose-500 font-black">*</span>
-                        </label>
-                        @if(Route::has('hotel.forgot-password'))
-                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-purple-700 hover:text-purple-900 hover:underline transition-colors">
-                                Forgot password?
-                            </a>
-                        @endif
-                    </div>
+                    <!-- 2. Password (Rounded Pill Input with Toggle Eye) -->
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-regular fa-lock text-xs"></i>
-                        </div>
                         <input type="password" 
                                id="loginPassword" 
                                name="password" 
                                required 
-                               placeholder="••••••••" 
+                               placeholder="Password" 
                                autocomplete="current-password"
-                               class="w-full pl-10 pr-11 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
+                               class="w-full pl-5 pr-12 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-400 bg-white transition-all">
                         <button type="button" 
                                 onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" 
-                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer transition-colors" 
                                 aria-label="Toggle password visibility">
-                            <i id="loginEyeIcon" class="fa-regular fa-eye text-xs"></i>
+                            <i id="loginEyeIcon" class="fa-regular fa-eye-slash text-sm"></i>
                         </button>
                     </div>
+
+                    <!-- 3. Forgot Password Link (matching Reference Image 2 orange coral text) -->
+                    <div class="pt-0.5">
+                        @if(Route::has('hotel.forgot-password'))
+                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-semibold text-[#FF5722] hover:text-[#E64A19] hover:underline transition-colors inline-block">
+                                Forgot password?
+                            </a>
+                        @endif
+                    </div>
+
+                    <!-- 4. Gradient Pill CTA Button (matching Reference Image 2) -->
+                    <button type="submit" 
+                            class="w-full mt-3 py-3.5 px-6 rounded-full bg-gradient-to-r from-[#FF5722] via-[#FF6E40] to-[#FF5252] hover:from-[#F4511E] hover:to-[#E64A19] text-white font-extrabold text-sm shadow-md shadow-orange-500/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+                        <span>Sign In</span>
+                    </button>
+                </form>
+
+            </div>
+
+            <!-- Bottom Footer Row: Copyright & Links (matching Reference Image 2) -->
+            <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 text-[11px] text-slate-400 gap-2">
+                <div>
+                    © 2005-2026 Pax TV Launcher Inc.
                 </div>
-
-                <!-- Remember Me Checkbox -->
-                <div class="flex items-center justify-between pt-0.5">
-                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer select-none">
-                        <input type="checkbox" 
-                               name="remember" 
-                               id="rememberDevice" 
-                               {{ old('remember') ? 'checked' : '' }}
-                               class="w-4 h-4 rounded-md border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
-                        <span>Remember this device</span>
-                    </label>
+                <div class="flex items-center space-x-4 text-slate-500 font-medium">
+                    <a href="{{ url('/') }}" class="hover:text-slate-900 transition-colors">Contact Us</a>
+                    <span class="flex items-center space-x-1 cursor-pointer hover:text-slate-900 transition-colors">
+                        <span>English</span>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
+                    </span>
                 </div>
-
-                <!-- Primary Submit CTA Button -->
-                <button type="submit" 
-                        class="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#150A42] via-[#201063] to-purple-700 hover:from-[#1c0d56] hover:via-[#261376] hover:to-purple-600 text-white font-extrabold text-sm shadow-xl shadow-[#150A42]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer mt-2">
-                    <span>Sign In</span>
-                    <i class="fa-solid fa-arrow-right text-xs"></i>
-                </button>
-            </form>
-
-            <!-- Bottom Multi-Role Detection Note -->
-            <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-center space-x-2 text-xs text-slate-500 font-medium">
-                <i class="fa-solid fa-shield-halved text-emerald-600 text-xs"></i>
-                <span>Smart Multi-Tenant Enterprise Authentication</span>
             </div>
 
         </div>
@@ -274,7 +230,7 @@
 
 @section('scripts')
 <script>
-    // 1. Password Visibility Toggle
+    // Password Visibility Toggle
     function togglePasswordVisibility(inputId, iconId) {
         const input = document.getElementById(inputId);
         const icon = document.getElementById(iconId);
@@ -282,146 +238,13 @@
 
         if (input.type === 'password') {
             input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = 'password';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         }
     }
-
-    // 2. Smooth Left Panel Image Carousel
-    const slideData = [
-        {
-            headline: "Next-Gen Hospitality,<br>Seamless In-Room TV.",
-            subtitle: "Unified smart TV platform empowering luxury hotels, distributors, and connected TV operators worldwide."
-        },
-        {
-            headline: "Connected TVs,<br>Zero Guest Friction.",
-            subtitle: "Manage connected TV pairing, live app installations, and branded guest menus in real-time."
-        },
-        {
-            headline: "5-Star Experience,<br>Automated Privacy.",
-            subtitle: "Instant credentials wiped on guest checkout with zero local credential storage on property screens."
-        }
-    ];
-
-    let currentSlide = 0;
-    const slides = [
-        document.getElementById('loginSlide1'),
-        document.getElementById('loginSlide2'),
-        document.getElementById('loginSlide3')
-    ];
-    const dots = document.querySelectorAll('.carousel-dot');
-    const headlineEl = document.getElementById('slideHeadline');
-    const subtitleEl = document.getElementById('slideSubtitle');
-
-    function goToSlide(index) {
-        currentSlide = index;
-        slides.forEach((slide, i) => {
-            if (!slide) return;
-            if (i === currentSlide) {
-                slide.classList.remove('opacity-0', 'scale-105');
-                slide.classList.add('opacity-100', 'scale-100');
-            } else {
-                slide.classList.remove('opacity-100', 'scale-100');
-                slide.classList.add('opacity-0', 'scale-105');
-            }
-        });
-
-        dots.forEach((dot, i) => {
-            if (i === currentSlide) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-
-        if (headlineEl && slideData[currentSlide]) {
-            headlineEl.innerHTML = slideData[currentSlide].headline;
-        }
-        if (subtitleEl && slideData[currentSlide]) {
-            subtitleEl.textContent = slideData[currentSlide].subtitle;
-        }
-    }
-
-    // Auto rotate every 6 seconds if on desktop
-    if (window.innerWidth >= 1024) {
-        setInterval(() => {
-            const nextSlide = (currentSlide + 1) % slides.length;
-            goToSlide(nextSlide);
-        }, 6000);
-    }
-
-    // 3. Ultra-Lightweight Cosmic Particles Canvas Animation
-    (function initCosmicCanvas() {
-        const canvas = document.getElementById('cosmicParticles');
-        if (!canvas) return;
-        const ctx = canvas.getContext('2d');
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-
-        const particleCount = window.innerWidth < 768 ? 25 : 50;
-        const particles = [];
-
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                radius: Math.random() * 1.6 + 0.4,
-                speedY: Math.random() * 0.35 + 0.1,
-                speedX: (Math.random() - 0.5) * 0.2,
-                alpha: Math.random() * 0.7 + 0.2,
-                pulseSpeed: Math.random() * 0.02 + 0.005,
-                pulseAngle: Math.random() * Math.PI * 2
-            });
-        }
-
-        let animationFrameId;
-        function renderParticles() {
-            ctx.clearRect(0, 0, width, height);
-
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.y -= p.speedY;
-                p.x += p.speedX;
-                p.pulseAngle += p.pulseSpeed;
-
-                const currentAlpha = p.alpha + Math.sin(p.pulseAngle) * 0.25;
-
-                if (p.y < -10) {
-                    p.y = height + 10;
-                    p.x = Math.random() * width;
-                }
-                if (p.x < -10) p.x = width + 10;
-                if (p.x > width + 10) p.x = -10;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(192, 175, 255, ${Math.max(0.1, Math.min(0.9, currentAlpha))})`;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
-                ctx.fill();
-            }
-
-            animationFrameId = requestAnimationFrame(renderParticles);
-        }
-
-        renderParticles();
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                cancelAnimationFrame(animationFrameId);
-            } else {
-                renderParticles();
-            }
-        });
-    })();
 </script>
 @endsection

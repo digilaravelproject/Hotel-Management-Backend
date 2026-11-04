@@ -52,11 +52,11 @@
         <aside id="sidebar" class="w-64 bg-gradient-to-b from-[#150A42] via-[#0F0631] to-[#090320] text-white flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 -translate-x-full md:translate-x-0 border-r border-white/[0.08] shadow-2xl">
             
             <!-- Sidebar Header & Logo -->
-            <div class="h-24 flex items-center justify-center px-5 border-b border-white/[0.08] relative">
-                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center justify-center group">
+            <div class="h-24 flex items-center justify-start px-4 sm:px-5 border-b border-white/[0.08] relative">
+                <a href="{{ route('super-admin.dashboard') }}" class="flex items-center justify-start group">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-16 sm:h-20 w-auto max-w-[220px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
+                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-16 sm:h-20 w-auto max-w-[200px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
                     </picture>
                 </a>
                 <button type="button" onclick="toggleSidebar()" aria-label="Close Navigation Menu" class="absolute right-4 top-1/2 -translate-y-1/2 md:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border border-white/10 transition-all active:scale-95 cursor-pointer">
@@ -258,6 +258,14 @@
                         <span class="w-3.5 h-[2.5px] rounded-full bg-slate-700 group-hover:w-5 group-hover:bg-[#150A42] transition-all self-start ml-[11px]"></span>
                         <span class="w-5 h-[2.5px] rounded-full bg-slate-700 group-hover:bg-[#150A42] transition-colors"></span>
                     </button>
+
+                    <!-- Mobile Brand Logo (Left-aligned on mobile header) -->
+                    <a href="{{ route('super-admin.dashboard') }}" class="md:hidden flex items-center shrink-0">
+                        <picture>
+                            <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                            <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto max-w-[140px] object-contain">
+                        </picture>
+                    </a>
 
                     <!-- Search Input (Jobie style) -->
                     <div class="relative w-full max-w-md hidden sm:block">

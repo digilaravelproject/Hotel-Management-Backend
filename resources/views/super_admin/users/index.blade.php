@@ -75,8 +75,9 @@
 
     <!-- Filter & Search Bar -->
     <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs">
-        <form method="GET" action="{{ route('super-admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <div>
+        <form method="GET" action="{{ route('super-admin.users.index') }}" class="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+            <!-- Left: Search Box -->
+            <div class="w-full lg:w-80 shrink-0">
                 <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Search Partner / User</label>
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -84,26 +85,29 @@
                 </div>
             </div>
 
-            <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Assigned Role</label>
-                <x-dropdown name="role" label="All Roles" :options="$roles->pluck('name', 'name')->mapWithKeys(fn($name, $value) => [$value => ucwords(str_replace('_', ' ', $name))])->toArray()" :selected="request('role', '')" theme="sa" />
-            </div>
+            <!-- Right: Role, Status, and Apply Filters (Pushed to Right) -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-end gap-3 w-full lg:w-auto">
+                <div class="w-full sm:w-48">
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Assigned Role</label>
+                    <x-dropdown name="role" label="All Roles" :options="$roles->pluck('name', 'name')->mapWithKeys(fn($name, $value) => [$value => ucwords(str_replace('_', ' ', $name))])->toArray()" :selected="request('role', '')" theme="sa" wrapClass="w-full" selectClass="py-2 px-3 text-xs font-semibold" />
+                </div>
 
-            <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Account Status</label>
-                <x-dropdown name="status" label="All Statuses" :options="['1' => 'Active Only', '0' => 'Disabled Only']" :selected="request('status', '')" theme="sa" />
-            </div>
+                <div class="w-full sm:w-44">
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Account Status</label>
+                    <x-dropdown name="status" label="All Statuses" :options="['1' => 'Active Only', '0' => 'Disabled Only']" :selected="request('status', '')" theme="sa" wrapClass="w-full" selectClass="py-2 px-3 text-xs font-semibold" />
+                </div>
 
-            <div class="flex items-end space-x-2">
-                <button type="submit" class="flex-1 py-2 px-4 text-xs rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
-                    <i class="fa-solid fa-filter text-[10px]"></i>
-                    <span>Apply Filters</span>
-                </button>
-                @if(request()->hasAny(['search', 'role', 'status']))
-                    <a href="{{ route('super-admin.users.index') }}" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all flex items-center justify-center" title="Reset Filters">
-                        <i class="fa-solid fa-rotate-left"></i>
-                    </a>
-                @endif
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button type="submit" class="w-full sm:w-auto py-2 px-5 text-xs rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-filter text-[10px]"></i>
+                        <span>Apply Filters</span>
+                    </button>
+                    @if(request()->hasAny(['search', 'role', 'status']))
+                        <a href="{{ route('super-admin.users.index') }}" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all flex items-center justify-center" title="Reset Filters">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </a>
+                    @endif
+                </div>
             </div>
         </form>
     </div>
