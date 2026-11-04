@@ -9,7 +9,20 @@
         background: radial-gradient(circle at 50% 15%, #1d1148 0%, #0f0828 50%, #060312 100%);
     }
 
-    /* 2. Ambient Floating Glowing Orbs Animations */
+    /* 2. Full-Panel Sliding Images Crossfade & Zoom Transitions */
+    .slide-fade {
+        transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .carousel-dot.active {
+        width: 1.5rem;
+        background-color: #A855F7;
+    }
+    .carousel-dot:not(.active) {
+        width: 0.45rem;
+        background-color: rgba(255, 255, 255, 0.25);
+    }
+
+    /* 3. Ambient Floating Glowing Orbs */
     @keyframes orbFloat1 {
         0%, 100% { transform: translate(0px, 0px) scale(1); }
         33% { transform: translate(50px, -35px) scale(1.12); }
@@ -24,27 +37,24 @@
         0%, 100% { transform: translate(0px, 0px) scale(1); }
         50% { transform: translate(30px, -50px) scale(1.15); }
     }
-    .animate-orb-1 {
-        animation: orbFloat1 18s ease-in-out infinite;
-    }
-    .animate-orb-2 {
-        animation: orbFloat2 22s ease-in-out infinite;
-    }
-    .animate-orb-3 {
-        animation: orbFloat3 26s ease-in-out infinite;
-    }
+    .animate-orb-1 { animation: orbFloat1 18s ease-in-out infinite; }
+    .animate-orb-2 { animation: orbFloat2 22s ease-in-out infinite; }
+    .animate-orb-3 { animation: orbFloat3 26s ease-in-out infinite; }
 
-    /* 3. Concentric Rings behind Screen Mockup */
-    .concentric-ring-1 {
-        width: 380px;
-        height: 380px;
-        border: 1px solid rgba(168, 85, 247, 0.12);
-    }
-    .concentric-ring-2 {
-        width: 540px;
-        height: 540px;
-        border: 1px solid rgba(168, 85, 247, 0.07);
-    }
+    /* 4. Active Stream Equalizer Bars Live Pulse Animations */
+    @keyframes eq1 { 0%, 100% { height: 10px; } 50% { height: 26px; } }
+    @keyframes eq2 { 0%, 100% { height: 22px; } 50% { height: 12px; } }
+    @keyframes eq3 { 0%, 100% { height: 32px; } 50% { height: 18px; } }
+    @keyframes eq4 { 0%, 100% { height: 16px; } 50% { height: 32px; } }
+    @keyframes eq5 { 0%, 100% { height: 24px; } 50% { height: 14px; } }
+    @keyframes eq6 { 0%, 100% { height: 12px; } 50% { height: 22px; } }
+
+    .animate-eq-1 { animation: eq1 1.2s ease-in-out infinite; }
+    .animate-eq-2 { animation: eq2 0.9s ease-in-out infinite 0.1s; }
+    .animate-eq-3 { animation: eq3 1.4s ease-in-out infinite 0.2s; }
+    .animate-eq-4 { animation: eq4 1.1s ease-in-out infinite 0.15s; }
+    .animate-eq-5 { animation: eq5 1.3s ease-in-out infinite 0.05s; }
+    .animate-eq-6 { animation: eq6 1.0s ease-in-out infinite 0.25s; }
 </style>
 @endsection
 
@@ -62,193 +72,215 @@
     <!-- Interactive Floating Particle Stars Canvas -->
     <canvas id="cosmicParticles" class="absolute inset-0 pointer-events-none z-0"></canvas>
 
-    <!-- MAIN FLOATING CARD (Exact Layout from Reference Image in Brand Colors) -->
-    <div class="w-full max-w-5xl xl:max-w-[1080px] bg-[#0E0625] rounded-[32px] sm:rounded-[40px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-white/10">
+    <!-- ========================================================================= -->
+    <!-- MAIN SPLIT CARD (Exact Payoneer-Style Layout with Signature Cosmic Theme) -->
+    <!-- ========================================================================= -->
+    <div class="w-full max-w-5xl xl:max-w-[1120px] bg-[#0d0628] rounded-[36px] sm:rounded-[44px] shadow-[0_30px_90px_rgba(0,0,0,0.85)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-white/10">
 
         <!-- ================================================================= -->
-        <!-- LEFT PANEL: Dark Editorial Screen (50% Width on Desktop)          -->
+        <!-- LEFT PANEL: "Manage your screens" + Concentric Rings + Stream Eq  -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 bg-gradient-to-b from-[#150A3E] via-[#0E0625] to-[#070314] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative overflow-hidden select-none min-h-[480px] lg:min-h-[660px]">
+        <div class="hidden lg:flex lg:col-span-6 xl:col-span-6 relative overflow-hidden min-h-[620px] xl:min-h-[680px] flex-col justify-between p-10 lg:p-12 xl:p-14 select-none bg-[#0e0725]">
 
-            <!-- Background Concentric Architectural Rings -->
-            <div class="concentric-ring-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
-            <div class="concentric-ring-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
+            <!-- Provision for Full-Panel Background Sliding Images -->
+            <div class="absolute inset-0 z-0">
+                <!-- Slide 1 (In-Room TV Suite with Remote) -->
+                <img id="loginSlide1" 
+                     src="{{ asset('images/landing/about-suite-remote.jpg') }}" 
+                     alt="In-Room Hospitality Screen" 
+                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-25 scale-100">
 
-            <!-- Top Tagline (matching Reference Image) -->
-            <div class="relative z-10">
-                <p class="text-xs sm:text-[13px] text-purple-200/70 font-normal leading-relaxed max-w-sm">
+                <!-- Slide 2 (Luxury Hotel Resort Wallpaper) -->
+                <img id="loginSlide2" 
+                     src="{{ asset('images/landing/tv-wallpaper-resort.jpg') }}" 
+                     alt="Luxury Hotel Resort" 
+                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
+
+                <!-- Slide 3 (Smart Suite at Sunset) -->
+                <img id="loginSlide3" 
+                     src="{{ asset('images/landing/hero-suite-sunset.jpg') }}" 
+                     alt="Smart TV Suite" 
+                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
+
+                <!-- Deep Cosmic Purple Gradients Over Sliding Photos -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#0e0725] via-[#0e0725]/85 to-[#0e0725]/70 z-10"></div>
+                <div class="absolute inset-0 bg-[#150A42]/50 mix-blend-multiply z-10"></div>
+            </div>
+
+            <!-- Concentric Circular Orbits / Wave Rings (From Reference Mockup) -->
+            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[620px] h-[620px] pointer-events-none z-10">
+                <div class="absolute inset-0 m-auto w-[240px] h-[240px] rounded-full border border-purple-400/[0.08]"></div>
+                <div class="absolute inset-0 m-auto w-[420px] h-[420px] rounded-full border border-purple-400/[0.07]"></div>
+                <div class="absolute inset-0 m-auto w-[600px] h-[600px] rounded-full border border-purple-400/[0.05]"></div>
+            </div>
+
+            <!-- Top Tagline -->
+            <div class="relative z-20">
+                <p class="text-slate-300/80 text-xs sm:text-sm font-normal max-w-sm leading-relaxed tracking-wide">
                     Global hospitality made simple — online in-room TV solutions for luxury hotels & networks.
                 </p>
             </div>
 
-            <!-- Centered Large Editorial Typography (matching Reference Image) -->
-            <div class="relative z-10 my-auto py-8 sm:py-12">
-                <h2 class="text-4xl sm:text-5xl xl:text-6xl font-normal text-white tracking-tight leading-[1.08] font-sans">
-                    Manage<br>
-                    <span class="font-medium text-purple-100">your screens</span>
-                </h2>
+            <!-- Center Headline: "Manage your screens" -->
+            <div class="relative z-20 my-auto py-10">
+                <h1 class="text-4xl sm:text-5xl xl:text-6xl font-black text-white tracking-tight leading-[1.08] font-sans">
+                    Manage<br>your screens
+                </h1>
             </div>
 
-            <!-- Bottom Graphic: Room 304 TV Active Stream Card + Circular Icon -->
-            <div class="relative z-10 pt-4 flex items-end justify-between">
-                <!-- Device Mockup Card (Exact Match from User's Reference) -->
-                <div class="w-56 sm:w-64 bg-[#160B33]/90 border border-purple-500/20 rounded-[22px] p-3 shadow-2xl backdrop-blur-md -mb-4 transform hover:-translate-y-1 transition-transform duration-300">
-                    <div class="bg-[#0F0624] rounded-[16px] p-3.5 border border-white/5 space-y-2.5">
-                        <div class="flex items-center justify-between text-[11px] text-purple-200/60 font-medium">
-                            <span>Room #304 TV</span>
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        </div>
-                        <div class="text-base sm:text-lg font-bold text-white tracking-tight">Active Stream</div>
-                        <!-- Equalizer Bar Graph matching User's Reference Image in Brand Colors -->
-                        <div class="flex items-end space-x-1.5 h-9 pt-1">
-                            <div class="w-3 bg-purple-500/20 rounded-xs h-3"></div>
-                            <div class="w-3 bg-purple-500/35 rounded-xs h-5"></div>
-                            <div class="w-3 bg-gradient-to-t from-purple-600 to-indigo-400 rounded-xs h-8"></div>
-                            <div class="w-3 bg-gradient-to-t from-purple-600 to-indigo-400 rounded-xs h-6"></div>
-                            <div class="w-3 bg-purple-500/30 rounded-xs h-4"></div>
-                            <div class="w-3 bg-purple-500/20 rounded-xs h-2.5"></div>
-                        </div>
+            <!-- Bottom Row: Equalizer Card + Hotel Icon Badge + Slider Dots -->
+            <div class="relative z-20 flex items-end justify-between gap-4">
+                <!-- Floating Glass Equalizer Card ("Room #304 TV Active Stream") -->
+                <div class="bg-black/60 backdrop-blur-xl border border-purple-500/25 rounded-2xl p-4 sm:p-5 w-56 sm:w-64 shadow-2xl shadow-purple-950/60">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[11px] font-semibold text-slate-400">Room #304 TV</span>
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
+                    </div>
+                    <div class="text-sm font-bold text-white mb-3 tracking-wide">
+                        Active Stream
+                    </div>
+                    <!-- Live Animated Equalizer Bars in Cosmic Violet Gradient -->
+                    <div class="flex items-end space-x-1.5 h-8">
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-700 to-purple-400 animate-eq-1"></div>
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-700 to-purple-400 animate-eq-2"></div>
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-600 to-fuchsia-400 animate-eq-3"></div>
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-600 to-fuchsia-400 animate-eq-4"></div>
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-700 to-purple-400 animate-eq-5"></div>
+                        <div class="w-2.5 rounded-full bg-gradient-to-t from-purple-700 to-purple-400 animate-eq-6"></div>
                     </div>
                 </div>
 
-                <!-- Circular Hospitality Brand Badge (matching User's Reference Image) -->
-                <div class="w-9 h-9 rounded-full border border-purple-500/40 bg-purple-600/10 text-purple-300 flex items-center justify-center text-xs shrink-0 mb-1 shadow-xs">
-                    <i class="fa-solid fa-hotel text-xs"></i>
+                <!-- Right Side: Circular Hotel Badge + Carousel Navigation Dots -->
+                <div class="flex flex-col items-center space-y-4">
+                    <!-- Circular Hotel Icon Badge (From Mockup) -->
+                    <div class="w-10 h-10 rounded-full border border-purple-500/30 bg-purple-950/70 flex items-center justify-center text-purple-300 shadow-lg shadow-purple-900/40">
+                        <i class="fa-solid fa-hotel text-xs"></i>
+                    </div>
+
+                    <!-- Slide Indicator Dots -->
+                    <div class="flex items-center space-x-1.5" title="Switch Hotel Visuals">
+                        <button type="button" onclick="setLoginSlide(0)" class="carousel-dot active h-1.5 rounded-full transition-all cursor-pointer" id="loginDot0" aria-label="Slide 1"></button>
+                        <button type="button" onclick="setLoginSlide(1)" class="carousel-dot h-1.5 rounded-full transition-all cursor-pointer" id="loginDot1" aria-label="Slide 2"></button>
+                        <button type="button" onclick="setLoginSlide(2)" class="carousel-dot h-1.5 rounded-full transition-all cursor-pointer" id="loginDot2" aria-label="Slide 3"></button>
+                    </div>
                 </div>
             </div>
+
         </div>
 
         <!-- ================================================================= -->
-        <!-- RIGHT PANEL: Crisp White Seamless Card with Curved Overlap       -->
+        <!-- RIGHT PANEL: Overlapping Curved White Card (Exact Reference Look) -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 bg-white lg:rounded-l-[44px] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative shadow-2xl">
+        <div class="col-span-1 lg:col-span-6 xl:col-span-6 bg-white lg:rounded-l-[44px] xl:rounded-l-[52px] shadow-2xl p-8 sm:p-12 lg:p-14 xl:p-16 flex flex-col justify-between relative z-20">
 
-            <!-- Top Header Row: Brand Logo & Sign Up -->
-            <div class="flex items-center justify-between pb-6 sm:pb-8">
-                <!-- Brand Logo (Pura Left-Aligned) -->
-                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-flex items-center transition-transform hover:scale-105">
-                    <picture>
-                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
-                             alt="{{ app_name() }}" 
-                             class="h-10 sm:h-12 w-auto max-w-[170px] sm:max-w-[190px] object-contain">
-                    </picture>
+            <!-- Top Row: Pax TV Launcher Logo (Left) + Sign Up (Right) -->
+            <div class="flex items-center justify-between mb-8 sm:mb-12">
+                <a href="{{ url('/') }}" class="inline-block group focus:outline-none">
+                    <img src="{{ asset('images/logo.png') }}" 
+                         alt="Pax TV Launcher" 
+                         class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
                 </a>
-
-                <!-- Top Right Sign Up Link (matching Reference Image) -->
-                <a href="{{ url('/') }}" class="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center space-x-1.5 transition-colors group">
-                    <i class="fa-regular fa-user text-xs text-slate-400 group-hover:text-slate-700"></i>
+                <a href="{{ route('register') }}" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-500 hover:text-[#150A42] transition-colors">
+                    <i class="fa-regular fa-user text-xs"></i>
                     <span>Sign Up</span>
                 </a>
             </div>
 
-            <!-- Main Form Body: Centered & Pill Inputs (Pixel-to-Pixel match) -->
-            <div class="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto">
-
-                <!-- Headline -->
-                <h1 class="text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight font-sans mb-8">
+            <!-- Middle: Sign In Form Content -->
+            <div class="max-w-md w-full mx-auto my-auto py-2">
+                <!-- Title -->
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-8">
                     Sign In
-                </h1>
+                </h2>
 
-                <!-- Flash & Error Alerts -->
-                @if(session('success'))
-                    <div class="mb-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2 font-medium">
-                        <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if(session('status'))
-                    <div class="mb-4 p-3 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs flex items-center space-x-2 font-medium">
-                        <i class="fa-solid fa-circle-info text-purple-600 text-sm shrink-0"></i>
+                <!-- Validation Alerts -->
+                @if (session('status'))
+                    <div class="mb-5 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold flex items-center space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 shrink-0"></i>
                         <span>{{ session('status') }}</span>
                     </div>
                 @endif
 
-                @if(session('error'))
-                    <div class="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2 font-medium">
-                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm shrink-0"></i>
-                        <span>{{ session('error') }}</span>
-                    </div>
-                @endif
-
-                @if(isset($errors) && $errors->any())
-                    <div class="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
-                        <div class="flex items-center space-x-2 font-bold text-rose-900">
-                            <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
-                            <span>Sign in failed:</span>
+                @if ($errors->any())
+                    <div class="mb-5 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium space-y-1">
+                        <div class="font-bold flex items-center space-x-1.5">
+                            <i class="fa-solid fa-circle-exclamation text-rose-500 shrink-0"></i>
+                            <span>Authentication failed</span>
                         </div>
-                        <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-700 text-xs font-medium">
-                            @foreach($errors->all() as $error)
+                        <ul class="list-disc list-inside text-[11px] text-rose-600 space-y-0.5 pl-1">
+                            @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>
                 @endif
 
-                <!-- Common Authentication Form with Pill Inputs (matching Reference Image) -->
-                <form action="{{ route('login') }}" method="POST" class="space-y-4">
+                <!-- Login Form -->
+                <form method="POST" action="{{ route('login') }}" class="space-y-4">
                     @csrf
 
-                    <!-- 1. Email or Username (Rounded Pill Input) -->
+                    <!-- Email / Username Input (Signature Smooth Pill) -->
                     <div>
-                        <input type="text" 
-                               id="loginEmail" 
+                        <input id="email" 
+                               type="text" 
                                name="email" 
-                               required 
                                value="{{ old('email') }}" 
-                               placeholder="Email or Username" 
-                               autocomplete="email" 
-                               autofocus
-                               class="w-full px-5 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/10 bg-white transition-all shadow-xs">
+                               required 
+                               autofocus 
+                               autocomplete="username" 
+                               placeholder="Email or Username"
+                               class="w-full px-6 py-4 text-sm font-medium rounded-full border border-slate-200 focus:outline-none focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 bg-white text-slate-800 placeholder-slate-400 transition-all shadow-xs">
                     </div>
 
-                    <!-- 2. Password (Rounded Pill Input with Toggle Eye) -->
+                    <!-- Password Input with Toggle (Signature Smooth Pill) -->
                     <div class="relative">
-                        <input type="password" 
-                               id="loginPassword" 
+                        <input id="password" 
+                               type="password" 
                                name="password" 
                                required 
-                               placeholder="Password" 
-                               autocomplete="current-password"
-                               class="w-full pl-5 pr-12 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/10 bg-white transition-all shadow-xs">
+                               autocomplete="current-password" 
+                               placeholder="Password"
+                               class="w-full px-6 py-4 pr-14 text-sm font-medium rounded-full border border-slate-200 focus:outline-none focus:border-purple-600 focus:ring-4 focus:ring-purple-500/10 bg-white text-slate-800 placeholder-slate-400 transition-all shadow-xs">
+                        
                         <button type="button" 
-                                onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" 
-                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer transition-colors" 
+                                onclick="toggleLoginPassword()" 
+                                class="absolute right-5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none p-1 transition-colors"
                                 aria-label="Toggle password visibility">
-                            <i id="loginEyeIcon" class="fa-regular fa-eye-slash text-sm"></i>
+                            <i id="passwordToggleIcon" class="fa-regular fa-eye-slash text-sm"></i>
                         </button>
                     </div>
 
-                    <!-- 3. Forgot Password Link (Brand Purple Color) -->
-                    <div class="pt-0.5">
-                        @if(Route::has('hotel.forgot-password'))
-                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-purple-700 hover:text-[#150A42] hover:underline transition-colors inline-block">
+                    <!-- Forgot Password Link -->
+                    <div class="pt-1 text-left">
+                        @if (Route::has('password.request'))
+                            <a href="{{ route('password.request') }}" class="text-xs font-semibold text-[#FF5722] hover:text-[#E64A19] transition-colors">
                                 Forgot password?
                             </a>
                         @endif
                     </div>
 
-                    <!-- 4. Gradient Pill CTA Button (matching Reference Layout in Brand Colors) -->
+                    <!-- Sign In Pill Button (Signature Arrow + Gradient) -->
                     <button type="submit" 
-                            class="w-full mt-3 py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#150A42] via-[#24106B] to-purple-700 hover:from-[#1b0d54] hover:via-[#2b147e] hover:to-purple-600 text-white font-extrabold text-sm shadow-xl shadow-[#150A42]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer">
+                            class="w-full mt-6 py-4 px-8 rounded-full bg-gradient-to-r from-[#FF5722] to-[#FF3D00] hover:from-[#f4511e] hover:to-[#e63900] text-white font-extrabold text-sm tracking-wide shadow-lg shadow-[#FF5722]/30 hover:shadow-xl hover:shadow-[#FF5722]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center space-x-2 cursor-pointer">
                         <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
                         <span>Sign In</span>
                     </button>
                 </form>
-
             </div>
 
-            <!-- Bottom Footer Row: Copyright & Links (matching Reference Image) -->
-            <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 text-[11px] text-slate-400 gap-2">
+            <!-- Footer: Copyright + Contact Us / Language -->
+            <div class="pt-8 sm:pt-12 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400 font-medium">
                 <div>
-                    © 2005-2026 Pax TV Launcher Inc.
+                    &copy; 2005-2026 Pax TV Launcher Inc.
                 </div>
-                <div class="flex items-center space-x-4 text-slate-500 font-medium">
-                    <a href="{{ url('/') }}" class="hover:text-slate-900 transition-colors">Contact Us</a>
-                    <span class="flex items-center space-x-1 cursor-pointer hover:text-slate-900 transition-colors">
+                <div class="flex items-center space-x-4">
+                    <a href="mailto:support@paxtvnetwork.com" class="hover:text-slate-600 transition-colors">Contact Us</a>
+                    <span class="hover:text-slate-600 cursor-pointer flex items-center space-x-1 select-none">
                         <span>English</span>
-                        <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
+                        <i class="fa-solid fa-chevron-down text-[9px]"></i>
                     </span>
                 </div>
             </div>
@@ -258,16 +290,13 @@
     </div>
 
 </div>
-@endsection
 
-@section('scripts')
+<!-- Interactive Cosmic Particle Canvas & Slider Logic -->
 <script>
     // 1. Password Visibility Toggle
-    function togglePasswordVisibility(inputId, iconId) {
-        const input = document.getElementById(inputId);
-        const icon = document.getElementById(iconId);
-        if (!input || !icon) return;
-
+    function toggleLoginPassword() {
+        const input = document.getElementById('password');
+        const icon = document.getElementById('passwordToggleIcon');
         if (input.type === 'password') {
             input.type = 'text';
             icon.classList.remove('fa-eye-slash');
@@ -279,8 +308,53 @@
         }
     }
 
-    // 2. Ultra-Lightweight Cosmic Particles Canvas Animation
-    (function initCosmicCanvas() {
+    // 2. Full-Panel Background Sliding Images Logic
+    let currentSlide = 0;
+    const totalSlides = 3;
+    const slides = [
+        document.getElementById('loginSlide1'),
+        document.getElementById('loginSlide2'),
+        document.getElementById('loginSlide3')
+    ];
+    const dots = [
+        document.getElementById('loginDot0'),
+        document.getElementById('loginDot1'),
+        document.getElementById('loginDot2')
+    ];
+
+    function setLoginSlide(index) {
+        currentSlide = index;
+        slides.forEach((slide, i) => {
+            if (slide) {
+                if (i === currentSlide) {
+                    slide.classList.remove('opacity-0', 'scale-105');
+                    slide.classList.add('opacity-25', 'scale-100');
+                } else {
+                    slide.classList.remove('opacity-25', 'scale-100');
+                    slide.classList.add('opacity-0', 'scale-105');
+                }
+            }
+        });
+
+        dots.forEach((dot, i) => {
+            if (dot) {
+                if (i === currentSlide) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    // Auto-advance sliding images every 6 seconds
+    setInterval(() => {
+        const next = (currentSlide + 1) % totalSlides;
+        setLoginSlide(next);
+    }, 6000);
+
+    // 3. Interactive Particle Stars Canvas
+    (function initCosmicStars() {
         const canvas = document.getElementById('cosmicParticles');
         if (!canvas) return;
         const ctx = canvas.getContext('2d');
@@ -292,61 +366,48 @@
             height = canvas.height = window.innerHeight;
         });
 
-        const particleCount = window.innerWidth < 768 ? 25 : 55;
-        const particles = [];
+        const numStars = Math.min(Math.floor((width * height) / 12000), 75);
+        const stars = [];
 
-        for (let i = 0; i < particleCount; i++) {
-            particles.push({
+        for (let i = 0; i < numStars; i++) {
+            stars.push({
                 x: Math.random() * width,
                 y: Math.random() * height,
-                radius: Math.random() * 1.6 + 0.4,
-                speedY: Math.random() * 0.35 + 0.1,
-                speedX: (Math.random() - 0.5) * 0.2,
-                alpha: Math.random() * 0.7 + 0.2,
-                pulseSpeed: Math.random() * 0.02 + 0.005,
-                pulseAngle: Math.random() * Math.PI * 2
+                radius: Math.random() * 1.4 + 0.3,
+                baseAlpha: Math.random() * 0.5 + 0.2,
+                alphaSpeed: Math.random() * 0.02 + 0.005,
+                alphaPhase: Math.random() * Math.PI * 2,
+                vx: (Math.random() - 0.5) * 0.15,
+                vy: (Math.random() - 0.5) * 0.15,
+                hue: Math.random() > 0.4 ? 265 : 220
             });
         }
 
-        let animationFrameId;
-        function renderParticles() {
+        let time = 0;
+        function animateStars() {
             ctx.clearRect(0, 0, width, height);
+            time += 0.03;
 
-            for (let i = 0; i < particles.length; i++) {
-                const p = particles[i];
-                p.y -= p.speedY;
-                p.x += p.speedX;
-                p.pulseAngle += p.pulseSpeed;
+            for (let i = 0; i < stars.length; i++) {
+                const s = stars[i];
+                s.x += s.vx;
+                s.y += s.vy;
 
-                const currentAlpha = p.alpha + Math.sin(p.pulseAngle) * 0.25;
+                if (s.x < 0) s.x = width;
+                if (s.x > width) s.x = 0;
+                if (s.y < 0) s.y = height;
+                if (s.y > height) s.y = 0;
 
-                if (p.y < -10) {
-                    p.y = height + 10;
-                    p.x = Math.random() * width;
-                }
-                if (p.x < -10) p.x = width + 10;
-                if (p.x > width + 10) p.x = -10;
-
+                const currentAlpha = s.baseAlpha + Math.sin(time + s.alphaPhase) * 0.25;
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(192, 175, 255, ${Math.max(0.1, Math.min(0.9, currentAlpha))})`;
-                ctx.shadowBlur = 8;
-                ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+                ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${s.hue}, 85%, 85%, ${Math.max(0.08, currentAlpha)})`;
                 ctx.fill();
             }
 
-            animationFrameId = requestAnimationFrame(renderParticles);
+            requestAnimationFrame(animateStars);
         }
-
-        renderParticles();
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                cancelAnimationFrame(animationFrameId);
-            } else {
-                renderParticles();
-            }
-        });
+        animateStars();
     })();
 </script>
 @endsection
