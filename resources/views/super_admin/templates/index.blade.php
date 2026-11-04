@@ -6,33 +6,36 @@
 @section('content')
 <div class="space-y-6 sm:space-y-7">
 
-    <!-- Header & Action Bar -->
-    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
+    <!-- Header & Action Bar: Strict 1-Line on Desktop + Smooth responsive on Mobile -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0">
             <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Themes Management</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage Android TV themes, deploy new theme packages, preview live layouts, and purge old build archives to keep server disk storage clean.</p>
+            <p class="text-xs text-slate-500 font-medium mt-0.5 max-w-2xl">Manage Android TV themes, deploy new theme packages, preview live layouts, and purge old build archives to keep server disk storage clean.</p>
         </div>
-        <div class="flex items-center flex-wrap gap-2.5 w-full sm:w-auto">
+        
+        <!-- Action Buttons: Strict 1 Line (flex-nowrap) -->
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
             @if($inactiveBuildsCount > 0)
-                <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
+                <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline shrink-0" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
                     @csrf
                     <button type="submit" 
-                            class="inline-flex items-center justify-center px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-2xs transition-all space-x-2 cursor-pointer"
+                            class="inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-2xs transition-all space-x-1.5 cursor-pointer whitespace-nowrap shrink-0"
                             title="Delete all unused inactive builds from storage">
-                        <i class="fa-solid fa-broom text-rose-500"></i>
-                        <span>Purge {{ $inactiveBuildsCount }} Old Build{{ $inactiveBuildsCount === 1 ? '' : 's' }}</span>
+                        <i class="fa-solid fa-broom text-rose-500 text-xs"></i>
+                        <span>Purge {{ $inactiveBuildsCount }} Old Builds</span>
                     </button>
                 </form>
             @endif
 
             <button type="button" 
                     onclick="resetFormToNewTheme({{ $nextThemeId }})" 
-                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-2 cursor-pointer">
-                <i class="fa-solid fa-plus text-slate-400"></i>
+                    class="inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-plus text-slate-400 text-xs"></i>
                 <span>New Theme #{{ $nextThemeId }}</span>
             </button>
+
             <a href="#uploadTemplateCard" 
-               class="inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
+               class="inline-flex items-center justify-center px-4.5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
                 <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
                 <span>Upload Package</span>
             </a>
@@ -43,43 +46,43 @@
     <div id="js-alert-container"></div>
 
     @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
             <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-circle-check text-emerald-500 text-sm"></i>
+                <i class="fa-solid fa-circle-check text-emerald-500 text-sm shrink-0"></i>
                 <span>{{ session('success') }}</span>
             </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+            <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 p-1">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
     @endif
 
     @if(session('info'))
-        <div class="p-4 rounded-2xl bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs">
             <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-circle-info text-sky-500 text-sm"></i>
+                <i class="fa-solid fa-circle-info text-sky-500 text-sm shrink-0"></i>
                 <span>{{ session('info') }}</span>
             </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700">
+            <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700 p-1">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-semibold flex items-center justify-between shadow-xs">
             <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm"></i>
+                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm shrink-0"></i>
                 <span>{{ session('error') }}</span>
             </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700">
+            <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 p-1">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
             <div class="font-bold flex items-center space-x-2">
                 <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
                 <span>Please fix the following errors:</span>
@@ -92,57 +95,57 @@
         </div>
     @endif
 
-    <!-- Quick Stats Metric Cards (4 cards) -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <!-- Quick Stats Metric Cards (Responsive Grid: 2 cols on mobile, 4 on desktop) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <!-- 1. Total Themes -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalThemesCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Themes Configured</div>
+                <div class="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalThemesCount }}</div>
+                <div class="text-[11px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">Themes Configured</div>
             </div>
         </div>
 
         <!-- 2. Active OTA Builds -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">{{ $activeBuildsCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Live Builds</div>
+                <div class="text-xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">{{ $activeBuildsCount }}</div>
+                <div class="text-[11px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">Active Live Builds</div>
             </div>
         </div>
 
         <!-- 3. Global Default Theme -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-star"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight leading-tight truncate">
+                <div class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight leading-tight truncate">
                     Theme #{{ $defaultThemeId }}
                 </div>
-                <div class="text-xs font-semibold text-amber-700 truncate mt-0.5" title="{{ $defaultThemeName }}">
+                <div class="text-[10px] sm:text-xs font-semibold text-amber-700 truncate mt-0.5" title="{{ $defaultThemeName }}">
                     {{ $defaultThemeName }} (Default)
                 </div>
             </div>
         </div>
 
         <!-- 4. Total Releases & Inactive Cleanup -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl {{ $inactiveBuildsCount > 0 ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100' }} flex items-center justify-center text-base shrink-0 shadow-xs">
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl {{ $inactiveBuildsCount > 0 ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100' }} flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
                 <i class="fa-solid {{ $inactiveBuildsCount > 0 ? 'fa-hard-drive' : 'fa-boxes-packing' }}"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalBuildsCount }}</div>
-                <div class="text-xs font-semibold {{ $inactiveBuildsCount > 0 ? 'text-rose-600' : 'text-slate-500' }} truncate mt-0.5">
+                <div class="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalBuildsCount }}</div>
+                <div class="text-[10px] sm:text-xs font-semibold {{ $inactiveBuildsCount > 0 ? 'text-rose-600' : 'text-slate-500' }} truncate mt-0.5">
                     @if($inactiveBuildsCount > 0)
-                        {{ $inactiveBuildsCount }} Inactive (Can Purge)
+                        {{ $inactiveBuildsCount }} Inactive (Purge)
                     @else
-                        Clean Server Storage
+                        Clean Storage
                     @endif
                 </div>
             </div>
@@ -173,12 +176,12 @@
                     $releasesCount = $templates->where('theme_id', $theme->theme_id)->count();
                     $isDefault = ((int)$theme->theme_id === (int)$defaultThemeId);
                 @endphp
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-5 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-purple-200 transition-all group">
+                <div class="bg-white border border-slate-200/80 rounded-3xl p-4 sm:p-5 shadow-xs flex flex-col justify-between space-y-4 hover:shadow-md hover:border-purple-200 transition-all group">
                     <div class="space-y-3.5">
                         <!-- Top Info Row -->
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-center space-x-3 min-w-0">
-                                <div class="w-13 h-13 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100 flex items-center justify-center text-[#150A42] font-black text-lg overflow-hidden shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
+                                <div class="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100 flex items-center justify-center text-[#150A42] font-black text-lg overflow-hidden shrink-0 shadow-2xs group-hover:scale-105 transition-transform">
                                     @if($theme->preview_image && Storage::disk('public')->exists($theme->preview_image))
                                         <img src="{{ Storage::url($theme->preview_image) }}" alt="Preview" class="w-full h-full object-cover">
                                     @else
@@ -255,20 +258,20 @@
                         <div class="flex items-center gap-2">
                             <button type="button" 
                                     onclick="selectThemeForUpdate({{ $theme->theme_id }}, '{{ addslashes($theme->theme_name ?? '') }}')" 
-                                    class="flex-1 py-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/60 text-[#150A42] font-extrabold text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs">
+                                    class="flex-1 py-2 sm:py-2.5 rounded-xl border border-purple-200 bg-purple-50/50 hover:bg-purple-100/60 text-[#150A42] font-extrabold text-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-2xs">
                                 <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
                                 <span>Upload Update</span>
                             </button>
 
                             @if($latestBuild && $latestBuild->extracted_path)
                                 <a href="{{ route('super-admin.templates.preview', $latestBuild->id) }}" target="_blank"
-                                   class="py-2.5 px-3.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-2xs"
+                                   class="py-2 sm:py-2.5 px-3.5 rounded-xl border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-2xs"
                                    title="Open Live Web Preview of Theme in new tab">
                                     <i class="fa-solid fa-eye text-xs"></i>
                                     <span>Preview</span>
                                 </a>
                             @else
-                                <span class="py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-400 font-bold text-xs flex items-center justify-center space-x-1.5 cursor-not-allowed" 
+                                <span class="py-2 sm:py-2.5 px-3.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-400 font-bold text-xs flex items-center justify-center space-x-1.5 cursor-not-allowed" 
                                       title="No extracted preview found. Upload a ZIP to enable preview.">
                                     <i class="fa-solid fa-eye-slash text-xs"></i>
                                     <span>No Preview</span>
@@ -305,7 +308,7 @@
     </div>
 
     <!-- Upload / Update Theme Card -->
-    <div id="uploadTemplateCard" class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs space-y-6">
+    <div id="uploadTemplateCard" class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-8 shadow-xs space-y-6">
         <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] shrink-0 shadow-2xs">
@@ -321,7 +324,7 @@
             <div class="flex items-center gap-2">
                 <button type="button" 
                         onclick="resetFormToNewTheme({{ $nextThemeId }})" 
-                        class="text-xs font-bold text-[#150A42] hover:text-[#201063] bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer">
+                        class="text-xs font-bold text-[#150A42] hover:text-[#201063] bg-purple-50 hover:bg-purple-100 border border-purple-200 px-3.5 py-1.5 rounded-xl transition-all flex items-center space-x-1.5 cursor-pointer whitespace-nowrap">
                     <i class="fa-solid fa-plus text-[10px]"></i>
                     <span>New Theme #{{ $nextThemeId }}</span>
                 </button>
@@ -331,7 +334,7 @@
         <form id="uploadTemplateForm" action="{{ route('super-admin.templates.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" data-ajax-form="true" data-no-loader="true">
             @csrf
             
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-5">
                 <!-- Theme ID -->
                 <div class="space-y-1.5">
                     <label class="text-xs font-bold text-slate-700 flex items-center justify-between">
@@ -376,7 +379,7 @@
             </div>
 
             <!-- Upload Zone Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-3 border-t border-slate-100">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-5 pt-3 border-t border-slate-100">
                 <!-- Theme Preview Image -->
                 <div class="space-y-2">
                     <label class="text-xs font-bold text-slate-700 flex items-center justify-between">
@@ -449,16 +452,16 @@
             </div>
 
             <!-- Submit Action -->
-            <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
+            <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-100">
                 <div class="text-[11px] text-slate-400 font-medium flex items-center space-x-1.5">
-                    <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+                    <i class="fa-solid fa-shield-halved text-emerald-500 shrink-0"></i>
                     <span>ZIP is auto-extracted and synced across all hotel TVs in real time.</span>
                 </div>
-                <div class="flex items-center space-x-2.5 w-full sm:w-auto">
-                    <button type="button" onclick="resetFormToNewTheme({{ $nextThemeId }})" class="w-1/2 sm:w-auto px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-xs transition-colors">
+                <div class="flex items-center gap-2.5 w-full sm:w-auto">
+                    <button type="button" onclick="resetFormToNewTheme({{ $nextThemeId }})" class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 font-bold text-xs transition-colors whitespace-nowrap">
                         Reset Form
                     </button>
-                    <button type="submit" id="submitBtn" class="w-1/2 sm:w-auto inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
+                    <button type="submit" id="submitBtn" class="flex-1 sm:flex-none inline-flex items-center justify-center px-6 py-2.5 rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer whitespace-nowrap">
                         <i class="fa-solid fa-cloud-arrow-up"></i>
                         <span>Upload & Deploy Theme Build</span>
                     </button>
@@ -468,8 +471,8 @@
     </div>
 
     <!-- Theme Build Release Log Table -->
-    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs space-y-6">
-        <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-8 shadow-xs space-y-6">
+        <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] shrink-0 shadow-2xs">
                     <i class="fa-solid fa-history text-lg"></i>
@@ -480,30 +483,30 @@
                 </div>
             </div>
 
-            <!-- Actions & Filter by Theme Pills -->
-            <div class="flex items-center flex-wrap gap-2">
+            <!-- Actions & Filter by Theme Pills (Horizontal Swipe on mobile) -->
+            <div class="flex items-center flex-wrap sm:flex-nowrap gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar py-0.5">
                 @if($inactiveBuildsCount > 0)
-                    <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
+                    <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline shrink-0" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
                         @csrf
                         @if(request('theme_id'))
                             <input type="hidden" name="theme_id" value="{{ request('theme_id') }}">
                         @endif
                         <button type="submit" 
-                                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all flex items-center space-x-1.5 cursor-pointer shadow-2xs">
+                                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all flex items-center space-x-1.5 cursor-pointer shadow-2xs whitespace-nowrap shrink-0">
                             <i class="fa-solid fa-broom text-xs text-rose-500"></i>
-                            <span>Purge Inactive Builds</span>
+                            <span>Purge Inactive</span>
                         </button>
                     </form>
                 @endif
 
-                <div class="flex items-center flex-wrap gap-1.5">
+                <div class="flex items-center gap-1.5 flex-nowrap shrink-0">
                     <a href="{{ route('super-admin.templates.index') }}" 
-                       class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ !request('theme_id') ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                        All Themes ({{ $totalBuildsCount }})
+                       class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap shrink-0 {{ !request('theme_id') ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                        All ({{ $totalBuildsCount }})
                     </a>
                     @foreach($existingThemes as $t)
                         <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" 
-                           class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                           class="px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all whitespace-nowrap shrink-0 {{ request('theme_id') == $t->theme_id ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
                             Theme #{{ $t->theme_id }}
                         </a>
                     @endforeach
@@ -513,7 +516,7 @@
 
         @if($templates->count() > 0)
             <div class="overflow-x-auto rounded-2xl border border-slate-100">
-                <table class="w-full text-left text-xs text-slate-700">
+                <table class="w-full text-left text-xs text-slate-700 min-w-[720px]">
                     <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                         <tr>
                             <th class="px-5 py-3.5">Theme</th>
@@ -595,12 +598,12 @@
                                 <!-- Status Badge -->
                                 <td class="px-4 py-4 text-center">
                                     @if($template->is_active)
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold text-[10px] uppercase space-x-1">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold text-[10px] uppercase space-x-1 whitespace-nowrap">
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                                             <span>Active (Theme #{{ $template->theme_id }})</span>
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase">
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase whitespace-nowrap">
                                             Inactive
                                         </span>
                                     @endif
@@ -621,13 +624,13 @@
                                             @csrf
                                             @if($template->is_active)
                                                 <button type="submit" 
-                                                        class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs"
+                                                        class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs whitespace-nowrap"
                                                         title="Deactivate this release for Theme #{{ $template->theme_id }}">
                                                     Deactivate
                                                 </button>
                                             @else
                                                 <button type="submit" 
-                                                        class="px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs"
+                                                        class="px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs whitespace-nowrap"
                                                         title="Set this build as active for Theme #{{ $template->theme_id }}">
                                                     Activate
                                                 </button>
@@ -688,7 +691,7 @@
         </div>
 
         <div class="p-3 bg-purple-50/50 rounded-xl border border-purple-100/60 text-[11px] text-purple-900 font-medium flex items-center space-x-2">
-            <i class="fa-solid fa-circle-info text-purple-500"></i>
+            <i class="fa-solid fa-circle-info text-purple-500 shrink-0"></i>
             <span>Please keep this window open while the build extracts and hotel caches invalidate.</span>
         </div>
     </div>
