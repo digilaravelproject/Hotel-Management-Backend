@@ -213,11 +213,12 @@ class DashboardService
     }
 
     /**
-     * Get plan adoption distribution breakdown.
+     * Get plan adoption distribution breakdown (excluding hidden and inactive plans).
      */
     public function getPlanDistribution(?int $distributorId = null): array
     {
-        $plans = Plan::select('id', 'name')->get();
+        // Exclude hidden plans and inactive plans
+        $plans = Plan::visible()->where('status', true)->select('id', 'name')->get();
         $labels = [];
         $data = [];
 
@@ -245,6 +246,7 @@ class DashboardService
         return [
             'labels' => $labels,
             'data' => $data,
+            'total' => array_sum($data),
         ];
     }
 
@@ -294,27 +296,93 @@ class DashboardService
     }
 
     /**
-     * Get property and device distribution by top metropolitan hubs.
+     * Get property and device distribution by top metropolitan hubs, including city-specific hotel breakdowns.
      */
     public function getCityDistribution(?int $distributorId = null): array
     {
-        $query = HotelAdmin::query()
+        $cityQuery = HotelAdmin::query()
             ->select('city', DB::raw('count(*) as hotel_count'), DB::raw('sum(room_count) as total_rooms'))
             ->whereNotNull('city')
-            ->groupBy('city')
-            ->orderByDesc('hotel_count')
-            ->take(6);
+            ->where('city', '!=', '');
 
         if ($distributorId !== null) {
-            $query->where('distributor_id', $distributorId);
+            $cityQuery->where('distributor_id', $distributorId);
         }
 
-        $results = $query->get();
+        $cityAggregates = (clone $cityQuery)
+            ->groupBy('city')
+            ->orderByDesc('total_rooms')
+            ->take(8)
+            ->get();
+
+        // Hotel breakdown per city
+        $hotelsQuery = HotelAdmin::query()
+            ->select('id', 'hotel_name', 'city', 'room_count', 'approval_status', 'plan_id')
+            ->withCount('connectedDevices')
+            ->whereNotNull('city')
+            ->where('city', '!=', '');
+
+        if ($distributorId !== null) {
+            $hotelsQuery->where('distributor_id', $distributorId);
+        }
+
+        $hotels = $hotelsQuery->get();
+        $hotelsByCity = [];
+
+        foreach ($hotels as $hotel) {
+            $c = $hotel->city;
+            if (!isset($hotelsByCity[$c])) {
+                $hotelsByCity[$c] = [
+                    'hotels' => [],
+                    'labels' => [],
+                    'roomCounts' => [],
+                    'total_rooms' => 0,
+                    'total_devices' => 0,
+                    'approved_count' => 0,
+                    'paid_count' => 0,
+                ];
+            }
+
+            $displayName = strlen($hotel->hotel_name) > 20 ? substr($hotel->hotel_name, 0, 18) . '...' : $hotel->hotel_name;
+
+            $hotelsByCity[$c]['hotels'][] = [
+                'name' => $hotel->hotel_name,
+                'short_name' => $displayName,
+                'rooms' => (int) $hotel->room_count,
+                'devices' => (int) $hotel->connected_devices_count,
+            ];
+            $hotelsByCity[$c]['labels'][] = $displayName;
+            $hotelsByCity[$c]['roomCounts'][] = (int) $hotel->room_count;
+            $hotelsByCity[$c]['total_rooms'] += (int) $hotel->room_count;
+            $hotelsByCity[$c]['total_devices'] += (int) $hotel->connected_devices_count;
+            if ($hotel->approval_status === 'approved') {
+                $hotelsByCity[$c]['approved_count']++;
+            }
+            if (!empty($hotel->plan_id)) {
+                $hotelsByCity[$c]['paid_count']++;
+            }
+        }
+
+        // Calculate city-level % metrics
+        foreach ($hotelsByCity as $c => &$data) {
+            $hCount = count($data['hotels']);
+            $data['tv_coverage_pct'] = $data['total_rooms'] > 0 
+                ? (int) round(($data['total_devices'] / $data['total_rooms']) * 100) 
+                : 0;
+            $data['verified_hotels_pct'] = $hCount > 0 
+                ? (int) round(($data['approved_count'] / $hCount) * 100) 
+                : 100;
+            $data['paid_hotels_pct'] = $hCount > 0 
+                ? (int) round(($data['paid_count'] / $hCount) * 100) 
+                : 100;
+        }
 
         return [
-            'labels' => $results->pluck('city')->all(),
-            'hotelCounts' => $results->pluck('hotel_count')->map(fn ($v) => (int) $v)->all(),
-            'roomCounts' => $results->pluck('total_rooms')->map(fn ($v) => (int) $v)->all(),
+            'labels' => $cityAggregates->pluck('city')->all(),
+            'hotelCounts' => $cityAggregates->pluck('hotel_count')->map(fn ($v) => (int) $v)->all(),
+            'roomCounts' => $cityAggregates->pluck('total_rooms')->map(fn ($v) => (int) $v)->all(),
+            'citiesList' => $cityAggregates->pluck('city')->all(),
+            'byCity' => $hotelsByCity,
         ];
     }
 
