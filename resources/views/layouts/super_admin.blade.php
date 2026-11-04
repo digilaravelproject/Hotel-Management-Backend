@@ -319,16 +319,26 @@
             <!-- Main Content Container -->
             <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto pb-24 md:pb-8">
                 @if(session('success'))
-                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2.5 shadow-xs">
-                        <i class="fa-solid fa-circle-check text-base text-emerald-600 shrink-0"></i>
-                        <span>{{ session('success') }}</span>
+                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+                        <div class="flex items-center space-x-2.5">
+                            <i class="fa-solid fa-circle-check text-base text-emerald-600 shrink-0"></i>
+                            <span>{{ session('success') }}</span>
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 p-1 cursor-pointer">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 @endif
 
                 @if(session('error'))
-                    <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center space-x-2.5 shadow-xs">
-                        <i class="fa-solid fa-circle-exclamation text-base text-red-600 shrink-0"></i>
-                        <span>{{ session('error') }}</span>
+                    <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+                        <div class="flex items-center space-x-2.5">
+                            <i class="fa-solid fa-circle-exclamation text-base text-red-600 shrink-0"></i>
+                            <span>{{ session('error') }}</span>
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 p-1 cursor-pointer">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
                     </div>
                 @endif
 

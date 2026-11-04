@@ -42,20 +42,8 @@
         </div>
     </div>
 
-    <!-- Alert / Notification Placeholder -->
+    <!-- Alert / Notification Placeholder for Ajax Upload -->
     <div id="js-alert-container"></div>
-
-    @if(session('success'))
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
-            <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-circle-check text-emerald-500 text-sm shrink-0"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700 p-1">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    @endif
 
     @if(session('info'))
         <div class="p-3.5 sm:p-4 rounded-2xl bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs">
@@ -64,18 +52,6 @@
                 <span>{{ session('info') }}</span>
             </div>
             <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700 p-1">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50 border border-rose-200/80 text-rose-800 text-xs font-semibold flex items-center justify-between shadow-xs">
-            <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-triangle-exclamation text-rose-500 text-sm shrink-0"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 p-1">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
