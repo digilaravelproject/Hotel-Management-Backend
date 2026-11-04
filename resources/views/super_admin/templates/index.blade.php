@@ -1,7 +1,7 @@
 @extends('layouts.super_admin')
 
-@section('title', 'TV Templates & Themes Management - Super Admin')
-@section('page_title', 'TV App Multi-Theme OTA Engine')
+@section('title', 'Themes Management - Super Admin')
+@section('page_title', 'Themes Management')
 
 @section('content')
 <div class="space-y-6 sm:space-y-7">
@@ -9,18 +9,30 @@
     <!-- Header & Action Bar -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">TV App Multi-Theme OTA Engine</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Deploy over-the-air (OTA) ZIP packages, manage multi-theme UI variations for Android TV, and configure the default template for newly registered hotel suites.</p>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Themes Management</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage Android TV themes, deploy new theme packages, preview live layouts, and purge old build archives to keep server disk storage clean.</p>
         </div>
-        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+        <div class="flex items-center flex-wrap gap-2.5 w-full sm:w-auto">
+            @if($inactiveBuildsCount > 0)
+                <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
+                    @csrf
+                    <button type="submit" 
+                            class="inline-flex items-center justify-center px-4 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-2xs transition-all space-x-2 cursor-pointer"
+                            title="Delete all unused inactive builds from storage">
+                        <i class="fa-solid fa-broom text-rose-500"></i>
+                        <span>Purge {{ $inactiveBuildsCount }} Old Build{{ $inactiveBuildsCount === 1 ? '' : 's' }}</span>
+                    </button>
+                </form>
+            @endif
+
             <button type="button" 
                     onclick="resetFormToNewTheme({{ $nextThemeId }})" 
-                    class="flex-1 sm:flex-none inline-flex items-center justify-center px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-2 cursor-pointer">
+                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-2 cursor-pointer">
                 <i class="fa-solid fa-plus text-slate-400"></i>
                 <span>New Theme #{{ $nextThemeId }}</span>
             </button>
             <a href="#uploadTemplateCard" 
-               class="flex-1 sm:flex-none inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
+               class="inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
                 <i class="fa-solid fa-cloud-arrow-up text-xs"></i>
                 <span>Upload Package</span>
             </a>
@@ -37,6 +49,18 @@
                 <span>{{ session('success') }}</span>
             </div>
             <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    @endif
+
+    @if(session('info'))
+        <div class="p-4 rounded-2xl bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+            <div class="flex items-center space-x-2.5">
+                <i class="fa-solid fa-circle-info text-sky-500 text-sm"></i>
+                <span>{{ session('info') }}</span>
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -88,7 +112,7 @@
             </div>
             <div class="min-w-0">
                 <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">{{ $activeBuildsCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active OTA Builds</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Live Builds</div>
             </div>
         </div>
 
@@ -107,14 +131,20 @@
             </div>
         </div>
 
-        <!-- 4. Total Releases -->
+        <!-- 4. Total Releases & Inactive Cleanup -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center text-base shrink-0 shadow-xs">
-                <i class="fa-solid fa-boxes-packing"></i>
+            <div class="w-11 h-11 rounded-2xl {{ $inactiveBuildsCount > 0 ? 'bg-rose-50 text-rose-600 border border-rose-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100' }} flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid {{ $inactiveBuildsCount > 0 ? 'fa-hard-drive' : 'fa-boxes-packing' }}"></i>
             </div>
             <div class="min-w-0">
                 <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalBuildsCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Build Releases</div>
+                <div class="text-xs font-semibold {{ $inactiveBuildsCount > 0 ? 'text-rose-600' : 'text-slate-500' }} truncate mt-0.5">
+                    @if($inactiveBuildsCount > 0)
+                        {{ $inactiveBuildsCount }} Inactive (Can Purge)
+                    @else
+                        Clean Server Storage
+                    @endif
+                </div>
             </div>
         </div>
     </div>
@@ -173,16 +203,30 @@
                                 </div>
                             </div>
 
-                            @if($latestBuild && $latestBuild->is_active)
-                                <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold text-[10px] uppercase shrink-0 flex items-center space-x-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span>Active</span>
-                                </span>
-                            @else
-                                <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase shrink-0">
-                                    Inactive
-                                </span>
-                            @endif
+                            <div class="flex items-center space-x-1.5 shrink-0">
+                                @if($latestBuild && $latestBuild->is_active)
+                                    <span class="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-extrabold text-[10px] uppercase flex items-center space-x-1">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        <span>Active</span>
+                                    </span>
+                                @else
+                                    <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200 font-bold text-[10px] uppercase">
+                                        Inactive
+                                    </span>
+                                @endif
+
+                                @if(!$isDefault)
+                                    <form action="{{ route('super-admin.templates.destroy-theme', $theme->theme_id) }}" method="POST" class="inline" onsubmit="return confirm('Permanently delete Theme #{{ $theme->theme_id }} ({{ addslashes($theme->theme_name ?? '') }}) and all its uploaded package builds? This will permanently delete its ZIP archives and extracted files to free server storage.')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="w-7 h-7 rounded-lg border border-slate-200 hover:border-rose-300 hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors flex items-center justify-center cursor-pointer shadow-2xs"
+                                                title="Delete this entire Theme and free all associated disk storage">
+                                            <i class="fa-solid fa-trash-can text-[11px]"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
 
                         <!-- Build Details Pill Box -->
@@ -436,18 +480,34 @@
                 </div>
             </div>
 
-            <!-- Filter by Theme Pills -->
-            <div class="flex items-center flex-wrap gap-1.5">
-                <a href="{{ route('super-admin.templates.index') }}" 
-                   class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ !request('theme_id') ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                    All Themes ({{ $totalBuildsCount }})
-                </a>
-                @foreach($existingThemes as $t)
-                    <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" 
-                       class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
-                        Theme #{{ $t->theme_id }}
+            <!-- Actions & Filter by Theme Pills -->
+            <div class="flex items-center flex-wrap gap-2">
+                @if($inactiveBuildsCount > 0)
+                    <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
+                        @csrf
+                        @if(request('theme_id'))
+                            <input type="hidden" name="theme_id" value="{{ request('theme_id') }}">
+                        @endif
+                        <button type="submit" 
+                                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all flex items-center space-x-1.5 cursor-pointer shadow-2xs">
+                            <i class="fa-solid fa-broom text-xs text-rose-500"></i>
+                            <span>Purge Inactive Builds</span>
+                        </button>
+                    </form>
+                @endif
+
+                <div class="flex items-center flex-wrap gap-1.5">
+                    <a href="{{ route('super-admin.templates.index') }}" 
+                       class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ !request('theme_id') ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                        All Themes ({{ $totalBuildsCount }})
                     </a>
-                @endforeach
+                    @foreach($existingThemes as $t)
+                        <a href="{{ route('super-admin.templates.index', ['theme_id' => $t->theme_id]) }}" 
+                           class="px-3.5 py-1.5 rounded-xl text-xs font-extrabold transition-all {{ request('theme_id') == $t->theme_id ? 'bg-[#150A42] text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200' }}">
+                            Theme #{{ $t->theme_id }}
+                        </a>
+                    @endforeach
+                </div>
             </div>
         </div>
 
@@ -551,7 +611,7 @@
                                     <div class="inline-flex items-center gap-1.5">
                                         @if($template->extracted_path)
                                             <a href="{{ route('super-admin.templates.preview', $template->id) }}" target="_blank"
-                                               class="p-2 rounded-lg border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold text-xs transition-colors"
+                                               class="p-2 rounded-lg border border-slate-200 hover:border-emerald-300 hover:bg-emerald-50 text-slate-600 hover:text-emerald-700 font-bold text-xs transition-colors shadow-2xs"
                                                title="Live Web Preview">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
@@ -561,17 +621,28 @@
                                             @csrf
                                             @if($template->is_active)
                                                 <button type="submit" 
-                                                        class="px-3 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 font-extrabold text-[11px] transition-colors cursor-pointer"
+                                                        class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-700 hover:bg-rose-50 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs"
                                                         title="Deactivate this release for Theme #{{ $template->theme_id }}">
                                                     Deactivate
                                                 </button>
                                             @else
                                                 <button type="submit" 
-                                                        class="px-3 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-[11px] transition-colors cursor-pointer"
+                                                        class="px-2.5 py-1.5 rounded-lg border border-emerald-200 bg-emerald-50/50 hover:bg-emerald-100/60 text-emerald-700 font-extrabold text-[11px] transition-colors cursor-pointer shadow-2xs"
                                                         title="Set this build as active for Theme #{{ $template->theme_id }}">
                                                     Activate
                                                 </button>
                                             @endif
+                                        </form>
+
+                                        <!-- Delete Build Action -->
+                                        <form action="{{ route('super-admin.templates.destroy', $template->id) }}" method="POST" class="inline" onsubmit="return confirm('Permanently delete Build v{{ $template->version }} for Theme #{{ $template->theme_id }}? The ZIP package and unzipped files will be removed from disk to free storage.')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" 
+                                                    class="p-2 rounded-lg border border-slate-200 hover:border-rose-300 hover:bg-rose-50 text-slate-400 hover:text-rose-600 font-bold text-xs transition-colors cursor-pointer shadow-2xs"
+                                                    title="Delete this build and free disk storage">
+                                                <i class="fa-solid fa-trash-can"></i>
+                                            </button>
                                         </form>
                                     </div>
                                 </td>

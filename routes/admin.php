@@ -84,9 +84,12 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('ott-master/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\OttMasterController::class, 'toggleStatus'])->name('ott-master.toggle-status');
     Route::resource('ott-master', \App\Http\Controllers\SuperAdmin\OttMasterController::class)->except(['create', 'edit', 'show'])->names('ott-master');
 
-    // TV Templates Management
+    // TV Themes & Templates Management
     Route::get('templates', [SuperTemplateController::class, 'index'])->name('templates.index');
     Route::post('templates', [SuperTemplateController::class, 'store'])->name('templates.store');
+    Route::delete('templates/{id}', [SuperTemplateController::class, 'destroy'])->name('templates.destroy');
+    Route::delete('templates/theme/{theme_id}', [SuperTemplateController::class, 'destroyTheme'])->name('templates.destroy-theme');
+    Route::post('templates/purge-inactive', [SuperTemplateController::class, 'purgeInactiveBuilds'])->name('templates.purge-inactive');
     Route::post('templates/{id}/toggle-active', [SuperTemplateController::class, 'toggleActive'])->name('templates.toggle-active');
     Route::post('templates/{theme_id}/set-default', [SuperTemplateController::class, 'setDefaultTheme'])->name('templates.set-default');
     Route::get('templates/{id}/preview', [SuperTemplateController::class, 'preview'])->name('templates.preview');

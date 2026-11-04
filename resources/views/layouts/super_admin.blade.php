@@ -137,7 +137,7 @@
                         </a>
                         <a href="{{ route('super-admin.templates.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.templates.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.templates.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">OTA App Builds</span>
+                            <span class="truncate">Themes Management</span>
                         </a>
                         <a href="{{ route('super-admin.ott-master.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.ott-master.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.ott-master.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>

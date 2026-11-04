@@ -43,6 +43,7 @@ class TemplateController extends Controller
         $totalThemesCount = $existingThemes->count();
         $activeBuildsCount = TvTemplate::where('is_active', true)->count();
         $totalBuildsCount = TvTemplate::count();
+        $inactiveBuildsCount = TvTemplate::where('is_active', false)->count();
 
         $defaultThemeObj = $existingThemes->firstWhere('theme_id', $defaultThemeId);
         $defaultThemeName = $defaultThemeObj ? ($defaultThemeObj->theme_name ?? 'Theme #' . $defaultThemeId) : ('Theme #' . $defaultThemeId);
@@ -55,6 +56,7 @@ class TemplateController extends Controller
             'totalThemesCount',
             'activeBuildsCount',
             'totalBuildsCount',
+            'inactiveBuildsCount',
             'defaultThemeName'
         ));
     }
@@ -261,6 +263,151 @@ class TemplateController extends Controller
         $previewUrl = url($template->extracted_path . '/index.html');
 
         return redirect($previewUrl);
+    }
+
+    /**
+     * Delete an individual template build archive and free disk storage.
+     * Route: DELETE /super-admin/templates/{id}
+     */
+    public function destroy(int $id)
+    {
+        $template = TvTemplate::findOrFail($id);
+        $themeId  = (int) $template->theme_id;
+        $version  = $template->version;
+        $isActive = (bool) $template->is_active;
+
+        // 1. Delete zip file from storage
+        if (!empty($template->file_path) && Storage::disk('public')->exists($template->file_path)) {
+            Storage::disk('public')->delete($template->file_path);
+        }
+
+        // 2. Delete extracted web directory
+        if (!empty($template->extracted_path)) {
+            $fullExtractPath = public_path($template->extracted_path);
+            if (is_dir($fullExtractPath)) {
+                $this->deleteDirectory($fullExtractPath);
+            }
+        }
+
+        // 3. Delete preview image if not used by any other template
+        if (!empty($template->preview_image)) {
+            $otherUses = TvTemplate::where('preview_image', $template->preview_image)
+                ->where('id', '!=', $template->id)
+                ->exists();
+            if (!$otherUses && Storage::disk('public')->exists($template->preview_image)) {
+                Storage::disk('public')->delete($template->preview_image);
+            }
+        }
+
+        // 4. Delete the database record
+        $template->delete();
+
+        // 5. If this build was the active one, auto-activate the newest remaining build for this theme if available
+        if ($isActive) {
+            $newestRemaining = TvTemplate::where('theme_id', $themeId)->orderBy('id', 'desc')->first();
+            if ($newestRemaining) {
+                $newestRemaining->is_active = true;
+                $newestRemaining->save();
+            }
+        }
+
+        TvVersionCacheService::clearAllHotelsCache();
+        event(new TvConfigUpdatedEvent(null, 'TEMPLATE', null, ['theme_id' => $themeId]));
+
+        return back()->with('success', "Build v{$version} for Theme #{$themeId} deleted and server disk storage freed successfully!");
+    }
+
+    /**
+     * Delete an entire theme and all its build archives from disk.
+     * Route: DELETE /super-admin/templates/theme/{theme_id}
+     */
+    public function destroyTheme(int $themeId)
+    {
+        $defaultThemeId = (int) app_setting('default_theme_id', 1);
+        if ($themeId === $defaultThemeId) {
+            return back()->with('error', "Cannot delete Theme #{$themeId} because it is currently set as the Global Default Theme. Please set another theme as default first.");
+        }
+
+        $hotelsUsingTheme = \App\Models\HotelAdmin::where('selected_theme_id', $themeId)->count();
+        if ($hotelsUsingTheme > 0) {
+            return back()->with('error', "Cannot delete Theme #{$themeId} because {$hotelsUsingTheme} hotel suite(s) are currently assigned to it. Please reassign them first.");
+        }
+
+        $templates = TvTemplate::where('theme_id', $themeId)->get();
+        if ($templates->isEmpty()) {
+            return back()->with('error', "No build templates found for Theme #{$themeId}.");
+        }
+
+        $deletedCount = 0;
+        foreach ($templates as $tmpl) {
+            if (!empty($tmpl->file_path) && Storage::disk('public')->exists($tmpl->file_path)) {
+                Storage::disk('public')->delete($tmpl->file_path);
+            }
+            if (!empty($tmpl->extracted_path)) {
+                $fullExtract = public_path($tmpl->extracted_path);
+                if (is_dir($fullExtract)) {
+                    $this->deleteDirectory($fullExtract);
+                }
+            }
+            if (!empty($tmpl->preview_image)) {
+                $otherUses = TvTemplate::where('preview_image', $tmpl->preview_image)
+                    ->where('theme_id', '!=', $themeId)
+                    ->exists();
+                if (!$otherUses && Storage::disk('public')->exists($tmpl->preview_image)) {
+                    Storage::disk('public')->delete($tmpl->preview_image);
+                }
+            }
+            $tmpl->delete();
+            $deletedCount++;
+        }
+
+        // Clean up entire parent folder in public/themes/theme_{themeId}
+        $themeParentDir = public_path('themes/theme_' . $themeId);
+        if (is_dir($themeParentDir)) {
+            $this->deleteDirectory($themeParentDir);
+        }
+
+        TvVersionCacheService::clearAllHotelsCache();
+        event(new TvConfigUpdatedEvent(null, 'TEMPLATE', null, ['theme_id' => $themeId]));
+
+        return back()->with('success', "Theme #{$themeId} ({$deletedCount} builds) permanently deleted and server storage freed successfully!");
+    }
+
+    /**
+     * Purge all old inactive builds to immediately reclaim server disk storage.
+     * Route: POST /super-admin/templates/purge-inactive
+     */
+    public function purgeInactiveBuilds(Request $request)
+    {
+        $query = TvTemplate::where('is_active', false);
+        if ($request->filled('theme_id')) {
+            $query->where('theme_id', (int) $request->theme_id);
+        }
+
+        $inactiveTemplates = $query->get();
+
+        if ($inactiveTemplates->isEmpty()) {
+            return back()->with('info', 'No old inactive builds found to clean.');
+        }
+
+        $freedCount = 0;
+        foreach ($inactiveTemplates as $tmpl) {
+            if (!empty($tmpl->file_path) && Storage::disk('public')->exists($tmpl->file_path)) {
+                Storage::disk('public')->delete($tmpl->file_path);
+            }
+            if (!empty($tmpl->extracted_path)) {
+                $fullExtract = public_path($tmpl->extracted_path);
+                if (is_dir($fullExtract)) {
+                    $this->deleteDirectory($fullExtract);
+                }
+            }
+            $tmpl->delete();
+            $freedCount++;
+        }
+
+        TvVersionCacheService::clearAllHotelsCache();
+
+        return back()->with('success', "Successfully purged {$freedCount} old inactive build(s)! Server disk storage has been reclaimed.");
     }
 
     /**
