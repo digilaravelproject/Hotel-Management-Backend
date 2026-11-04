@@ -16,7 +16,8 @@ class SettingController extends Controller
     public function index()
     {
         $setting = AppSetting::getSettings();
-        return view('super_admin.settings.index', compact('setting'));
+        $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
+        return view('super_admin.settings.index', compact('setting', 'activeGateway'));
     }
 
     /**
