@@ -39,7 +39,24 @@ class TemplateController extends Controller
         $nextThemeId = $maxThemeId ? ((int) $maxThemeId + 1) : 1;
         $defaultThemeId = (int) app_setting('default_theme_id', 1);
 
-        return view('super_admin.templates.index', compact('templates', 'existingThemes', 'nextThemeId', 'defaultThemeId'));
+        // High-level statistics for Super Admin dashboard cards
+        $totalThemesCount = $existingThemes->count();
+        $activeBuildsCount = TvTemplate::where('is_active', true)->count();
+        $totalBuildsCount = TvTemplate::count();
+
+        $defaultThemeObj = $existingThemes->firstWhere('theme_id', $defaultThemeId);
+        $defaultThemeName = $defaultThemeObj ? ($defaultThemeObj->theme_name ?? 'Theme #' . $defaultThemeId) : ('Theme #' . $defaultThemeId);
+
+        return view('super_admin.templates.index', compact(
+            'templates', 
+            'existingThemes', 
+            'nextThemeId', 
+            'defaultThemeId',
+            'totalThemesCount',
+            'activeBuildsCount',
+            'totalBuildsCount',
+            'defaultThemeName'
+        ));
     }
 
     /**
