@@ -4,55 +4,124 @@
 @section('page_title', 'Payment Gateway Settings')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-8">
+<div class="space-y-6 sm:space-y-7">
 
-    <div class="bg-white border border-slate-200/80 rounded-[26px] p-6 sm:p-8 shadow-xs space-y-6">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] shadow-2xs">
-                <i class="fa-solid fa-credit-card text-lg"></i>
+    <!-- Header & Action Bar: Strict 1-Line on Desktop + Smooth responsive on Mobile -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0">
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Payment Gateway Settings</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5 max-w-2xl">Configure multi-gateway credentials (ICICI, Razorpay, PayU) and toggle the primary payment gateway for hotel subscription billing.</p>
+        </div>
+        
+        <!-- Action Buttons: Strict 1 Line (flex-nowrap) -->
+        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
+            <a href="{{ route('super-admin.settings.index') }}" 
+               class="flex-1 sm:flex-none inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-arrow-left text-slate-400 text-xs"></i>
+                <span>Platform Settings</span>
+            </a>
+
+            <button type="submit" 
+                    form="gatewaySettingsForm" 
+                    class="flex-1 sm:flex-none inline-flex items-center justify-center px-4.5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                <span>Save Gateway Settings</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Error Validation Alert (Success is handled globally by layout) -->
+    @if($errors->any())
+        <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
+            <div class="font-bold flex items-center space-x-2">
+                <i class="fa-solid fa-circle-exclamation text-rose-500"></i>
+                <span>Please fix the following validation errors:</span>
             </div>
-            <div>
-                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Active Gateway Configuration</h2>
-                <p class="text-xs text-slate-500">Only the enabled gateway will process payments. ICICI, Razorpay, and PayU configs are preserved.</p>
+            <ul class="list-disc pl-6 space-y-0.5 font-medium">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Quick Stats Metric Cards (2x2 on mobile, 4 on desktop) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <!-- 1. Active Primary Gateway -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-base sm:text-xl font-extrabold text-emerald-600 tracking-tight leading-tight truncate">
+                    {{ strtoupper($activeGateway->name ?? $activeGateway->code ?? 'ICICI') }}
+                </div>
+                <div class="text-[11px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">Active Primary Gateway</div>
             </div>
         </div>
 
-        @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-3 shadow-xs">
-            <i class="fa-solid fa-circle-check text-lg text-emerald-600"></i>
-            <span class="font-semibold">{{ session('success') }}</span>
+        <!-- 2. Active Mode / Environment -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl {{ ($activeGateway && $activeGateway->mode === 'live') ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-amber-50 text-amber-600 border border-amber-100' }} flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-server"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-base sm:text-xl font-extrabold text-slate-900 tracking-tight leading-tight capitalize">
+                    {{ $activeGateway ? ($activeGateway->mode === 'live' ? 'Live (Prod)' : 'Sandbox (Test)') : 'Sandbox' }}
+                </div>
+                <div class="text-[10px] sm:text-xs font-semibold text-slate-500 truncate mt-0.5">Environment Mode</div>
+            </div>
         </div>
-        @endif
 
-        @if($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1 shadow-xs">
-            <div class="font-bold flex items-center space-x-2"><i class="fa-solid fa-triangle-exclamation text-rose-600"></i><span>Fix errors below</span></div>
-            <ul class="list-disc pl-6 space-y-0.5">@foreach($errors->all() as $e)<li>{{ $e }}</li>@endforeach</ul>
+        <!-- 3. Available Gateways -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-credit-card"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">3</div>
+                <div class="text-[10px] sm:text-xs font-semibold text-purple-700 truncate mt-0.5">ICICI, Razorpay, PayU</div>
+            </div>
         </div>
-        @endif
 
-        <form action="{{ route('super-admin.payment-settings.update') }}" method="POST" class="space-y-8">
-            @csrf
+        <!-- 4. Security Status -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-5 shadow-xs flex items-center space-x-2.5 sm:space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-100 flex items-center justify-center text-sm sm:text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-lg sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight">Encrypted</div>
+                <div class="text-[10px] sm:text-xs font-semibold text-emerald-600 truncate mt-0.5">API Secrets Masked</div>
+            </div>
+        </div>
+    </div>
 
-            @php
-                $gatewayCodes = ['icici', 'razorpay', 'payu'];
-            @endphp
+    <!-- Gateway Settings Form -->
+    <form id="gatewaySettingsForm" action="{{ route('super-admin.payment-settings.update') }}" method="POST" class="space-y-6">
+        @csrf
 
+        @php
+            $gatewayCodes = ['icici', 'razorpay', 'payu'];
+        @endphp
+
+        <div class="space-y-5">
             @foreach($gatewayCodes as $code)
                 @php
                     $gateway = $gateways->firstWhere('code', $code);
                     $name = $gateway ? $gateway->name : ucwords($code);
-                    $isEnabled = $gateway ? $gateway->is_enabled : false;
+                    $isEnabled = $gateway ? (bool) $gateway->is_enabled : false;
                     $mode = $gateway ? $gateway->mode : 'sandbox';
                     $apiKey = $gateway ? $gateway->api_key : '';
                     $apiSecret = $gateway ? $gateway->api_secret : '';
                     $merchantId = $gateway ? $gateway->merchant_id : '';
                 @endphp
 
-                <div class="border border-slate-200/80 rounded-2xl overflow-hidden shadow-2xs">
-                    <div class="bg-[#F8F9FD] px-5 py-4 border-b border-slate-200/80 flex items-center justify-between">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center shadow-2xs font-extrabold text-sm">
+                <div class="bg-white border {{ $isEnabled ? 'border-emerald-300 ring-2 ring-emerald-500/10' : 'border-slate-200/80' }} rounded-[26px] p-5 sm:p-7 shadow-xs space-y-5 transition-all">
+                    
+                    <!-- Gateway Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-11 h-11 rounded-2xl {{ $isEnabled ? 'bg-emerald-50 text-emerald-600 border border-emerald-200' : 'bg-purple-50 text-[#150A42] border border-purple-100' }} flex items-center justify-center shadow-2xs font-extrabold text-base shrink-0">
                                 @switch($code)
                                     @case('icici')<i class="fa-solid fa-building-columns"></i>@break
                                     @case('razorpay')<i class="fa-solid fa-bolt"></i>@break
@@ -61,56 +130,101 @@
                                 @endswitch
                             </div>
                             <div>
-                                <h3 class="text-sm font-extrabold text-slate-900">{{ $name }}</h3>
-                                <p class="text-[11px] text-slate-400 font-medium font-mono">Code: <span class="font-bold text-slate-600">{{ $code }}</span></p>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="text-base font-extrabold text-slate-900">{{ $name }}</h3>
+                                    <span class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600 uppercase">
+                                        {{ $code }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-400 font-medium">
+                                    @switch($code)
+                                        @case('icici') Direct corporate netbanking, UPI, and card processing via ICICI Eazypay. @break
+                                        @case('razorpay') Automated subscription mandates, UPI QR, and instant checkout. @break
+                                        @case('payu') Enterprise multi-channel gateway with instant settlement. @break
+                                    @endswitch
+                                </p>
                             </div>
                         </div>
-                        <label class="inline-flex items-center gap-2 cursor-pointer select-none">
-                            <input type="hidden" name="gateways[{{ $code }}][is_enabled]" value="0">
-                            <input type="checkbox" name="gateways[{{ $code }}][is_enabled]" value="1" {{ $isEnabled ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20">
-                            <span class="text-xs font-extrabold text-slate-700">Active</span>
-                        </label>
+
+                        <!-- Active Radio / Checkbox Selector -->
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <label class="relative inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl border {{ $isEnabled ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-slate-50 text-slate-600' }} cursor-pointer select-none transition-all">
+                                <input type="hidden" name="gateways[{{ $code }}][is_enabled]" value="0">
+                                <input type="checkbox" 
+                                       name="gateways[{{ $code }}][is_enabled]" 
+                                       value="1" 
+                                       {{ $isEnabled ? 'checked' : '' }} 
+                                       class="w-4 h-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/20">
+                                <span class="text-xs font-extrabold">
+                                    {{ $isEnabled ? 'Active Primary Gateway' : 'Set as Active' }}
+                                </span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="p-5 space-y-4 bg-white">
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="name_{{ $code }}" class="text-xs font-bold text-slate-700 mb-1.5 block">Gateway Name</label>
-                                <input id="name_{{ $code }}" type="text" name="gateways[{{ $code }}][name]" value="{{ $name }}" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium" required>
-                            </div>
-                            <div>
-                                <label for="mode_{{ $code }}" class="text-xs font-bold text-slate-700 mb-1.5 block">Environment</label>
-                                <select id="mode_{{ $code }}" name="gateways[{{ $code }}][mode]" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-[#F8F9FD] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] text-slate-900 transition-all font-medium">
-                                    <option value="sandbox" {{ $mode === 'sandbox' ? 'selected' : '' }}>Sandbox (Test)</option>
-                                    <option value="live" {{ $mode === 'live' ? 'selected' : '' }}>Live (Production)</option>
-                                </select>
-                            </div>
+                    <!-- Configuration Fields Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700">Display Gateway Title <span class="text-rose-500">*</span></label>
+                            <input type="text" 
+                                   name="gateways[{{ $code }}][name]" 
+                                   value="{{ $name }}" 
+                                   required
+                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
                         </div>
 
-                        <div>
-                            <label for="api_key_{{ $code }}" class="text-xs font-bold text-slate-700 mb-1.5 block">API Key</label>
-                            <input id="api_key_{{ $code }}" type="text" name="gateways[{{ $code }}][api_key]" value="{{ $apiKey }}" placeholder="e.g. rzp_test_..." class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white font-mono text-slate-900 transition-all">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700">Environment Mode</label>
+                            <select name="gateways[{{ $code }}][mode]" 
+                                    class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                                <option value="sandbox" {{ $mode === 'sandbox' ? 'selected' : '' }}>Sandbox (Test Mode)</option>
+                                <option value="live" {{ $mode === 'live' ? 'selected' : '' }}>Live (Production Mode)</option>
+                            </select>
                         </div>
-                        <div>
-                            <label for="api_secret_{{ $code }}" class="text-xs font-bold text-slate-700 mb-1.5 block">API Secret / Salt</label>
-                            <input id="api_secret_{{ $code }}" type="text" name="gateways[{{ $code }}][api_secret]" value="{{ $apiSecret }}" placeholder="e.g. salt..." class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white font-mono text-slate-900 transition-all">
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700">API Key / Merchant Key</label>
+                            <input type="text" 
+                                   name="gateways[{{ $code }}][api_key]" 
+                                   value="{{ $apiKey }}" 
+                                   placeholder="e.g. rzp_live_... or key_..." 
+                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
                         </div>
-                        <div>
-                            <label for="merchant_id_{{ $code }}" class="text-xs font-bold text-slate-700 mb-1.5 block">Merchant ID (Optional)</label>
-                            <input id="merchant_id_{{ $code }}" type="text" name="gateways[{{ $code }}][merchant_id]" value="{{ $merchantId }}" placeholder="e.g. M1234567" class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white font-mono text-slate-900 transition-all">
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700">API Secret / Encryption Salt</label>
+                            <input type="password" 
+                                   name="gateways[{{ $code }}][api_secret]" 
+                                   value="{{ $apiSecret }}" 
+                                   placeholder="••••••••••••••••" 
+                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                        </div>
+
+                        <div class="sm:col-span-2 space-y-1.5">
+                            <label class="text-xs font-bold text-slate-700">Merchant ID / Sub-Merchant Code (Optional)</label>
+                            <input type="text" 
+                                   name="gateways[{{ $code }}][merchant_id]" 
+                                   value="{{ $merchantId }}" 
+                                   placeholder="e.g. 10293847" 
+                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
                         </div>
                     </div>
                 </div>
             @endforeach
+        </div>
 
-            <div class="pt-4 flex items-center justify-end space-x-3">
-                <a href="{{ route('super-admin.dashboard') }}" class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-600 hover:text-slate-900 text-xs font-bold transition-all shadow-xs">Cancel</a>
-                <button type="submit" class="btn-sa-primary px-6 py-2.5 text-xs shadow-md flex items-center space-x-2">
-                    <i class="fa-solid fa-floppy-disk text-xs"></i>
-                    <span>Save Gateway Settings</span>
-                </button>
-            </div>
-        </form>
-    </div>
+        <!-- Submit Footer -->
+        <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+            <a href="{{ route('super-admin.dashboard') }}" 
+               class="px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-all text-center">
+                Cancel
+            </a>
+            <button type="submit" 
+                    class="inline-flex items-center justify-center px-8 py-3 rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
+                <i class="fa-solid fa-floppy-disk text-xs"></i>
+                <span>Save Gateway Settings</span>
+            </button>
+        </div>
+    </form>
 </div>
 @endsection

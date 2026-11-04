@@ -14,7 +14,8 @@ class PaymentSettingController extends Controller
     public function index()
     {
         $gateways = PaymentGateway::all();
-        return view('super_admin.settings.payment', compact('gateways'));
+        $activeGateway = $gateways->firstWhere('is_enabled', true) ?? $gateways->first();
+        return view('super_admin.settings.payment', compact('gateways', 'activeGateway'));
     }
 
     /**

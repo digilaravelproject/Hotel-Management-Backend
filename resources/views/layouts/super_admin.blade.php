@@ -319,7 +319,7 @@
             <!-- Main Content Container -->
             <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto pb-24 md:pb-8">
                 @if(session('success'))
-                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+                    <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
                         <div class="flex items-center space-x-2.5">
                             <i class="fa-solid fa-circle-check text-base text-emerald-600 shrink-0"></i>
                             <span>{{ session('success') }}</span>
@@ -331,12 +331,36 @@
                 @endif
 
                 @if(session('error'))
-                    <div class="mb-6 p-4 rounded-2xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center justify-between shadow-xs">
+                    <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
                         <div class="flex items-center space-x-2.5">
-                            <i class="fa-solid fa-circle-exclamation text-base text-red-600 shrink-0"></i>
+                            <i class="fa-solid fa-circle-exclamation text-base text-rose-600 shrink-0"></i>
                             <span>{{ session('error') }}</span>
                         </div>
-                        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 p-1 cursor-pointer">
+                        <button type="button" onclick="this.parentElement.remove()" class="text-rose-500 hover:text-rose-700 p-1 cursor-pointer">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
+                @if(session('info'))
+                    <div class="mb-6 p-4 rounded-2xl bg-sky-50 border border-sky-200 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
+                        <div class="flex items-center space-x-2.5">
+                            <i class="fa-solid fa-circle-info text-base text-sky-600 shrink-0"></i>
+                            <span>{{ session('info') }}</span>
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700 p-1 cursor-pointer">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                @endif
+
+                @if(session('warning'))
+                    <div class="mb-6 p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
+                        <div class="flex items-center space-x-2.5">
+                            <i class="fa-solid fa-triangle-exclamation text-base text-amber-600 shrink-0"></i>
+                            <span>{{ session('warning') }}</span>
+                        </div>
+                        <button type="button" onclick="this.parentElement.remove()" class="text-amber-500 hover:text-amber-700 p-1 cursor-pointer">
                             <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>

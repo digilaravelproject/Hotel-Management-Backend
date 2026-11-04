@@ -7,22 +7,22 @@
 <div class="space-y-6 sm:space-y-7">
 
     <!-- Header & Action Bar: Strict 1-Line on Desktop + Smooth responsive on Mobile -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
-        <div class="min-w-0">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
             <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Firebase Realtime Engine</h2>
             <p class="text-xs text-slate-500 font-medium mt-0.5 max-w-2xl">Configure Google Firebase service credentials for Firestore Database syncing and HTTP v1 silent push updates across all in-room Android TV suites.</p>
         </div>
         
         <!-- Action Buttons: Strict 1 Line (flex-nowrap) -->
-        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
+        <div class="flex items-center justify-start sm:justify-end gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-1 w-full sm:w-auto">
             <a href="#testFirestoreSection" 
-               class="flex-1 sm:flex-none inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+               class="inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
                 <i class="fa-solid fa-database text-emerald-600 text-xs"></i>
                 <span>Test Firestore</span>
             </a>
 
             <a href="#credentialsCard" 
-               class="flex-1 sm:flex-none inline-flex items-center justify-center px-4.5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+               class="inline-flex items-center justify-center px-4.5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 transition-all hover:-translate-y-0.5 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
                 <i class="fa-solid fa-shield-halved text-xs"></i>
                 <span>Manage Credentials</span>
             </a>

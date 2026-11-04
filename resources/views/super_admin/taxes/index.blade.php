@@ -28,19 +28,6 @@
         </div>
     </div>
 
-    <!-- Alert Banners -->
-    @if(session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center space-x-2 shadow-xs">
-            <i class="fa-solid fa-circle-check text-emerald-600 text-base shrink-0"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2 shadow-xs">
-            <i class="fa-solid fa-circle-exclamation text-rose-600 text-base shrink-0"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
 
     <!-- Taxes Table Card -->
     <div class="bg-white border border-slate-200/80 rounded-[28px] overflow-hidden shadow-xs">

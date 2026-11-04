@@ -7,16 +7,16 @@
 <div class="space-y-6 sm:space-y-7">
 
     <!-- Header & Action Bar: Strict 1-Line on Desktop + Smooth responsive on Mobile -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
-        <div class="min-w-0">
+    <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3 sm:gap-4">
+        <div class="min-w-0 flex-1">
             <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Themes Management</h2>
             <p class="text-xs text-slate-500 font-medium mt-0.5 max-w-2xl">Manage Android TV themes, deploy new theme packages, preview live layouts, and purge old build archives to keep server disk storage clean.</p>
         </div>
         
         <!-- Action Buttons: Strict 1 Line (flex-nowrap) -->
-        <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
+        <div class="flex items-center justify-start xl:justify-end gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-1 w-full xl:w-auto">
             @if($inactiveBuildsCount > 0)
-                <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline shrink-0" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
+                <form action="{{ route('super-admin.templates.purge-inactive') }}" method="POST" class="inline-flex items-center m-0 shrink-0" onsubmit="return confirm('Purge {{ $inactiveBuildsCount }} old inactive build archives? All old ZIP files and unzipped web folders will be deleted permanently to free server disk space.')">
                     @csrf
                     <button type="submit" 
                             class="inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 shadow-2xs transition-all space-x-1.5 cursor-pointer whitespace-nowrap shrink-0"
@@ -44,18 +44,6 @@
 
     <!-- Alert / Notification Placeholder for Ajax Upload -->
     <div id="js-alert-container"></div>
-
-    @if(session('info'))
-        <div class="p-3.5 sm:p-4 rounded-2xl bg-sky-50 border border-sky-200/80 text-sky-800 text-xs font-semibold flex items-center justify-between shadow-xs">
-            <div class="flex items-center space-x-2.5">
-                <i class="fa-solid fa-circle-info text-sky-500 text-sm shrink-0"></i>
-                <span>{{ session('info') }}</span>
-            </div>
-            <button type="button" onclick="this.parentElement.remove()" class="text-sky-500 hover:text-sky-700 p-1">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-    @endif
 
     @if($errors->any())
         <div class="p-3.5 sm:p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
