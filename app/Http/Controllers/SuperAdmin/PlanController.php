@@ -49,12 +49,17 @@ class PlanController extends Controller
 
         $pricePerTv = (float) $request->price_per_tv;
 
+        $rawRoomCount = $request->input('room_count');
+        $safeRoomCount = ($rawRoomCount !== null && $rawRoomCount !== '')
+            ? (int) min((float) $rawRoomCount, 2147483647)
+            : 1;
+
         Plan::create([
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
             'price_per_tv' => $pricePerTv,
             'price' => $pricePerTv, // sync base price
-            'room_count' => $request->input('room_count', 1),
+            'room_count' => $safeRoomCount,
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,
@@ -100,12 +105,17 @@ class PlanController extends Controller
 
         $pricePerTv = (float) $request->price_per_tv;
 
+        $rawRoomCount = $request->input('room_count');
+        $safeRoomCount = ($rawRoomCount !== null && $rawRoomCount !== '')
+            ? (int) min((float) $rawRoomCount, 2147483647)
+            : ($plan->room_count ?? 1);
+
         $plan->update([
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
             'price_per_tv' => $pricePerTv,
             'price' => $pricePerTv,
-            'room_count' => $request->input('room_count', $plan->room_count ?? 1),
+            'room_count' => $safeRoomCount,
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,

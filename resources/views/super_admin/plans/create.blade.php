@@ -195,11 +195,12 @@
                             <input type="number" 
                                    name="room_count" 
                                    min="1" 
+                                   max="2147483647" 
                                    value="{{ old('room_count', 500) }}" 
                                    placeholder="e.g. 500" 
                                    class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-1 font-medium">Upper limit of TVs a single hotel property can license under this tier.</p>
+                        <p class="text-[11px] text-slate-500 mt-1 font-medium">Upper limit of TVs a single hotel property can license under this tier (e.g. 500 or 99999 for unlimited demo).</p>
                     </div>
                 </div>
 
