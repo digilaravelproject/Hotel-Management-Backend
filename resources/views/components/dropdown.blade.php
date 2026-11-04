@@ -33,7 +33,7 @@
         'approved', 'active', 'paid' => 'bg-emerald-500',
         'pending' => 'bg-amber-500',
         'disapproved', 'inactive', 'unpaid' => 'bg-rose-500',
-        default => 'bg-slate-400',
+        default => null,
     };
 @endphp
 
@@ -47,7 +47,10 @@
         
         @php
             $slotHtml = (string) $slot;
-            $hasEmptyInSlot = !empty($options) ? false : (bool) preg_match('/<option\s+value=["\']{2}/i', $slotHtml);
+            $hasEmptyInSlot = !empty($options) ? false : (bool) (
+                preg_match('/<option\s+value=["\']{2}/i', $slotHtml) || 
+                ($label && stripos($slotHtml, trim($label)) !== false)
+            );
         @endphp
 
         @if($label && !$hasEmptyInSlot)
@@ -74,7 +77,7 @@
         aria-expanded="false"
         title="{{ $initialLabel }}">
         <span class="flex items-center space-x-1.5 min-w-0 truncate">
-            <span id="dot_{{ $selectId }}" class="w-1.5 h-1.5 rounded-full shrink-0 {{ $statusDotColor }} {{ empty($selectedVal) && $selectedVal !== '0' && $selectedVal !== 0 ? 'hidden' : '' }}"></span>
+            <span id="dot_{{ $selectId }}" class="w-1.5 h-1.5 rounded-full shrink-0 {{ $statusDotColor ?? 'hidden' }} {{ empty($statusDotColor) ? 'hidden' : '' }}"></span>
             <span id="label_{{ $selectId }}" class="truncate font-bold">{{ $initialLabel }}</span>
         </span>
         <i id="chevron_{{ $selectId }}" class="fa-solid fa-chevron-down text-[9px] opacity-60 shrink-0 transition-transform duration-200"></i>
@@ -101,10 +104,10 @@
                         $isSelected = (string)$val === (string)$selectedVal;
                         $optValLower = strtolower((string)$val);
                         $optDotClass = match($optValLower) {
-                            'approved', 'active', 'paid', '1' => 'bg-emerald-500',
+                            'approved', 'active', 'paid' => 'bg-emerald-500',
                             'pending' => 'bg-amber-500',
-                            'disapproved', 'inactive', 'unpaid', '0' => 'bg-rose-500',
-                            default => 'bg-slate-400',
+                            'disapproved', 'inactive', 'unpaid' => 'bg-rose-500',
+                            default => null,
                         };
                     @endphp
                     <button type="button" 
@@ -112,7 +115,9 @@
                         class="global-dropdown-option w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors cursor-pointer text-left {{ $isSelected ? 'bg-purple-50 text-[#150A42] font-bold' : '' }}"
                         data-value="{{ $val }}">
                         <span class="flex items-center space-x-2 truncate">
-                            <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $optDotClass }}"></span>
+                            @if($optDotClass)
+                                <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $optDotClass }}"></span>
+                            @endif
                             <span class="truncate">{{ $text }}</span>
                         </span>
                         @if($isSelected)
@@ -178,26 +183,29 @@
         );
 
         if (dot) {
-            dot.className = 'w-1.5 h-1.5 rounded-full shrink-0';
-            if (!valLower) {
-                dot.classList.add('hidden');
-            } else {
-                dot.classList.remove('hidden');
-            }
+            dot.className = 'w-1.5 h-1.5 rounded-full shrink-0 hidden';
         }
 
         if (['approved', 'active', 'paid'].includes(valLower)) {
             btn.classList.add('bg-emerald-50', 'text-emerald-700', 'border-emerald-200/90', 'hover:bg-emerald-100/70');
-            if (dot) dot.classList.add('bg-emerald-500');
+            if (dot) {
+                dot.className = 'w-1.5 h-1.5 rounded-full shrink-0 bg-emerald-500';
+            }
         } else if (['pending'].includes(valLower)) {
             btn.classList.add('bg-amber-50', 'text-amber-700', 'border-amber-200/90', 'hover:bg-amber-100/70');
-            if (dot) dot.classList.add('bg-amber-500');
+            if (dot) {
+                dot.className = 'w-1.5 h-1.5 rounded-full shrink-0 bg-amber-500';
+            }
         } else if (['disapproved', 'inactive', 'unpaid'].includes(valLower)) {
             btn.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-200/90', 'hover:bg-rose-100/70');
-            if (dot) dot.classList.add('bg-rose-500');
+            if (dot) {
+                dot.className = 'w-1.5 h-1.5 rounded-full shrink-0 bg-rose-500';
+            }
         } else {
             btn.classList.add('bg-white', 'text-slate-800', 'border-slate-200');
-            if (dot) dot.classList.add('bg-slate-400');
+            if (dot) {
+                dot.classList.add('hidden');
+            }
         }
     }
 
@@ -264,28 +272,39 @@
             listDiv.className = 'py-0.5 space-y-0.5';
 
             const seenKeys = new Set();
+            let hasEmptySeen = false;
+
             Array.from(select.options).forEach(opt => {
-                const optVal = opt.value;
-                const optText = opt.text.trim();
-                const dedupeKey = optVal + ':::' + optText;
+                const optVal = (opt.value || '').trim();
+                const optText = (opt.text || '').trim();
+
+                // Deduplicate empty/default options
+                if (!optVal) {
+                    if (hasEmptySeen) return;
+                    hasEmptySeen = true;
+                }
+
+                const dedupeKey = (optVal || '__EMPTY__') + ':::' + optText.toLowerCase();
                 if (seenKeys.has(dedupeKey)) return;
                 seenKeys.add(dedupeKey);
 
                 const isSelected = opt.selected;
-
                 const valLower = optVal.toLowerCase();
-                let dotBg = 'bg-slate-400';
-                if (['approved', 'active', 'paid', '1'].includes(valLower)) dotBg = 'bg-emerald-500';
+
+                let dotBg = null;
+                if (['approved', 'active', 'paid'].includes(valLower)) dotBg = 'bg-emerald-500';
                 else if (['pending'].includes(valLower)) dotBg = 'bg-amber-500';
-                else if (['disapproved', 'inactive', 'unpaid', '0'].includes(valLower)) dotBg = 'bg-rose-500';
+                else if (['disapproved', 'inactive', 'unpaid'].includes(valLower)) dotBg = 'bg-rose-500';
 
                 const optBtn = document.createElement('button');
                 optBtn.type = 'button';
                 optBtn.className = `global-dropdown-option w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors cursor-pointer text-left ${isSelected ? 'bg-purple-50 text-[#150A42] font-bold' : ''}`;
                 optBtn.dataset.value = optVal;
+
+                const dotHtml = dotBg ? `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${dotBg}"></span>` : '';
                 optBtn.innerHTML = `
                     <span class="flex items-center space-x-2 truncate">
-                        <span class="w-1.5 h-1.5 rounded-full shrink-0 ${dotBg}"></span>
+                        ${dotHtml}
                         <span class="truncate">${optText}</span>
                     </span>
                     ${isSelected ? '<i class="fa-solid fa-check text-purple-600 text-[10px] ml-auto"></i>' : ''}

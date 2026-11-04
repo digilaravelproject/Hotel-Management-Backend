@@ -25,7 +25,7 @@
                 <i class="fa-solid fa-users"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $totalUsersCount }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalUsersCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Users & Partners</div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <i class="fa-solid fa-handshake"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">
                     {{ $totalDistributorsCount }}
                 </div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Distributors</div>
@@ -50,7 +50,7 @@
             </div>
             <div class="min-w-0 flex-1">
                 <div class="flex items-center justify-between">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
                         {{ $totalHotelsCount }}
                     </div>
                     <span class="text-[10px] font-bold text-purple-600 group-hover:translate-x-0.5 transition-transform hidden sm:inline">View →</span>
@@ -65,7 +65,7 @@
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-blue-600 font-mono tracking-tight leading-tight">
+                <div class="text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight leading-tight">
                     {{ $activeUsersCount }}
                 </div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Status</div>
@@ -77,7 +77,7 @@
     <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs">
         <form method="GET" action="{{ route('super-admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 font-mono">Search Partner / User</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Search Partner / User</label>
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search name, email, phone..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] text-slate-800 font-medium transition-all shadow-inner">
@@ -85,12 +85,12 @@
             </div>
 
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 font-mono">Assigned Role</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Assigned Role</label>
                 <x-dropdown name="role" label="All Roles" :options="$roles->pluck('name', 'name')->mapWithKeys(fn($name, $value) => [$value => ucwords(str_replace('_', ' ', $name))])->toArray()" :selected="request('role', '')" theme="sa" />
             </div>
 
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 font-mono">Account Status</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Account Status</label>
                 <x-dropdown name="status" label="All Statuses" :options="['1' => 'Active Only', '0' => 'Disabled Only']" :selected="request('status', '')" theme="sa" />
             </div>
 
@@ -129,24 +129,24 @@
                             <!-- User / Distributor Info -->
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center space-x-3">
-                                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#150A42] to-purple-700 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 font-mono">
+                                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#150A42] to-purple-700 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
                                         {{ strtoupper(substr($user->name, 0, 2)) }}
                                     </div>
                                     <div class="min-w-0">
                                         <div class="font-extrabold text-slate-900 text-xs flex items-center space-x-1.5 truncate">
                                             <span class="truncate">{{ $user->name }}</span>
                                         </div>
-                                        <div class="text-[10px] text-slate-400 font-mono mt-0.5">ID: #USR-{{ $user->id }}</div>
+                                        <div class="text-[10px] text-slate-400 mt-0.5">ID: #USR-{{ $user->id }}</div>
                                     </div>
                                 </div>
                             </td>
 
                             <!-- Contact -->
                             <td class="px-4 py-3.5 space-y-0.5">
-                                <div class="font-bold text-slate-800 text-xs font-mono truncate max-w-[200px]">
+                                <div class="font-bold text-slate-800 text-xs truncate max-w-[200px]">
                                     <a href="mailto:{{ $user->email }}" class="hover:text-[#150A42] transition-colors">{{ $user->email }}</a>
                                 </div>
-                                <div class="text-[10px] text-slate-500 font-mono">
+                                <div class="text-[10px] text-slate-500">
                                     <i class="fa-solid fa-phone mr-1 text-[9px] text-slate-400"></i>{{ $user->phone ?? 'No phone' }}
                                 </div>
                             </td>
@@ -156,20 +156,20 @@
                                 <div class="flex flex-wrap items-center gap-1.5">
                                     @forelse($user->roles as $role)
                                         @if($role->name === 'distributor')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono uppercase">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
                                                 <i class="fa-solid fa-handshake mr-1 text-[9px]"></i> Distributor
                                             </span>
                                             @if($user->commission_percentage !== null)
-                                                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200 font-mono">
+                                                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200">
                                                     {{ $user->commission_percentage }}% Comm.
                                                 </span>
                                             @endif
                                         @elseif($role->name === 'hotel_admin')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-50 text-sky-700 border border-sky-200 font-mono uppercase">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-50 text-sky-700 border border-sky-200 uppercase">
                                                 <i class="fa-solid fa-hotel mr-1 text-[9px]"></i> Hotel Admin
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200 font-mono">
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
                                                 {{ ucwords(str_replace('_', ' ', $role->name)) }}
                                             </span>
                                         @endif
@@ -190,7 +190,7 @@
                                         <span>{{ $assignedHotels }} Hotels</span>
                                     </a>
                                 @else
-                                    <span class="text-[11px] text-slate-400 font-mono">0 Hotels</span>
+                                    <span class="text-[11px] text-slate-400">0 Hotels</span>
                                 @endif
                             </td>
 
@@ -200,13 +200,13 @@
                                     <input type="checkbox" onchange="toggleUserStatus({{ $user->id }})" {{ $user->status ? 'checked' : '' }} class="sr-only peer">
                                     <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#150A42]"></div>
                                 </label>
-                                <div id="status-label-{{ $user->id }}" class="text-[9px] font-bold font-mono uppercase mt-0.5 {{ $user->status ? 'text-emerald-700' : 'text-slate-400' }}">
+                                <div id="status-label-{{ $user->id }}" class="text-[9px] font-bold uppercase mt-0.5 {{ $user->status ? 'text-emerald-700' : 'text-slate-400' }}">
                                     {{ $user->status ? 'Active' : 'Disabled' }}
                                 </div>
                             </td>
 
                             <!-- Joined Date -->
-                            <td class="px-3 py-3.5 text-slate-500 font-mono text-[11px]">
+                            <td class="px-3 py-3.5 text-slate-500 text-[11px]">
                                 {{ $user->created_at ? $user->created_at->format('M d, Y') : 'N/A' }}
                             </td>
 
@@ -257,14 +257,14 @@
             <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
                 <div class="flex items-center justify-between gap-3">
                     <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#150A42] to-purple-700 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 font-mono">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#150A42] to-purple-700 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0">
                             {{ strtoupper(substr($user->name, 0, 2)) }}
                         </div>
                         <div class="min-w-0">
                             <div class="font-extrabold text-slate-900 text-sm truncate flex items-center space-x-1.5">
                                 <span class="truncate">{{ $user->name }}</span>
                             </div>
-                            <div class="text-[10px] text-slate-400 font-mono">ID: #USR-{{ $user->id }}</div>
+                            <div class="text-[10px] text-slate-400">ID: #USR-{{ $user->id }}</div>
                         </div>
                     </div>
 
@@ -279,7 +279,7 @@
                 <!-- Roles, Commission & Hotels -->
                 <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
                     @forelse($user->roles as $role)
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono uppercase">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 uppercase">
                             {{ ucwords(str_replace('_', ' ', $role->name)) }}
                         </span>
                     @empty
@@ -287,20 +287,20 @@
                     @endforelse
 
                     @if($user->commission_percentage !== null)
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200 font-mono">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200">
                             {{ $user->commission_percentage }}% Comm.
                         </span>
                     @endif
 
                     @if($user->hotels && $user->hotels->count() > 0)
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-sky-50 text-sky-700 border border-sky-200 font-mono">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-sky-50 text-sky-700 border border-sky-200">
                             {{ $user->hotels->count() }} Hotels
                         </span>
                     @endif
                 </div>
 
                 <!-- Contact & Joined Info -->
-                <div class="grid grid-cols-2 gap-2 text-[11px] font-mono pt-1">
+                <div class="grid grid-cols-2 gap-2 text-[11px] pt-1">
                     <div class="truncate text-slate-600">
                         <i class="fa-regular fa-envelope mr-1 text-slate-400"></i>{{ $user->email }}
                     </div>
@@ -359,7 +359,7 @@
                 const label = document.getElementById(`status-label-${userId}`);
                 if (label) {
                     label.textContent = data.status ? 'Active' : 'Disabled';
-                    label.className = `text-[9px] font-bold font-mono uppercase mt-0.5 ${data.status ? 'text-emerald-700' : 'text-slate-400'}`;
+                    label.className = `text-[9px] font-bold uppercase mt-0.5 ${data.status ? 'text-emerald-700' : 'text-slate-400'}`;
                 }
                 const Toast = Swal.mixin({
                     toast: true,

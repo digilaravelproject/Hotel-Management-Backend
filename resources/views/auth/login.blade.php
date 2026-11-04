@@ -63,7 +63,7 @@
     <!-- Main Floating Login Card -->
     <!-- On Mobile: Centered max-w-md, compact & clean without slider -->
     <!-- On Desktop: Expanded max-w-5xl split-screen with visual slider -->
-    <div class="w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-[#150E2D]/90 backdrop-blur-2xl border border-white/10 rounded-[28px] sm:rounded-[36px] shadow-2xl shadow-black/80 p-5 sm:p-7 lg:p-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+    <div class="w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-white/95 backdrop-blur-2xl border border-white/40 rounded-[28px] sm:rounded-[36px] shadow-[0_25px_70px_rgba(0,0,0,0.55)] p-5 sm:p-7 lg:p-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
 
         <!-- ================================================================= -->
         <!-- LEFT PANEL: Scenic Visual Slider (DESKTOP ONLY: hidden lg:flex)  -->
@@ -120,7 +120,7 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- RIGHT PANEL: Sleek Authentication Form                            -->
+        <!-- RIGHT PANEL: Sleek Authentication Form (Light Elevated Card)      -->
         <!-- ================================================================= -->
         <div class="lg:col-span-6 xl:col-span-5 flex flex-col justify-center px-2 sm:px-4 lg:px-4 xl:px-6 py-2 sm:py-4 text-left">
 
@@ -131,50 +131,50 @@
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
                         <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
                              alt="{{ app_name() }}" 
-                             class="h-14 sm:h-16 w-auto max-w-[220px] sm:max-w-[240px] object-contain drop-shadow-xl">
+                             class="h-14 sm:h-16 w-auto max-w-[220px] sm:max-w-[240px] object-contain drop-shadow-md">
                     </picture>
                 </a>
             </div>
 
             <!-- Title & Subtitle -->
             <div class="space-y-1 mb-5 sm:mb-6 text-center lg:text-left">
-                <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-sans">
+                <h1 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight font-sans">
                     Welcome back
                 </h1>
-                <p class="text-xs sm:text-sm text-slate-400 font-medium">
+                <p class="text-xs sm:text-sm text-slate-500 font-medium">
                     Sign in with your email to access your dashboard.
                 </p>
             </div>
 
             <!-- Flash & Error Alerts -->
             @if(session('success'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm shrink-0"></i>
+                <div class="mb-4 p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center space-x-2.5 font-medium">
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-sm shrink-0"></i>
                     <span>{{ session('success') }}</span>
                 </div>
             @endif
 
             @if(session('status'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-purple-500/15 border border-purple-500/30 text-purple-200 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-info text-purple-400 text-sm shrink-0"></i>
+                <div class="mb-4 p-3.5 rounded-2xl bg-purple-50 border border-purple-200 text-purple-900 text-xs flex items-center space-x-2.5 font-medium">
+                    <i class="fa-solid fa-circle-info text-purple-600 text-sm shrink-0"></i>
                     <span>{{ session('status') }}</span>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mb-4 p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs flex items-center space-x-2.5 font-medium">
-                    <i class="fa-solid fa-circle-exclamation text-rose-400 text-sm shrink-0"></i>
+                <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-center space-x-2.5 font-medium">
+                    <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm shrink-0"></i>
                     <span>{{ session('error') }}</span>
                 </div>
             @endif
 
             @if(isset($errors) && $errors->any())
-                <div class="mb-4 p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs space-y-1">
-                    <div class="flex items-center space-x-2 font-bold text-rose-200">
-                        <i class="fa-solid fa-circle-exclamation text-rose-400 text-sm"></i>
+                <div class="mb-4 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
+                    <div class="flex items-center space-x-2 font-bold text-rose-900">
+                        <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
                         <span>Authentication failed:</span>
                     </div>
-                    <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-300 text-xs font-medium">
+                    <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-700 text-xs font-medium">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -188,8 +188,8 @@
 
                 <!-- Email Input -->
                 <div class="space-y-1.5">
-                    <label for="loginEmail" class="block text-xs font-bold text-slate-300">
-                        Email Address <span class="text-rose-400 font-black">*</span>
+                    <label for="loginEmail" class="block text-xs font-bold text-slate-700">
+                        Email Address <span class="text-rose-500 font-black">*</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -203,18 +203,18 @@
                                placeholder="name@company.com" 
                                autocomplete="email" 
                                autofocus
-                               class="w-full pl-10 pr-4 py-3 bg-[#1F1739]/90 border border-white/10 rounded-xl text-sm font-semibold text-white placeholder:text-slate-500 focus:bg-[#281F48] focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-400 transition-all">
+                               class="w-full pl-10 pr-4 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
                     </div>
                 </div>
 
                 <!-- Password Input -->
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between">
-                        <label for="loginPassword" class="block text-xs font-bold text-slate-300">
-                            Password <span class="text-rose-400 font-black">*</span>
+                        <label for="loginPassword" class="block text-xs font-bold text-slate-700">
+                            Password <span class="text-rose-500 font-black">*</span>
                         </label>
                         @if(Route::has('hotel.forgot-password'))
-                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-semibold text-purple-400 hover:text-purple-300 hover:underline transition-colors">
+                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-purple-700 hover:text-purple-900 hover:underline transition-colors">
                                 Forgot password?
                             </a>
                         @endif
@@ -229,10 +229,10 @@
                                required 
                                placeholder="••••••••" 
                                autocomplete="current-password"
-                               class="w-full pl-10 pr-11 py-3 bg-[#1F1739]/90 border border-white/10 rounded-xl text-sm font-semibold text-white placeholder:text-slate-500 focus:bg-[#281F48] focus:outline-none focus:ring-4 focus:ring-purple-500/20 focus:border-purple-400 transition-all">
+                               class="w-full pl-10 pr-11 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
                         <button type="button" 
                                 onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" 
-                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white transition-colors cursor-pointer" 
+                                class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer" 
                                 aria-label="Toggle password visibility">
                             <i id="loginEyeIcon" class="fa-regular fa-eye text-xs"></i>
                         </button>
@@ -241,27 +241,27 @@
 
                 <!-- Remember Me Checkbox -->
                 <div class="flex items-center justify-between pt-0.5">
-                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-400 hover:text-slate-200 cursor-pointer select-none">
+                    <label class="flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer select-none">
                         <input type="checkbox" 
                                name="remember" 
                                id="rememberDevice" 
                                {{ old('remember') ? 'checked' : '' }}
-                               class="w-4 h-4 rounded-md border-white/20 bg-[#1F1739] text-purple-600 focus:ring-purple-500/30 cursor-pointer">
+                               class="w-4 h-4 rounded-md border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
                         <span>Remember this device</span>
                     </label>
                 </div>
 
                 <!-- Primary Submit CTA Button -->
                 <button type="submit" 
-                        class="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-500 hover:via-violet-500 hover:to-indigo-500 text-white font-extrabold text-sm shadow-xl shadow-purple-600/30 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer mt-2">
+                        class="w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-[#150A42] via-[#201063] to-purple-700 hover:from-[#1c0d56] hover:via-[#261376] hover:to-purple-600 text-white font-extrabold text-sm shadow-xl shadow-[#150A42]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer mt-2">
                     <span>Sign In</span>
                     <i class="fa-solid fa-arrow-right text-xs"></i>
                 </button>
             </form>
 
             <!-- Bottom Multi-Role Detection Note -->
-            <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-center space-x-2 text-xs text-slate-400 font-medium">
-                <i class="fa-solid fa-shield-halved text-emerald-400 text-xs"></i>
+            <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-center space-x-2 text-xs text-slate-500 font-medium">
+                <i class="fa-solid fa-shield-halved text-emerald-600 text-xs"></i>
                 <span>Smart Multi-Tenant Enterprise Authentication</span>
             </div>
 
