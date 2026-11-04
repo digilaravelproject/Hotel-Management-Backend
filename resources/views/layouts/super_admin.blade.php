@@ -145,7 +145,7 @@
                         </a>
                         <a href="{{ route('super-admin.firebase-settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.firebase-settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">FCM Realtime</span>
+                            <span class="truncate">Firebase Realtime</span>
                         </a>
                     </div>
                 </div>

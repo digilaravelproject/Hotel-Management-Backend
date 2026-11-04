@@ -38,9 +38,14 @@ class FirebaseSettingsController extends Controller
             }
         }
 
+        $totalDevices = \App\Models\ConnectedDevice::count();
+        $activeTokens = \App\Models\ConnectedDevice::whereNotNull('fcm_token')->count();
+
         return view('super_admin.firebase_settings', [
             'setting' => $setting,
             'parsedConfig' => $parsedConfig,
+            'totalDevices' => $totalDevices,
+            'activeTokens' => $activeTokens,
         ]);
     }
 
