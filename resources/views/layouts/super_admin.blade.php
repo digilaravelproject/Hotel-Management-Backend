@@ -14,7 +14,7 @@
     <!-- Google Fonts & FontAwesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- Vite Assets (Tailwind CSS v4) -->
@@ -24,8 +24,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-mono, .font-space-mono { font-family: 'Space Mono', monospace; }
+        body, .font-mono, .font-space-mono, code, kbd, samp, pre { font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif; }
         
         /* Custom scrollbar for sidebar */
         .sidebar-scroll::-webkit-scrollbar {

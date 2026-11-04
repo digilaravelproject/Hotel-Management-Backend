@@ -5,7 +5,7 @@
 @section('styles')
 <style>
     .login-cosmic-canvas {
-        background: radial-gradient(circle at 50% 15%, #1f124d 0%, #10092c 50%, #060312 100%);
+        background: radial-gradient(circle at 50% 15%, #1d1148 0%, #0f0828 50%, #060312 100%);
     }
     .slide-fade {
         transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
@@ -18,23 +18,57 @@
         width: 0.5rem;
         background-color: rgba(255, 255, 255, 0.4);
     }
+
+    /* Ambient Floating Glowing Orbs */
+    @keyframes orbFloat1 {
+        0%, 100% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(50px, -35px) scale(1.12); }
+        66% { transform: translate(-35px, 45px) scale(0.95); }
+    }
+    @keyframes orbFloat2 {
+        0%, 100% { transform: translate(0px, 0px) scale(1); }
+        33% { transform: translate(-45px, 50px) scale(1.08); }
+        66% { transform: translate(35px, -30px) scale(0.92); }
+    }
+    @keyframes orbFloat3 {
+        0%, 100% { transform: translate(0px, 0px) scale(1); }
+        50% { transform: translate(30px, -50px) scale(1.15); }
+    }
+    .animate-orb-1 {
+        animation: orbFloat1 18s ease-in-out infinite;
+    }
+    .animate-orb-2 {
+        animation: orbFloat2 22s ease-in-out infinite;
+    }
+    .animate-orb-3 {
+        animation: orbFloat3 26s ease-in-out infinite;
+    }
 </style>
 @endsection
 
 @section('content')
-<div class="min-h-screen flex items-center justify-center p-3 sm:p-6 lg:p-8 login-cosmic-canvas relative overflow-hidden selection:bg-purple-600 selection:text-white">
+<div class="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8 login-cosmic-canvas relative overflow-hidden selection:bg-purple-600 selection:text-white">
 
-    <!-- Ambient Glow Highlights in Background -->
-    <div class="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none"></div>
-    <div class="absolute bottom-10 right-1/4 w-[500px] h-[500px] bg-indigo-600/12 rounded-full blur-[130px] pointer-events-none"></div>
+    <!-- Subtle Tech Dot-Grid Overlay for Depth -->
+    <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:28px_28px] pointer-events-none z-0"></div>
 
-    <!-- Main Floating Split-Screen Card (Image 1 Style) -->
-    <div class="w-full max-w-5xl bg-[#150E2D]/90 backdrop-blur-2xl border border-white/10 rounded-[30px] sm:rounded-[36px] shadow-2xl shadow-black/70 p-3 sm:p-4 lg:p-5 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+    <!-- Live Animated Glowing Ambient Orbs -->
+    <div class="animate-orb-1 absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[650px] h-[550px] sm:h-[650px] bg-purple-600/20 rounded-full blur-[140px] pointer-events-none z-0"></div>
+    <div class="animate-orb-2 absolute bottom-12 right-1/4 w-[450px] sm:w-[550px] h-[450px] sm:h-[550px] bg-indigo-600/18 rounded-full blur-[130px] pointer-events-none z-0"></div>
+    <div class="animate-orb-3 absolute top-2/3 left-1/2 -translate-x-1/2 w-[380px] h-[380px] bg-violet-500/12 rounded-full blur-[110px] pointer-events-none z-0"></div>
+
+    <!-- Interactive Floating Particle Stars Canvas -->
+    <canvas id="cosmicParticles" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+    <!-- Main Floating Login Card -->
+    <!-- On Mobile: Centered max-w-md, compact & clean without slider -->
+    <!-- On Desktop: Expanded max-w-5xl split-screen with visual slider -->
+    <div class="w-full max-w-md sm:max-w-lg lg:max-w-5xl bg-[#150E2D]/90 backdrop-blur-2xl border border-white/10 rounded-[28px] sm:rounded-[36px] shadow-2xl shadow-black/80 p-5 sm:p-7 lg:p-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
 
         <!-- ================================================================= -->
-        <!-- LEFT PANEL: Scenic Visual Slider with Overlay & Taglines          -->
+        <!-- LEFT PANEL: Scenic Visual Slider (DESKTOP ONLY: hidden lg:flex)  -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 xl:col-span-7 relative rounded-[22px] sm:rounded-[28px] overflow-hidden min-h-[380px] sm:min-h-[460px] lg:min-h-[620px] flex flex-col justify-between p-6 sm:p-8 bg-slate-950 shadow-inner select-none">
+        <div class="hidden lg:flex lg:col-span-6 xl:col-span-7 relative rounded-[24px] sm:rounded-[28px] overflow-hidden min-h-[580px] xl:min-h-[640px] flex-col justify-end p-6 sm:p-8 bg-slate-950 shadow-inner select-none">
 
             <!-- Background Slide Images -->
             <div class="absolute inset-0 z-0">
@@ -54,27 +88,9 @@
                      alt="In-Room Hospitality" 
                      class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
 
-                <!-- Gradient Vignettes for Atmospheric Contrast -->
-                <div class="absolute inset-0 bg-gradient-to-t from-[#090417] via-[#090417]/50 to-black/35 z-10"></div>
+                <!-- Gradient Vignettes for Atmospheric Depth -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#090417] via-[#090417]/55 to-black/30 z-10"></div>
                 <div class="absolute inset-0 bg-[#150A42]/30 mix-blend-multiply z-10"></div>
-            </div>
-
-            <!-- Top Header Inside Visual: Brand Logo & Back to Website Pill -->
-            <div class="relative z-20 flex items-center justify-between w-full">
-                <a href="{{ url('/') }}" class="inline-block transition-transform hover:scale-105" title="{{ app_name() }}">
-                    <picture>
-                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
-                             alt="{{ app_name() }}" 
-                             class="h-9 sm:h-11 w-auto object-contain drop-shadow-lg">
-                    </picture>
-                </a>
-
-                <a href="{{ url('/') }}" 
-                   class="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold border border-white/20 backdrop-blur-md transition-all flex items-center space-x-1.5 shadow-sm hover:border-white/30">
-                    <span>Back to website</span>
-                    <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                </a>
             </div>
 
             <!-- Bottom Content Inside Visual: Captions & Slide Dots -->
@@ -104,12 +120,24 @@
         </div>
 
         <!-- ================================================================= -->
-        <!-- RIGHT PANEL: Sleek Professional Authentication Form               -->
+        <!-- RIGHT PANEL: Sleek Authentication Form                            -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 xl:col-span-5 flex flex-col justify-center px-3 sm:px-6 lg:px-4 xl:px-8 py-4 sm:py-6 text-left">
+        <div class="lg:col-span-6 xl:col-span-5 flex flex-col justify-center px-2 sm:px-4 lg:px-4 xl:px-6 py-2 sm:py-4 text-left">
+
+            <!-- Brand Logo (Prominent on Mobile & Desktop) -->
+            <div class="flex items-center justify-center lg:justify-start mb-5 sm:mb-6">
+                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-block transition-transform hover:scale-105">
+                    <picture>
+                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
+                             alt="{{ app_name() }}" 
+                             class="h-10 sm:h-12 w-auto object-contain drop-shadow-lg">
+                    </picture>
+                </a>
+            </div>
 
             <!-- Title & Subtitle -->
-            <div class="space-y-1.5 mb-6">
+            <div class="space-y-1 mb-5 sm:mb-6 text-center lg:text-left">
                 <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight font-sans">
                     Welcome back
                 </h1>
@@ -292,6 +320,7 @@
     function goToSlide(index) {
         currentSlide = index;
         slides.forEach((slide, i) => {
+            if (!slide) return;
             if (i === currentSlide) {
                 slide.classList.remove('opacity-0', 'scale-105');
                 slide.classList.add('opacity-100', 'scale-100');
@@ -317,10 +346,82 @@
         }
     }
 
-    // Auto rotate every 6 seconds
-    setInterval(() => {
-        const nextSlide = (currentSlide + 1) % slides.length;
-        goToSlide(nextSlide);
-    }, 6000);
+    // Auto rotate every 6 seconds if on desktop
+    if (window.innerWidth >= 1024) {
+        setInterval(() => {
+            const nextSlide = (currentSlide + 1) % slides.length;
+            goToSlide(nextSlide);
+        }, 6000);
+    }
+
+    // 3. Ultra-Lightweight Cosmic Particles Canvas Animation
+    (function initCosmicCanvas() {
+        const canvas = document.getElementById('cosmicParticles');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        });
+
+        const particleCount = window.innerWidth < 768 ? 25 : 50;
+        const particles = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 1.6 + 0.4,
+                speedY: Math.random() * 0.35 + 0.1,
+                speedX: (Math.random() - 0.5) * 0.2,
+                alpha: Math.random() * 0.7 + 0.2,
+                pulseSpeed: Math.random() * 0.02 + 0.005,
+                pulseAngle: Math.random() * Math.PI * 2
+            });
+        }
+
+        let animationFrameId;
+        function renderParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                const p = particles[i];
+                p.y -= p.speedY;
+                p.x += p.speedX;
+                p.pulseAngle += p.pulseSpeed;
+
+                const currentAlpha = p.alpha + Math.sin(p.pulseAngle) * 0.25;
+
+                if (p.y < -10) {
+                    p.y = height + 10;
+                    p.x = Math.random() * width;
+                }
+                if (p.x < -10) p.x = width + 10;
+                if (p.x > width + 10) p.x = -10;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(192, 175, 255, ${Math.max(0.1, Math.min(0.9, currentAlpha))})`;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = 'rgba(168, 85, 247, 0.4)';
+                ctx.fill();
+            }
+
+            animationFrameId = requestAnimationFrame(renderParticles);
+        }
+
+        renderParticles();
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                cancelAnimationFrame(animationFrameId);
+            } else {
+                renderParticles();
+            }
+        });
+    })();
 </script>
 @endsection

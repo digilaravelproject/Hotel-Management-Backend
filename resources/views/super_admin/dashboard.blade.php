@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         padding: 10,
                         cornerRadius: 12,
                         titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
-                        bodyFont: { family: 'Space Mono', size: 11 }
+                        bodyFont: { family: 'Plus Jakarta Sans', size: 11 }
                     }
                 }
             }
@@ -612,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         padding: 10,
                         cornerRadius: 12,
                         titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
-                        bodyFont: { family: 'Space Mono', size: 11 }
+                        bodyFont: { family: 'Plus Jakarta Sans', size: 11 }
                     }
                 },
                 scales: {
@@ -630,7 +630,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             borderDash: [4, 4]
                         },
                         ticks: {
-                            font: { family: 'Space Mono', size: 10 },
+                            font: { family: 'Plus Jakarta Sans', size: 10 },
                             color: '#94A3B8'
                         }
                     }

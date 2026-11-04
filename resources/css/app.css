@@ -8,7 +8,7 @@
 
 @theme {
     --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
-    --font-mono: 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    --font-mono: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 
     /* Global Soft Neutrals (colors.md Section 1 - 90%) */
     --color-ui-bg: #F4F5F7;
@@ -61,6 +61,18 @@
     --color-status-offline-border: #FEE2E2;
 }
 
+/* Universal Typography Enforcement: Plus Jakarta Sans Only */
+html,
+body,
+button,
+input,
+select,
+textarea,
+.font-mono,
+.font-space-mono {
+    font-family: var(--font-sans) !important;
+}
+
 /* =========================================================================
    GLOBAL BUTTON STANDARDIZATION (Strict colors.md Rulebook)
    ========================================================================= */
@@ -75,7 +87,8 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 700;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
+    /* rounded-xl */
     background-color: #150A42;
     color: #FFFFFF;
     box-shadow: 0 2px 8px 0 rgba(21, 10, 66, 0.25);
@@ -84,14 +97,17 @@
     border: none;
     text-decoration: none;
 }
+
 .btn-sa-primary:hover {
     background-color: #201063;
     transform: translateY(-1px);
     box-shadow: 0 6px 14px -1px rgba(21, 10, 66, 0.35);
 }
+
 .btn-sa-primary:active {
     transform: scale(0.98);
 }
+
 .btn-sa-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -109,7 +125,8 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 700;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
+    /* rounded-xl */
     background-color: #27374D;
     color: #FFFFFF;
     box-shadow: 0 1px 2px 0 rgba(39, 55, 77, 0.25);
@@ -118,14 +135,17 @@
     border: none;
     text-decoration: none;
 }
+
 .btn-dist-primary:hover {
     background-color: #1E293B;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px -1px rgba(30, 41, 59, 0.35);
 }
+
 .btn-dist-primary:active {
     transform: scale(0.98);
 }
+
 .btn-dist-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -143,7 +163,8 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 700;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
+    /* rounded-xl */
     background-color: #3D242F;
     color: #FFFFFF;
     box-shadow: 0 1px 2px 0 rgba(61, 36, 47, 0.25);
@@ -152,14 +173,17 @@
     border: none;
     text-decoration: none;
 }
+
 .btn-hotel-primary:hover {
     background-color: #2A1820;
     transform: translateY(-1px);
     box-shadow: 0 4px 8px -1px rgba(42, 24, 32, 0.35);
 }
+
 .btn-hotel-primary:active {
     transform: scale(0.98);
 }
+
 .btn-hotel-primary:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -168,7 +192,8 @@
 }
 
 /* Universal Secondary / Cancel Button (Section 3.3) */
-.btn-secondary, .btn-secondary-cancel {
+.btn-secondary,
+.btn-secondary-cancel {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -177,7 +202,8 @@
     font-size: 0.75rem;
     line-height: 1rem;
     font-weight: 600;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
+    /* rounded-xl */
     background-color: #FFFFFF;
     border: 1px solid #E5E7EB;
     color: #374151;
@@ -186,15 +212,21 @@
     cursor: pointer;
     text-decoration: none;
 }
-.btn-secondary:hover, .btn-secondary-cancel:hover {
+
+.btn-secondary:hover,
+.btn-secondary-cancel:hover {
     background-color: #F9FAFB;
     border-color: #D1D5DB;
     color: #111827;
 }
-.btn-secondary:active, .btn-secondary-cancel:active {
+
+.btn-secondary:active,
+.btn-secondary-cancel:active {
     transform: scale(0.98);
 }
-.btn-secondary:disabled, .btn-secondary-cancel:disabled {
+
+.btn-secondary:disabled,
+.btn-secondary-cancel:disabled {
     opacity: 0.5;
     cursor: not-allowed;
     transform: none;
@@ -218,13 +250,16 @@
     cursor: pointer;
     text-decoration: none;
 }
+
 .btn-danger:hover {
     background-color: #FEF2F2;
     border-color: #B91C1C;
 }
+
 .btn-danger:active {
     transform: scale(0.98);
 }
+
 .btn-danger:disabled {
     opacity: 0.5;
     cursor: not-allowed;
@@ -247,9 +282,11 @@
     -moz-appearance: none;
     background-color: #FFFFFF;
     border: 1px solid #E5E7EB;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
+    /* rounded-xl */
     padding: 0.625rem 2.25rem 0.625rem 0.875rem;
-    font-size: 0.75rem; /* text-xs */
+    font-size: 0.75rem;
+    /* text-xs */
     font-weight: 600;
     color: #111827;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02);
