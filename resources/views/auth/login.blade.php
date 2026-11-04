@@ -4,25 +4,12 @@
 
 @section('styles')
 <style>
-    /* Signature Cosmic Canvas Background */
+    /* 1. Signature Cosmic Canvas Background */
     .login-cosmic-canvas {
         background: radial-gradient(circle at 50% 15%, #1d1148 0%, #0f0828 50%, #060312 100%);
     }
 
-    /* Smooth Image Slide Transitions */
-    .slide-fade {
-        transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
-    }
-    .carousel-dot.active {
-        width: 1.75rem;
-        background-color: #FFFFFF;
-    }
-    .carousel-dot:not(.active) {
-        width: 0.5rem;
-        background-color: rgba(255, 255, 255, 0.4);
-    }
-
-    /* Ambient Floating Glowing Orbs */
+    /* 2. Ambient Floating Glowing Orbs Animations */
     @keyframes orbFloat1 {
         0%, 100% { transform: translate(0px, 0px) scale(1); }
         33% { transform: translate(50px, -35px) scale(1.12); }
@@ -46,6 +33,18 @@
     .animate-orb-3 {
         animation: orbFloat3 26s ease-in-out infinite;
     }
+
+    /* 3. Concentric Rings behind Screen Mockup */
+    .concentric-ring-1 {
+        width: 380px;
+        height: 380px;
+        border: 1px solid rgba(168, 85, 247, 0.12);
+    }
+    .concentric-ring-2 {
+        width: 540px;
+        height: 540px;
+        border: 1px solid rgba(168, 85, 247, 0.07);
+    }
 </style>
 @endsection
 
@@ -63,98 +62,93 @@
     <!-- Interactive Floating Particle Stars Canvas -->
     <canvas id="cosmicParticles" class="absolute inset-0 pointer-events-none z-0"></canvas>
 
-    <!-- MAIN FLOATING LOGIN CARD -->
-    <!-- On Mobile: Clean max-w-md card without left slider -->
-    <!-- On Desktop: Expanded split-screen card matching Reference 1 & 2 -->
-    <div class="w-full max-w-md sm:max-w-lg lg:max-w-5xl xl:max-w-[1080px] bg-white rounded-[28px] sm:rounded-[36px] shadow-[0_30px_90px_rgba(0,0,0,0.65)] p-4 sm:p-5 lg:p-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-8 items-stretch border border-white/40">
+    <!-- MAIN FLOATING CARD (Exact Layout from Reference Image in Brand Colors) -->
+    <div class="w-full max-w-5xl xl:max-w-[1080px] bg-[#0E0625] rounded-[32px] sm:rounded-[40px] shadow-[0_30px_90px_rgba(0,0,0,0.8)] overflow-hidden grid grid-cols-1 lg:grid-cols-12 relative z-10 border border-white/10">
 
         <!-- ================================================================= -->
-        <!-- LEFT PANEL: Real Photographic Hotel Image Slider (Desktop Only)   -->
+        <!-- LEFT PANEL: Dark Editorial Screen (50% Width on Desktop)          -->
         <!-- ================================================================= -->
-        <div class="hidden lg:flex lg:col-span-6 xl:col-span-6 relative rounded-[24px] sm:rounded-[30px] overflow-hidden min-h-[580px] xl:min-h-[640px] flex-col justify-end p-7 sm:p-9 xl:p-10 bg-slate-950 shadow-inner select-none">
+        <div class="lg:col-span-6 bg-gradient-to-b from-[#150A3E] via-[#0E0625] to-[#070314] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative overflow-hidden select-none min-h-[480px] lg:min-h-[660px]">
 
-            <!-- Background Slide Images (Real Hospitality Photos) -->
-            <div class="absolute inset-0 z-0">
-                <!-- Slide 1 (The Hand with Remote in Hotel Room from Reference Image 1) -->
-                <img id="loginSlide1" 
-                     src="{{ asset('images/landing/about-suite-remote.jpg') }}" 
-                     alt="In-Room Hospitality Remote" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-100 scale-100">
+            <!-- Background Concentric Architectural Rings -->
+            <div class="concentric-ring-2 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
+            <div class="concentric-ring-1 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none z-0"></div>
 
-                <!-- Slide 2 (Luxury Hotel Resort Wallpaper) -->
-                <img id="loginSlide2" 
-                     src="{{ asset('images/landing/tv-wallpaper-resort.jpg') }}" 
-                     alt="Luxury Hotel Resort" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
-
-                <!-- Slide 3 (Sunset Suite) -->
-                <img id="loginSlide3" 
-                     src="{{ asset('images/landing/hero-suite-sunset.jpg') }}" 
-                     alt="Smart TV Suite" 
-                     class="slide-fade absolute inset-0 w-full h-full object-cover opacity-0 scale-105">
-
-                <!-- Gradient Vignettes for Atmospheric Contrast & Text Legibility -->
-                <div class="absolute inset-0 bg-gradient-to-t from-[#090417] via-[#090417]/60 to-black/30 z-10"></div>
-                <div class="absolute inset-0 bg-[#150A42]/25 mix-blend-multiply z-10"></div>
+            <!-- Top Tagline (matching Reference Image) -->
+            <div class="relative z-10">
+                <p class="text-xs sm:text-[13px] text-purple-200/70 font-normal leading-relaxed max-w-sm">
+                    Global hospitality made simple — online in-room TV solutions for luxury hotels & networks.
+                </p>
             </div>
 
-            <!-- Overlaid Content Inside Visual: Tagline, Captions & Dots -->
-            <div class="relative z-20 space-y-4 pt-12">
-                <div class="space-y-2">
-                    <!-- Purple Glass Pill Badge (matching Reference Image 1) -->
-                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-500/25 border border-purple-400/35 text-purple-200 text-[11px] font-bold tracking-wider uppercase backdrop-blur-md shadow-xs">
-                        <span class="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-                        <span>SMART HOSPITALITY CLOUD</span>
+            <!-- Centered Large Editorial Typography (matching Reference Image) -->
+            <div class="relative z-10 my-auto py-8 sm:py-12">
+                <h2 class="text-4xl sm:text-5xl xl:text-6xl font-normal text-white tracking-tight leading-[1.08] font-sans">
+                    Manage<br>
+                    <span class="font-medium text-purple-100">your screens</span>
+                </h2>
+            </div>
+
+            <!-- Bottom Graphic: Room 304 TV Active Stream Card + Circular Icon -->
+            <div class="relative z-10 pt-4 flex items-end justify-between">
+                <!-- Device Mockup Card (Exact Match from User's Reference) -->
+                <div class="w-56 sm:w-64 bg-[#160B33]/90 border border-purple-500/20 rounded-[22px] p-3 shadow-2xl backdrop-blur-md -mb-4 transform hover:-translate-y-1 transition-transform duration-300">
+                    <div class="bg-[#0F0624] rounded-[16px] p-3.5 border border-white/5 space-y-2.5">
+                        <div class="flex items-center justify-between text-[11px] text-purple-200/60 font-medium">
+                            <span>Room #304 TV</span>
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        </div>
+                        <div class="text-base sm:text-lg font-bold text-white tracking-tight">Active Stream</div>
+                        <!-- Equalizer Bar Graph matching User's Reference Image in Brand Colors -->
+                        <div class="flex items-end space-x-1.5 h-9 pt-1">
+                            <div class="w-3 bg-purple-500/20 rounded-xs h-3"></div>
+                            <div class="w-3 bg-purple-500/35 rounded-xs h-5"></div>
+                            <div class="w-3 bg-gradient-to-t from-purple-600 to-indigo-400 rounded-xs h-8"></div>
+                            <div class="w-3 bg-gradient-to-t from-purple-600 to-indigo-400 rounded-xs h-6"></div>
+                            <div class="w-3 bg-purple-500/30 rounded-xs h-4"></div>
+                            <div class="w-3 bg-purple-500/20 rounded-xs h-2.5"></div>
+                        </div>
                     </div>
-
-                    <!-- Slide Headline -->
-                    <h2 id="slideHeadline" class="text-2xl sm:text-3xl xl:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
-                        5-Star Experience,<br>Automated Privacy.
-                    </h2>
-
-                    <!-- Slide Subtitle -->
-                    <p id="slideSubtitle" class="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed max-w-md drop-shadow-sm">
-                        Instant credentials wiped on guest checkout with zero local credential storage on property screens.
-                    </p>
                 </div>
 
-                <!-- Slide Dots Indicators -->
-                <div class="flex items-center space-x-2 pt-2">
-                    <button type="button" onclick="goToSlide(0)" class="carousel-dot active h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 1"></button>
-                    <button type="button" onclick="goToSlide(1)" class="carousel-dot h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 2"></button>
-                    <button type="button" onclick="goToSlide(2)" class="carousel-dot h-1.5 rounded-full transition-all duration-300 cursor-pointer" aria-label="Slide 3"></button>
+                <!-- Circular Hospitality Brand Badge (matching User's Reference Image) -->
+                <div class="w-9 h-9 rounded-full border border-purple-500/40 bg-purple-600/10 text-purple-300 flex items-center justify-center text-xs shrink-0 mb-1 shadow-xs">
+                    <i class="fa-solid fa-hotel text-xs"></i>
                 </div>
             </div>
         </div>
 
         <!-- ================================================================= -->
-        <!-- RIGHT PANEL: Crisp White Authentication Form                      -->
+        <!-- RIGHT PANEL: Crisp White Seamless Card with Curved Overlap       -->
         <!-- ================================================================= -->
-        <div class="lg:col-span-6 xl:col-span-6 flex flex-col justify-between p-4 sm:p-7 lg:p-8 xl:p-10 text-left">
+        <div class="lg:col-span-6 bg-white lg:rounded-l-[44px] p-7 sm:p-10 lg:p-12 xl:p-14 flex flex-col justify-between relative shadow-2xl">
 
-            <!-- Top Header: Logo Pura Left-Aligned -->
-            <div class="flex items-center justify-start mb-6 sm:mb-8">
-                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-block transition-transform hover:scale-105">
+            <!-- Top Header Row: Brand Logo & Sign Up -->
+            <div class="flex items-center justify-between pb-6 sm:pb-8">
+                <!-- Brand Logo (Pura Left-Aligned) -->
+                <a href="{{ url('/') }}" title="{{ app_name() }}" class="inline-flex items-center transition-transform hover:scale-105">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
                         <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
                              alt="{{ app_name() }}" 
-                             class="h-12 sm:h-14 w-auto max-w-[200px] object-contain">
+                             class="h-10 sm:h-12 w-auto max-w-[170px] sm:max-w-[190px] object-contain">
                     </picture>
+                </a>
+
+                <!-- Top Right Sign Up Link (matching Reference Image) -->
+                <a href="{{ url('/') }}" class="text-xs font-semibold text-slate-700 hover:text-slate-900 flex items-center space-x-1.5 transition-colors group">
+                    <i class="fa-regular fa-user text-xs text-slate-400 group-hover:text-slate-700"></i>
+                    <span>Sign Up</span>
                 </a>
             </div>
 
-            <!-- Form Content (Centered Vertically) -->
-            <div class="my-auto py-2">
-                <!-- Welcome Title & Subtitle -->
-                <div class="space-y-1 mb-6">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight font-sans">
-                        Welcome back
-                    </h1>
-                    <p class="text-xs sm:text-sm text-slate-500 font-medium">
-                        Sign in with your email to access your dashboard.
-                    </p>
-                </div>
+            <!-- Main Form Body: Centered & Pill Inputs (Pixel-to-Pixel match) -->
+            <div class="my-auto py-4 sm:py-6 max-w-sm w-full mx-auto">
+
+                <!-- Headline -->
+                <h1 class="text-3xl sm:text-4xl font-normal text-slate-900 tracking-tight font-sans mb-8">
+                    Sign In
+                </h1>
 
                 <!-- Flash & Error Alerts -->
                 @if(session('success'))
@@ -182,7 +176,7 @@
                     <div class="mb-4 p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs space-y-1">
                         <div class="flex items-center space-x-2 font-bold text-rose-900">
                             <i class="fa-solid fa-circle-exclamation text-rose-600 text-sm"></i>
-                            <span>Authentication failed:</span>
+                            <span>Sign in failed:</span>
                         </div>
                         <ul class="list-disc list-inside space-y-0.5 pl-1 text-rose-700 text-xs font-medium">
                             @foreach($errors->all() as $error)
@@ -192,88 +186,71 @@
                     </div>
                 @endif
 
-                <!-- Authentication Form -->
+                <!-- Common Authentication Form with Pill Inputs (matching Reference Image) -->
                 <form action="{{ route('login') }}" method="POST" class="space-y-4">
                     @csrf
 
-                    <!-- Email Input -->
-                    <div class="space-y-1.5">
-                        <label for="loginEmail" class="block text-xs font-bold text-slate-700">
-                            Email Address <span class="text-rose-500 font-black">*</span>
-                        </label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <i class="fa-regular fa-envelope text-xs"></i>
-                            </div>
-                            <input type="email" 
-                                   id="loginEmail" 
-                                   name="email" 
-                                   required 
-                                   value="{{ old('email') }}" 
-                                   placeholder="name@company.com" 
-                                   autocomplete="email" 
-                                   autofocus
-                                   class="w-full pl-10 pr-4 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-2xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
-                        </div>
+                    <!-- 1. Email or Username (Rounded Pill Input) -->
+                    <div>
+                        <input type="text" 
+                               id="loginEmail" 
+                               name="email" 
+                               required 
+                               value="{{ old('email') }}" 
+                               placeholder="Email or Username" 
+                               autocomplete="email" 
+                               autofocus
+                               class="w-full px-5 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/10 bg-white transition-all shadow-xs">
                     </div>
 
-                    <!-- Password Input -->
-                    <div class="space-y-1.5">
-                        <div class="flex items-center justify-between">
-                            <label for="loginPassword" class="block text-xs font-bold text-slate-700">
-                                Password <span class="text-rose-500 font-black">*</span>
-                            </label>
-                            @if(Route::has('hotel.forgot-password'))
-                                <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-purple-700 hover:text-[#150A42] hover:underline transition-colors">
-                                    Forgot password?
-                                </a>
-                            @endif
-                        </div>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                <i class="fa-regular fa-lock text-xs"></i>
-                            </div>
-                            <input type="password" 
-                                   id="loginPassword" 
-                                   name="password" 
-                                   required 
-                                   placeholder="••••••••" 
-                                   autocomplete="current-password"
-                                   class="w-full pl-10 pr-11 py-3 bg-[#F8F9FD] border border-slate-200/90 rounded-2xl text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] transition-all">
-                            <button type="button" 
-                                    onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" 
-                                    class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors cursor-pointer" 
-                                    aria-label="Toggle password visibility">
-                                <i id="loginEyeIcon" class="fa-regular fa-eye text-xs"></i>
-                            </button>
-                        </div>
+                    <!-- 2. Password (Rounded Pill Input with Toggle Eye) -->
+                    <div class="relative">
+                        <input type="password" 
+                               id="loginPassword" 
+                               name="password" 
+                               required 
+                               placeholder="Password" 
+                               autocomplete="current-password"
+                               class="w-full pl-5 pr-12 py-3.5 rounded-full border border-slate-300 text-sm font-medium text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/10 bg-white transition-all shadow-xs">
+                        <button type="button" 
+                                onclick="togglePasswordVisibility('loginPassword', 'loginEyeIcon')" 
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1 cursor-pointer transition-colors" 
+                                aria-label="Toggle password visibility">
+                            <i id="loginEyeIcon" class="fa-regular fa-eye-slash text-sm"></i>
+                        </button>
                     </div>
 
-                    <!-- Remember Device -->
-                    <div class="flex items-center justify-between pt-0.5">
-                        <label class="flex items-center space-x-2 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer select-none">
-                            <input type="checkbox" 
-                                   name="remember" 
-                                   id="rememberDevice" 
-                                   {{ old('remember') ? 'checked' : '' }}
-                                   class="w-4 h-4 rounded-md border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
-                            <span>Remember this device</span>
-                        </label>
+                    <!-- 3. Forgot Password Link (Brand Purple Color) -->
+                    <div class="pt-0.5">
+                        @if(Route::has('hotel.forgot-password'))
+                            <a href="{{ route('hotel.forgot-password') }}" class="text-xs font-bold text-purple-700 hover:text-[#150A42] hover:underline transition-colors inline-block">
+                                Forgot password?
+                            </a>
+                        @endif
                     </div>
 
-                    <!-- Primary Submit Button -->
+                    <!-- 4. Gradient Pill CTA Button (matching Reference Layout in Brand Colors) -->
                     <button type="submit" 
-                            class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-[#150A42] via-[#24106B] to-purple-700 hover:from-[#1b0d54] hover:via-[#2b147e] hover:to-purple-600 text-white font-extrabold text-sm shadow-xl shadow-[#150A42]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer mt-2">
+                            class="w-full mt-3 py-3.5 sm:py-4 px-6 rounded-full bg-gradient-to-r from-[#150A42] via-[#24106B] to-purple-700 hover:from-[#1b0d54] hover:via-[#2b147e] hover:to-purple-600 text-white font-extrabold text-sm shadow-xl shadow-[#150A42]/25 transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2 cursor-pointer">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
                         <span>Sign In</span>
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
                     </button>
                 </form>
+
             </div>
 
-            <!-- Bottom Multi-Role Detection Note (matching Reference Image 1) -->
-            <div class="mt-6 pt-5 border-t border-slate-100 flex items-center justify-center space-x-2 text-xs text-slate-500 font-medium">
-                <i class="fa-solid fa-shield-halved text-emerald-600 text-xs"></i>
-                <span>Smart Multi-Tenant Enterprise Authentication</span>
+            <!-- Bottom Footer Row: Copyright & Links (matching Reference Image) -->
+            <div class="flex flex-col sm:flex-row items-center justify-between pt-6 border-t border-slate-100 text-[11px] text-slate-400 gap-2">
+                <div>
+                    © 2005-2026 Pax TV Launcher Inc.
+                </div>
+                <div class="flex items-center space-x-4 text-slate-500 font-medium">
+                    <a href="{{ url('/') }}" class="hover:text-slate-900 transition-colors">Contact Us</a>
+                    <span class="flex items-center space-x-1 cursor-pointer hover:text-slate-900 transition-colors">
+                        <span>English</span>
+                        <i class="fa-solid fa-chevron-down text-[8px] opacity-70"></i>
+                    </span>
+                </div>
             </div>
 
         </div>
@@ -293,79 +270,16 @@
 
         if (input.type === 'password') {
             input.type = 'text';
-            icon.classList.remove('fa-eye');
-            icon.classList.add('fa-eye-slash');
-        } else {
-            input.type = 'password';
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
         }
     }
 
-    // 2. Left Panel Image Carousel
-    const slideData = [
-        {
-            headline: "5-Star Experience,<br>Automated Privacy.",
-            subtitle: "Instant credentials wiped on guest checkout with zero local credential storage on property screens."
-        },
-        {
-            headline: "Next-Gen Hospitality,<br>Seamless In-Room TV.",
-            subtitle: "Unified smart TV platform empowering luxury hotels, distributors, and connected TV operators worldwide."
-        },
-        {
-            headline: "Connected TVs,<br>Zero Guest Friction.",
-            subtitle: "Manage connected TV pairing, live app installations, and branded guest menus in real-time."
-        }
-    ];
-
-    let currentSlide = 0;
-    const slides = [
-        document.getElementById('loginSlide1'),
-        document.getElementById('loginSlide2'),
-        document.getElementById('loginSlide3')
-    ];
-    const dots = document.querySelectorAll('.carousel-dot');
-    const headlineEl = document.getElementById('slideHeadline');
-    const subtitleEl = document.getElementById('slideSubtitle');
-
-    function goToSlide(index) {
-        currentSlide = index;
-        slides.forEach((slide, i) => {
-            if (!slide) return;
-            if (i === currentSlide) {
-                slide.classList.remove('opacity-0', 'scale-105');
-                slide.classList.add('opacity-100', 'scale-100');
-            } else {
-                slide.classList.remove('opacity-100', 'scale-100');
-                slide.classList.add('opacity-0', 'scale-105');
-            }
-        });
-
-        dots.forEach((dot, i) => {
-            if (i === currentSlide) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-
-        if (headlineEl && slideData[currentSlide]) {
-            headlineEl.innerHTML = slideData[currentSlide].headline;
-        }
-        if (subtitleEl && slideData[currentSlide]) {
-            subtitleEl.textContent = slideData[currentSlide].subtitle;
-        }
-    }
-
-    // Auto rotate every 6 seconds on desktop
-    if (window.innerWidth >= 1024) {
-        setInterval(() => {
-            const nextSlide = (currentSlide + 1) % slides.length;
-            goToSlide(nextSlide);
-        }, 6000);
-    }
-
-    // 3. Ultra-Lightweight Cosmic Particles Canvas Animation
+    // 2. Ultra-Lightweight Cosmic Particles Canvas Animation
     (function initCosmicCanvas() {
         const canvas = document.getElementById('cosmicParticles');
         if (!canvas) return;
