@@ -28,7 +28,7 @@
                     <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
                     <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" 
                          alt="{{ app_name() }}" 
-                         class="h-12 sm:h-14 w-auto object-contain drop-shadow-xl">
+                         class="h-14 sm:h-16 w-auto max-w-[220px] object-contain drop-shadow-xl">
                 </picture>
             </a>
         </div>

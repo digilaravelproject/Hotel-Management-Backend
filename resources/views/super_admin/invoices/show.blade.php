@@ -61,7 +61,7 @@
             <div>
                 <picture>
                     <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                    <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-12 w-auto object-contain">
+                    <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-14 sm:h-16 w-auto object-contain">
                 </picture>
                 <div class="mt-3 text-xs text-slate-500 space-y-0.5">
                     <p class="font-extrabold text-slate-900">PAX TV Hospitality Network Private Limited</p>

@@ -56,7 +56,7 @@
                 <a href="{{ route('super-admin.dashboard') }}" class="flex items-center justify-center group">
                     <picture>
                         <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
-                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-14 sm:h-16 w-auto max-w-[200px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
+                        <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-16 sm:h-20 w-auto max-w-[220px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
                     </picture>
                 </a>
                 <button type="button" onclick="toggleSidebar()" aria-label="Close Navigation Menu" class="absolute right-4 top-1/2 -translate-y-1/2 md:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center border border-white/10 transition-all active:scale-95 cursor-pointer">
@@ -227,17 +227,17 @@
             </nav>
 
             <!-- Bottom Brand Info (Jobie style) -->
-            <div class="px-5 py-4 border-t border-white/[0.08] text-center">
+            <div class="px-5 py-3 border-t border-white/[0.08] text-center">
                 <p class="text-[10px] text-purple-200/50 font-medium">PAX TV Platform Admin</p>
                 <p class="text-[9px] text-purple-300/30 font-mono mt-0.5">© {{ date('Y') }} All Rights Reserved</p>
             </div>
 
-            <!-- Sign Out Button -->
-            <div class="p-3 border-t border-white/[0.08]">
+            <!-- Sign Out Button (Sticky at bottom on mobile) -->
+            <div class="p-3 border-t border-white/[0.08] sticky bottom-0 bg-[#090320] z-20">
                 <form action="{{ route('super-admin.logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2 px-4 rounded-xl border border-white/10 text-purple-200 hover:text-white hover:bg-red-500/20 hover:border-red-500/30 text-xs font-bold transition-all cursor-pointer">
-                        <i class="fa-solid fa-right-from-bracket text-red-400"></i>
+                    <button type="submit" class="w-full flex items-center justify-center space-x-2 py-2.5 px-4 rounded-xl bg-red-500/15 border border-red-500/30 text-rose-200 hover:text-white hover:bg-red-600 text-xs font-bold transition-all cursor-pointer shadow-xs">
+                        <i class="fa-solid fa-right-from-bracket text-rose-400"></i>
                         <span>Admin Logout</span>
                     </button>
                 </form>
@@ -248,7 +248,7 @@
         <div class="flex-1 md:pl-64 flex flex-col min-w-0">
             
             <!-- Modern Jobie Topbar Header -->
-            <header class="h-20 bg-white border-b border-slate-200/80 sticky top-0 z-40 px-4 sm:px-8 flex items-center justify-between shadow-xs">
+            <header class="h-20 bg-white border-b border-slate-200/80 sticky top-0 z-40 px-3 sm:px-8 flex items-center justify-between shadow-xs">
                 
                 <!-- Left: Mobile Menu Toggle & Clean Search Bar -->
                 <div class="flex items-center space-x-3 sm:space-x-4 flex-1 max-w-xl">
@@ -268,8 +268,8 @@
                     </div>
                 </div>
 
-                <!-- Right Action Icons & Profile Info (Neat & Clean - Message Icon Removed) -->
-                <div class="flex items-center space-x-3 sm:space-x-4 shrink-0">
+                <!-- Right Action Icons, Profile Info & Fast Logout Button -->
+                <div class="flex items-center space-x-2 sm:space-x-3.5 shrink-0">
                     
                     <!-- Notification Bell with Badge (Jobie 62) -->
                     <a href="{{ route('super-admin.hotels.index', ['status' => 'pending']) }}" title="Pending Approvals & Notifications" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
@@ -280,7 +280,7 @@
                     </a>
 
                     <!-- Super Admin Profile (Avatar + Name + Subtitle matching Jobie) -->
-                    <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-3 pl-2 py-1 pr-1 rounded-2xl hover:bg-slate-50 transition-all">
+                    <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-2.5 pl-1.5 sm:pl-2 py-1 pr-1 rounded-2xl hover:bg-slate-50 transition-all" title="View Admin Profile">
                         <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-[#150A42] to-purple-600 text-white flex items-center justify-center font-bold text-xs ring-2 ring-purple-100 shadow-sm shrink-0">
                             <i class="fa-solid fa-user-tie text-sm"></i>
                         </div>
@@ -293,6 +293,18 @@
                             </div>
                         </div>
                     </a>
+
+                    <!-- Fast Logout Button (Visible on Mobile & Desktop) -->
+                    <form action="{{ route('super-admin.logout') }}" method="POST" class="inline-flex m-0">
+                        @csrf
+                        <button type="submit" 
+                                title="Sign Out of Super Admin" 
+                                class="h-10 px-2.5 sm:px-3.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-600 hover:text-rose-700 border border-rose-200/80 flex items-center space-x-1.5 text-xs font-bold transition-all active:scale-95 cursor-pointer shadow-xs"
+                                aria-label="Sign Out">
+                            <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                            <span class="hidden md:inline">Logout</span>
+                        </button>
+                    </form>
                 </div>
             </header>
 

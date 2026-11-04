@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" class="h-full bg-[#F4F5F7] font-sans antialiased selection:bg-[#C5A880] selection:text-[#111827]">
 <head>
     <meta charset="UTF-8">
@@ -38,7 +38,7 @@
             <!-- Sidebar Header -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-[#334155]">
                 <a href="{{ route('distributor.dashboard') }}" class="flex items-center space-x-3 overflow-hidden bg-[#FFFFFF] px-3 py-1.5 rounded-xl shadow-xs">
-                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-8 max-w-[140px] object-contain">
+                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-10 sm:h-11 max-w-[170px] object-contain">
                 </a>
                 <button onclick="toggleSidebar()" class="md:hidden text-[#94A3B8] hover:text-[#FFFFFF]">
                     <i class="fa-solid fa-xmark text-lg"></i>
