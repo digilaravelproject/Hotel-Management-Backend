@@ -21,7 +21,7 @@ class FlightSettingController extends Controller
     /**
      * Show Super Admin Flight & Airport Management Page.
      */
-    public function index()
+    public function index(Request $request)
     {
         $setting = FlightSetting::latest()->first() ?? new FlightSetting([
             'provider' => 'airlabs',
@@ -30,10 +30,28 @@ class FlightSettingController extends Controller
             'is_active' => true,
         ]);
 
-        $airports = Airport::orderBy('city', 'asc')->paginate(15);
-        $totalAirports = Airport::count();
+        $query = Airport::latest();
 
-        return view('super_admin.flights.index', compact('setting', 'airports', 'totalAirports'));
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('iata_code', 'like', "%{$search}%")
+                  ->orWhere('icao_code', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%")
+                  ->orWhere('country', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status') === '1');
+        }
+
+        $airports = $query->paginate(15)->withQueryString();
+        $totalAirports = Airport::count();
+        $activeAirports = Airport::where('status', true)->count();
+
+        return view('super_admin.flights.index', compact('setting', 'airports', 'totalAirports', 'activeAirports'));
     }
 
     /**

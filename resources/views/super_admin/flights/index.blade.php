@@ -1,87 +1,124 @@
 @extends('layouts.super_admin')
 
-@section('page_title', 'Flight API & Airports Management')
+@section('title', 'Flight Radar & Airport Catalog - Super Admin')
+@section('page_title', 'Flight Radar & Airport Catalog')
 
 @section('content')
-<div class="space-y-8">
-    <!-- Top Stats Row -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-[#E5E7EB] shadow-xs flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-[#F5F2EB] text-[#8C7250] flex items-center justify-center text-xl font-bold shrink-0">
+<div class="space-y-6 sm:space-y-7">
+
+    <!-- Header & Action Bar -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Flight Radar & Airport Catalog</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Configure live commercial flight tracking APIs and manage global destination airports for hotel TVs.</p>
+        </div>
+        <button type="button" 
+                onclick="openAddAirportModal()" 
+                class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/25 transition-all hover:-translate-y-0.5 space-x-2 cursor-pointer">
+            <i class="fa-solid fa-plane-circle-check text-xs"></i>
+            <span>Add New Airport</span>
+        </button>
+    </div>
+
+    <!-- Quick Stats Metric Cards (2x2 on mobile, 4 on desktop) -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <!-- 1. Total Airports in Catalog -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-plane-departure"></i>
             </div>
             <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Total Airports</p>
-                <h3 class="text-2xl font-black text-slate-800">{{ $totalAirports }}</h3>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $totalAirports }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Airports</div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-[#E5E7EB] shadow-xs flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-xl bg-[#F0FDF4] text-[#15803D] flex items-center justify-center text-xl font-bold shrink-0 border border-[#DCFCE7]">
-                <i class="fa-solid fa-cloud-arrow-down"></i>
+        <!-- 2. Active Operational Airports -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Active Provider</p>
-                <h3 class="text-xl font-black text-slate-800 uppercase truncate">{{ $setting->provider ?? 'AirLabs' }}</h3>
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">{{ $activeAirports ?? $totalAirports }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active on Hotel TVs</div>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 sm:p-6 border border-[#E5E7EB] shadow-xs flex items-center space-x-4 sm:col-span-2 lg:col-span-1">
-            <div class="w-12 h-12 rounded-xl bg-[#FFFBEB] text-[#B45309] flex items-center justify-center text-xl font-bold shrink-0 border border-[#FEF3C7]">
-                <i class="fa-solid fa-database"></i>
+        <!-- 3. Connected API Provider -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-satellite-dish"></i>
             </div>
             <div class="min-w-0">
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Cache TTL</p>
-                <h3 class="text-xl font-black text-slate-800">{{ $setting->cache_ttl_minutes ?? 30 }} Mins</h3>
+                <div class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight leading-tight truncate">
+                    {{ strtoupper($setting->provider ?? 'AirLabs') }}
+                </div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Commercial API Engine</div>
+            </div>
+        </div>
+
+        <!-- 4. Cache TTL -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 border border-amber-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                    {{ $setting->cache_ttl_minutes ?? 30 }} <span class="text-xs font-semibold text-slate-400 font-sans">Min</span>
+                </div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Radar Cache Window</div>
             </div>
         </div>
     </div>
 
-    <!-- API Settings Configuration Card -->
-    <div class="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs relative z-20">
+    <!-- Flight API Configuration Card -->
+    <div class="bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-visible relative z-20">
         <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div>
-                <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-key text-[#150A42]"></i>
-                    <span>Flight API Configuration</span>
-                </h2>
-                <p class="text-xs text-slate-500 mt-1">Configure your 3rd-party commercial flight tracking API credentials.</p>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-base shrink-0 shadow-2xs">
+                    <i class="fa-solid fa-tower-broadcast"></i>
+                </div>
+                <div>
+                    <h2 class="text-base font-extrabold text-slate-900 tracking-tight">Commercial Flight Radar API</h2>
+                    <p class="text-xs text-slate-500 font-medium mt-0.5">Set credentials for live flight schedules, delays, departures & arrival feeds.</p>
+                </div>
             </div>
             <div class="self-start sm:self-auto">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold {{ ($setting->is_active ?? true) ? 'bg-[#F0FDF4] text-[#15803D] border border-[#DCFCE7]' : 'bg-[#FEF2F2] text-[#B91C1C] border border-[#FEE2E2]' }}">
-                    <span class="w-2 h-2 rounded-full mr-2 {{ ($setting->is_active ?? true) ? 'bg-[#15803D]' : 'bg-[#B91C1C]' }}"></span>
-                    {{ ($setting->is_active ?? true) ? 'API Enabled' : 'Disabled (Mock Fallback Active)' }}
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold {{ ($setting->is_active ?? true) ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-rose-50 text-rose-700 border border-rose-200' }}">
+                    <span class="w-2 h-2 rounded-full mr-2 {{ ($setting->is_active ?? true) ? 'bg-emerald-500 animate-pulse' : 'bg-rose-500' }}"></span>
+                    {{ ($setting->is_active ?? true) ? 'API Engine Active' : 'Fallback Dynamic Mock' }}
                 </span>
             </div>
         </div>
 
         <form action="{{ route('super-admin.flights.settings.update') }}" method="POST" class="p-4 sm:p-6 space-y-5 sm:space-y-6">
             @csrf
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                <!-- Flight API Provider Custom Dropdown -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
+                
+                <!-- 1. Flight API Provider Custom Dropdown -->
                 <div class="relative" id="providerDropdownWrapper">
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Flight API Provider</label>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5">Commercial API Engine</label>
                     <input type="hidden" name="provider" id="input_provider" value="{{ $setting->provider ?? 'airlabs' }}">
 
                     <!-- Trigger Button -->
                     <button type="button" 
                             id="providerDropdownTrigger" 
                             onclick="toggleProviderDropdown(event)" 
-                            class="w-full flex items-center justify-between p-2.5 sm:p-3 bg-white border border-slate-200/90 hover:border-slate-300 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 rounded-2xl cursor-pointer shadow-2xs transition-all select-none text-left group">
+                            class="w-full flex items-center justify-between p-3 bg-[#F8F9FD] hover:bg-white border border-slate-200 focus:border-[#150A42] focus:ring-2 focus:ring-[#150A42]/15 rounded-2xl cursor-pointer shadow-2xs transition-all select-none text-left group">
                         <div class="flex items-center space-x-3 min-w-0 pr-2">
-                            <div id="providerTriggerIcon" class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100/80 transition-colors">
+                            <div id="providerTriggerIcon" class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100 transition-colors">
                                 <i class="fa-solid fa-cloud-arrow-down text-base"></i>
                             </div>
                             <div class="min-w-0">
                                 <div class="flex items-center space-x-2">
-                                    <span id="providerTriggerTitle" class="font-extrabold text-sm text-slate-900 truncate">
+                                    <span id="providerTriggerTitle" class="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
                                         AirLabs API
                                     </span>
-                                    <span id="providerTriggerBadge" class="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 font-extrabold text-[10px] shrink-0 border border-emerald-200/60">
+                                    <span id="providerTriggerBadge" class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] shrink-0 border border-emerald-200/60">
                                         Recommended
                                     </span>
                                 </div>
-                                <p id="providerTriggerSubtitle" class="text-xs text-slate-500 font-medium truncate mt-0.5">
+                                <p id="providerTriggerSubtitle" class="text-[11px] text-slate-500 font-medium truncate mt-0.5">
                                     Airport schedules & flight status
                                 </p>
                             </div>
@@ -96,7 +133,7 @@
                         <!-- Option 1: AirLabs -->
                         <div onclick="selectProvider('airlabs')" 
                              id="opt_airlabs"
-                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-purple-50/40 border border-transparent">
                             <div class="flex items-center space-x-3 min-w-0 pr-2">
                                 <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
                                     <i class="fa-solid fa-cloud-arrow-down text-sm"></i>
@@ -104,18 +141,18 @@
                                 <div class="min-w-0">
                                     <div class="flex items-center space-x-2">
                                         <span class="font-extrabold text-xs sm:text-sm text-slate-900">AirLabs API</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-emerald-100/80 text-emerald-800 font-extrabold text-[10px] border border-emerald-200/60">Recommended</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 font-extrabold text-[10px] border border-emerald-200/60">Recommended</span>
                                     </div>
                                     <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Direct airport schedules & live arrivals/departures</p>
                                 </div>
                             </div>
-                            <i class="fa-solid fa-check text-[#A68A64] font-bold text-sm check-icon hidden"></i>
+                            <i class="fa-solid fa-check text-[#150A42] font-bold text-sm check-icon hidden"></i>
                         </div>
 
                         <!-- Option 2: AeroDataBox -->
                         <div onclick="selectProvider('aerodatabox')" 
                              id="opt_aerodatabox"
-                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-purple-50/40 border border-transparent">
                             <div class="flex items-center space-x-3 min-w-0 pr-2">
                                 <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center shrink-0 border border-sky-100">
                                     <i class="fa-solid fa-plane-departure text-sm"></i>
@@ -123,18 +160,18 @@
                                 <div class="min-w-0">
                                     <div class="flex items-center space-x-2">
                                         <span class="font-extrabold text-xs sm:text-sm text-slate-900">AeroDataBox</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-sky-100/80 text-sky-800 font-extrabold text-[10px] border border-sky-200/60">RapidAPI</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-sky-100 text-sky-800 font-extrabold text-[10px] border border-sky-200/60">RapidAPI</span>
                                     </div>
                                     <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Commercial flight radar & global FIDS displays</p>
                                 </div>
                             </div>
-                            <i class="fa-solid fa-check text-[#A68A64] font-bold text-sm check-icon hidden"></i>
+                            <i class="fa-solid fa-check text-[#150A42] font-bold text-sm check-icon hidden"></i>
                         </div>
 
                         <!-- Option 3: AviationStack -->
                         <div onclick="selectProvider('aviationstack')" 
                              id="opt_aviationstack"
-                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-slate-50 border border-transparent">
+                             class="provider-opt p-2.5 rounded-xl cursor-pointer flex items-center justify-between transition-all hover:bg-purple-50/40 border border-transparent">
                             <div class="flex items-center space-x-3 min-w-0 pr-2">
                                 <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0 border border-violet-100">
                                     <i class="fa-solid fa-tower-broadcast text-sm"></i>
@@ -142,86 +179,221 @@
                                 <div class="min-w-0">
                                     <div class="flex items-center space-x-2">
                                         <span class="font-extrabold text-xs sm:text-sm text-slate-900">AviationStack</span>
-                                        <span class="px-2 py-0.5 rounded-md bg-violet-100/80 text-violet-800 font-extrabold text-[10px] border border-violet-200/60">REST API</span>
+                                        <span class="px-2 py-0.5 rounded-md bg-violet-100 text-violet-800 font-extrabold text-[10px] border border-violet-200/60">REST API</span>
                                     </div>
                                     <p class="text-[11px] text-slate-500 font-medium mt-0.5 truncate">Global aviation routes & departure timetables</p>
                                 </div>
                             </div>
-                            <i class="fa-solid fa-check text-[#A68A64] font-bold text-sm check-icon hidden"></i>
+                            <i class="fa-solid fa-check text-[#150A42] font-bold text-sm check-icon hidden"></i>
                         </div>
                     </div>
                 </div>
 
+                <!-- 2. API Access Key -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">API Access Key</label>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5">Provider Access Key / Token</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-key text-xs"></i>
-                        </div>
-                        <input type="text" name="api_key" value="{{ $setting->api_key ?? '' }}" placeholder="Enter provider API key (Leave empty for Dynamic Mock)" class="w-full rounded-2xl border border-slate-200/90 pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880] font-mono text-xs transition-all bg-white hover:border-slate-300">
+                        <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="text" 
+                               name="api_key" 
+                               value="{{ $setting->api_key ?? '' }}" 
+                               placeholder="Enter API key (Leave empty for dynamic mock)" 
+                               class="w-full pl-10 pr-4 py-3 text-xs sm:text-sm font-medium rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-800 font-mono transition-all">
                     </div>
                 </div>
 
+                <!-- 3. Cache TTL -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Cache Duration (Minutes)</label>
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5">Cache Interval (Minutes)</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-clock text-xs"></i>
-                        </div>
-                        <input type="number" name="cache_ttl_minutes" min="5" max="1440" value="{{ $setting->cache_ttl_minutes ?? 30 }}" class="w-full rounded-2xl border border-slate-200/90 pl-10 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880] font-bold text-slate-800 transition-all bg-white hover:border-slate-300">
+                        <i class="fa-solid fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="number" 
+                               name="cache_ttl_minutes" 
+                               min="5" 
+                               max="1440" 
+                               value="{{ $setting->cache_ttl_minutes ?? 30 }}" 
+                               class="w-full pl-10 pr-4 py-3 text-xs sm:text-sm font-black rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all">
                     </div>
                 </div>
             </div>
 
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-4 border-t border-slate-100">
                 <label class="inline-flex items-center cursor-pointer space-x-3 select-none">
-                    <input type="checkbox" name="is_active" value="1" {{ ($setting->is_active ?? true) ? 'checked' : '' }} class="rounded border-slate-300 text-[#150A42] focus:ring-[#150A42] h-4 w-4">
-                    <span class="text-xs font-bold text-slate-700">Enable Live Flight API Fetching</span>
+                    <input type="checkbox" name="is_active" value="1" {{ ($setting->is_active ?? true) ? 'checked' : '' }} class="w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42] cursor-pointer">
+                    <span class="text-xs font-bold text-slate-700">Enable Live 3rd-Party Flight API Fetching</span>
                 </label>
-                <button type="submit" class="btn-sa-primary w-full sm:w-auto px-6 py-2.5 text-xs shadow-md">
-                    Save API Configuration
+                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-md transition-all flex items-center justify-center space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-floppy-disk text-xs"></i>
+                    <span>Save Radar Configuration</span>
                 </button>
             </div>
         </form>
     </div>
 
+    <!-- Filter & Search Bar for Airports -->
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs">
+        <form method="GET" action="{{ route('super-admin.flights.index') }}" class="flex flex-col lg:flex-row lg:items-end justify-between gap-3">
+            <!-- Left: Search Box -->
+            <div class="w-full lg:w-96 shrink-0">
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Search Airport Catalog</label>
+                <div class="relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request('search') }}" 
+                           placeholder="Search IATA, city, airport name, country..." 
+                           class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] text-slate-800 font-medium transition-all shadow-inner">
+                </div>
+            </div>
+
+            <!-- Right: Status Filter & Action (Pushed to Right) -->
+            <div class="flex flex-col sm:flex-row sm:items-end justify-end gap-3 w-full lg:w-auto">
+                <div class="w-full sm:w-44">
+                    <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1">Status</label>
+                    <x-dropdown name="status" 
+                                label="All Statuses" 
+                                :options="['1' => 'Active Only', '0' => 'Disabled Only']" 
+                                :selected="request('status', '')" 
+                                theme="sa" 
+                                wrapClass="w-full" 
+                                selectClass="py-2 px-3 text-xs font-semibold" />
+                </div>
+
+                <div class="flex items-center space-x-2 shrink-0">
+                    <button type="submit" class="w-full sm:w-auto py-2 px-5 text-xs rounded-xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold shadow-sm transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                        <i class="fa-solid fa-filter text-[10px]"></i>
+                        <span>Apply Filters</span>
+                    </button>
+                    @if(request()->hasAny(['search', 'status']))
+                        <a href="{{ route('super-admin.flights.index') }}" class="py-2 px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all flex items-center justify-center" title="Reset Filters">
+                            <i class="fa-solid fa-rotate-left"></i>
+                        </a>
+                    @endif
+                </div>
+            </div>
+        </form>
+    </div>
+
     <!-- Airports Master Catalog Table -->
-    <div class="bg-white rounded-2xl border border-[#E5E7EB] shadow-xs overflow-hidden">
-        <div class="p-4 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-                <h2 class="text-base font-extrabold text-slate-900 flex items-center space-x-2">
-                    <i class="fa-solid fa-plane-arrival text-[#150A42]"></i>
-                    <span>Airports Master Catalog</span>
-                </h2>
-                <p class="text-xs text-slate-500 mt-1">Airports available for hotels across all regions.</p>
-            </div>
-            
-            <div>
-                <!-- Add Airport Modal Trigger -->
-                <button onclick="openAddAirportModal()" class="btn-sa-primary w-full sm:w-auto px-4 py-2.5 text-xs shadow-md flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-plus"></i>
-                    <span>Add New Airport</span>
-                </button>
-            </div>
+    <div class="bg-white border border-slate-200/80 rounded-[26px] shadow-xs overflow-visible">
+        
+        <!-- Desktop Table View -->
+        <div class="hidden md:block overflow-visible">
+            <table class="w-full text-left text-xs text-slate-800">
+                <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
+                    <tr>
+                        <th class="px-5 py-3.5">IATA / ICAO Code</th>
+                        <th class="px-5 py-3.5">Airport Title & Specs</th>
+                        <th class="px-5 py-3.5">City & Country</th>
+                        <th class="px-4 py-3.5 text-center">Status</th>
+                        <th class="px-5 py-3.5 text-right w-36">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    @forelse($airports as $airport)
+                        <tr class="hover:bg-purple-50/20 transition-colors">
+                            <!-- Code Badge -->
+                            <td class="px-5 py-4">
+                                <div class="flex items-center space-x-2.5">
+                                    <div class="w-10 h-10 rounded-xl bg-purple-50 text-[#150A42] font-black font-mono border border-purple-100 flex items-center justify-center text-xs shadow-2xs shrink-0">
+                                        {{ $airport->iata_code }}
+                                    </div>
+                                    @if($airport->icao_code)
+                                        <span class="font-mono text-[11px] text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md font-semibold">
+                                            {{ $airport->icao_code }}
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
+
+                            <!-- Airport Title -->
+                            <td class="px-5 py-4">
+                                <div class="font-extrabold text-slate-900 text-xs sm:text-sm">
+                                    {{ $airport->name }}
+                                </div>
+                                <div class="text-[11px] text-slate-400 mt-0.5 font-medium">
+                                    Commercial Passenger Hub
+                                </div>
+                            </td>
+
+                            <!-- City & Location -->
+                            <td class="px-5 py-4">
+                                <div class="flex items-center space-x-1.5 text-slate-700 font-bold text-xs">
+                                    <i class="fa-solid fa-location-dot text-purple-600 text-xs"></i>
+                                    <span>{{ $airport->city }}</span>
+                                </div>
+                                <div class="text-[11px] text-slate-400 pl-4 mt-0.5">
+                                    {{ $airport->country }}
+                                </div>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-4 py-4 text-center">
+                                @if($airport->status)
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
+                                        Active
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-500 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span>
+                                        Disabled
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- Actions -->
+                            <td class="px-5 py-4 text-right">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    <!-- Refresh Cache -->
+                                    <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" 
+                                       title="Force Refresh Live Cache" 
+                                       class="w-8 h-8 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-100 flex items-center justify-center transition-all shadow-2xs">
+                                        <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                                    </a>
+
+                                    <!-- Status Toggle -->
+                                    <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" 
+                                       title="{{ $airport->status ? 'Disable Airport' : 'Enable Airport' }}" 
+                                       class="w-8 h-8 rounded-xl {{ $airport->status ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-100' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100' }} flex items-center justify-center transition-all shadow-2xs">
+                                        <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-xs"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs">
+                                <i class="fa-solid fa-plane-slash text-2xl text-slate-300 mb-2 block"></i>
+                                No airports found matching your criteria.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        <!-- Mobile Card View (shown on screens < 768px) -->
+        <!-- Mobile Card View -->
         <div class="md:hidden divide-y divide-slate-100">
             @forelse($airports as $airport)
-                <div class="p-4 sm:p-5 flex flex-col space-y-3">
+                <div class="p-4 space-y-3">
                     <div class="flex items-center justify-between gap-2">
                         <div class="flex items-center space-x-2">
-                            <span class="font-mono font-black text-slate-900 bg-[#F5F2EB] text-[#8C7250] px-2.5 py-1 rounded-lg border border-[#E5E7EB] text-xs">{{ $airport->iata_code }}</span>
+                            <span class="font-mono font-black text-[#150A42] bg-purple-50 px-2.5 py-1 rounded-xl border border-purple-100 text-xs shadow-2xs">
+                                {{ $airport->iata_code }}
+                            </span>
                             @if($airport->icao_code)
-                                <span class="font-mono text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ $airport->icao_code }}</span>
+                                <span class="font-mono text-[11px] text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                                    {{ $airport->icao_code }}
+                                </span>
                             @endif
                         </div>
                         @if($airport->status)
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F0FDF4] text-[#15803D] border border-[#DCFCE7]">
-                                <span class="w-1.5 h-1.5 rounded-full bg-[#15803D] mr-1.5"></span> Active
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Active
                             </span>
                         @else
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-slate-100 text-slate-500 border border-slate-200">
                                 <span class="w-1.5 h-1.5 rounded-full bg-slate-400 mr-1.5"></span> Disabled
                             </span>
                         @endif
@@ -229,18 +401,18 @@
 
                     <div>
                         <h4 class="font-bold text-slate-900 text-sm">{{ $airport->name }}</h4>
-                        <p class="text-xs text-slate-500 mt-1">
-                            <i class="fa-solid fa-location-dot text-slate-400 mr-1"></i>
+                        <p class="text-xs text-slate-500 mt-1 flex items-center space-x-1">
+                            <i class="fa-solid fa-location-dot text-purple-600 mr-0.5"></i>
                             <span class="font-semibold text-slate-700">{{ $airport->city }}</span>, {{ $airport->country }}
                         </p>
                     </div>
 
                     <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100/60">
-                        <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" title="Force refresh live cache" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-[#FFFBEB] text-[#B45309] hover:bg-[#FEF3C7] text-xs font-bold transition-colors">
+                        <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-bold transition-colors">
                             <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
                             <span>Refresh Cache</span>
                         </a>
-                        <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg {{ $airport->status ? 'bg-[#FEF2F2] text-[#B91C1C] hover:bg-[#FEE2E2]' : 'bg-[#F0FDF4] text-[#15803D] hover:bg-[#DCFCE7]' }} text-xs font-bold transition-colors">
+                        <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl {{ $airport->status ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} text-xs font-bold transition-colors">
                             <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-[11px]"></i>
                             <span>{{ $airport->status ? 'Disable' : 'Enable' }}</span>
                         </a>
@@ -251,77 +423,29 @@
             @endforelse
         </div>
 
-        <!-- Desktop Table View (shown on md+ screens) -->
-        <div class="hidden md:block overflow-x-auto">
-            <table class="w-full text-left text-sm text-slate-600">
-                <thead class="bg-[#F9FAFB] text-xs uppercase font-extrabold text-slate-400 border-b border-slate-100">
-                    <tr>
-                        <th class="px-6 py-4">IATA / ICAO</th>
-                        <th class="px-6 py-4">Airport Name</th>
-                        <th class="px-6 py-4">City / Country</th>
-                        <th class="px-6 py-4">Status</th>
-                        <th class="px-6 py-4 text-right">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-100 font-medium">
-                    @forelse($airports as $airport)
-                        <tr class="hover:bg-slate-50/80 transition-colors">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center space-x-2">
-                                    <span class="font-mono font-black text-slate-900 bg-[#F5F2EB] text-[#8C7250] px-2.5 py-1 rounded-lg border border-[#E5E7EB] text-xs">{{ $airport->iata_code }}</span>
-                                    @if($airport->icao_code)
-                                        <span class="font-mono text-xs text-slate-400">{{ $airport->icao_code }}</span>
-                                    @endif
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 font-bold text-slate-800">
-                                {{ $airport->name }}
-                            </td>
-                            <td class="px-6 py-4 text-slate-600 text-xs">
-                                <span class="font-bold text-slate-800">{{ $airport->city }}</span>, {{ $airport->country }}
-                            </td>
-                            <td class="px-6 py-4">
-                                @if($airport->status)
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-[#F0FDF4] text-[#15803D] border border-[#DCFCE7]">Active</span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">Disabled</span>
-                                @endif
-                            </td>
-                            <td class="px-6 py-4 text-right space-x-2">
-                                <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" title="Force refresh live cache" class="inline-flex items-center justify-center p-2 rounded-lg bg-[#FFFBEB] text-[#B45309] hover:bg-[#FEF3C7] transition-colors">
-                                    <i class="fa-solid fa-arrows-rotate text-xs"></i>
-                                </a>
-                                <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline-flex items-center justify-center p-2 rounded-lg {{ $airport->status ? 'bg-[#FEF2F2] text-[#B91C1C] hover:bg-[#FEE2E2]' : 'bg-[#F0FDF4] text-[#15803D] hover:bg-[#DCFCE7]' }} transition-colors">
-                                    <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-xs"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-slate-400 text-xs">No airports found in catalog.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-
         @if($airports->hasPages())
-            <div class="p-4 sm:p-6 border-t border-slate-100">
+            <div class="p-4 sm:p-5 border-t border-slate-100">
                 {{ $airports->links() }}
             </div>
         @endif
     </div>
+
 </div>
 
 <!-- Add Airport Modal -->
 <div id="addAirportModal" onclick="handleModalBackdropClick(event)" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-2xl sm:rounded-3xl max-w-lg w-full p-5 sm:p-8 shadow-2xl border border-slate-100 relative my-auto max-h-[90vh] overflow-y-auto">
-        <div class="flex items-start justify-between mb-4">
-            <div>
-                <h3 class="text-base sm:text-lg font-extrabold text-slate-900">Add Airport to Master Catalog</h3>
-                <p class="text-xs text-slate-500 mt-1">Enter new commercial airport details for hotel TV assignment.</p>
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-auto max-h-[90vh] overflow-y-auto">
+        <div class="flex items-start justify-between mb-5">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-2xl bg-purple-50 text-[#150A42] flex items-center justify-center text-base shrink-0 shadow-2xs">
+                    <i class="fa-solid fa-plane-circle-check"></i>
+                </div>
+                <div>
+                    <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">Add Airport to Master Catalog</h3>
+                    <p class="text-xs text-slate-500 mt-0.5 font-medium">Add a new destination airport for hotel TV suites.</p>
+                </div>
             </div>
-            <button type="button" onclick="closeAddAirportModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg">
+            <button type="button" onclick="closeAddAirportModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
                 <i class="fa-solid fa-xmark text-base"></i>
             </button>
         </div>
@@ -329,35 +453,59 @@
         <form action="{{ route('super-admin.flights.airports.store') }}" method="POST" class="space-y-4">
             @csrf
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Airport Name *</label>
-                <input type="text" name="name" required placeholder="e.g. Pune International Airport" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Airport Official Name <span class="text-rose-500 font-bold">*</span></label>
+                <input type="text" 
+                       name="name" 
+                       required 
+                       placeholder="e.g. Pune International Airport" 
+                       class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white transition-all">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">IATA Code (3 letters) *</label>
-                    <input type="text" name="iata_code" maxlength="3" required placeholder="PNQ" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">IATA Code (3 Letters) <span class="text-rose-500 font-bold">*</span></label>
+                    <input type="text" 
+                           name="iata_code" 
+                           maxlength="3" 
+                           required 
+                           placeholder="PNQ" 
+                           class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white transition-all">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">ICAO Code (Optional)</label>
-                    <input type="text" name="icao_code" maxlength="4" placeholder="VAPO" class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">ICAO Code <span class="text-slate-400 font-normal">(Optional)</span></label>
+                    <input type="text" 
+                           name="icao_code" 
+                           maxlength="4" 
+                           placeholder="VAPO" 
+                           class="w-full uppercase font-mono rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white transition-all">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">City *</label>
-                    <input type="text" name="city" required placeholder="Pune" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">City <span class="text-rose-500 font-bold">*</span></label>
+                    <input type="text" 
+                           name="city" 
+                           required 
+                           placeholder="Pune" 
+                           class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white transition-all">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1">Country *</label>
-                    <input type="text" name="country" required value="India" class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42]">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Country <span class="text-rose-500 font-bold">*</span></label>
+                    <input type="text" 
+                           name="country" 
+                           required 
+                           value="India" 
+                           class="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white transition-all">
                 </div>
             </div>
 
             <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-100">
-                <button type="button" onclick="closeAddAirportModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 text-center">Cancel</button>
-                <button type="submit" class="btn-sa-primary w-full sm:w-auto px-6 py-2.5 text-xs shadow-md">Add Airport</button>
+                <button type="button" onclick="closeAddAirportModal()" class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-bold hover:bg-slate-50 text-center transition-all">Cancel</button>
+                <button type="submit" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#150A42] hover:bg-[#201063] text-white text-xs font-extrabold shadow-md transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-plus text-[10px]"></i>
+                    <span>Add to Catalog</span>
+                </button>
             </div>
         </form>
     </div>
@@ -370,26 +518,26 @@
         airlabs: {
             title: 'AirLabs API',
             badge: 'Recommended',
-            badgeClass: 'bg-emerald-100/80 text-emerald-800 border-emerald-200/60',
+            badgeClass: 'bg-emerald-100 text-emerald-800 border-emerald-200/60',
             subtitle: 'Airport schedules & live arrivals/departures',
             icon: 'fa-solid fa-cloud-arrow-down',
-            iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100/80'
+            iconBg: 'bg-emerald-50 text-emerald-600 border-emerald-100'
         },
         aerodatabox: {
             title: 'AeroDataBox',
             badge: 'RapidAPI',
-            badgeClass: 'bg-sky-100/80 text-sky-800 border-sky-200/60',
+            badgeClass: 'bg-sky-100 text-sky-800 border-sky-200/60',
             subtitle: 'Commercial flight radar & global FIDS displays',
             icon: 'fa-solid fa-plane-departure',
-            iconBg: 'bg-sky-50 text-sky-600 border-sky-100/80'
+            iconBg: 'bg-sky-50 text-sky-600 border-sky-100'
         },
         aviationstack: {
             title: 'AviationStack',
             badge: 'REST API',
-            badgeClass: 'bg-violet-100/80 text-violet-800 border-violet-200/60',
+            badgeClass: 'bg-violet-100 text-violet-800 border-violet-200/60',
             subtitle: 'Global aviation routes & departure timetables',
             icon: 'fa-solid fa-tower-broadcast',
-            iconBg: 'bg-violet-50 text-violet-600 border-violet-100/80'
+            iconBg: 'bg-violet-50 text-violet-600 border-violet-100'
         }
     };
 
