@@ -17,7 +17,12 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $query = User::with(['roles', 'permissions'])->latest();
+        $query = User::with(['roles', 'permissions', 'hotels'])->latest();
+
+        // Exclude Super Admins from the directory listing as requested
+        $query->whereDoesntHave('roles', function ($q) {
+            $q->where('name', 'super_admin');
+        });
 
         // Search by name, email, or phone
         if ($request->filled('search')) {
@@ -43,7 +48,13 @@ class UserController extends Controller
         }
 
         $users = $query->paginate(15)->withQueryString();
-        $roles = Role::where('guard_name', 'web')->get();
+        $roles = Role::where('guard_name', 'web')->where('name', '!=', 'super_admin')->get();
+
+        // Real Metrics for the Directory Cards
+        $totalDistributorsCount = User::whereHas('roles', fn ($q) => $q->where('name', 'distributor'))->count();
+        $totalHotelsCount = \App\Models\HotelAdmin::count();
+        $totalUsersCount = User::whereDoesntHave('roles', fn ($q) => $q->where('name', 'super_admin'))->count();
+        $activeUsersCount = User::whereDoesntHave('roles', fn ($q) => $q->where('name', 'super_admin'))->where('status', true)->count();
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -52,7 +63,14 @@ class UserController extends Controller
             ]);
         }
 
-        return view('super_admin.users.index', compact('users', 'roles'));
+        return view('super_admin.users.index', compact(
+            'users', 
+            'roles',
+            'totalDistributorsCount',
+            'totalHotelsCount',
+            'totalUsersCount',
+            'activeUsersCount'
+        ));
     }
 
     /**

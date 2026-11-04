@@ -181,7 +181,7 @@
                         </a>
                         <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.users.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Staff & Partners</span>
+                            <span class="truncate">Distributors & Users</span>
                         </a>
                         <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <div class="flex items-center space-x-2.5 truncate">
@@ -375,17 +375,17 @@
                 @endif
             </a>
 
-            <!-- 4. Staff & Partners -->
+            <!-- 4. Distributors & Users -->
             @php $isPartners = Request::routeIs('super-admin.users.*'); @endphp
             <a href="{{ route('super-admin.users.index') }}" class="relative flex flex-col items-center group transition-all {{ $isPartners ? '-mt-5' : 'py-1 px-2' }}">
                 @if($isPartners)
                     <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
                         <i class="fa-solid fa-users-gear text-base"></i>
                     </div>
-                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Partners</span>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Users</span>
                 @else
                     <i class="fa-solid fa-users-gear text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
-                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Partners</span>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Users</span>
                 @endif
             </a>
 

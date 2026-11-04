@@ -1,71 +1,74 @@
 @extends('layouts.super_admin')
 
-@section('title', 'Staff & Partners Directory - Super Admin')
-@section('page_title', 'Staff & Partners Directory')
+@section('title', 'Distributors & Users - Super Admin')
+@section('page_title', 'Distributors & Users')
 
 @section('content')
 <div class="space-y-6">
     <!-- Header & Action Bar -->
     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">System Operators & Staff</h2>
-            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage operator accounts, assign administrative roles, and configure security access controls.</p>
+            <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Distributors & Users</h2>
+            <p class="text-xs text-slate-500 font-medium mt-0.5">Manage channel distributor partners, operator accounts, and commission rates.</p>
         </div>
         <a href="{{ route('super-admin.users.create') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/25 transition-all hover:-translate-y-0.5 space-x-2">
             <i class="fa-solid fa-user-plus text-xs"></i>
-            <span>Add New Operator</span>
+            <span>Add Distributor / User</span>
         </a>
     </div>
 
     <!-- Quick Stats Metric Cards (2x2 on mobile, 4 on desktop) -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <!-- Total Users -->
+        <!-- 1. Total Distributors & Users (Excluding Super Admin) -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
             <div class="w-11 h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-users"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $users->total() }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Users</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $totalUsersCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Users & Partners</div>
             </div>
         </div>
 
-        <!-- Super Admins -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-[#150A42] border border-indigo-100 flex items-center justify-center text-base shrink-0 shadow-xs">
-                <i class="fa-solid fa-shield-halved"></i>
-            </div>
-            <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-[#150A42] font-mono tracking-tight leading-tight">
-                    {{ $users->filter(fn($u) => $u->hasRole('super_admin'))->count() }}
-                </div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Super Admins</div>
-            </div>
-        </div>
-
-        <!-- Hotel Admins -->
-        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
-            <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-base shrink-0 shadow-xs">
-                <i class="fa-solid fa-hotel"></i>
-            </div>
-            <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
-                    {{ $users->filter(fn($u) => $u->hasRole('hotel_admin'))->count() }}
-                </div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Hotel Admins</div>
-            </div>
-        </div>
-
-        <!-- Channel Distributors -->
+        <!-- 2. Channel Distributors -->
         <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
             <div class="w-11 h-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center justify-center text-base shrink-0 shadow-xs">
                 <i class="fa-solid fa-handshake"></i>
             </div>
             <div class="min-w-0">
                 <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">
-                    {{ $users->filter(fn($u) => $u->hasRole('distributor'))->count() }}
+                    {{ $totalDistributorsCount }}
                 </div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Distributors</div>
+            </div>
+        </div>
+
+        <!-- 3. Real Registered Hotel Admins (Live System Count) -->
+        <a href="{{ route('super-admin.hotels.index') }}" class="group bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:border-purple-300 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-base shrink-0 shadow-xs group-hover:scale-105 transition-transform">
+                <i class="fa-solid fa-hotel"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <div class="flex items-center justify-between">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">
+                        {{ $totalHotelsCount }}
+                    </div>
+                    <span class="text-[10px] font-bold text-purple-600 group-hover:translate-x-0.5 transition-transform hidden sm:inline">View →</span>
+                </div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Hotel Admins (Hotels)</div>
+            </div>
+        </a>
+
+        <!-- 4. Active Accounts -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs flex items-center space-x-3.5 hover:shadow-md transition-all">
+            <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center text-base shrink-0 shadow-xs">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div class="min-w-0">
+                <div class="text-2xl sm:text-3xl font-extrabold text-blue-600 font-mono tracking-tight leading-tight">
+                    {{ $activeUsersCount }}
+                </div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Status</div>
             </div>
         </div>
     </div>
@@ -74,7 +77,7 @@
     <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-xs">
         <form method="GET" action="{{ route('super-admin.users.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div>
-                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 font-mono">Search Operator</label>
+                <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1 font-mono">Search Partner / User</label>
                 <div class="relative">
                     <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search name, email, phone..." class="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] text-slate-800 font-medium transition-all shadow-inner">
@@ -111,10 +114,10 @@
             <table class="w-full text-left text-xs text-slate-800">
                 <thead class="bg-[#F8F9FD] border-b border-slate-200/80 text-slate-500 font-bold uppercase tracking-wider text-[11px]">
                     <tr>
-                        <th class="px-4 py-3.5">Operator</th>
+                        <th class="px-4 py-3.5">Distributor / User</th>
                         <th class="px-4 py-3.5">Contact Details</th>
-                        <th class="px-4 py-3.5">Assigned Roles</th>
-                        <th class="px-3 py-3.5">Permissions</th>
+                        <th class="px-4 py-3.5">Role & Commission</th>
+                        <th class="px-3 py-3.5">Assigned Hotels</th>
                         <th class="px-3 py-3.5 text-center">Status</th>
                         <th class="px-3 py-3.5">Joined Date</th>
                         <th class="px-3 py-3.5 text-center w-20">Actions</th>
@@ -123,7 +126,7 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse($users as $user)
                         <tr id="user-row-{{ $user->id }}" class="hover:bg-purple-50/20 transition-colors">
-                            <!-- Operator Info -->
+                            <!-- User / Distributor Info -->
                             <td class="px-4 py-3.5">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#150A42] to-purple-700 text-white flex items-center justify-center font-bold text-xs shadow-xs shrink-0 font-mono">
@@ -132,9 +135,6 @@
                                     <div class="min-w-0">
                                         <div class="font-extrabold text-slate-900 text-xs flex items-center space-x-1.5 truncate">
                                             <span class="truncate">{{ $user->name }}</span>
-                                            @if($user->id === auth()->id())
-                                                <span class="px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[9px] border border-emerald-200 uppercase font-mono">You</span>
-                                            @endif
                                         </div>
                                         <div class="text-[10px] text-slate-400 font-mono mt-0.5">ID: #USR-{{ $user->id }}</div>
                                     </div>
@@ -151,18 +151,19 @@
                                 </div>
                             </td>
 
-                            <!-- Roles -->
+                            <!-- Roles & Commission -->
                             <td class="px-4 py-3.5">
-                                <div class="flex flex-wrap gap-1.5">
+                                <div class="flex flex-wrap items-center gap-1.5">
                                     @forelse($user->roles as $role)
-                                        @if($role->name === 'super_admin')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200/80 font-mono uppercase">
-                                                <i class="fa-solid fa-shield-halved mr-1 text-[9px]"></i> Super Admin
-                                            </span>
-                                        @elseif($role->name === 'distributor')
+                                        @if($role->name === 'distributor')
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono uppercase">
                                                 <i class="fa-solid fa-handshake mr-1 text-[9px]"></i> Distributor
                                             </span>
+                                            @if($user->commission_percentage !== null)
+                                                <span class="inline-flex items-center px-1.5 py-0.2 rounded-full text-[10px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200 font-mono">
+                                                    {{ $user->commission_percentage }}% Comm.
+                                                </span>
+                                            @endif
                                         @elseif($role->name === 'hotel_admin')
                                             <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-sky-50 text-sky-700 border border-sky-200 font-mono uppercase">
                                                 <i class="fa-solid fa-hotel mr-1 text-[9px]"></i> Hotel Admin
@@ -173,22 +174,23 @@
                                             </span>
                                         @endif
                                     @empty
-                                        <span class="text-[10px] text-slate-400 italic">No roles</span>
+                                        <span class="text-[10px] text-slate-400 italic">Standard User</span>
                                     @endforelse
                                 </div>
                             </td>
 
-                            <!-- Permissions -->
+                            <!-- Assigned Hotels Count -->
                             <td class="px-3 py-3.5">
                                 @php
-                                    $directPermsCount = $user->permissions->count();
+                                    $assignedHotels = $user->hotels ? $user->hotels->count() : 0;
                                 @endphp
-                                @if($directPermsCount > 0)
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-50 text-[#150A42] border border-purple-100 font-mono" title="{{ $user->permissions->pluck('name')->join(', ') }}">
-                                        <i class="fa-solid fa-key mr-1 text-[9px]"></i> {{ $directPermsCount }} Custom
-                                    </span>
+                                @if($assignedHotels > 0)
+                                    <a href="{{ route('super-admin.hotels.index', ['distributor_id' => $user->id]) }}" class="inline-flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] border border-purple-200 text-xs font-bold transition-colors">
+                                        <i class="fa-solid fa-hotel text-[10px]"></i>
+                                        <span>{{ $assignedHotels }} Hotels</span>
+                                    </a>
                                 @else
-                                    <span class="text-[10px] text-slate-400 font-mono">Role Inherited</span>
+                                    <span class="text-[11px] text-slate-400 font-mono">0 Hotels</span>
                                 @endif
                             </td>
 
@@ -215,15 +217,13 @@
                                         <i class="fa-regular fa-pen-to-square text-[11px]"></i>
                                     </a>
 
-                                    @if(auth()->id() !== $user->id)
-                                        <form method="POST" action="{{ route('super-admin.users.destroy', $user->id) }}" onsubmit="return confirm('Are you sure you want to permanently delete user \'{{ $user->name }}\'?');" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="w-7 h-7 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Delete User">
-                                                <i class="fa-regular fa-trash-can text-[11px]"></i>
-                                            </button>
-                                        </form>
-                                    @endif
+                                    <form method="POST" action="{{ route('super-admin.users.destroy', $user->id) }}" onsubmit="return confirm('Are you sure you want to permanently delete user \'{{ $user->name }}\'?');" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="w-7 h-7 rounded-lg border border-slate-200 text-slate-400 hover:text-rose-600 hover:bg-rose-50 hover:border-rose-200 flex items-center justify-center transition-all shadow-xs cursor-pointer" title="Delete User">
+                                            <i class="fa-regular fa-trash-can text-[11px]"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -234,7 +234,7 @@
                                     <div class="w-12 h-12 rounded-2xl bg-purple-50 text-[#150A42] flex items-center justify-center text-xl">
                                         <i class="fa-solid fa-users-slash"></i>
                                     </div>
-                                    <p class="font-extrabold text-slate-800 text-xs">No users match your filters</p>
+                                    <p class="font-extrabold text-slate-800 text-xs">No distributors or users found</p>
                                     <p class="text-[11px] text-slate-400">Try adjusting your search terms or role filters.</p>
                                 </div>
                             </td>
@@ -263,9 +263,6 @@
                         <div class="min-w-0">
                             <div class="font-extrabold text-slate-900 text-sm truncate flex items-center space-x-1.5">
                                 <span class="truncate">{{ $user->name }}</span>
-                                @if($user->id === auth()->id())
-                                    <span class="px-1.5 py-0.2 rounded-full bg-emerald-50 text-emerald-700 font-bold text-[9px] border border-emerald-200 uppercase font-mono">You</span>
-                                @endif
                             </div>
                             <div class="text-[10px] text-slate-400 font-mono">ID: #USR-{{ $user->id }}</div>
                         </div>
@@ -279,15 +276,27 @@
                     </div>
                 </div>
 
-                <!-- Roles & Permissions -->
-                <div class="flex flex-wrap gap-1 pt-2 border-t border-slate-100">
+                <!-- Roles, Commission & Hotels -->
+                <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-100">
                     @forelse($user->roles as $role)
-                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200/80 font-mono uppercase">
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono uppercase">
                             {{ ucwords(str_replace('_', ' ', $role->name)) }}
                         </span>
                     @empty
-                        <span class="text-[10px] text-slate-400 italic">No roles</span>
+                        <span class="text-[10px] text-slate-400 italic">Standard User</span>
                     @endforelse
+
+                    @if($user->commission_percentage !== null)
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-purple-50 text-[#150A42] border border-purple-200 font-mono">
+                            {{ $user->commission_percentage }}% Comm.
+                        </span>
+                    @endif
+
+                    @if($user->hotels && $user->hotels->count() > 0)
+                        <span class="px-2 py-0.5 rounded-full text-[9px] font-bold bg-sky-50 text-sky-700 border border-sky-200 font-mono">
+                            {{ $user->hotels->count() }} Hotels
+                        </span>
+                    @endif
                 </div>
 
                 <!-- Contact & Joined Info -->
@@ -306,23 +315,21 @@
                         <i class="fa-regular fa-pen-to-square text-[10px]"></i>
                         <span>Edit</span>
                     </a>
-                    @if(auth()->id() !== $user->id)
-                        <form method="POST" action="{{ route('super-admin.users.destroy', $user->id) }}" onsubmit="return confirm('Are you sure you want to permanently delete user \'{{ $user->name }}\'?');" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 transition-colors flex items-center space-x-1.5 cursor-pointer">
-                                <i class="fa-regular fa-trash-can text-[10px]"></i>
-                                <span>Delete</span>
-                            </button>
-                        </form>
-                    @endif
+                    <form method="POST" action="{{ route('super-admin.users.destroy', $user->id) }}" onsubmit="return confirm('Are you sure you want to permanently delete user \'{{ $user->name }}\'?');" class="inline">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100 transition-colors flex items-center space-x-1.5 cursor-pointer">
+                            <i class="fa-regular fa-trash-can text-[10px]"></i>
+                            <span>Delete</span>
+                        </button>
+                    </form>
                 </div>
             </div>
         @empty
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-8 text-center text-slate-400 space-y-2">
-                <i class="fa-solid fa-users-slash text-2xl text-purple-300 block"></i>
-                <p class="font-extrabold text-slate-800 text-xs">No users found</p>
-                <p class="text-[11px] text-slate-400">Try adjusting your search criteria.</p>
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-8 text-center text-slate-400">
+                <i class="fa-solid fa-users-slash text-2xl mb-2 text-[#150A42]/40 block"></i>
+                <p class="font-bold text-xs text-slate-700">No distributors or users found</p>
+                <p class="text-[11px] mt-0.5">Try resetting filters</p>
             </div>
         @endforelse
 
@@ -333,49 +340,56 @@
         @endif
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
-function toggleUserStatus(userId) {
-    const label = document.getElementById(`status-label-${userId}`);
-    fetch(`{{ url('super-admin/users') }}/${userId}/toggle-status`, {
-        method: 'POST',
-        headers: {
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-            if (label) {
-                if (data.status) {
-                    label.textContent = 'Active';
-                    label.className = 'text-[9px] font-bold font-mono uppercase mt-0.5 text-emerald-700';
-                } else {
-                    label.textContent = 'Disabled';
-                    label.className = 'text-[9px] font-bold font-mono uppercase mt-0.5 text-slate-400';
-                }
+    function toggleUserStatus(userId) {
+        fetch(`/super-admin/users/${userId}/toggle-status`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             }
-            if (typeof Swal !== 'undefined') {
-                Swal.fire({
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const label = document.getElementById(`status-label-${userId}`);
+                if (label) {
+                    label.textContent = data.status ? 'Active' : 'Disabled';
+                    label.className = `text-[9px] font-bold font-mono uppercase mt-0.5 ${data.status ? 'text-emerald-700' : 'text-slate-400'}`;
+                }
+                const Toast = Swal.mixin({
                     toast: true,
                     position: 'top-end',
-                    icon: 'success',
-                    title: data.status ? 'User activated' : 'User disabled',
                     showConfirmButton: false,
                     timer: 2000,
-                    customClass: { popup: 'rounded-2xl border border-slate-200 font-sans shadow-lg text-xs' }
+                    timerProgressBar: true
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: data.message || 'Status updated successfully'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Failed to update status',
+                    confirmButtonColor: '#150A42'
                 });
             }
-        } else {
-            alert('Failed to update status.');
-        }
-    })
-    .catch(err => {
-        console.error(err);
-        alert('Server communication error.');
-    });
-}
+        })
+        .catch(error => {
+            console.error('Error toggling status:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Network error occurred while toggling status',
+                confirmButtonColor: '#150A42'
+            });
+        });
+    }
 </script>
 @endsection
