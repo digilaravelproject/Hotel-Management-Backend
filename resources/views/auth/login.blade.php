@@ -180,9 +180,13 @@
             <!-- Top Row: Pax TV Launcher Logo (Left-Aligned) -->
             <div class="flex items-center justify-start mb-8 sm:mb-12">
                 <a href="{{ url('/') }}" class="inline-block group focus:outline-none">
-                    <img src="{{ asset('images/logo.png') }}" 
-                         alt="Pax TV Launcher" 
-                         class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
+                    <picture>
+                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                        <img src="{{ app_logo_url() }}" 
+                             alt="{{ app_name() }}" 
+                             onerror="this.onerror=null; this.src='{{ asset('images/logo/pax-tv-launcher.png') }}';"
+                             class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
+                    </picture>
                 </a>
             </div>
 
