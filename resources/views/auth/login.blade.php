@@ -177,16 +177,12 @@
         <!-- ================================================================= -->
         <div class="col-span-1 lg:col-span-6 xl:col-span-6 bg-white lg:rounded-l-[44px] xl:rounded-l-[52px] shadow-2xl p-8 sm:p-12 lg:p-14 xl:p-16 flex flex-col justify-between relative z-20">
 
-            <!-- Top Row: Pax TV Launcher Logo (Left) + Sign Up (Right) -->
-            <div class="flex items-center justify-between mb-8 sm:mb-12">
+            <!-- Top Row: Pax TV Launcher Logo (Left-Aligned) -->
+            <div class="flex items-center justify-start mb-8 sm:mb-12">
                 <a href="{{ url('/') }}" class="inline-block group focus:outline-none">
                     <img src="{{ asset('images/logo.png') }}" 
                          alt="Pax TV Launcher" 
                          class="h-10 sm:h-12 w-auto object-contain transition-transform group-hover:scale-105">
-                </a>
-                <a href="{{ route('register') }}" class="inline-flex items-center space-x-1.5 text-xs font-semibold text-slate-500 hover:text-[#150A42] transition-colors">
-                    <i class="fa-regular fa-user text-xs"></i>
-                    <span>Sign Up</span>
                 </a>
             </div>
 
@@ -205,7 +201,7 @@
                     </div>
                 @endif
 
-                @if ($errors->any())
+                @if (isset($errors) && $errors->any())
                     <div class="mb-5 p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium space-y-1">
                         <div class="font-bold flex items-center space-x-1.5">
                             <i class="fa-solid fa-circle-exclamation text-rose-500 shrink-0"></i>
