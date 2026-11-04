@@ -24,6 +24,7 @@ class Plan extends Model
         'room_count',
         'price',
         'status',
+        'is_hidden',
         'description',
         'ott_platforms',
     ];
@@ -35,11 +36,21 @@ class Plan extends Model
      */
     protected $casts = [
         'status' => 'boolean',
+        'is_hidden' => 'boolean',
         'price' => 'decimal:2',
         'price_per_tv' => 'decimal:2',
         'room_count' => 'integer',
         'ott_platforms' => 'array',
     ];
+
+    /**
+     * Scope a query to only include plans visible to hotels, distributors, and public.
+     * Hidden plans are only accessible and assignable by Super Admin (e.g. Demo hotels).
+     */
+    public function scopeVisible($query)
+    {
+        return $query->where('is_hidden', false);
+    }
 
     /**
      * Get effective per-TV price with backwards compatibility for legacy price column.

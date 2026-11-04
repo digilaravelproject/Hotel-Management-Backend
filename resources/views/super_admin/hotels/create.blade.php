@@ -298,10 +298,17 @@
                                        onchange="onPlanSelected(this)">
 
                                 <div>
-                                    <div class="flex items-center justify-between gap-2 mb-2">
-                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-[#150A42]' }}">
-                                            {{ strtoupper($plan->billing_cycle ?? 'monthly') }} PLAN
-                                        </span>
+                                    <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
+                                        <div class="flex items-center space-x-1.5 flex-wrap">
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-[#150A42]' }}">
+                                                {{ strtoupper($plan->billing_cycle ?? 'monthly') }} PLAN
+                                            </span>
+                                            @if($plan->is_hidden)
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-200">
+                                                    <i class="fa-solid fa-eye-slash text-[9px] mr-0.5"></i> Demo Hotel Plan
+                                                </span>
+                                            @endif
+                                        </div>
                                         <div class="plan-check-icon w-5 h-5 rounded-full flex items-center justify-center text-xs {{ $isCurrentPlan ? 'bg-[#150A42] text-white' : 'bg-slate-100 text-transparent' }}">
                                             <i class="fa-solid fa-check text-[10px]"></i>
                                         </div>

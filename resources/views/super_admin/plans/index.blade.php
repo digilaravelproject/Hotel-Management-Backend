@@ -60,12 +60,17 @@
                 <div class="space-y-4 pt-2">
                     <!-- Title & Plan Info -->
                     <div>
-                        <div class="flex items-center space-x-2 pr-20">
+                        <div class="flex items-center space-x-2 pr-20 flex-wrap">
                             <h3 class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight font-sans truncate">{{ $plan->name }}</h3>
                             @if($plan->status)
                                 <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0" title="Active Plan"></span>
                             @else
                                 <span class="w-2.5 h-2.5 rounded-full bg-slate-300 shrink-0" title="Disabled Plan"></span>
+                            @endif
+                            @if($plan->is_hidden)
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs" title="Hidden from Hotels & Distributors — Demo / Admin Only">
+                                    <i class="fa-solid fa-eye-slash text-[9px] mr-0.5"></i> Hidden / Demo
+                                </span>
                             @endif
                         </div>
                         <p class="text-xs text-slate-500 mt-1 line-clamp-2 min-h-[32px]">

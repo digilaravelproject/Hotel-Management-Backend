@@ -44,6 +44,7 @@ class PlanController extends Controller
             'description' => 'nullable|string',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
+            'is_hidden' => 'nullable|boolean',
         ]);
 
         $pricePerTv = (float) $request->price_per_tv;
@@ -59,6 +60,7 @@ class PlanController extends Controller
             'description' => $request->description,
             'ott_platforms' => $request->input('ott_platforms', []),
             'status' => true,
+            'is_hidden' => $request->boolean('is_hidden'),
         ]);
 
         return redirect()->route('super-admin.plans.index')
@@ -93,6 +95,7 @@ class PlanController extends Controller
             'description' => 'nullable|string',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
+            'is_hidden' => 'nullable|boolean',
         ]);
 
         $pricePerTv = (float) $request->price_per_tv;
@@ -107,6 +110,7 @@ class PlanController extends Controller
             'tax_type' => $request->tax_type,
             'description' => $request->description,
             'ott_platforms' => $request->input('ott_platforms', []),
+            'is_hidden' => $request->boolean('is_hidden'),
         ]);
 
         return redirect()->route('super-admin.plans.index')

@@ -98,7 +98,7 @@ class DistributorController extends Controller
      */
     public function createHotel()
     {
-        $plans = Plan::where('status', 1)->get();
+        $plans = Plan::where('status', 1)->where('is_hidden', false)->get();
         return view('distributor.hotels.create', compact('plans'));
     }
 
@@ -153,7 +153,7 @@ class DistributorController extends Controller
     {
         $user = auth()->user();
         $hotels = $user->hotels()->orderBy('hotel_name')->get();
-        $plans = Plan::where('status', 1)->get();
+        $plans = Plan::where('status', 1)->where('is_hidden', false)->get();
         $selectedHotelId = $request->query('hotel_id');
 
         $activeGatewayRecord = \App\Models\PaymentGateway::where('is_enabled', true)->first();

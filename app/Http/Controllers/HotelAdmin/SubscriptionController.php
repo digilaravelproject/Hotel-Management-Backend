@@ -19,7 +19,17 @@ class SubscriptionController extends Controller
     {
         $hotel = Auth::guard('hotel_admin')->user();
         $hotel->loadMissing('plan');
-        $plans = Plan::with('tax')->where('status', true)->orderBy('billing_cycle', 'asc')->orderBy('price_per_tv', 'asc')->get();
+        $plans = Plan::with('tax')
+            ->where('status', true)
+            ->where(function ($q) use ($hotel) {
+                $q->where('is_hidden', false);
+                if ($hotel && $hotel->plan_id) {
+                    $q->orWhere('id', $hotel->plan_id);
+                }
+            })
+            ->orderBy('billing_cycle', 'asc')
+            ->orderBy('price_per_tv', 'asc')
+            ->get();
         $gateway = PaymentManager::active();
 
         return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway'));

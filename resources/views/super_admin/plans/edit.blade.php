@@ -321,6 +321,40 @@
                               placeholder="Describe hotel amenities, smart launcher features, streaming bundles, and remote management..." 
                               class="w-full px-4 py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-medium placeholder:text-slate-400 resize-y">{{ old('description', $plan->description) }}</textarea>
                 </div>
+
+                <!-- Plan Visibility & Access Control: Hide Plan Option -->
+                <div class="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#F8F9FD] transition-all hover:border-purple-200">
+                    <div class="flex items-start justify-between gap-4">
+                        <div class="flex items-start space-x-3.5">
+                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0 mt-0.5 shadow-xs">
+                                <i class="fa-solid fa-eye-slash"></i>
+                            </div>
+                            <div>
+                                <label for="input_is_hidden" class="text-xs sm:text-sm font-extrabold text-slate-900 cursor-pointer flex items-center space-x-2">
+                                    <span>Hide Plan (Private / Demo Hotel Only)</span>
+                                    <span id="hide_plan_badge" class="{{ old('is_hidden', $plan->is_hidden ?? false) ? 'inline-flex' : 'hidden' }} px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-200">
+                                        Hidden
+                                    </span>
+                                </label>
+                                <p class="text-xs text-slate-500 font-medium mt-1 leading-relaxed">
+                                    By default <strong>OFF</strong>. When enabled, this plan is completely hidden from public landing pages, hotel self-subscriptions, and distributors. Only Super Admin can view and manually assign this plan (designed for <strong>Demo Hotels</strong> or custom private agreements).
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Toggle Switch -->
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+                            <input type="checkbox" 
+                                   name="is_hidden" 
+                                   id="input_is_hidden" 
+                                   value="1" 
+                                   {{ old('is_hidden', $plan->is_hidden ?? false) ? 'checked' : '' }} 
+                                   onchange="onToggleHidePlan(this)"
+                                   class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
+                        </label>
+                    </div>
+                </div>
             </div>
 
             <!-- Section 2: Included OTT Platforms -->
@@ -654,6 +688,20 @@ function updateBillingCycleUI(cycle) {
     }
 }
 
+// 3. Toggle Hide Plan Badge Live Sync
+function onToggleHidePlan(cb) {
+    const badge = document.getElementById('hide_plan_badge');
+    if (badge) {
+        if (cb.checked) {
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+        } else {
+            badge.classList.add('hidden');
+            badge.classList.remove('inline-flex');
+        }
+    }
+}
+
 // 2. High-Contrast Interactive Tax Calculation Mode Selector
 function updateTaxTypeUI(type) {
     const cardEx = document.getElementById('card_tax_exclusive');
@@ -675,6 +723,20 @@ function updateTaxTypeUI(type) {
 
     if (typeof calculateFormPreview === 'function') {
         calculateFormPreview();
+    }
+}
+
+// 3. Toggle Hide Plan Badge Live Sync
+function onToggleHidePlan(cb) {
+    const badge = document.getElementById('hide_plan_badge');
+    if (badge) {
+        if (cb.checked) {
+            badge.classList.remove('hidden');
+            badge.classList.add('inline-flex');
+        } else {
+            badge.classList.add('hidden');
+            badge.classList.remove('inline-flex');
+        }
     }
 }
 

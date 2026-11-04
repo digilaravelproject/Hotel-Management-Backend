@@ -21,7 +21,15 @@ class DashboardController extends Controller
         
         $plans = [];
         if ($hotel->payment_status !== 'paid') {
-            $plans = \App\Models\Plan::where('status', true)->orderBy('room_count', 'asc')->get();
+            $plans = \App\Models\Plan::where('status', true)
+                ->where(function ($q) use ($hotel) {
+                    $q->where('is_hidden', false);
+                    if ($hotel && $hotel->plan_id) {
+                        $q->orWhere('id', $hotel->plan_id);
+                    }
+                })
+                ->orderBy('room_count', 'asc')
+                ->get();
         }
 
         return view('hotel_admin.dashboard', compact('hotel', 'plan', 'plans', 'deviceCount', 'guestCount'));
