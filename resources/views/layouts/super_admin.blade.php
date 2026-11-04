@@ -90,26 +90,37 @@
                     <span>Dashboard</span>
                 </a>
 
-                <!-- 2. Hospitality Hub (Hotels, Subscriptions, Flights) -->
+                <!-- 2. Hotels & Hospitality (Hotels Directory, Flights & Airports) -->
                 @php
-                    $isHospitalityActive = Request::routeIs('super-admin.hotels.*') || Request::routeIs('super-admin.plans.*') || Request::routeIs('super-admin.flights.*');
+                    $isHotelsActive = Request::routeIs('super-admin.hotels.*') || Request::routeIs('super-admin.flights.*') || Request::routeIs('super-admin.amenities.*');
+                    $pendingHotelsCount = \App\Models\HotelAdmin::where('approval_status', 'pending')->count();
                 @endphp
                 <div>
-                    <button type="button" onclick="toggleSubmenu('submenu-hospitality')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isHospitalityActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                    <button type="button" onclick="toggleSubmenu('submenu-hotels')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isHotelsActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
                         <div class="flex items-center space-x-3">
-                            <i class="fa-solid fa-hotel text-sm w-5 text-center {{ $isHospitalityActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
-                            <span>Hospitality Hub</span>
+                            <i class="fa-solid fa-hotel text-sm w-5 text-center {{ $isHotelsActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Hotels & Hospitality</span>
                         </div>
-                        <i id="chevron-submenu-hospitality" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isHospitalityActive ? 'rotate-180' : '' }}"></i>
+                        <div class="flex items-center space-x-2">
+                            @if($pendingHotelsCount > 0)
+                                <span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono">
+                                    {{ $pendingHotelsCount }}
+                                </span>
+                            @endif
+                            <i id="chevron-submenu-hotels" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isHotelsActive ? 'rotate-180' : '' }}"></i>
+                        </div>
                     </button>
-                    <div id="submenu-hospitality" class="mt-1 space-y-1 pl-6 pr-1 {{ $isHospitalityActive ? '' : 'hidden' }}">
-                        <a href="{{ route('super-admin.hotels.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.hotels.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.hotels.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Hotels Directory</span>
-                        </a>
-                        <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.plans.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Subscription Tiers</span>
+                    <div id="submenu-hotels" class="mt-1 space-y-1 pl-6 pr-1 {{ $isHotelsActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.hotels.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.hotels.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <div class="flex items-center space-x-2.5 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.hotels.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                                <span class="truncate">Hotels Directory</span>
+                            </div>
+                            @if($pendingHotelsCount > 0)
+                                <span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono shrink-0">
+                                    {{ $pendingHotelsCount }}
+                                </span>
+                            @endif
                         </a>
                         <a href="{{ route('super-admin.flights.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.flights.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.flights.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
@@ -118,7 +129,70 @@
                     </div>
                 </div>
 
-                <!-- 3. Connected TVs & Tech Operations (Connected TVs, OTA Builds, OTT Master, FCM) -->
+                <!-- 3. Subscriptions & Plans (Plan Tiers & Packages) -->
+                @php
+                    $isPlansActive = Request::routeIs('super-admin.plans.*');
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-plans')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isPlansActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-layer-group text-sm w-5 text-center {{ $isPlansActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Subscription Plans</span>
+                        </div>
+                        <i id="chevron-submenu-plans" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isPlansActive ? 'rotate-180' : '' }}"></i>
+                    </button>
+                    <div id="submenu-plans" class="mt-1 space-y-1 pl-6 pr-1 {{ $isPlansActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.plans.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.plans.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.plans.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Subscription Tiers</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 4. Distributor Network (Distributors, Commissions, Withdrawals) -->
+                @php
+                    $isDistributorsActive = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.commissions.*') || Request::routeIs('super-admin.withdrawals.*');
+                    $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
+                @endphp
+                <div>
+                    <button type="button" onclick="toggleSubmenu('submenu-distributors')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isDistributorsActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-handshake text-sm w-5 text-center {{ $isDistributorsActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Distributor Network</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            @if($pendingWithdrawalsCount > 0)
+                                <span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono">
+                                    {{ $pendingWithdrawalsCount }}
+                                </span>
+                            @endif
+                            <i id="chevron-submenu-distributors" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isDistributorsActive ? 'rotate-180' : '' }}"></i>
+                        </div>
+                    </button>
+                    <div id="submenu-distributors" class="mt-1 space-y-1 pl-6 pr-1 {{ $isDistributorsActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.users.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Distributors & Users</span>
+                        </a>
+                        <a href="{{ route('super-admin.commissions.settings') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.commissions.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.commissions.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Commission Settings</span>
+                        </a>
+                        <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <div class="flex items-center space-x-2.5 truncate">
+                                <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                                <span class="truncate">Withdrawal Requests</span>
+                            </div>
+                            @if($pendingWithdrawalsCount > 0)
+                                <span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono shrink-0">
+                                    {{ $pendingWithdrawalsCount }}
+                                </span>
+                            @endif
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 5. Connected TVs & Systems (Devices, Themes, OTT Apps, Firebase) -->
                 @php
                     $isFleetActive = Request::routeIs('super-admin.devices.*') || Request::routeIs('super-admin.templates.*') || Request::routeIs('super-admin.ott-master.*') || Request::routeIs('super-admin.firebase-settings.*');
                 @endphp
@@ -150,58 +224,35 @@
                     </div>
                 </div>
 
-                <!-- 4. Partners & Finance (Users, Invoices, Taxes, Withdrawals, Commissions) -->
+                <!-- 6. Billing & Payments (Gateways, Invoices, Taxes) -->
                 @php
-                    $isFinanceActive = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.invoices.*') || Request::routeIs('super-admin.taxes.*') || Request::routeIs('super-admin.withdrawals.*') || Request::routeIs('super-admin.commissions.*');
-                    $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
+                    $isBillingActive = Request::routeIs('super-admin.payment-settings.*') || Request::routeIs('super-admin.invoices.*') || Request::routeIs('super-admin.taxes.*');
                 @endphp
                 <div>
-                    <button type="button" onclick="toggleSubmenu('submenu-finance')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isFinanceActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
+                    <button type="button" onclick="toggleSubmenu('submenu-billing')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isBillingActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
                         <div class="flex items-center space-x-3">
-                            <i class="fa-solid fa-coins text-sm w-5 text-center {{ $isFinanceActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
-                            <span>Billing & Finance</span>
+                            <i class="fa-solid fa-credit-card text-sm w-5 text-center {{ $isBillingActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <span>Billing & Payments</span>
                         </div>
-                        <div class="flex items-center space-x-2">
-                            @if($pendingWithdrawalsCount > 0)
-                                <span class="px-1.5 py-0.2 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono">
-                                    {{ $pendingWithdrawalsCount }}
-                                </span>
-                            @endif
-                            <i id="chevron-submenu-finance" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isFinanceActive ? 'rotate-180' : '' }}"></i>
-                        </div>
+                        <i id="chevron-submenu-billing" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isBillingActive ? 'rotate-180' : '' }}"></i>
                     </button>
-                    <div id="submenu-finance" class="mt-1 space-y-1 pl-6 pr-1 {{ $isFinanceActive ? '' : 'hidden' }}">
+                    <div id="submenu-billing" class="mt-1 space-y-1 pl-6 pr-1 {{ $isBillingActive ? '' : 'hidden' }}">
+                        <a href="{{ route('super-admin.payment-settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.payment-settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.payment-settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Payment Gateways</span>
+                        </a>
                         <a href="{{ route('super-admin.invoices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.invoices.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.invoices.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
                             <span class="truncate">Tax Invoices</span>
                         </a>
                         <a href="{{ route('super-admin.taxes.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.taxes.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.taxes.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Tax Management</span>
-                        </a>
-                        <a href="{{ route('super-admin.users.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.users.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.users.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Distributors & Users</span>
-                        </a>
-                        <a href="{{ route('super-admin.withdrawals.index') }}" class="flex items-center justify-between px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
-                            <div class="flex items-center space-x-2.5 truncate">
-                                <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.withdrawals.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                                <span class="truncate">Withdrawals</span>
-                            </div>
-                            @if($pendingWithdrawalsCount > 0)
-                                <span class="px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-extrabold text-[9px] font-mono shrink-0">
-                                    {{ $pendingWithdrawalsCount }}
-                                </span>
-                            @endif
-                        </a>
-                        <a href="{{ route('super-admin.commissions.settings') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.commissions.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
-                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.commissions.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
-                            <span class="truncate">Commissions</span>
+                            <span class="truncate">Tax Management (GST)</span>
                         </a>
                     </div>
                 </div>
 
-                <!-- 5. Platform Settings (Branding, Profile & Security) -->
+                <!-- 7. Platform Settings (Branding, Profile & Security) -->
                 @php
                     $isSettingsActive = Request::routeIs('super-admin.settings.*') || Request::routeIs('super-admin.profile');
                 @endphp
@@ -279,12 +330,19 @@
                 <!-- Right Action Icons, Profile Info & Fast Logout Button -->
                 <div class="flex items-center space-x-2 sm:space-x-3.5 shrink-0">
                     
-                    <!-- Notification Bell with Badge (Jobie 62) -->
+                    <!-- Dynamic Notification Bell with Badge -->
+                    @php
+                        $pendingHotelsCount = \App\Models\HotelAdmin::where('approval_status', 'pending')->count();
+                        $pendingWithdrawalsCount = \App\Models\WithdrawalRequest::where('status', 'pending')->count();
+                        $totalAlertsCount = $pendingHotelsCount + $pendingWithdrawalsCount;
+                    @endphp
                     <a href="{{ route('super-admin.hotels.index', ['status' => 'pending']) }}" title="Pending Approvals & Notifications" class="relative w-10 h-10 rounded-full bg-[#F3F5FA] hover:bg-purple-50 text-slate-600 hover:text-[#150A42] flex items-center justify-center transition-all">
                         <i class="fa-regular fa-bell text-sm"></i>
-                        <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-[#150A42] text-white text-[9px] font-bold font-mono shadow-xs">
-                            62
-                        </span>
+                        @if($totalAlertsCount > 0)
+                            <span class="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full bg-rose-500 text-white text-[9px] font-bold font-mono shadow-xs animate-pulse">
+                                {{ $totalAlertsCount }}
+                            </span>
+                        @endif
                     </a>
 
                     <!-- Super Admin Profile (Avatar + Name + Subtitle matching Jobie) -->
@@ -417,17 +475,17 @@
                 @endif
             </a>
 
-            <!-- 4. Distributors & Users -->
-            @php $isPartners = Request::routeIs('super-admin.users.*'); @endphp
+            <!-- 4. Distributors Network -->
+            @php $isPartners = Request::routeIs('super-admin.users.*') || Request::routeIs('super-admin.commissions.*') || Request::routeIs('super-admin.withdrawals.*'); @endphp
             <a href="{{ route('super-admin.users.index') }}" class="relative flex flex-col items-center group transition-all {{ $isPartners ? '-mt-5' : 'py-1 px-2' }}">
                 @if($isPartners)
                     <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
-                        <i class="fa-solid fa-users-gear text-base"></i>
+                        <i class="fa-solid fa-handshake text-base"></i>
                     </div>
-                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Users</span>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Partners</span>
                 @else
-                    <i class="fa-solid fa-users-gear text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
-                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Users</span>
+                    <i class="fa-solid fa-handshake text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Partners</span>
                 @endif
             </a>
 
