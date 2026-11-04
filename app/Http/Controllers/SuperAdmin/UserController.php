@@ -138,7 +138,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user = User::with(['roles', 'permissions'])->findOrFail($id);
+        $user = User::with(['roles', 'permissions', 'hotels', 'wallet'])->findOrFail($id);
         $roles = Role::where('guard_name', 'web')->get();
         $permissions = Permission::where('guard_name', 'web')->get()->groupBy(function ($item) {
             return explode('.', $item->name)[0] ?? 'general';
