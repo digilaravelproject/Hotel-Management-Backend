@@ -113,25 +113,51 @@
                         Billing Cycle Frequency <span class="text-rose-500 font-black">*</span>
                     </label>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                        <label class="relative flex items-center p-3.5 rounded-2xl border-2 cursor-pointer transition-all hover:border-purple-300 has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/50">
-                            <input type="radio" name="billing_cycle" value="monthly" {{ old('billing_cycle', 'monthly') === 'monthly' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
-                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0 mr-3">
-                                <i class="fa-solid fa-calendar-days"></i>
+                        <!-- Monthly Plan Option -->
+                        <label id="card_cycle_monthly" 
+                               class="relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all {{ old('billing_cycle', 'monthly') === 'monthly' ? 'border-[#150A42] bg-purple-50/70 shadow-md ring-2 ring-[#150A42]/15' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50' }}">
+                            <div class="flex items-center min-w-0 mr-3">
+                                <input type="radio" name="billing_cycle" value="monthly" {{ old('billing_cycle', 'monthly') === 'monthly' ? 'checked' : '' }} onchange="updateBillingCycleUI('monthly')" class="sr-only">
+                                <div class="w-11 h-11 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-base shrink-0 mr-3.5 shadow-xs">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs sm:text-sm font-black text-slate-900">Monthly Plan</span>
+                                        <span id="badge_active_monthly" class="{{ old('billing_cycle', 'monthly') === 'monthly' ? 'inline-flex' : 'hidden' }} items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#150A42] text-white">
+                                            Selected
+                                        </span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 mt-0.5 truncate">Billed per Connected TV every 30 days</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-xs sm:text-sm font-extrabold text-slate-900">Monthly Plan</div>
-                                <div class="text-[11px] text-slate-500">Billed per Connected TV every 30 days</div>
+                            <!-- Checkmark Indicator Badge -->
+                            <div id="check_icon_monthly" class="w-6 h-6 rounded-full {{ old('billing_cycle', 'monthly') === 'monthly' ? 'bg-[#150A42] text-white shadow-xs' : 'border-2 border-slate-300 bg-slate-50 text-transparent' }} flex items-center justify-center text-xs shrink-0 transition-all">
+                                <i class="fa-solid fa-check"></i>
                             </div>
                         </label>
 
-                        <label class="relative flex items-center p-3.5 rounded-2xl border-2 cursor-pointer transition-all hover:border-purple-300 has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/50">
-                            <input type="radio" name="billing_cycle" value="yearly" {{ old('billing_cycle') === 'yearly' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
-                            <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-sm shrink-0 mr-3">
-                                <i class="fa-solid fa-crown"></i>
+                        <!-- Yearly Plan Option -->
+                        <label id="card_cycle_yearly" 
+                               class="relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all {{ old('billing_cycle', 'monthly') === 'yearly' ? 'border-[#150A42] bg-amber-50/70 shadow-md ring-2 ring-[#150A42]/15' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50' }}">
+                            <div class="flex items-center min-w-0 mr-3">
+                                <input type="radio" name="billing_cycle" value="yearly" {{ old('billing_cycle', 'monthly') === 'yearly' ? 'checked' : '' }} onchange="updateBillingCycleUI('yearly')" class="sr-only">
+                                <div class="w-11 h-11 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center text-base shrink-0 mr-3.5 shadow-xs">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-xs sm:text-sm font-black text-slate-900">Yearly Plan</span>
+                                        <span id="badge_active_yearly" class="{{ old('billing_cycle', 'monthly') === 'yearly' ? 'inline-flex' : 'hidden' }} items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-[#150A42] text-white">
+                                            Selected
+                                        </span>
+                                    </div>
+                                    <div class="text-[11px] text-slate-500 mt-0.5 truncate">Billed per Connected TV every 365 days</div>
+                                </div>
                             </div>
-                            <div>
-                                <div class="text-xs sm:text-sm font-extrabold text-slate-900">Yearly Plan</div>
-                                <div class="text-[11px] text-slate-500">Billed per Connected TV every 365 days</div>
+                            <!-- Checkmark Indicator Badge -->
+                            <div id="check_icon_yearly" class="w-6 h-6 rounded-full {{ old('billing_cycle', 'monthly') === 'yearly' ? 'bg-[#150A42] text-white shadow-xs' : 'border-2 border-slate-300 bg-slate-50 text-transparent' }} flex items-center justify-center text-xs shrink-0 transition-all">
+                                <i class="fa-solid fa-check"></i>
                             </div>
                         </label>
                     </div>
@@ -225,13 +251,17 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">Tax Calculation Mode</label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
-                                    <input type="radio" name="tax_type" value="exclusive" {{ old('tax_type', 'exclusive') === 'exclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                                <label id="card_tax_exclusive" 
+                                       class="flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all {{ old('tax_type', 'exclusive') === 'exclusive' ? 'border-[#150A42] bg-[#150A42] text-white shadow-xs' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50' }}">
+                                    <input type="radio" name="tax_type" value="exclusive" {{ old('tax_type', 'exclusive') === 'exclusive' ? 'checked' : '' }} onchange="updateTaxTypeUI('exclusive')" class="sr-only">
                                     <span>Exclusive (+ Tax)</span>
+                                    <i id="check_tax_exclusive" class="fa-solid fa-check text-[11px] {{ old('tax_type', 'exclusive') === 'exclusive' ? 'opacity-100' : 'opacity-0' }}"></i>
                                 </label>
-                                <label class="flex items-center justify-center px-3 py-2.5 rounded-xl border cursor-pointer text-xs font-bold transition-all hover:bg-purple-50 has-[:checked]:bg-[#150A42] has-[:checked]:text-white has-[:checked]:border-[#150A42]">
-                                    <input type="radio" name="tax_type" value="inclusive" {{ old('tax_type') === 'inclusive' ? 'checked' : '' }} onchange="calculateFormPreview()" class="sr-only">
+                                <label id="card_tax_inclusive" 
+                                       class="flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all {{ old('tax_type', 'exclusive') === 'inclusive' ? 'border-[#150A42] bg-[#150A42] text-white shadow-xs' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50' }}">
+                                    <input type="radio" name="tax_type" value="inclusive" {{ old('tax_type', 'exclusive') === 'inclusive' ? 'checked' : '' }} onchange="updateTaxTypeUI('inclusive')" class="sr-only">
                                     <span>Inclusive (Tax in Price)</span>
+                                    <i id="check_tax_inclusive" class="fa-solid fa-check text-[11px] {{ old('tax_type', 'exclusive') === 'inclusive' ? 'opacity-100' : 'opacity-0' }}"></i>
                                 </label>
                             </div>
                         </div>
@@ -561,6 +591,76 @@ function calculateFormPreview() {
         const el = document.getElementById(`preview_${tvCount}`);
         if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
     });
+}
+
+// 1. High-Contrast Interactive Billing Cycle Selector
+function updateBillingCycleUI(cycle) {
+    const cardMonthly = document.getElementById('card_cycle_monthly');
+    const cardYearly = document.getElementById('card_cycle_yearly');
+    const checkMonthly = document.getElementById('check_icon_monthly');
+    const checkYearly = document.getElementById('check_icon_yearly');
+    const badgeMonthly = document.getElementById('badge_active_monthly');
+    const badgeYearly = document.getElementById('badge_active_yearly');
+
+    if (cycle === 'monthly') {
+        if (cardMonthly) {
+            cardMonthly.className = 'relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-[#150A42] bg-purple-50/80 shadow-md ring-2 ring-[#150A42]/15';
+        }
+        if (cardYearly) {
+            cardYearly.className = 'relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50';
+        }
+        if (checkMonthly) {
+            checkMonthly.className = 'w-6 h-6 rounded-full bg-[#150A42] text-white shadow-xs flex items-center justify-center text-xs shrink-0 transition-all';
+        }
+        if (checkYearly) {
+            checkYearly.className = 'w-6 h-6 rounded-full border-2 border-slate-300 bg-slate-50 text-transparent flex items-center justify-center text-xs shrink-0 transition-all';
+        }
+        if (badgeMonthly) badgeMonthly.classList.remove('hidden');
+        if (badgeYearly) badgeYearly.classList.add('hidden');
+    } else {
+        if (cardYearly) {
+            cardYearly.className = 'relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-[#150A42] bg-amber-50/80 shadow-md ring-2 ring-[#150A42]/15';
+        }
+        if (cardMonthly) {
+            cardMonthly.className = 'relative flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50';
+        }
+        if (checkYearly) {
+            checkYearly.className = 'w-6 h-6 rounded-full bg-[#150A42] text-white shadow-xs flex items-center justify-center text-xs shrink-0 transition-all';
+        }
+        if (checkMonthly) {
+            checkMonthly.className = 'w-6 h-6 rounded-full border-2 border-slate-300 bg-slate-50 text-transparent flex items-center justify-center text-xs shrink-0 transition-all';
+        }
+        if (badgeYearly) badgeYearly.classList.remove('hidden');
+        if (badgeMonthly) badgeMonthly.classList.add('hidden');
+    }
+
+    if (typeof calculateFormPreview === 'function') {
+        calculateFormPreview();
+    }
+}
+
+// 2. High-Contrast Interactive Tax Calculation Mode Selector
+function updateTaxTypeUI(type) {
+    const cardEx = document.getElementById('card_tax_exclusive');
+    const cardIn = document.getElementById('card_tax_inclusive');
+    const checkEx = document.getElementById('check_tax_exclusive');
+    const checkIn = document.getElementById('check_tax_inclusive');
+
+    if (type === 'exclusive') {
+        if (cardEx) cardEx.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all border-[#150A42] bg-[#150A42] text-white shadow-xs';
+        if (cardIn) cardIn.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all border-slate-200 bg-white text-slate-700 hover:bg-slate-50';
+        if (checkEx) checkEx.classList.replace('opacity-0', 'opacity-100');
+        if (checkIn) checkIn.classList.replace('opacity-100', 'opacity-0');
+    } else {
+        if (cardIn) cardIn.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all border-[#150A42] bg-[#150A42] text-white shadow-xs';
+        if (cardEx) cardEx.className = 'flex items-center justify-between px-3.5 py-2.5 rounded-xl border-2 cursor-pointer text-xs font-bold transition-all border-slate-200 bg-white text-slate-700 hover:bg-slate-50';
+        if (checkIn) checkIn.classList.replace('opacity-0', 'opacity-100');
+        if (checkEx) checkEx.classList.replace('opacity-100', 'opacity-0');
+    }
+
+    if (typeof calculateFormPreview === 'function') {
+        calculateFormPreview();
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function () {
