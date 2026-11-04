@@ -18,7 +18,7 @@
                 <span class="text-[#150A42]">New Registration</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">Onboard New Hotel Vendor</h1>
-            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Register a new client property, assign TV limits, licensing plan, and distributor partner.</p>
+            <p class="text-xs sm:text-sm text-slate-500 mt-0.5">Register a new client hotel, assign TV limits, licensing plan, and distributor partner.</p>
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
@@ -149,10 +149,10 @@
                         </div>
                         <div>
                             <div class="flex items-center space-x-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 2</span>
-                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Hotel Identity & Property Details</h2>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] border border-purple-100">Step 2</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Hotel Identity & Details</h2>
                             </div>
-                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Establish property name, geography, and in-room greeting details.</p>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Establish hotel name, geography, and in-room greeting details.</p>
                         </div>
                     </div>
                 </div>
@@ -161,7 +161,7 @@
                     <!-- Hotel Name -->
                     <div class="md:col-span-2">
                         <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Hotel / Property Name <span class="text-rose-500 font-black">*</span>
+                            Hotel Name <span class="text-rose-500 font-black">*</span>
                         </label>
                         <div class="relative">
                             <i class="fa-solid fa-building absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -249,7 +249,7 @@
                         <label class="block text-xs sm:text-sm font-bold text-slate-800">
                             1. Select Channel Partner / Distributor
                         </label>
-                        <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Link this property to a channel partner or Pax TV direct.</p>
+                        <p class="text-[11px] sm:text-xs text-slate-400 font-medium">Link this hotel to a channel partner or Pax TV direct.</p>
                     </div>
                     <div class="w-full sm:w-80 md:w-96 shrink-0">
                         <x-dropdown name="distributor_id" label="Direct Enterprise (No Distributor Partner)" :selected="$selectedDistId" theme="sa" wrapClass="w-full" selectClass="px-3.5 py-2 text-xs font-semibold">

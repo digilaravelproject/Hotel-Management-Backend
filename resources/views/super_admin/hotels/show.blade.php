@@ -199,7 +199,7 @@
                             </a>
                         </div>
                         <div class="flex items-center justify-between gap-3">
-                            <span class="text-slate-500 font-semibold shrink-0">Property Address</span>
+                            <span class="text-slate-500 font-semibold shrink-0">Hotel Address</span>
                             <span class="font-medium text-slate-700 text-right text-xs truncate max-w-[240px]" title="{{ $hotel->hotel_location }}">
                                 {{ $hotel->hotel_location ?? ($hotel->city . ', India') }}
                             </span>

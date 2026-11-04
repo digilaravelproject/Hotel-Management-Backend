@@ -42,7 +42,7 @@
 
         <!-- Left Column: Hotel & Order Summary (7 Cols) -->
         <div class="lg:col-span-7 space-y-5">
-            <!-- Property Card -->
+            <!-- Hotel Card -->
             <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-6 shadow-xs space-y-4">
                 <div class="flex items-center space-x-3.5 pb-4 border-b border-slate-100">
                     <div class="w-12 h-12 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-lg shrink-0 shadow-xs">

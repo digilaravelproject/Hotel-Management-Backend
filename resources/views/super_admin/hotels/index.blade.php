@@ -102,8 +102,8 @@
                 <i class="fa-solid fa-hotel"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight" id="statTotalHotels">{{ $totalHotelsCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Properties</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight" id="statTotalHotels">{{ $totalHotelsCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Total Hotels</div>
             </div>
         </div>
 
@@ -113,8 +113,8 @@
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-mono tracking-tight leading-tight">{{ $activeHotelsCount }}</div>
-                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Platforms</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-emerald-600 tracking-tight leading-tight">{{ $activeHotelsCount }}</div>
+                <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Active Hotels</div>
             </div>
         </div>
 
@@ -124,7 +124,7 @@
                 <i class="fa-solid fa-layer-group"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-mono tracking-tight leading-tight">{{ $paidActiveHotelsCount }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">{{ $paidActiveHotelsCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Paid & Active</div>
             </div>
         </div>
@@ -135,7 +135,7 @@
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 font-mono tracking-tight leading-tight">{{ $expiringSoonHotelsCount }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold text-amber-600 tracking-tight leading-tight">{{ $expiringSoonHotelsCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Expiring Soon</div>
             </div>
         </div>
@@ -146,7 +146,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <div class="min-w-0">
-                <div class="text-2xl sm:text-3xl font-extrabold {{ $expiredHotelsCount > 0 ? 'text-rose-600' : 'text-slate-900' }} font-mono tracking-tight leading-tight">{{ $expiredHotelsCount }}</div>
+                <div class="text-2xl sm:text-3xl font-extrabold {{ $expiredHotelsCount > 0 ? 'text-rose-600' : 'text-slate-900' }} tracking-tight leading-tight">{{ $expiredHotelsCount }}</div>
                 <div class="text-xs font-semibold text-slate-500 truncate mt-0.5">Expired Plans</div>
             </div>
         </div>
