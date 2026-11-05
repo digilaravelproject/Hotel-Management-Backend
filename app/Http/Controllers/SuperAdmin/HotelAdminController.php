@@ -137,7 +137,14 @@ class HotelAdminController extends Controller
                 ->with('error', 'Please assign a subscription plan first.');
         }
 
-        $allPlans = \App\Models\Plan::with('tax')->where('is_active', true)->get();
+        $allPlans = \App\Models\Plan::with('tax')
+            ->where('status', 1)
+            ->where('is_hidden', false)
+            ->get();
+
+        if ($allPlans->isEmpty() || !$allPlans->contains('id', $hotel->plan_id)) {
+            $allPlans = \App\Models\Plan::with('tax')->get();
+        }
         $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
 
         $tvCount = max(1, (int) ($hotel->room_count ?: 1));
