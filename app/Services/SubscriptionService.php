@@ -54,42 +54,78 @@ class SubscriptionService
             'renewal_type' => ($context['auto_renew'] ?? false) ? 'auto' : 'manual',
         ]);
 
-        $sale = DistributorSale::create([
-            'distributor_id' => $context['distributor_id'] ?? $hotel->distributor_id,
-            'hotel_id' => $hotel->id,
-            'plan_id' => $plan->id,
-            'amount' => $context['amount'] ?? $plan->price,
-            'payment_status' => 'completed',
-            'payment_method' => $context['payment_method'] ?? 'hotel_direct',
-            'license_key_issued' => $licenseKey,
-            'notes' => $context['notes'] ?? ucfirst($action) . ": {$plan->name} ({$durationMonths} months)",
-        ]);
+        $distributorId = $context['distributor_id'] ?? $hotel->distributor_id;
+        $sale = null;
+
+        // Record DistributorSale only if the hotel belongs to a distributor franchise
+        if (!empty($distributorId)) {
+            $sale = DistributorSale::create([
+                'distributor_id' => $distributorId,
+                'hotel_id' => $hotel->id,
+                'plan_id' => $plan->id,
+                'amount' => $context['amount'] ?? $plan->price,
+                'payment_status' => 'completed',
+                'payment_method' => $context['payment_method'] ?? 'hotel_direct',
+                'license_key_issued' => $licenseKey,
+                'notes' => $context['notes'] ?? ucfirst($action) . ": {$plan->name} ({$durationMonths} months)",
+            ]);
+        }
 
         // Generate Tax-Compliant Invoice
         $invoice = null;
         try {
             $tvCount = (int) ($context['tv_count'] ?? $hotel->room_count ?? $roomCount ?? 1);
-            $calc = $plan->calculatePricing($tvCount);
+            $unitRate = (float) $plan->effective_price_per_tv;
+            $isYearly = ($plan->billing_cycle === 'yearly');
+            $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+            $baseSubtotal = round($unitRate * $tvCount * $multiplier, 2);
+
             $tax = $plan->tax;
+            $taxType = $plan->tax_type ?? 'exclusive';
+            $taxRate = $tax ? (float) $tax->rate : 0.0;
+
+            $taxAmount = 0.00;
+            $totalAmount = $baseSubtotal;
+            $cgst = 0.00;
+            $sgst = 0.00;
+
+            if ($taxRate > 0) {
+                if ($taxType === 'inclusive') {
+                    $taxAmount = round($baseSubtotal - ($baseSubtotal / (1 + ($taxRate / 100))), 2);
+                    $totalAmount = $baseSubtotal;
+                    $baseSubtotal = round($baseSubtotal - $taxAmount, 2);
+                } else {
+                    $taxAmount = round($baseSubtotal * ($taxRate / 100), 2);
+                    $totalAmount = round($baseSubtotal + $taxAmount, 2);
+                }
+                if ($tax && $tax->is_split) {
+                    $cgst = round($taxAmount / 2, 2);
+                    $sgst = round($taxAmount - $cgst, 2);
+                }
+            }
+
+            if (!empty($context['amount'])) {
+                $totalAmount = (float) $context['amount'];
+            }
 
             $invoice = \App\Models\Invoice::create([
                 'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
                 'hotel_admin_id' => $hotel->id,
-                'distributor_id' => $context['distributor_id'] ?? $hotel->distributor_id,
+                'distributor_id' => $distributorId,
                 'plan_id' => $plan->id,
                 'plan_name' => $plan->name,
                 'billing_cycle' => $plan->billing_cycle ?? 'monthly',
                 'tv_count' => $tvCount,
                 'price_per_tv' => $plan->effective_price_per_tv,
-                'subtotal' => $calc['subtotal'],
+                'subtotal' => $baseSubtotal,
                 'tax_id' => $plan->tax_id,
                 'tax_name' => $tax ? $tax->name : null,
                 'tax_rate' => $tax ? $tax->rate : 0.00,
                 'tax_type' => $plan->tax_type ?? 'exclusive',
-                'tax_amount' => $calc['tax_amount'],
-                'cgst_amount' => $calc['cgst_amount'],
-                'sgst_amount' => $calc['sgst_amount'],
-                'total_amount' => $calc['total_amount'],
+                'tax_amount' => $taxAmount,
+                'cgst_amount' => $cgst,
+                'sgst_amount' => $sgst,
+                'total_amount' => $totalAmount,
                 'payment_status' => 'paid',
                 'payment_method' => $context['payment_method'] ?? 'hotel_direct',
                 'paid_at' => $now,
@@ -235,17 +271,22 @@ class SubscriptionService
 
         $notes = $context['notes'] ?? ("TV Add-On: +{$additionalTvs} Screens ({$oldTvCount} -> {$newTvCount} TVs, {$pricing['remaining_days']} days co-termed)");
 
-        // Record DistributorSale
-        $sale = DistributorSale::create([
-            'distributor_id' => $context['distributor_id'] ?? $hotel->distributor_id,
-            'hotel_id' => $hotel->id,
-            'plan_id' => $plan->id,
-            'amount' => $totalAmount,
-            'payment_status' => 'completed',
-            'payment_method' => $context['payment_method'] ?? 'hotel_direct',
-            'license_key_issued' => $hotel->license_key,
-            'notes' => $notes,
-        ]);
+        $distributorId = $context['distributor_id'] ?? $hotel->distributor_id;
+        $sale = null;
+
+        // Record DistributorSale only if the hotel belongs to a distributor franchise
+        if (!empty($distributorId)) {
+            $sale = DistributorSale::create([
+                'distributor_id' => $distributorId,
+                'hotel_id' => $hotel->id,
+                'plan_id' => $plan->id,
+                'amount' => $totalAmount,
+                'payment_status' => 'completed',
+                'payment_method' => $context['payment_method'] ?? 'hotel_direct',
+                'license_key_issued' => $hotel->license_key,
+                'notes' => $notes,
+            ]);
+        }
 
         // Generate Tax Invoice
         $invoice = null;
