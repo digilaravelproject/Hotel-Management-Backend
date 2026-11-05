@@ -126,9 +126,9 @@
                     </div>
 
                     <div class="p-3 rounded-2xl bg-slate-50/70 border border-slate-100">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">Hardware Capacity</span>
-                        <div class="font-bold text-purple-700 font-mono text-xs mt-0.5">{{ $hotel->room_count }} Rooms / TVs</div>
-                        <div class="text-slate-400 text-[11px]">{{ $hotel->connectedDevices->count() ?? 0 }} Paired Displays</div>
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">Hardware License</span>
+                        <div class="font-bold text-purple-700 font-mono text-xs mt-0.5">{{ $tvCount }} Allowed Displays</div>
+                        <div class="text-slate-400 text-[11px]">{{ $hotel->connectedDevices->count() ?? 0 }} Paired Active TVs</div>
                     </div>
                 </div>
             </div>
@@ -212,54 +212,123 @@
                 </div>
             </div>
 
-            <!-- 3. Duration & TV Capacity Settlement -->
+            <!-- 3. Authorized TV Hardware Slots (Matching Distributor Stepper & Quick Chips) -->
+            <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                            <i class="fa-solid fa-tv"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-slate-900">Number of Authorized Smart TVs</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">
+                                Pre-filled with hotel's existing <strong class="text-slate-700 font-black">{{ $tvCount }} TVs</strong> license. You can increase device slots below.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-2 shrink-0">
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-black uppercase font-mono border border-emerald-200/80 flex items-center shadow-2xs">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1.5"></span>
+                            Active: <span class="ml-1 font-bold">{{ $tvCount }}</span> TVs
+                        </span>
+                    </div>
+                </div>
+
+                <div class="space-y-3.5">
+                    <div class="flex items-center justify-between">
+                        <label class="block text-xs font-black text-slate-700">
+                            Authorized TV Hardware Slots <span class="text-rose-500">*</span>
+                        </label>
+                        <span class="text-[11px] text-purple-700 font-bold font-mono">
+                            Base Quota: <span>{{ $tvCount }}</span> TVs
+                        </span>
+                    </div>
+
+                    <!-- Modern Stepper Input with - and + and Screens badge -->
+                    <div class="flex items-center space-x-3">
+                        <button type="button" 
+                                onclick="adjustTvCount(-1)" 
+                                class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-2xs shrink-0">
+                            <i class="fa-solid fa-minus text-sm"></i>
+                        </button>
+
+                        <div class="relative flex-1 flex items-center bg-white rounded-2xl border-2 border-slate-200 focus-within:border-[#150A42] focus-within:ring-4 focus-within:ring-purple-500/10 transition-all px-3 py-1 shadow-2xs">
+                            <input type="text" 
+                                   name="tv_count" 
+                                   id="tvCountInput" 
+                                   value="{{ $tvCount }}" 
+                                   inputmode="numeric"
+                                   pattern="[0-9]*"
+                                   autocomplete="off"
+                                   required 
+                                   class="w-full text-center py-2 text-xl font-black text-slate-900 border-0 focus:ring-0 focus:outline-none font-mono">
+                            <div class="shrink-0 pl-2">
+                                <span class="px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-[11px] font-black text-[#150A42] uppercase tracking-wider select-none font-mono flex items-center gap-1">
+                                    <i class="fa-solid fa-display text-[10px] text-purple-600"></i>
+                                    <span>Screens</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="button" 
+                                onclick="adjustTvCount(1)" 
+                                class="w-12 h-12 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#150A42]/15 shrink-0">
+                            <i class="fa-solid fa-plus text-sm text-amber-300"></i>
+                        </button>
+                    </div>
+
+                    <!-- Quick TV Expansion Chips -->
+                    <div class="space-y-1.5 pt-1">
+                        <span class="text-[11px] font-bold text-slate-400 block">Quick TV Count Selection:</span>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" onclick="setTvCount({{ $tvCount }})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                                <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current ({{ $tvCount }} TVs)
+                            </button>
+                            <button type="button" onclick="setTvCount({{ $tvCount + 5 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                +5 TVs ({{ $tvCount + 5 }})
+                            </button>
+                            <button type="button" onclick="setTvCount({{ $tvCount + 10 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                +10 TVs ({{ $tvCount + 10 }})
+                            </button>
+                            <button type="button" onclick="setTvCount({{ $tvCount + 20 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                +20 TVs ({{ $tvCount + 20 }})
+                            </button>
+                            <button type="button" onclick="setTvCount({{ $tvCount + 50 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                +50 TVs ({{ $tvCount + 50 }})
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. Duration & Payment Settlement -->
             <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
                 <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
                     <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
                         <i class="fa-solid fa-calendar-days"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-black text-slate-900">Renewal Term & TV Pairing Slots</h3>
-                        <p class="text-xs text-slate-400 font-medium mt-0.5">Select validity term and confirm number of connected TV displays.</p>
+                        <h3 class="text-base font-black text-slate-900">Duration & Payment Settlement</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-0.5">Select validity term and verified payment gateway.</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-black text-slate-700 mb-1.5">
-                            Renewal Validity Period <span class="text-rose-500">*</span>
-                        </label>
-                        <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm font-bold text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all cursor-pointer">
-                            <option value="1">1 Month (Monthly Pack)</option>
-                            <option value="3">3 Months (Quarterly Pack)</option>
-                            <option value="6">6 Months (Semi-Annual Pack)</option>
-                            <option value="12" selected>12 Months (1 Year - Annual Pack)</option>
-                            <option value="24">24 Months (2-Year Pack)</option>
-                            <option value="36">36 Months (3-Year Pack)</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-black text-slate-700 mb-1.5">
-                            Connected TV Hardware Slots <span class="text-rose-500">*</span>
-                        </label>
-                        <div class="relative">
-                            <input type="number" 
-                                   name="tv_count" 
-                                   id="tvCountInput" 
-                                   min="1" 
-                                   max="5000" 
-                                   value="{{ $tvCount }}" 
-                                   required 
-                                   class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-mono transition-all">
-                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 font-sans pointer-events-none">
-                                TVs
-                            </span>
-                        </div>
-                    </div>
+                <div>
+                    <label class="block text-xs font-black text-slate-700 mb-1.5">
+                        License Validity Period <span class="text-rose-500">*</span>
+                    </label>
+                    <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm font-bold text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all cursor-pointer">
+                        <option value="1">1 Month (Monthly Pack)</option>
+                        <option value="3">3 Months (Quarterly Pack)</option>
+                        <option value="6">6 Months (Semi-Annual Pack)</option>
+                        <option value="12" selected>12 Months (1 Year - Annual Pack)</option>
+                        <option value="24">24 Months (2-Year Pack)</option>
+                        <option value="36">36 Months (3-Year Pack)</option>
+                    </select>
                 </div>
 
-                <!-- 4. Payment Verification Channel (Matching Distributor Layout) -->
+                <!-- Payment Verification Channel (Matching Distributor Layout) -->
                 <div class="pt-2">
                     <input type="hidden" name="payment_method" id="paymentMethod" value="online_gateway">
                     <label class="block text-xs font-black text-slate-700 mb-2">Payment Verification Channel <span class="text-rose-500">*</span></label>
@@ -443,6 +512,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const summaryTotal = document.getElementById('summaryTotal');
     const submitBtnLabel = document.getElementById('submitBtnLabel');
 
+    window.adjustTvCount = function(delta) {
+        if (!tvCountInput) return;
+        let current = parseInt(tvCountInput.value) || 1;
+        let newVal = Math.max(1, current + delta);
+        tvCountInput.value = newVal;
+        calculateTotal();
+    };
+
+    window.setTvCount = function(count) {
+        if (!tvCountInput) return;
+        tvCountInput.value = Math.max(1, parseInt(count) || 1);
+        calculateTotal();
+    };
+
     function calculateTotal() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan && planRadios.length > 0) {
@@ -561,7 +644,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     planRadios.forEach(r => r.addEventListener('change', calculateTotal));
     if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
-    if (tvCountInput) tvCountInput.addEventListener('input', calculateTotal);
+    if (tvCountInput) {
+        tvCountInput.addEventListener('input', calculateTotal);
+        tvCountInput.addEventListener('change', calculateTotal);
+    }
 
     // Initial run
     calculateTotal();

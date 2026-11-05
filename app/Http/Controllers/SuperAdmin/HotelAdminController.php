@@ -147,7 +147,19 @@ class HotelAdminController extends Controller
         }
         $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
 
-        $tvCount = max(1, (int) ($hotel->room_count ?: 1));
+        $latestInv = \App\Models\Invoice::where('hotel_admin_id', $hotel->id)->latest('id')->first();
+        $tvCount = max(
+            (int) ($hotel->room_count ?? 0),
+            (int) ($latestInv ? $latestInv->tv_count : 0),
+            (int) ($hotel->connectedDevices->count() ?? 0)
+        );
+        if ($tvCount <= 0 && $hotel->plan && $hotel->plan->room_count > 0) {
+            $tvCount = (int) $hotel->plan->room_count;
+        }
+        if ($tvCount <= 0) {
+            $tvCount = 10;
+        }
+
         $pricing = $hotel->plan->calculatePricing($tvCount);
 
         return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing', 'activeGateway', 'allPlans'));
