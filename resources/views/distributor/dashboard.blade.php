@@ -165,15 +165,22 @@
                         <p id="cityChartSubtitle" class="text-[11px] text-slate-400 font-medium">Licensed rooms deployed by top metropolitan city</p>
                     </div>
                     <!-- Interactive City Filter Dropdown -->
+                    @php
+                        $citiesList = $cityDistribution['citiesList'] ?? [];
+                        $cityOpts = ['all' => 'TOP CITIES (All)'];
+                        foreach($citiesList as $c) {
+                            $cityOpts[$c] = $c;
+                        }
+                    @endphp
                     <div class="relative shrink-0">
-                        <select id="cityChartFilter" onchange="onCityFilterChange(this.value)" 
-                                class="text-xs font-bold text-[#150A42] bg-purple-50 hover:bg-purple-100 border border-purple-200/90 rounded-full pl-3.5 pr-8 py-1.5 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 transition-all font-mono shadow-xs">
-                            <option value="all">TOP CITIES (All)</option>
-                            @foreach($cityDistribution['citiesList'] ?? [] as $cityName)
-                                <option value="{{ $cityName }}">{{ $cityName }}</option>
-                            @endforeach
-                        </select>
-                        <i class="fa-solid fa-chevron-down text-[9px] text-[#150A42] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                        <x-dropdown 
+                            id="cityChartFilter" 
+                            :selected="'all'" 
+                            :options="$cityOpts" 
+                            selectClass="px-3.5 py-1.5 text-xs font-bold text-[#150A42] bg-purple-50 hover:bg-purple-100 border-purple-200/90 rounded-full font-mono shadow-xs"
+                            wrapClass="shrink-0"
+                            onchange="onCityFilterChange(this.value)"
+                        />
                     </div>
                 </div>
 

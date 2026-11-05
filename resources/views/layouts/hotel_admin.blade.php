@@ -25,6 +25,18 @@
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* Globally hide native spin buttons on number inputs across all browsers */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none !important;
+            margin: 0 !important;
+            display: none !important;
+        }
+        input[type="number"] {
+            -moz-appearance: textfield !important;
+            appearance: textfield !important;
+        }
     </style>
     @yield('styles')
 </head>

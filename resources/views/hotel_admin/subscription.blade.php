@@ -260,12 +260,19 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-bold text-[#111827] mb-1">Duration Multiplier</label>
-                    <select id="durationSelect" onchange="calcDynamicPricing()" class="w-full px-3.5 py-2.5 text-xs font-bold rounded-xl border border-[#CBD5E1] focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 focus:border-[#150A42] bg-white">
-                        <option value="1">1 Period</option>
-                        <option value="3">3 Periods (Quarterly)</option>
-                        <option value="6">6 Periods (Bi-Annual)</option>
-                        <option value="12">12 Periods</option>
-                    </select>
+                    <x-dropdown 
+                        id="durationSelect" 
+                        :selected="'1'" 
+                        :options="[
+                            '1' => '1 Period',
+                            '3' => '3 Periods (Quarterly)',
+                            '6' => '6 Periods (Bi-Annual)',
+                            '12' => '12 Periods'
+                        ]" 
+                        selectClass="w-full px-3.5 py-2.5 text-xs font-bold bg-white"
+                        wrapClass="w-full"
+                        onchange="calcDynamicPricing()"
+                    />
                 </div>
 
                 <div class="sm:col-span-2 space-y-2 bg-white p-4 rounded-xl border border-slate-200/80">

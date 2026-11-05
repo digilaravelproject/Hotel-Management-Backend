@@ -79,11 +79,16 @@
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by Invoice # or Hotel name..." class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 font-medium focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-[#150A42] transition-all">
             </div>
 
-            <select name="status" onchange="this.form.submit()" class="px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500/20 cursor-pointer">
-                <option value="">All Statuses</option>
-                <option value="paid" {{ request('status') === 'paid' ? 'selected' : '' }}>Paid</option>
-                <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pending</option>
-            </select>
+            <x-dropdown 
+                name="status" 
+                id="invoiceStatusFilter" 
+                label="All Statuses" 
+                :selected="request('status')" 
+                :options="['paid' => 'Paid', 'pending' => 'Pending']" 
+                selectClass="px-3.5 py-2.5 text-xs font-bold"
+                wrapClass="shrink-0"
+                onchange="this.form.submit()"
+            />
 
             @if(request()->filled('search') || request()->filled('status'))
                 <a href="{{ route('distributor.invoices.index') }}" class="px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition-all" title="Reset Filters">

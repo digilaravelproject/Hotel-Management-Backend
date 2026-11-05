@@ -121,10 +121,12 @@
                         @endif
                     </div>
 
-                    <!-- Hotel Selector Dropdown (Toggleable or always shown if none pre-selected) -->
-                    <div id="hotelSelectorBox" class="{{ $selectedHotel ? 'hidden' : '' }} space-y-2 pt-1 pb-2">
+                    <!-- Hotel Selector Dropdown (Custom Styled Floating Dropdown) -->
+                    <div id="hotelSelectorBox" class="{{ $selectedHotel ? 'hidden' : '' }} space-y-2 pt-1 pb-2 relative">
                         <label class="block text-xs font-black text-slate-700">Choose Hotel Property <span class="text-rose-500">*</span></label>
-                        <select name="hotel_id" id="hotelSelect" required onchange="onHotelSelectionChanged(this)" class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all">
+                        
+                        <!-- Hidden native select for form submit and script access -->
+                        <select name="hotel_id" id="hotelSelect" required onchange="onHotelSelectionChanged(this)" class="sr-only">
                             <option value="">-- Choose Partner Hotel --</option>
                             @foreach($hotels as $hotel)
                                 @php
@@ -151,6 +153,71 @@
                                 </option>
                             @endforeach
                         </select>
+
+                        <!-- Custom Dropdown Trigger Button -->
+                        <button type="button" 
+                                id="hotelDropdownBtn" 
+                                onclick="toggleHotelCustomDropdown(event)" 
+                                class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-purple-300 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all flex items-center justify-between shadow-xs cursor-pointer group">
+                            <div class="flex items-center space-x-3 min-w-0">
+                                <div class="w-8 h-8 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-xs shrink-0 font-bold group-hover:scale-105 transition-transform">
+                                    <i class="fa-solid fa-hotel"></i>
+                                </div>
+                                <div class="text-left min-w-0">
+                                    <span id="hotelDropdownLabel" class="block font-black text-slate-900 truncate text-xs sm:text-sm">
+                                        {{ $selectedHotel ? $selectedHotel->hotel_name : '-- Choose Partner Hotel --' }}
+                                    </span>
+                                    <span id="hotelDropdownSub" class="block text-[11px] text-slate-400 font-medium truncate">
+                                        {{ $selectedHotel ? ($selectedHotel->existing_tv_count . ' TVs • ' . ($selectedHotel->city ?? $selectedHotel->hotel_location)) : 'Select a partner hotel property to license' }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-2 shrink-0 ml-2">
+                                <i id="hotelDropdownChevron" class="fa-solid fa-chevron-down text-slate-400 group-hover:text-purple-700 text-xs transition-transform duration-200"></i>
+                            </div>
+                        </button>
+
+                        <!-- Floating Custom Dropdown Menu -->
+                        <div id="hotelDropdownMenu" 
+                             class="hidden absolute z-50 left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-2 max-h-72 overflow-y-auto space-y-1 backdrop-blur-md">
+                            <div class="space-y-1">
+                                @foreach($hotels as $hotel)
+                                    @php
+                                        $isSelectedThis = (old('hotel_id', $selectedHotelId) == $hotel->id);
+                                    @endphp
+                                    <button type="button" 
+                                            onclick="selectHotelOption('{{ $hotel->id }}', event)" 
+                                            class="hotel-menu-item w-full p-2.5 rounded-xl text-left transition-all flex items-center justify-between hover:bg-purple-50 group cursor-pointer {{ $isSelectedThis ? 'bg-purple-50 border border-purple-200/80' : '' }}"
+                                            data-id="{{ $hotel->id }}">
+                                        <div class="flex items-center space-x-3 min-w-0">
+                                            <div class="w-8 h-8 rounded-xl {{ $isSelectedThis ? 'bg-[#150A42] text-white' : 'bg-slate-100 text-slate-600 group-hover:bg-purple-100 group-hover:text-[#150A42]' }} flex items-center justify-center text-xs shrink-0 font-bold transition-colors">
+                                                <i class="fa-solid fa-hotel"></i>
+                                            </div>
+                                            <div class="min-w-0">
+                                                <div class="font-black text-xs sm:text-sm text-slate-900 truncate flex items-center gap-1.5">
+                                                    <span>{{ $hotel->hotel_name }}</span>
+                                                    @if($hotel->plan)
+                                                        <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-purple-100 text-[#150A42] font-mono">{{ $hotel->plan->name }}</span>
+                                                    @endif
+                                                </div>
+                                                <div class="text-[11px] text-slate-400 font-medium truncate flex items-center gap-2 mt-0.5">
+                                                    <span><i class="fa-solid fa-location-dot text-[9px] text-purple-600"></i> {{ $hotel->city ?? $hotel->hotel_location }}</span>
+                                                    <span>•</span>
+                                                    <span class="font-mono"><i class="fa-solid fa-tv text-[9px] text-slate-500"></i> {{ $hotel->existing_tv_count }} TVs</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="shrink-0 ml-2 checkmark-container">
+                                            @if($isSelectedThis)
+                                                <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </span>
+                                            @endif
+                                        </div>
+                                    </button>
+                                @endforeach
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Selected Hotel Specs Mini-Grid -->
@@ -280,15 +347,14 @@
                             </button>
 
                             <div class="relative flex-1 flex items-center bg-white rounded-2xl border-2 border-slate-200 focus-within:border-[#150A42] focus-within:ring-4 focus-within:ring-purple-500/10 transition-all px-3 py-1 shadow-2xs">
-                                <input type="number" 
+                                <input type="text" 
                                        name="tv_count" 
                                        id="tvCountInput" 
                                        value="{{ $defaultTvCount }}" 
-                                       min="1" 
-                                       max="10000" 
                                        inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       autocomplete="off"
                                        required 
-                                       style="-moz-appearance: textfield; -webkit-appearance: none; appearance: none; margin: 0;"
                                        class="w-full text-center py-2 text-xl font-black text-slate-900 border-0 focus:ring-0 focus:outline-none font-mono">
                                 <div class="shrink-0 pl-2">
                                     <span class="px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-[11px] font-black text-[#150A42] uppercase tracking-wider select-none font-mono flex items-center gap-1">
@@ -440,9 +506,11 @@
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
+                        <div class="relative">
                             <label class="block text-xs font-black text-slate-700 mb-1.5"><span id="durationSelectLabel">License Validity Period</span> <span class="text-rose-500">*</span></label>
-                            <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all cursor-pointer">
+                            
+                            <!-- Hidden native select for form submit and script access -->
+                            <select name="duration_months" id="durationSelect" required class="sr-only">
                                 <option value="1" {{ old('duration_months') == '1' ? 'selected' : '' }}>1 Month (Standard Renewal)</option>
                                 <option value="3" {{ old('duration_months') == '3' ? 'selected' : '' }}>3 Months (Quarterly Pack)</option>
                                 <option value="6" {{ old('duration_months') == '6' ? 'selected' : '' }}>6 Months (Semi-Annual Pack)</option>
@@ -450,11 +518,32 @@
                                 <option value="24" {{ old('duration_months') == '24' ? 'selected' : '' }}>2 Years (24 Months - 2-Year Pack)</option>
                                 <option value="36" {{ old('duration_months') == '36' ? 'selected' : '' }}>3 Years (36 Months - 3-Year Pack)</option>
                             </select>
+
+                            <!-- Custom Duration Trigger Button -->
+                            <button type="button" 
+                                    id="durationCustomTriggerBtn" 
+                                    onclick="toggleDurationCustomDropdown(event)" 
+                                    class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-purple-300 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all flex items-center justify-between shadow-xs cursor-pointer group">
+                                <div class="flex items-center space-x-2.5 min-w-0">
+                                    <div class="w-7 h-7 rounded-lg bg-purple-100 text-[#150A42] flex items-center justify-center text-xs shrink-0 font-bold">
+                                        <i class="fa-solid fa-calendar-days"></i>
+                                    </div>
+                                    <span id="durationCustomTriggerLabel" class="block font-black text-slate-900 truncate text-xs sm:text-sm">
+                                        12 Months (1 Year - Annual Pack)
+                                    </span>
+                                </div>
+                                <i id="durationCustomChevron" class="fa-solid fa-chevron-down text-slate-400 group-hover:text-purple-700 text-xs transition-transform duration-200 ml-2"></i>
+                            </button>
+
+                            <!-- Floating Custom Dropdown Menu -->
+                            <div id="durationCustomMenu" 
+                                 class="hidden absolute z-50 left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-1.5 max-h-60 overflow-y-auto space-y-1 backdrop-blur-md">
+                            </div>
                         </div>
 
                         <div>
                             <label class="block text-xs font-black text-slate-700 mb-1.5">Calculated Total Payable (₹) <span class="text-rose-500">*</span></label>
-                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-100/80 cursor-not-allowed font-mono">
+                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-100/80 cursor-not-allowed font-mono [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                         </div>
                     </div>
 
@@ -725,6 +814,82 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function renderCustomDurationMenu() {
+        const customMenu = document.getElementById('durationCustomMenu');
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (!customMenu || !durationSelect) return;
+
+        customMenu.innerHTML = '';
+        const selectedVal = String(durationSelect.value);
+
+        Array.from(durationSelect.options).forEach(opt => {
+            const isSelected = String(opt.value) === selectedVal;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `w-full p-2.5 rounded-xl text-left transition-all flex items-center justify-between hover:bg-purple-50 group cursor-pointer text-xs font-bold ${isSelected ? 'bg-purple-50 text-[#150A42]' : 'text-slate-700'}`;
+            btn.innerHTML = `
+                <div class="flex items-center space-x-2 truncate">
+                    <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-purple-600' : 'bg-slate-300'}"></span>
+                    <span class="truncate">${opt.text}</span>
+                </div>
+                ${isSelected ? '<span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] shrink-0 ml-2"><i class="fa-solid fa-check"></i></span>' : ''}
+            `;
+            btn.onclick = function(e) {
+                selectDurationOption(opt.value, opt.text, e);
+            };
+            customMenu.appendChild(btn);
+
+            if (isSelected && customLabel) {
+                customLabel.textContent = opt.text;
+            }
+        });
+    }
+
+    window.toggleDurationCustomDropdown = function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (!customMenu) return;
+
+        // Close hotel menu if open
+        const hotelMenu = document.getElementById('hotelDropdownMenu');
+        const hotelChevron = document.getElementById('hotelDropdownChevron');
+        if (hotelMenu) hotelMenu.classList.add('hidden');
+        if (hotelChevron) hotelChevron.classList.remove('rotate-180');
+
+        const isClosed = customMenu.classList.contains('hidden');
+        if (isClosed) {
+            customMenu.classList.remove('hidden');
+            if (chevron) chevron.classList.add('rotate-180');
+        } else {
+            customMenu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    };
+
+    window.selectDurationOption = function(val, text, e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!durationSelect) return;
+        durationSelect.value = val;
+
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (customLabel) customLabel.textContent = text;
+
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (customMenu) customMenu.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+
+        renderCustomDurationMenu();
+        calculateTotal();
+    };
+
     function syncDurationOptions() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan && planRadios.length > 0) {
@@ -759,6 +924,8 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             durationSelect.value = (currentVal <= 12 && [1, 3, 6, 12].includes(currentVal)) ? currentVal : 1;
         }
+
+        renderCustomDurationMenu();
     }
 
     function calculateTotal() {
@@ -904,8 +1071,14 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     if (tvCountInput) {
-        tvCountInput.addEventListener('input', calculateTotal);
-        tvCountInput.addEventListener('change', calculateTotal);
+        tvCountInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            calculateTotal();
+        });
+        tvCountInput.addEventListener('change', function() {
+            this.value = Math.max(1, parseInt(this.value) || 1);
+            calculateTotal();
+        });
     }
 
     planRadios.forEach(radio => radio.addEventListener('change', function() {
@@ -918,12 +1091,98 @@ document.addEventListener('DOMContentLoaded', function() {
     syncDurationOptions();
     calculateTotal();
 
+    window.toggleHotelCustomDropdown = function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const menu = document.getElementById('hotelDropdownMenu');
+        const chevron = document.getElementById('hotelDropdownChevron');
+        if (!menu) return;
+
+        // Close duration menu if open
+        const durationMenu = document.getElementById('durationCustomMenu');
+        const durationChevron = document.getElementById('durationCustomChevron');
+        if (durationMenu) durationMenu.classList.add('hidden');
+        if (durationChevron) durationChevron.classList.remove('rotate-180');
+
+        const isClosed = menu.classList.contains('hidden');
+        if (isClosed) {
+            menu.classList.remove('hidden');
+            if (chevron) chevron.classList.add('rotate-180');
+        } else {
+            menu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    };
+
+    window.selectHotelOption = function(id, e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const sel = document.getElementById('hotelSelect');
+        if (!sel) return;
+
+        sel.value = id;
+
+        // Update active UI in dropdown menu
+        const menu = document.getElementById('hotelDropdownMenu');
+        if (menu) {
+            menu.querySelectorAll('.hotel-menu-item').forEach(item => {
+                const isMatch = item.dataset.id === String(id);
+                if (isMatch) {
+                    item.classList.add('bg-purple-50', 'border', 'border-purple-200/80');
+                    const checkContainer = item.querySelector('.checkmark-container');
+                    if (checkContainer) {
+                        checkContainer.innerHTML = '<span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs"><i class="fa-solid fa-check"></i></span>';
+                    }
+                } else {
+                    item.classList.remove('bg-purple-50', 'border', 'border-purple-200/80');
+                    const checkContainer = item.querySelector('.checkmark-container');
+                    if (checkContainer) checkContainer.innerHTML = '';
+                }
+            });
+            menu.classList.add('hidden');
+        }
+
+        const chevron = document.getElementById('hotelDropdownChevron');
+        if (chevron) chevron.classList.remove('rotate-180');
+
+        // Update trigger button labels
+        const selectedOpt = sel.options[sel.selectedIndex];
+        if (selectedOpt) {
+            const labelEl = document.getElementById('hotelDropdownLabel');
+            const subEl = document.getElementById('hotelDropdownSub');
+            if (labelEl) labelEl.textContent = selectedOpt.dataset.name || selectedOpt.text;
+            if (subEl) subEl.textContent = (selectedOpt.dataset.existingTvs || '0') + ' TVs • ' + (selectedOpt.dataset.location || '');
+        }
+
+        onHotelSelectionChanged(sel);
+    };
+
     window.toggleHotelSelector = function() {
         const box = document.getElementById('hotelSelectorBox');
         if (box) {
             box.classList.toggle('hidden');
         }
     };
+
+    // Global click listener to close floating dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#hotelSelectorBox')) {
+            const hotelMenu = document.getElementById('hotelDropdownMenu');
+            const hotelChevron = document.getElementById('hotelDropdownChevron');
+            if (hotelMenu) hotelMenu.classList.add('hidden');
+            if (hotelChevron) hotelChevron.classList.remove('rotate-180');
+        }
+        if (!e.target.closest('#durationCustomTriggerBtn') && !e.target.closest('#durationCustomMenu')) {
+            const durationMenu = document.getElementById('durationCustomMenu');
+            const durationChevron = document.getElementById('durationCustomChevron');
+            if (durationMenu) durationMenu.classList.add('hidden');
+            if (durationChevron) durationChevron.classList.remove('rotate-180');
+        }
+    });
 
     window.onHotelSelectionChanged = function(selectElem) {
         const selectedOpt = selectElem.options[selectElem.selectedIndex];
