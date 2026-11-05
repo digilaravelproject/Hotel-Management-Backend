@@ -186,6 +186,10 @@ class DistributorController extends Controller
     public function sales(Request $request)
     {
         $user = auth()->user();
+
+        // Auto-sync any legacy sales that do not have an invoice generated yet
+        $this->syncMissingInvoicesForDistributor($user);
+
         $query = $user->distributorSales()->with(['hotel', 'plan'])->latest();
 
         // Search by hotel name, city, location, owner, license key, or notes
@@ -760,6 +764,10 @@ class DistributorController extends Controller
     public function invoices(Request $request)
     {
         $user = auth()->user();
+
+        // Auto-sync any legacy sales that do not have an invoice generated yet
+        $this->syncMissingInvoicesForDistributor($user);
+
         $query = \App\Models\Invoice::with(['hotel', 'plan', 'tax'])
             ->where('distributor_id', $user->id)
             ->latest();
@@ -781,6 +789,79 @@ class DistributorController extends Controller
         $totalInvoicesCount = \App\Models\Invoice::where('distributor_id', $user->id)->count();
 
         return view('distributor.invoices.index', compact('invoices', 'totalPaidAmount', 'totalInvoicesCount'));
+    }
+
+    /**
+     * Automatically backfill missing invoices for any legacy sales.
+     */
+    private function syncMissingInvoicesForDistributor($user): void
+    {
+        try {
+            $sales = $user->distributorSales()->with(['hotel', 'plan.tax'])->get();
+            if ($sales->isEmpty()) return;
+
+            $existingInvoices = \App\Models\Invoice::where('distributor_id', $user->id)->get();
+
+            foreach ($sales as $sale) {
+                $hasInvoice = $existingInvoices->first(function ($inv) use ($sale) {
+                    if ($inv->hotel_admin_id != $sale->hotel_id) return false;
+                    if ($inv->transaction_id === ('DSALE-' . $sale->id)) return true;
+                    if ((float) $inv->total_amount == (float) $sale->amount && abs($inv->created_at->diffInHours($sale->created_at)) <= 48) {
+                        return true;
+                    }
+                    return false;
+                });
+
+                if (!$hasInvoice) {
+                    $plan = $sale->plan;
+                    $hotel = $sale->hotel;
+                    $tvCount = (int) ($hotel ? ($hotel->room_count ?: 1) : 1);
+                    $ratePerTv = $plan ? (float) $plan->effective_price_per_tv : 150.00;
+                    $tax = $plan ? $plan->tax : \App\Models\Tax::where('is_default', true)->first();
+                    $taxRate = $tax ? (float) $tax->rate : 18.00;
+                    $taxName = $tax ? $tax->name : 'GST';
+                    $taxType = $plan ? ($plan->tax_type ?? 'exclusive') : 'exclusive';
+
+                    $total = (float) $sale->amount;
+                    $subtotal = $taxType === 'inclusive' ? round($total / (1 + ($taxRate / 100)), 2) : $total;
+                    $taxAmount = round($total - $subtotal, 2);
+                    $cgst = round($taxAmount / 2, 2);
+                    $sgst = round($taxAmount - $cgst, 2);
+
+                    $newInv = \App\Models\Invoice::create([
+                        'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
+                        'hotel_admin_id' => $sale->hotel_id,
+                        'distributor_id' => $user->id,
+                        'plan_id' => $sale->plan_id,
+                        'plan_name' => $plan ? $plan->name : 'Smart TV Licensing Tier',
+                        'billing_cycle' => $plan ? ($plan->billing_cycle ?? 'monthly') : 'monthly',
+                        'tv_count' => $tvCount,
+                        'price_per_tv' => $ratePerTv,
+                        'subtotal' => $subtotal,
+                        'tax_id' => $tax ? $tax->id : null,
+                        'tax_name' => $taxName,
+                        'tax_rate' => $taxRate,
+                        'tax_type' => $taxType,
+                        'tax_amount' => $taxAmount,
+                        'cgst_amount' => $cgst,
+                        'sgst_amount' => $sgst,
+                        'total_amount' => $total,
+                        'payment_status' => in_array($sale->payment_status, ['failed']) ? 'failed' : 'paid',
+                        'payment_method' => $sale->payment_method ?? 'online_gateway',
+                        'transaction_id' => 'DSALE-' . $sale->id,
+                        'paid_at' => $sale->created_at,
+                        'period_start' => $sale->created_at,
+                        'period_end' => $hotel ? $hotel->expiry_date : $sale->created_at->copy()->addMonth(),
+                        'notes' => $sale->notes ?: "Package sale: " . ($plan ? $plan->name : 'Plan'),
+                        'created_at' => $sale->created_at,
+                    ]);
+
+                    $existingInvoices->push($newInv);
+                }
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Invoice backfill skipped: " . $e->getMessage());
+        }
     }
 
     /**
