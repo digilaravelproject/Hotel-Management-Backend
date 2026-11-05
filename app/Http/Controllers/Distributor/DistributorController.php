@@ -193,13 +193,24 @@ class DistributorController extends Controller
     {
         $user = auth()->user();
         $hotels = $user->hotels()
-            ->with(['plan', 'invoices' => function($q) { $q->latest('id'); }])
+            ->with('plan')
             ->withCount('connectedDevices')
             ->orderBy('hotel_name')
             ->get();
 
+        // Fetch latest invoice for each hotel cleanly in one query
+        $hotelIds = $hotels->pluck('id')->filter()->toArray();
+        $latestInvoices = [];
+        if (!empty($hotelIds)) {
+            $latestInvoices = \App\Models\Invoice::whereIn('hotel_admin_id', $hotelIds)
+                ->orderBy('id', 'desc')
+                ->get()
+                ->unique('hotel_admin_id')
+                ->keyBy('hotel_admin_id');
+        }
+
         foreach ($hotels as $hotel) {
-            $latestInv = $hotel->invoices ? $hotel->invoices->first() : null;
+            $latestInv = $latestInvoices[$hotel->id] ?? null;
             $hotel->existing_tv_count = max(
                 (int) ($hotel->room_count ?? 0),
                 (int) ($latestInv ? $latestInv->tv_count : 0),
@@ -221,11 +232,11 @@ class DistributorController extends Controller
             $selectedHotel = $hotels->firstWhere('id', (int) $selectedHotelId);
             if (!$selectedHotel) {
                 $selectedHotel = $user->hotels()
-                    ->with(['plan', 'invoices' => function($q) { $q->latest('id'); }])
+                    ->with('plan')
                     ->withCount('connectedDevices')
                     ->find($selectedHotelId);
                 if ($selectedHotel) {
-                    $latestInv = $selectedHotel->invoices ? $selectedHotel->invoices->first() : null;
+                    $latestInv = \App\Models\Invoice::where('hotel_admin_id', $selectedHotel->id)->latest('id')->first();
                     $selectedHotel->existing_tv_count = max(
                         (int) ($selectedHotel->room_count ?? 0),
                         (int) ($latestInv ? $latestInv->tv_count : 0),

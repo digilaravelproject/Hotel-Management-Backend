@@ -128,6 +128,14 @@ class HotelAdmin extends Authenticatable
     }
 
     /**
+     * Get the billing tax invoices issued for this hotel.
+     */
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'hotel_admin_id');
+    }
+
+    /**
      * Get the allowed device limit (room_count).
      * Returns 0 if hotel has no active plan, unpaid status, or has expired.
      */
