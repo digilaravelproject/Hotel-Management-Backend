@@ -25,7 +25,7 @@ class StoreDistributorSaleRequest extends FormRequest
             'plan_id' => 'required|exists:plans,id',
             'tv_count' => 'nullable|integer|min:1|max:10000',
             'additional_tvs' => 'nullable|integer|min:1|max:5000',
-            'duration_months' => 'required_unless:sale_type,addon|nullable|integer|in:1,3,6,12',
+            'duration_months' => 'required_unless:sale_type,addon|nullable|integer|in:1,3,6,12,24,36',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:online_gateway',
             'notes' => 'nullable|string|max:500',

@@ -279,7 +279,7 @@ class DistributorController extends Controller
             'plan_id' => 'required|exists:plans,id',
             'tv_count' => 'nullable|integer|min:1|max:10000',
             'additional_tvs' => 'nullable|integer|min:1|max:5000',
-            'duration_months' => 'nullable|integer|in:1,3,6,12',
+            'duration_months' => 'nullable|integer|in:1,3,6,12,24,36',
         ]);
 
         // Security check: hotel must belong to the authenticated distributor
@@ -311,7 +311,9 @@ class DistributorController extends Controller
             $tvCount = max(1, (int) ($validated['tv_count'] ?? 1));
             $durationMonths = (int) ($validated['duration_months'] ?? 1);
             $ratePerTv = $plan->effective_price_per_tv;
-            $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+            $isYearly = ($plan->billing_cycle === 'yearly');
+            $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+            $subtotal = round($ratePerTv * $tvCount * $multiplier, 2);
 
             $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
             $taxType = $plan->tax_type ?? 'exclusive';
@@ -407,7 +409,9 @@ class DistributorController extends Controller
             $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: 1));
             $durationMonths = (int) ($validated['duration_months'] ?? 1);
             $ratePerTv = $plan->effective_price_per_tv;
-            $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+            $isYearly = ($plan->billing_cycle === 'yearly');
+            $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+            $subtotal = round($ratePerTv * $tvCount * $multiplier, 2);
 
             $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
             $taxType = $plan->tax_type ?? 'exclusive';
@@ -553,7 +557,7 @@ class DistributorController extends Controller
                 'paid_at' => now(),
                 'period_start' => now(),
                 'period_end' => $result['new_expiry'],
-                'notes' => "Distributor sale for {$tvCount} TVs ({$durationMonths} months) - {$plan->name}",
+                'notes' => "Distributor sale for {$tvCount} TVs (" . ($isYearly ? (($durationMonths / 12) . " Year(s)") : "{$durationMonths} Months") . ") - {$plan->name}",
             ]);
         } catch (\Throwable $e) {
             \Illuminate\Support\Facades\Log::warning("Distributor Invoice generation skipped or failed: " . $e->getMessage());

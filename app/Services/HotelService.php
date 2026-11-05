@@ -268,11 +268,10 @@ class HotelService
         int $distributorId
     ): array {
         $now = now();
-        $durationDays = $durationMonths * 30;
 
         // If existing expiry date is in the future, extend from that point; otherwise start from now
         $baseDate = ($hotel->expiry_date && $hotel->expiry_date > $now) ? $hotel->expiry_date : $now;
-        $newExpiry = $baseDate->copy()->addDays($durationDays);
+        $newExpiry = $baseDate->copy()->addMonthsNoOverflow($durationMonths);
 
         $hotel->update([
             'plan_id' => $plan->id,

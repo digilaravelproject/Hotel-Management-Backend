@@ -288,6 +288,7 @@
                                        max="10000" 
                                        inputmode="numeric"
                                        required 
+                                       style="-moz-appearance: textfield; -webkit-appearance: none; appearance: none; margin: 0;"
                                        class="w-full text-center py-2 text-xl font-black text-slate-900 border-0 focus:ring-0 focus:outline-none font-mono">
                                 <div class="shrink-0 pl-2">
                                     <span class="px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-[11px] font-black text-[#150A42] uppercase tracking-wider select-none font-mono flex items-center gap-1">
@@ -348,17 +349,29 @@
                         @foreach($plans as $plan)
                             @php
                                 $isHotelPlan = $selectedHotel && $selectedHotel->plan_id == $plan->id;
+                                $cycle = strtolower($plan->billing_cycle ?? 'monthly');
                                 $effectiveTax = $plan->tax ?: $defaultTax;
                                 $taxRate = $effectiveTax ? (float) $effectiveTax->rate : 18.0;
                                 $taxName = $effectiveTax ? $effectiveTax->name : 'GST';
                                 $taxType = $plan->tax_type ?? 'exclusive';
-                                $unitRate = $plan->effective_price_per_tv;
+                                $unitRate = (float) $plan->effective_price_per_tv;
                             @endphp
                             <label class="relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all hover:border-slate-300 bg-white has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/30 has-[:checked]:shadow-xs group">
                                 <div>
                                     <div class="flex items-center justify-between mb-2.5">
-                                        <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm font-black shadow-2xs">
-                                            <i class="fa-solid fa-cube"></i>
+                                        <div class="flex items-center space-x-2">
+                                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm font-black shadow-2xs shrink-0">
+                                                <i class="fa-solid fa-cube"></i>
+                                            </div>
+                                            @if($cycle === 'yearly')
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black bg-amber-100 text-amber-900 uppercase font-mono tracking-wider border border-amber-300 shadow-2xs">
+                                                    <i class="fa-solid fa-crown mr-1 text-[8px] text-amber-600"></i> Yearly Plan
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black bg-purple-100 text-[#150A42] uppercase font-mono tracking-wider border border-purple-200 shadow-2xs">
+                                                    <i class="fa-solid fa-calendar-days mr-1 text-[8px] text-purple-600"></i> Monthly Plan
+                                                </span>
+                                            @endif
                                         </div>
                                         <div class="flex items-center space-x-2">
                                             @if($isHotelPlan)
@@ -370,7 +383,7 @@
                                                    {{ (old('plan_id', $selectedHotel && $selectedHotel->plan_id ? $selectedHotel->plan_id : ($loop->first ? $plan->id : '')) == $plan->id) ? 'checked' : '' }} 
                                                    data-unit-rate="{{ $unitRate }}"
                                                    data-name="{{ $plan->name }}" 
-                                                   data-billing-cycle="{{ $plan->billing_cycle ?? 'monthly' }}"
+                                                   data-billing-cycle="{{ $cycle }}"
                                                    data-tax-id="{{ $effectiveTax ? $effectiveTax->id : '' }}"
                                                    data-tax-name="{{ $taxName }}"
                                                    data-tax-rate="{{ $taxRate }}"
@@ -383,7 +396,7 @@
                                     <div class="font-black text-slate-900 text-sm sm:text-base">{{ $plan->name }}</div>
                                     <div class="text-xl font-black text-[#150A42] font-mono mt-1">
                                         ₹{{ number_format($unitRate, 2) }} 
-                                        <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / month</span>
+                                        <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
                                     </div>
 
                                     <div class="mt-2 flex items-center space-x-1.5">
@@ -428,12 +441,14 @@
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-black text-slate-700 mb-1.5">License Validity Period <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-black text-slate-700 mb-1.5"><span id="durationSelectLabel">License Validity Period</span> <span class="text-rose-500">*</span></label>
                             <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all cursor-pointer">
                                 <option value="1" {{ old('duration_months') == '1' ? 'selected' : '' }}>1 Month (Standard Renewal)</option>
                                 <option value="3" {{ old('duration_months') == '3' ? 'selected' : '' }}>3 Months (Quarterly Pack)</option>
                                 <option value="6" {{ old('duration_months') == '6' ? 'selected' : '' }}>6 Months (Semi-Annual Pack)</option>
-                                <option value="12" {{ old('duration_months') == '12' ? 'selected' : '' }}>12 Months (Annual - Best Value)</option>
+                                <option value="12" {{ old('duration_months', '12') == '12' ? 'selected' : '' }}>12 Months (1 Year - Annual Pack)</option>
+                                <option value="24" {{ old('duration_months') == '24' ? 'selected' : '' }}>2 Years (24 Months - 2-Year Pack)</option>
+                                <option value="36" {{ old('duration_months') == '36' ? 'selected' : '' }}>3 Years (36 Months - 3-Year Pack)</option>
                             </select>
                         </div>
 
@@ -710,6 +725,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function syncDurationOptions() {
+        let selectedPlan = document.querySelector('.plan-radio:checked');
+        if (!selectedPlan && planRadios.length > 0) {
+            selectedPlan = planRadios[0];
+        }
+        if (!selectedPlan || !durationSelect) return;
+
+        const cycle = (selectedPlan.dataset.billingCycle || 'monthly').toLowerCase();
+        const isYearly = (cycle === 'yearly');
+        const currentVal = parseInt(durationSelect.value) || (isYearly ? 12 : 1);
+
+        const durationLabel = document.getElementById('durationSelectLabel');
+        if (durationLabel) {
+            durationLabel.textContent = isYearly ? 'License Validity Period (Annual Pack)' : 'License Validity Period (Monthly Pack)';
+        }
+
+        const isCurrentlyYearlyDropdown = (durationSelect.querySelector('option[value="24"]') !== null && durationSelect.querySelector('option[value="1"]') === null);
+
+        if (isYearly && !isCurrentlyYearlyDropdown) {
+            durationSelect.innerHTML = `
+                <option value="12">1 Year (12 Months - Annual Pack)</option>
+                <option value="24">2 Years (24 Months - 2-Year Pack)</option>
+                <option value="36">3 Years (36 Months - 3-Year Pack)</option>
+            `;
+            durationSelect.value = (currentVal >= 12 && [12, 24, 36].includes(currentVal)) ? currentVal : 12;
+        } else if (!isYearly && isCurrentlyYearlyDropdown) {
+            durationSelect.innerHTML = `
+                <option value="1">1 Month (Standard Renewal)</option>
+                <option value="3">3 Months (Quarterly Pack)</option>
+                <option value="6">6 Months (Semi-Annual Pack)</option>
+                <option value="12">12 Months (1 Year - Annual Pack)</option>
+            `;
+            durationSelect.value = (currentVal <= 12 && [1, 3, 6, 12].includes(currentVal)) ? currentVal : 1;
+        }
+    }
+
     function calculateTotal() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan && planRadios.length > 0) {
@@ -721,6 +772,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const unitRate = parseFloat(selectedPlan.dataset.unitRate) || 150;
         const name = selectedPlan.dataset.name || 'Subscription Plan';
+        const cycle = (selectedPlan.dataset.billingCycle || 'monthly').toLowerCase();
+        const isYearly = (cycle === 'yearly');
         const tvCount = Math.max(1, parseInt(tvCountInput ? tvCountInput.value : 1) || 1);
         const months = parseInt(durationSelect ? durationSelect.value : 1) || 1;
 
@@ -728,12 +781,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const isAddonMode = (currentSaleMode === 'addon' && currentHasActive && currentRemainingDays > 0);
 
         if (isAddonMode) {
-            const cycle = selectedPlan.dataset.billingCycle || 'monthly';
-            const cycleDays = (cycle === 'yearly') ? 365 : 30;
+            const cycleDays = isYearly ? 365 : 30;
             const dailyRate = unitRate / cycleDays;
             subtotal = Math.round((dailyRate * tvCount * currentRemainingDays) * 100) / 100;
         } else {
-            subtotal = Math.round((unitRate * tvCount * months) * 100) / 100;
+            const multiplier = isYearly ? Math.max(1, Math.round((months / 12) * 100) / 100) : months;
+            subtotal = Math.round((unitRate * tvCount * multiplier) * 100) / 100;
         }
 
         const taxRate = parseFloat(selectedPlan.dataset.taxRate) || 0;
@@ -786,19 +839,32 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        if (summaryUnitRate) summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo`;
+        if (summaryUnitRate) {
+            summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / ${isYearly ? 'year' : 'month'}`;
+        }
+
         if (summaryDuration) {
             if (isAddonMode) {
                 const expiryText = document.getElementById('displayHotelExpiry')?.innerText || '';
                 summaryDuration.innerHTML = `<span class="text-[#150A42] font-black">${currentRemainingDays} Days</span> <span class="text-[10px] text-purple-700 font-bold block font-sans">Merged with Base Plan (${expiryText})</span>`;
+            } else if (isYearly) {
+                const yrs = Math.max(1, Math.round(months / 12));
+                summaryDuration.textContent = `${yrs} Year${yrs > 1 ? 's' : ''} (${months} Months)`;
             } else {
                 summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
             }
         }
+
         if (summaryFormula) {
-            summaryFormula.textContent = isAddonMode
-                ? `+${tvCount} TVs × (₹${unitRate.toFixed(2)}/mo) × ${currentRemainingDays} days`
-                : `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${months} mo`;
+            if (isAddonMode) {
+                const cycleDays = isYearly ? 365 : 30;
+                const dailyRate = (unitRate / cycleDays).toFixed(2);
+                summaryFormula.textContent = `+${tvCount} TVs × (₹${unitRate.toFixed(2)}/${isYearly ? 'yr' : 'mo'} ÷ ${cycleDays}d = ₹${dailyRate}/d) × ${currentRemainingDays} days`;
+            } else {
+                const multiplier = isYearly ? (months / 12) : months;
+                const unitLabel = isYearly ? 'yr' : 'mo';
+                summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)}/${unitLabel} × ${multiplier} ${unitLabel}`;
+            }
         }
         if (summarySubtotal) summarySubtotal.textContent = `₹${baseSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
@@ -842,10 +908,14 @@ document.addEventListener('DOMContentLoaded', function() {
         tvCountInput.addEventListener('change', calculateTotal);
     }
 
-    planRadios.forEach(radio => radio.addEventListener('change', calculateTotal));
+    planRadios.forEach(radio => radio.addEventListener('change', function() {
+        syncDurationOptions();
+        calculateTotal();
+    }));
     if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
 
     // Initial run
+    syncDurationOptions();
     calculateTotal();
 
     window.toggleHotelSelector = function() {
@@ -915,6 +985,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        syncDurationOptions();
         calculateTotal();
     };
 
