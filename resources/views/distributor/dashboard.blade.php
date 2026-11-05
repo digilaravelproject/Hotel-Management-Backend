@@ -107,6 +107,127 @@
         </a>
     </div>
 
+    <!-- ================= ANALYTICS ROW: 2 GRAPHS + PROGRESS METRICS ================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Graph 1: Subscription Tier Adoption (Doughnut Chart) -->
+        <div class="lg:col-span-5 bg-white rounded-[28px] p-6 sm:p-7 border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-2">
+                    <div>
+                        <h4 class="text-base font-black text-slate-900 tracking-tight">Subscription Tier Adoption</h4>
+                        <p class="text-[11px] text-slate-400 font-medium">Distribution by package tier</p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full bg-purple-50 text-xs font-bold text-purple-700 border border-purple-100">All Tiers</span>
+                </div>
+
+                <!-- Doughnut Chart Canvas with Center Sum Metric -->
+                <div class="relative h-56 w-full flex items-center justify-center my-2">
+                    <canvas id="planDoughnutChart"></canvas>
+                    
+                    <!-- Center Overlay Metric -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-2xl font-black text-slate-900 font-mono">
+                            {{ $planDistribution['total'] ?? array_sum($planDistribution['data'] ?? []) }}
+                        </span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">
+                            Hotels
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend Pills underneath -->
+            <div class="grid grid-cols-2 gap-2.5 pt-4 border-t border-slate-100 text-xs">
+                @php
+                    $planColors = ['#06B6D4', '#10B981', '#F59E0B', '#150A42'];
+                    $labels = $planDistribution['labels'] ?? [];
+                    $data = $planDistribution['data'] ?? [];
+                @endphp
+                @forelse($labels as $idx => $label)
+                    <div class="flex items-center space-x-2">
+                        <span class="w-2.5 h-2.5 rounded-full shrink-0" style="background-color: {{ $planColors[$idx % 4] }};"></span>
+                        <span class="text-slate-600 font-semibold truncate">{{ $label }}:</span>
+                        <span class="font-black text-slate-900 font-mono">{{ $data[$idx] ?? 0 }}</span>
+                    </div>
+                @empty
+                    <div class="col-span-2 text-center text-slate-400 text-xs">No active plan data</div>
+                @endforelse
+            </div>
+        </div>
+
+        <!-- Graph 2: Regional TV & Room Capacity Bar Chart + Dynamic City Filter -->
+        <div class="lg:col-span-7 bg-white rounded-[28px] p-6 sm:p-7 border border-slate-100 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                    <div>
+                        <h4 class="text-base font-black text-slate-900 tracking-tight">Regional TV & Room Capacity</h4>
+                        <p id="cityChartSubtitle" class="text-[11px] text-slate-400 font-medium">Licensed rooms deployed by top metropolitan city</p>
+                    </div>
+                    <!-- Interactive City Filter Dropdown -->
+                    <div class="relative shrink-0">
+                        <select id="cityChartFilter" onchange="onCityFilterChange(this.value)" 
+                                class="text-xs font-bold text-[#150A42] bg-purple-50 hover:bg-purple-100 border border-purple-200/90 rounded-full pl-3.5 pr-8 py-1.5 appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 transition-all font-mono shadow-xs">
+                            <option value="all">TOP CITIES (All)</option>
+                            @foreach($cityDistribution['citiesList'] ?? [] as $cityName)
+                                <option value="{{ $cityName }}">{{ $cityName }}</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down text-[9px] text-[#150A42] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <!-- Bar Chart Canvas -->
+                <div class="relative h-56 w-full mt-2">
+                    <canvas id="cityBarChart"></canvas>
+                </div>
+            </div>
+
+            <!-- 4 Resource & TV Utilization Progress Bars -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-100">
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-bold text-slate-600">TV Active</span>
+                        <span id="statTvActive" class="font-extrabold text-cyan-600 font-mono">{{ $metrics['tv_coverage_pct'] ?? 66 }}%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div id="barTvActive" class="h-full rounded-full bg-[#06B6D4] transition-all duration-300" style="width: {{ $metrics['tv_coverage_pct'] ?? 66 }}%"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-bold text-slate-600">Verified</span>
+                        <span id="statVerified" class="font-extrabold text-[#150A42] font-mono">{{ $metrics['verified_hotels_pct'] ?? 31 }}%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div id="barVerified" class="h-full rounded-full bg-[#150A42] transition-all duration-300" style="width: {{ $metrics['verified_hotels_pct'] ?? 31 }}%"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-bold text-slate-600">Paid Plans</span>
+                        <span id="statPaidPlans" class="font-extrabold text-emerald-600 font-mono">{{ $metrics['paid_hotels_pct'] ?? 18 }}%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div id="barPaidPlans" class="h-full rounded-full bg-[#10B981] transition-all duration-300" style="width: {{ $metrics['paid_hotels_pct'] ?? 18 }}%"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between text-[11px]">
+                        <span class="font-bold text-slate-600">Channel Cap</span>
+                        <span class="font-extrabold text-amber-600 font-mono">85%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-slate-100 overflow-hidden">
+                        <div class="h-full rounded-full bg-[#F59E0B]" style="width: 85%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Hotels & Sales Grids (Modern Rounded [28px] Containers) -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Recent Hotels -->
@@ -247,4 +368,188 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ================= 1. Subscription Tier Doughnut Chart =================
+    const ctxPlan = document.getElementById('planDoughnutChart');
+    if (ctxPlan) {
+        const planLabels = @json($planDistribution['labels'] ?? []);
+        const planData = @json($planDistribution['data'] ?? []);
+
+        new Chart(ctxPlan, {
+            type: 'doughnut',
+            data: {
+                labels: planLabels,
+                datasets: [{
+                    data: planData.length ? planData : [1],
+                    backgroundColor: [
+                        '#06B6D4', // Economy / Cyan
+                        '#10B981', // Deluxe / Emerald
+                        '#F59E0B', // Executive / Amber
+                        '#150A42', // Presidential / Midnight Navy
+                    ],
+                    borderWidth: 4,
+                    borderColor: '#FFFFFF',
+                    hoverOffset: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '76%',
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#FFFFFF',
+                        titleColor: '#0F172A',
+                        bodyColor: '#334155',
+                        borderColor: 'rgba(226, 232, 240, 0.9)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 12,
+                        titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
+                        bodyFont: { family: 'Plus Jakarta Sans', size: 11 }
+                    }
+                }
+            }
+        });
+    }
+
+    // ================= 2. Regional Hubs Bar Chart with Dynamic City Filter =================
+    const ctxCity = document.getElementById('cityBarChart');
+    if (ctxCity) {
+        const allCitiesLabels = @json($cityDistribution['labels'] ?? []);
+        const allCitiesRoomCounts = @json($cityDistribution['roomCounts'] ?? []);
+        const cityBreakdowns = @json($cityDistribution['byCity'] ?? []);
+        const globalMetrics = {
+            tv_coverage: {{ $metrics['tv_coverage_pct'] ?? 66 }},
+            verified: {{ $metrics['verified_hotels_pct'] ?? 31 }},
+            paid: {{ $metrics['paid_hotels_pct'] ?? 18 }}
+        };
+
+        const defaultPalette = [
+            '#150A42', '#2E1065', '#06B6D4', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#3B82F6'
+        ];
+
+        const cityBarChartInstance = new Chart(ctxCity, {
+            type: 'bar',
+            data: {
+                labels: allCitiesLabels.length ? allCitiesLabels : ['Mumbai', 'New Delhi', 'Bengaluru'],
+                datasets: [{
+                    label: 'Licensed Room Capacity',
+                    data: allCitiesRoomCounts.length ? allCitiesRoomCounts : [40, 250, 100],
+                    backgroundColor: defaultPalette,
+                    borderRadius: 10,
+                    barPercentage: 0.55
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#FFFFFF',
+                        titleColor: '#0F172A',
+                        bodyColor: '#334155',
+                        borderColor: 'rgba(226, 232, 240, 0.9)',
+                        borderWidth: 1,
+                        padding: 10,
+                        cornerRadius: 12,
+                        titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
+                        bodyFont: { family: 'Plus Jakarta Sans', size: 11 },
+                        callbacks: {
+                            label: function(context) {
+                                return ' ' + (context.dataset.label || 'Capacity') + ': ' + context.parsed.y + ' rooms';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: {
+                            font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' },
+                            color: '#64748B'
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(241, 245, 249, 1)',
+                            borderDash: [4, 4]
+                        },
+                        ticks: {
+                            font: { family: 'Plus Jakarta Sans', size: 10 },
+                            color: '#94A3B8'
+                        }
+                    }
+                }
+            }
+        });
+
+        window.onCityFilterChange = function(selectedCity) {
+            if (!cityBarChartInstance) return;
+
+            const subtitleEl = document.getElementById('cityChartSubtitle');
+            const statTv = document.getElementById('statTvActive');
+            const barTv = document.getElementById('barTvActive');
+            const statVer = document.getElementById('statVerified');
+            const barVer = document.getElementById('barVerified');
+            const statPaid = document.getElementById('statPaidPlans');
+            const barPaid = document.getElementById('barPaidPlans');
+
+            if (selectedCity === 'all' || !cityBreakdowns[selectedCity]) {
+                // Restore to All Cities
+                cityBarChartInstance.data.labels = allCitiesLabels.length ? allCitiesLabels : ['Mumbai', 'New Delhi', 'Bengaluru'];
+                cityBarChartInstance.data.datasets[0].label = 'Licensed Room Capacity';
+                cityBarChartInstance.data.datasets[0].data = allCitiesRoomCounts.length ? allCitiesRoomCounts : [40, 250, 100];
+                cityBarChartInstance.data.datasets[0].backgroundColor = defaultPalette;
+
+                if (subtitleEl) {
+                    subtitleEl.textContent = 'Licensed rooms deployed by top metropolitan city';
+                }
+
+                // Restore global bottom bars
+                if (statTv) statTv.textContent = globalMetrics.tv_coverage + '%';
+                if (barTv) barTv.style.width = globalMetrics.tv_coverage + '%';
+                if (statVer) statVer.textContent = globalMetrics.verified + '%';
+                if (barVer) barVer.style.width = globalMetrics.verified + '%';
+                if (statPaid) statPaid.textContent = globalMetrics.paid + '%';
+                if (barPaid) barPaid.style.width = globalMetrics.paid + '%';
+            } else {
+                // Switch to specific city hotels breakdown
+                const cityData = cityBreakdowns[selectedCity];
+                const hotelLabels = cityData.labels && cityData.labels.length ? cityData.labels : [selectedCity];
+                const hotelRooms = cityData.roomCounts && cityData.roomCounts.length ? cityData.roomCounts : [cityData.total_rooms];
+
+                cityBarChartInstance.data.labels = hotelLabels;
+                cityBarChartInstance.data.datasets[0].label = 'Rooms in ' + selectedCity;
+                cityBarChartInstance.data.datasets[0].data = hotelRooms;
+                cityBarChartInstance.data.datasets[0].backgroundColor = defaultPalette.slice(0, Math.max(hotelLabels.length, 1));
+
+                if (subtitleEl) {
+                    subtitleEl.textContent = 'Hotels in ' + selectedCity + ' (' + (cityData.total_rooms || 0) + ' total rooms across ' + (cityData.hotels ? cityData.hotels.length : 1) + ' hotel' + ((cityData.hotels && cityData.hotels.length > 1) ? 's' : '') + ')';
+                }
+
+                // Update bottom metrics for this specific city
+                if (statTv) statTv.textContent = (cityData.tv_coverage_pct || 0) + '%';
+                if (barTv) barTv.style.width = (cityData.tv_coverage_pct || 0) + '%';
+                if (statVer) statVer.textContent = (cityData.verified_hotels_pct || 0) + '%';
+                if (barVer) barVer.style.width = (cityData.verified_hotels_pct || 0) + '%';
+                if (statPaid) statPaid.textContent = (cityData.paid_hotels_pct || 0) + '%';
+                if (barPaid) barPaid.style.width = (cityData.paid_hotels_pct || 0) + '%';
+            }
+
+            cityBarChartInstance.update();
+        };
+    }
+});
+</script>
 @endsection

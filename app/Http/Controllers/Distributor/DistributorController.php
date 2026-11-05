@@ -37,6 +37,11 @@ class DistributorController extends Controller
         $totalRevenue = $data['metrics']['total_revenue'];
         $recentHotels = $data['recentHotels'];
         $recentSales = $data['recentTransactions'];
+        $metrics = $data['metrics'];
+        $planDistribution = $data['planDistribution'];
+        $cityDistribution = $data['cityDistribution'];
+        $trends = $data['trends'];
+        $alerts = $data['alerts'];
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -49,6 +54,9 @@ class DistributorController extends Controller
                 ],
                 'recent_hotels' => $recentHotels,
                 'recent_sales' => $recentSales,
+                'plan_distribution' => $planDistribution,
+                'city_distribution' => $cityDistribution,
+                'trends' => $trends,
             ]);
         }
 
@@ -58,7 +66,12 @@ class DistributorController extends Controller
             'totalSalesCount',
             'totalRevenue',
             'recentHotels',
-            'recentSales'
+            'recentSales',
+            'metrics',
+            'planDistribution',
+            'cityDistribution',
+            'trends',
+            'alerts'
         ));
     }
 

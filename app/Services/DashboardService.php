@@ -434,6 +434,7 @@ class DashboardService
             'recentTransactions' => $this->getRecentTransactions($distributorId, 5),
             'trends' => $this->getMonthlyRegistrationTrends($distributorId, 6),
             'planDistribution' => $this->getPlanDistribution($distributorId),
+            'cityDistribution' => $this->getCityDistribution($distributorId),
             'alerts' => $this->getActionableAlerts($distributorId),
         ];
     }
