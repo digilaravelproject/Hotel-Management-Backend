@@ -7,23 +7,23 @@
 <div class="space-y-8">
 
     <!-- Top Navigation Header -->
-    <div class="bg-white rounded-[28px] p-6 sm:p-7 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
-        <div class="absolute -right-16 -top-16 w-56 h-56 bg-purple-50/60 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="bg-white rounded-[28px] p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-purple-100/50 to-indigo-50/30 rounded-full blur-3xl pointer-events-none"></div>
         <div class="space-y-2 relative z-10">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-extrabold text-xs border border-purple-200/60 shadow-2xs">
-                <i class="fa-solid fa-receipt text-[10px] text-purple-600"></i>
-                <span>Double-Entry Financial Ledger</span>
+            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-purple-50 text-purple-700 font-extrabold text-xs border border-purple-200/60 shadow-2xs">
+                <i class="fa-solid fa-receipt text-[11px] text-purple-600"></i>
+                <span>Double-Entry Financial Audit</span>
             </div>
-            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Complete Transaction History</h2>
-            <p class="text-xs sm:text-sm text-slate-500 max-w-xl font-medium">
-                Every credit earned through client package sales and every debit settled through administrator payouts is permanently logged here.
+            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Complete Transaction Ledger</h2>
+            <p class="text-xs sm:text-sm text-slate-500 max-w-xl font-medium leading-relaxed">
+                Every credit earned through hotel client sales and every debit disbursed through administrator payouts is permanently logged here with balance checkpoints.
             </p>
         </div>
 
         <div class="flex items-center space-x-3 relative z-10 shrink-0">
             <a href="{{ route('distributor.wallet.index') }}" class="px-5 py-3 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/15 transition-all flex items-center space-x-2 active:scale-95 cursor-pointer">
-                <i class="fa-solid fa-wallet text-xs"></i>
-                <span>Wallet Dashboard</span>
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Wallet</span>
             </a>
         </div>
     </div>
@@ -66,9 +66,17 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transactions as $tx)
-                        <tr class="hover:bg-slate-50/60 transition-colors">
-                            <td class="px-6 py-4 font-mono font-bold text-slate-500">
-                                #TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}
+                        <tr class="hover:bg-purple-50/20 transition-colors group">
+                            <td class="px-6 py-4 font-mono font-bold text-slate-600">
+                                <div class="inline-flex items-center space-x-1.5">
+                                    <span>#TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}</span>
+                                    <button type="button" 
+                                            onclick="copyText('#TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}')" 
+                                            title="Copy Transaction ID" 
+                                            class="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-purple-700 transition-opacity cursor-pointer">
+                                        <i class="fa-regular fa-copy text-[10px]"></i>
+                                    </button>
+                                </div>
                             </td>
                             <td class="px-6 py-4 font-medium">
                                 <div class="font-black text-slate-900">{{ $tx->created_at->format('M d, Y') }}</div>
@@ -77,11 +85,11 @@
                             <td class="px-6 py-4">
                                 @if($tx->type === 'credit')
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">
-                                        <i class="fa-solid fa-arrow-down mr-1 text-[9px] text-emerald-600"></i> Credit
+                                        <i class="fa-solid fa-arrow-down-left mr-1.5 text-[9px] text-emerald-600"></i> Credit
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200/60 shadow-2xs">
-                                        <i class="fa-solid fa-arrow-up mr-1 text-[9px] text-rose-600"></i> Debit
+                                        <i class="fa-solid fa-arrow-up-right mr-1.5 text-[9px] text-rose-600"></i> Debit
                                     </span>
                                 @endif
                             </td>
@@ -104,9 +112,9 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-14">
+                            <td colspan="6" class="text-center py-16">
                                 <div class="flex flex-col items-center justify-center space-y-2 text-slate-400">
-                                    <div class="w-14 h-14 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-xl shadow-xs">
+                                    <div class="w-14 h-14 rounded-3xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-xl shadow-xs">
                                         <i class="fa-solid fa-receipt"></i>
                                     </div>
                                     <p class="font-black text-slate-900 text-sm">No transactions found</p>
@@ -126,4 +134,44 @@
         @endif
     </div>
 </div>
+
+<!-- Floating Copy Notification Pill -->
+<div id="copyToast" class="fixed bottom-6 right-6 z-50 bg-slate-900/95 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center space-x-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <i class="fa-solid fa-circle-check text-emerald-400"></i>
+    <span id="copyToastText">Copied to clipboard!</span>
+</div>
+
+<script>
+    function copyText(text) {
+        if (!navigator.clipboard) {
+            const temp = document.createElement('textarea');
+            temp.value = text;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showCopyToast(text);
+            return;
+        }
+
+        navigator.clipboard.writeText(text).then(() => {
+            showCopyToast(text);
+        }).catch(() => {
+            showCopyToast(text);
+        });
+    }
+
+    function showCopyToast(text) {
+        const toast = document.getElementById('copyToast');
+        const toastText = document.getElementById('copyToastText');
+        toastText.textContent = `Copied: ${text}`;
+        toast.classList.remove('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            toast.classList.add('translate-y-20', 'opacity-0');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+        }, 2200);
+    }
+</script>
 @endsection
