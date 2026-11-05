@@ -788,9 +788,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (summaryUnitRate) summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo`;
         if (summaryDuration) {
-            summaryDuration.textContent = isAddonMode 
-                ? `${currentRemainingDays} Days (Co-Termed Add-On)`
-                : `${months} Month${months > 1 ? 's' : ''}`;
+            if (isAddonMode) {
+                const expiryText = document.getElementById('displayHotelExpiry')?.innerText || '';
+                summaryDuration.innerHTML = `<span class="text-[#150A42] font-black">${currentRemainingDays} Days</span> <span class="text-[10px] text-purple-700 font-bold block font-sans">Merged with Base Plan (${expiryText})</span>`;
+            } else {
+                summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
+            }
         }
         if (summaryFormula) {
             summaryFormula.textContent = isAddonMode
