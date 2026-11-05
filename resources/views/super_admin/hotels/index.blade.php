@@ -422,10 +422,6 @@
                                                     <i class="fa-solid fa-list-check w-4 text-center text-amber-500"></i>
                                                     <span>TV Menus</span>
                                                 </a>
-                                                <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-sky-50 hover:text-sky-700 transition-colors">
-                                                    <i class="fa-solid fa-spa w-4 text-center text-sky-500"></i>
-                                                    <span>Hotel Amenities</span>
-                                                </a>
                                             </div>
 
                                             <div class="py-1">
@@ -585,7 +581,7 @@
                     </div>
 
                     <!-- Touch-Friendly Action Buttons Grid -->
-                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1 border-t border-slate-100">
+                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 pt-1 border-t border-slate-100">
                         <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-[#150A42] text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
                             <i class="fa-regular fa-eye text-xs text-slate-500"></i>
                             <span>Details</span>
@@ -604,11 +600,6 @@
                         <a href="{{ route('super-admin.hotels.menus', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
                             <i class="fa-solid fa-list-check text-xs text-amber-600"></i>
                             <span>Menus</span>
-                        </a>
-
-                        <a href="{{ route('super-admin.hotels.amenities', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
-                            <i class="fa-solid fa-spa text-xs text-sky-600"></i>
-                            <span>Spa</span>
                         </a>
 
                         <button type="button" onclick="confirmDeleteHotel({{ $hotel->id }}, '{{ addslashes($hotel->hotel_name) }}')" class="py-2 px-1 text-center rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1 cursor-pointer">
