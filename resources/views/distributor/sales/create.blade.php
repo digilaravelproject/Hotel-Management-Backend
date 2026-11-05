@@ -119,12 +119,13 @@
                                         data-owner="{{ $hotel->owner_name }}"
                                         data-phone="{{ $hotel->phone }}"
                                         data-rooms="{{ $hotel->room_count }}" 
+                                        data-existing-tvs="{{ $hotel->existing_tv_count }}"
                                         data-devices="{{ $hotel->connected_devices_count ?? 0 }}"
                                         data-license="{{ $hotel->license_key }}"
                                         data-plan-id="{{ $hotel->plan_id }}"
                                         data-plan-name="{{ $hotel->plan ? $hotel->plan->name : 'No Plan' }}" 
                                         data-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('M d, Y') : 'Not Set' }}">
-                                    {{ $hotel->hotel_name }} ({{ $hotel->room_count }} Rms • {{ $hotel->city ?? $hotel->hotel_location }})
+                                    {{ $hotel->hotel_name }} ({{ $hotel->existing_tv_count }} TVs • {{ $hotel->city ?? $hotel->hotel_location }})
                                 </option>
                             @endforeach
                         </select>
@@ -163,35 +164,46 @@
                 </div>
 
                 <!-- 2. TV Screen Quantity Selector (Number of TVs) -->
+                @php
+                    $baseTvCount = $selectedHotel ? $selectedHotel->existing_tv_count : 10;
+                    $defaultTvCount = old('tv_count', $baseTvCount);
+                @endphp
+
                 <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-4">
-                    <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                    <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                         <div class="flex items-center space-x-3.5">
                             <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
                                 <i class="fa-solid fa-tv"></i>
                             </div>
                             <div>
                                 <h3 class="text-base font-black text-slate-900">Connected TV Capacity & Screen Slots</h3>
-                                <p class="text-xs text-slate-400 font-medium mt-0.5">Specify how many guest room Smart TVs will be authorized and paired.</p>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">
+                                    Pre-filled with hotel's existing <strong class="text-slate-700 font-black" id="headerBaseTvText">{{ $baseTvCount }} TVs</strong> license. You can increase device slots below.
+                                </p>
                             </div>
                         </div>
 
-                        <span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase font-mono border border-purple-100">
-                            Per-TV Model
-                        </span>
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-black uppercase font-mono border border-emerald-200/80 flex items-center shadow-2xs">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1.5"></span>
+                                Active: <span id="badgeBaseTvText" class="ml-1 font-bold">{{ $baseTvCount }}</span> TVs
+                            </span>
+                        </div>
                     </div>
 
-                    @php
-                        $defaultTvCount = old('tv_count', $selectedHotel ? max(1, (int) ($selectedHotel->room_count ?: 1)) : 10);
-                    @endphp
-
-                    <div class="space-y-3">
-                        <label class="block text-xs font-black text-slate-700">
-                            Number of Authorized Smart TVs <span class="text-rose-500">*</span>
-                        </label>
+                    <div class="space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-xs font-black text-slate-700">
+                                Number of Authorized Smart TVs <span class="text-rose-500">*</span>
+                            </label>
+                            <span class="text-[11px] text-purple-700 font-bold font-mono">
+                                Base Quota: <span id="displayBaseTvCountText">{{ $baseTvCount }}</span> TVs
+                            </span>
+                        </div>
 
                         <!-- Stepper Input -->
                         <div class="flex items-center space-x-3">
-                            <button type="button" onclick="adjustTvCount(-1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer">
+                            <button type="button" onclick="adjustTvCount(-1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-2xs">
                                 <i class="fa-solid fa-minus text-sm"></i>
                             </button>
 
@@ -207,31 +219,31 @@
                                 <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">Screens</span>
                             </div>
 
-                            <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer">
-                                <i class="fa-solid fa-plus text-sm"></i>
+                            <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#150A42]/15">
+                                <i class="fa-solid fa-plus text-sm text-amber-300"></i>
                             </button>
                         </div>
 
-                        <!-- Quick TV Count Chips -->
-                        <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
-                            <span class="text-[11px] font-bold text-slate-400">Quick Select:</span>
-                            @if($selectedHotel && $selectedHotel->room_count > 0)
-                                <button type="button" onclick="setTvCount({{ $selectedHotel->room_count }})" class="px-3 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-[11px] border border-purple-200/80 transition-all cursor-pointer active:scale-95">
-                                    Hotel Rooms ({{ $selectedHotel->room_count }} TVs)
+                        <!-- Quick Expansion Chips -->
+                        <div class="space-y-1.5 pt-1">
+                            <span class="text-[11px] font-bold text-slate-400 block">Quick TV Count & Expansion:</span>
+                            <div id="quickChipsContainer" class="flex flex-wrap items-center gap-2">
+                                <button type="button" onclick="setTvCount({{ $baseTvCount }})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                                    <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current ({{ $baseTvCount }} TVs)
                                 </button>
-                            @endif
-                            <button type="button" onclick="setTvCount(10)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
-                                10 TVs
-                            </button>
-                            <button type="button" onclick="setTvCount(25)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
-                                25 TVs
-                            </button>
-                            <button type="button" onclick="setTvCount(50)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
-                                50 TVs
-                            </button>
-                            <button type="button" onclick="setTvCount(100)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
-                                100 TVs
-                            </button>
+                                <button type="button" onclick="setTvCount({{ $baseTvCount + 5 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                    +5 TVs ({{ $baseTvCount + 5 }})
+                                </button>
+                                <button type="button" onclick="setTvCount({{ $baseTvCount + 10 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                    +10 TVs ({{ $baseTvCount + 10 }})
+                                </button>
+                                <button type="button" onclick="setTvCount({{ $baseTvCount + 20 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                    +20 TVs ({{ $baseTvCount + 20 }})
+                                </button>
+                                <button type="button" onclick="setTvCount({{ $baseTvCount + 50 }})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                                    +50 TVs ({{ $baseTvCount + 50 }})
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -531,6 +543,32 @@ document.addEventListener('DOMContentLoaded', function() {
     const hotelSelect = document.getElementById('hotelSelect');
     const btnPayAmount = document.getElementById('btnPayAmount');
 
+    let currentBaseTvs = @json($baseTvCount);
+
+    function updateQuickChips(base) {
+        base = Math.max(1, parseInt(base) || 10);
+        const container = document.getElementById('quickChipsContainer');
+        if (!container) return;
+
+        container.innerHTML = `
+            <button type="button" onclick="setTvCount(${base})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current (${base} TVs)
+            </button>
+            <button type="button" onclick="setTvCount(${base + 5})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                +5 TVs (${base + 5})
+            </button>
+            <button type="button" onclick="setTvCount(${base + 10})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                +10 TVs (${base + 10})
+            </button>
+            <button type="button" onclick="setTvCount(${base + 20})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                +20 TVs (${base + 20})
+            </button>
+            <button type="button" onclick="setTvCount(${base + 50})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                +50 TVs (${base + 50})
+            </button>
+        `;
+    }
+
     function calculateTotal() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan && planRadios.length > 0) {
@@ -580,7 +618,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update Summary Elements
         if (summaryPlanName) summaryPlanName.textContent = name;
-        if (summaryTvCount) summaryTvCount.textContent = `${tvCount} Smart TVs`;
+
+        if (summaryTvCount) {
+            if (tvCount > currentBaseTvs) {
+                const added = tvCount - currentBaseTvs;
+                summaryTvCount.innerHTML = '<span class="text-slate-900 font-black">' + tvCount + ' Smart TVs</span> <span class="text-[10px] text-emerald-600 font-bold block font-sans">(+' + added + ' TVs Expansion)</span>';
+            } else if (tvCount === currentBaseTvs) {
+                summaryTvCount.innerHTML = '<span class="text-slate-900 font-black">' + tvCount + ' Smart TVs</span> <span class="text-[10px] text-purple-700 font-bold block font-sans">(Active Hotel License)</span>';
+            } else {
+                summaryTvCount.textContent = `${tvCount} Smart TVs`;
+            }
+        }
+
         if (summaryUnitRate) summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo`;
         if (summaryDuration) summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
         if (summaryFormula) summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${months} mo`;
@@ -645,7 +694,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const name = selectedOpt.dataset.name || 'Select Hotel Property';
         const location = selectedOpt.dataset.location || '—';
-        const rooms = parseInt(selectedOpt.dataset.rooms) || 1;
+        const existingTvs = parseInt(selectedOpt.dataset.existingTvs) || parseInt(selectedOpt.dataset.rooms) || 10;
         const devices = selectedOpt.dataset.devices || '0';
         const planName = selectedOpt.dataset.planName || 'Unassigned';
         const expiry = selectedOpt.dataset.expiry || 'Not Set';
@@ -653,16 +702,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.getElementById('displayHotelName').textContent = name;
         document.getElementById('displayHotelLocation').innerHTML = '<i class="fa-solid fa-location-dot mr-1 text-purple-600 text-[10px]"></i> ' + location;
-        document.getElementById('displayHotelRooms').textContent = rooms + ' Rms';
+        document.getElementById('displayHotelRooms').textContent = existingTvs + ' Rms';
         document.getElementById('displayHotelDevices').textContent = devices + ' Screens';
         document.getElementById('displayHotelPlan').textContent = planName;
         document.getElementById('displayHotelExpiry').textContent = expiry;
         if (summaryHotelName) summaryHotelName.textContent = name;
 
         // Auto sync TV count with hotel's capacity
-        if (tvCountInput && rooms > 0) {
-            tvCountInput.value = rooms;
+        currentBaseTvs = existingTvs;
+        const headerBaseTvText = document.getElementById('headerBaseTvText');
+        if (headerBaseTvText) headerBaseTvText.textContent = existingTvs + ' TVs';
+        const badgeBaseTvText = document.getElementById('badgeBaseTvText');
+        if (badgeBaseTvText) badgeBaseTvText.textContent = existingTvs;
+        const displayBaseTvCountText = document.getElementById('displayBaseTvCountText');
+        if (displayBaseTvCountText) displayBaseTvCountText.textContent = existingTvs;
+
+        if (tvCountInput) {
+            tvCountInput.value = existingTvs;
         }
+
+        updateQuickChips(existingTvs);
 
         // Auto pre-select matching plan if available
         if (planId) {

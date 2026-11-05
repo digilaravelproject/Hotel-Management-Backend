@@ -192,7 +192,27 @@ class DistributorController extends Controller
     public function createSale(Request $request)
     {
         $user = auth()->user();
-        $hotels = $user->hotels()->with('plan')->withCount('connectedDevices')->orderBy('hotel_name')->get();
+        $hotels = $user->hotels()
+            ->with(['plan', 'invoices' => function($q) { $q->latest('id'); }])
+            ->withCount('connectedDevices')
+            ->orderBy('hotel_name')
+            ->get();
+
+        foreach ($hotels as $hotel) {
+            $latestInv = $hotel->invoices ? $hotel->invoices->first() : null;
+            $hotel->existing_tv_count = max(
+                (int) ($hotel->room_count ?? 0),
+                (int) ($latestInv ? $latestInv->tv_count : 0),
+                (int) ($hotel->connected_devices_count ?? 0)
+            );
+            if ($hotel->existing_tv_count <= 0 && $hotel->plan && $hotel->plan->room_count > 0) {
+                $hotel->existing_tv_count = (int) $hotel->plan->room_count;
+            }
+            if ($hotel->existing_tv_count <= 0) {
+                $hotel->existing_tv_count = 10;
+            }
+        }
+
         $plans = Plan::with('tax')->where('status', 1)->where('is_hidden', false)->get();
         $selectedHotelId = $request->query('hotel_id');
         $selectedHotel = null;
@@ -200,7 +220,24 @@ class DistributorController extends Controller
         if ($selectedHotelId) {
             $selectedHotel = $hotels->firstWhere('id', (int) $selectedHotelId);
             if (!$selectedHotel) {
-                $selectedHotel = $user->hotels()->with('plan')->withCount('connectedDevices')->find($selectedHotelId);
+                $selectedHotel = $user->hotels()
+                    ->with(['plan', 'invoices' => function($q) { $q->latest('id'); }])
+                    ->withCount('connectedDevices')
+                    ->find($selectedHotelId);
+                if ($selectedHotel) {
+                    $latestInv = $selectedHotel->invoices ? $selectedHotel->invoices->first() : null;
+                    $selectedHotel->existing_tv_count = max(
+                        (int) ($selectedHotel->room_count ?? 0),
+                        (int) ($latestInv ? $latestInv->tv_count : 0),
+                        (int) ($selectedHotel->connected_devices_count ?? 0)
+                    );
+                    if ($selectedHotel->existing_tv_count <= 0 && $selectedHotel->plan && $selectedHotel->plan->room_count > 0) {
+                        $selectedHotel->existing_tv_count = (int) $selectedHotel->plan->room_count;
+                    }
+                    if ($selectedHotel->existing_tv_count <= 0) {
+                        $selectedHotel->existing_tv_count = 10;
+                    }
+                }
             }
         }
 
