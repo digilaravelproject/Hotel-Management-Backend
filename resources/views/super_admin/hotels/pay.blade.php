@@ -4,7 +4,7 @@
 @section('page_title', 'Subscription Settlement & TV Authorization')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6 sm:space-y-8">
+<div class="max-w-5xl mx-auto space-y-6 sm:space-y-8">
 
     <!-- Top Breadcrumb Header -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -28,9 +28,9 @@
         <div class="flex items-center space-x-2 shrink-0">
             <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
                 <i class="fa-regular fa-pen-to-square text-xs text-purple-600"></i>
-                <span>Edit Details</span>
+                <span>Edit Hotel</span>
             </a>
-            <a href="{{ route('super-admin.hotels.index') }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
+            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
                 <i class="fa-solid fa-xmark text-xs"></i>
                 <span>Cancel</span>
             </a>
@@ -78,7 +78,7 @@
             <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-6 shadow-xs space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100">
                     <div class="flex items-center space-x-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-600 border border-sky-100 flex items-center justify-center text-sm font-bold shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-sm font-bold shrink-0">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                         <div>
@@ -98,7 +98,7 @@
                 <!-- TVs Calculation Line -->
                 <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#F8F9FD] border border-slate-200/70 text-xs">
                     <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-slate-600 font-bold">
+                        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[#150A42] font-bold">
                             <i class="fa-solid fa-tv text-xs"></i>
                         </div>
                         <div>
@@ -161,38 +161,150 @@
 
         <!-- Right Column: Settlement & Payment Action (5 Cols) -->
         <div class="lg:col-span-5 space-y-5">
-            <div class="bg-gradient-to-br from-[#150A42] to-[#251068] text-white rounded-[26px] p-6 shadow-xl space-y-5">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-400 text-base">
-                        <i class="fa-solid fa-shield-halved"></i>
-                    </div>
-                    <div>
-                        <span class="text-[10px] font-bold text-white/70 uppercase tracking-wider font-mono">Secure Settlement</span>
-                        <h3 class="text-base font-extrabold tracking-tight">Super Admin Checkout</h3>
+            <div class="bg-gradient-to-br from-[#150A42] via-[#1e0e5a] to-[#251068] text-white rounded-[26px] p-6 shadow-xl space-y-5">
+                
+                <!-- Card Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-white/10">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-400 text-base">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold text-white/70 uppercase tracking-wider font-mono">Payment Verification</span>
+                            <h3 class="text-base font-extrabold tracking-tight">Authorize & Settle Plan</h3>
+                        </div>
                     </div>
                 </div>
 
-                <p class="text-xs text-white/80 leading-relaxed">
-                    Completing this checkout will record payment confirmation, auto-issue a fresh 16-character TV pairing license key, generate a tax-compliant invoice, and unlock streaming access for <strong class="text-white underline">{{ $tvCount }} connected TVs</strong>.
-                </p>
+                <!-- Active System Gateway Status Callout -->
+                @if($activeGateway && $activeGateway->is_enabled)
+                    <div class="p-3.5 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between gap-3">
+                        <div class="flex items-center space-x-3 min-w-0">
+                            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center justify-center shrink-0">
+                                @if($activeGateway->code === 'razorpay')
+                                    <i class="fa-solid fa-bolt text-sm"></i>
+                                @elseif($activeGateway->code === 'icici')
+                                    <i class="fa-solid fa-building-columns text-sm"></i>
+                                @else
+                                    <i class="fa-solid fa-credit-card text-sm"></i>
+                                @endif
+                            </div>
+                            <div class="min-w-0">
+                                <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-300 font-bold block">Active System Gateway</span>
+                                <div class="text-xs font-black text-white truncate">{{ $activeGateway->name }}</div>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-emerald-400/20 text-emerald-200 border border-emerald-400/30 shrink-0 font-mono">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1"></span> Enabled
+                        </span>
+                    </div>
+                @else
+                    <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-400/20 flex items-center space-x-2 text-amber-200 text-xs">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-300"></i>
+                        <span>No online gateway enabled. Offline direct authorization available.</span>
+                    </div>
+                @endif
 
-                <form action="{{ route('super-admin.hotels.pay', $hotel->id) }}" method="POST" class="space-y-4 pt-2">
+                <form action="{{ route('super-admin.hotels.pay', $hotel->id) }}" method="POST" class="space-y-4">
                     @csrf
 
-                    <div>
-                        <label class="block text-xs font-bold text-white/90 mb-1.5">Payment Method Channel</label>
-                        <select name="payment_method" class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400/50">
-                            <option value="super_admin_override" class="text-slate-900">Direct Admin Authorized Settlement</option>
-                            <option value="razorpay_gateway" class="text-slate-900">Razorpay Payment Gateway</option>
-                            <option value="bank_neft_rtgs" class="text-slate-900">Bank Transfer / NEFT / RTGS</option>
-                            <option value="upi_direct" class="text-slate-900">UPI Instant Direct Payment</option>
-                            <option value="cheque_settlement" class="text-slate-900">Physical Cheque Settlement</option>
-                        </select>
+                    <!-- Select Payment Verification Channel -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold text-white/90">
+                            Select Payment Channel <span class="text-amber-400">*</span>
+                        </label>
+
+                        <div class="space-y-2 text-xs">
+                            <!-- 1. Active Online Payment Gateway -->
+                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-amber-400/80 cursor-pointer transition-all">
+                                <input type="radio" 
+                                       name="payment_method" 
+                                       value="online_gateway" 
+                                       checked 
+                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-1.5">
+                                        <span class="font-extrabold text-white">
+                                            {{ $activeGateway ? $activeGateway->name : 'Primary Online Gateway' }}
+                                        </span>
+                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">DEFAULT</span>
+                                    </div>
+                                    <p class="text-[11px] text-white/70 mt-0.5">
+                                        Settlement recorded through the active {{ $activeGateway ? strtoupper($activeGateway->code) : 'Gateway' }} pipeline.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <!-- 2. Direct Admin Override -->
+                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
+                                <input type="radio" 
+                                       name="payment_method" 
+                                       value="super_admin_authorized" 
+                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-white">Direct Admin Authorized (Complimentary / Internal)</span>
+                                    <p class="text-[11px] text-white/70 mt-0.5">
+                                        Direct Super Admin executive grant without charging external payment gateway.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <!-- 3. Bank Wire / NEFT / RTGS -->
+                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
+                                <input type="radio" 
+                                       name="payment_method" 
+                                       value="bank_transfer" 
+                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-white">Bank Transfer / NEFT / RTGS / Cheque</span>
+                                    <p class="text-[11px] text-white/70 mt-0.5">
+                                        Direct corporate bank wire transfer with UTR bank reference.
+                                    </p>
+                                </div>
+                            </label>
+
+                            <!-- 4. UPI Direct -->
+                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
+                                <input type="radio" 
+                                       name="payment_method" 
+                                       value="upi" 
+                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
+                                <div class="min-w-0">
+                                    <span class="font-extrabold text-white">UPI Direct Instant Settlement</span>
+                                    <p class="text-[11px] text-white/70 mt-0.5">
+                                        Instant QR or VPA payment settlement with 12-digit UPI RRN reference.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
                     </div>
 
+                    <!-- Reference Number / Transaction ID -->
+                    <div>
+                        <label class="block text-xs font-bold text-white/90 mb-1.5">
+                            Transaction Reference / UTR # <span class="text-white/50 text-[10px] font-normal">(Optional)</span>
+                        </label>
+                        <input type="text" 
+                               name="transaction_id" 
+                               placeholder="e.g. UTR20261105001 or leave blank for auto-generated ID" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-400/50">
+                    </div>
+
+                    <!-- Internal Notes -->
+                    <div>
+                        <label class="block text-xs font-bold text-white/90 mb-1.5">
+                            Internal Settlement Notes <span class="text-white/50 text-[10px] font-normal">(Optional)</span>
+                        </label>
+                        <input type="text" 
+                               name="notes" 
+                               placeholder="e.g. Authorized by Super Admin for {{ $tvCount }} displays" 
+                               class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400/50">
+                    </div>
+
+                    <!-- Recap Badge -->
                     <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
                         <div class="flex items-center justify-between text-white/80">
-                            <span>Authorized Devices:</span>
+                            <span>Authorized TV Displays:</span>
                             <span class="font-bold font-mono text-white">{{ $tvCount }} Smart TVs</span>
                         </div>
                         <div class="flex items-center justify-between text-white/80">
@@ -203,15 +315,16 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full py-3.5 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-lg shadow-amber-400/25 flex items-center justify-center space-x-2 cursor-pointer">
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full py-3.5 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-lg shadow-amber-400/25 flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
                         <i class="fa-solid fa-circle-check text-sm"></i>
-                        <span>Confirm & Settle ₹{{ number_format($pricing['total_amount'], 2) }}</span>
+                        <span>Authorize & Settle ₹{{ number_format($pricing['total_amount'], 2) }}</span>
                     </button>
                 </form>
 
                 <div class="pt-2 text-center">
                     <span class="text-[10px] text-white/60">
-                        <i class="fa-solid fa-lock mr-1"></i> End-to-end encrypted • Instant license allocation
+                        <i class="fa-solid fa-lock mr-1"></i> Generates Tax-Compliant Invoice & 16-Char License Key Instantly
                     </span>
                 </div>
             </div>
@@ -221,4 +334,3 @@
 
 </div>
 @endsection
-

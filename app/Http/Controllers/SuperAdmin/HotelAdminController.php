@@ -137,10 +137,12 @@ class HotelAdminController extends Controller
                 ->with('error', 'Please assign a subscription plan first.');
         }
 
+        $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
+
         $tvCount = max(1, (int) ($hotel->room_count ?: 1));
         $pricing = $hotel->plan->calculatePricing($tvCount);
 
-        return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing'));
+        return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing', 'activeGateway'));
     }
 
     /**
@@ -156,17 +158,32 @@ class HotelAdminController extends Controller
                 ->with('error', 'Please assign a subscription plan first.');
         }
 
+        $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
+
         $tvCount = max(1, (int) ($hotel->room_count ?: 1));
         $pricing = $plan->calculatePricing($tvCount);
         $durationMonths = ($plan->billing_cycle === 'yearly') ? 12 : 1;
 
+        $paymentMethod = $request->input('payment_method', 'online_gateway');
+        $referenceNo = $request->input('transaction_id') ?: ('TXN_' . strtoupper(\Illuminate\Support\Str::random(12)));
+
+        if ($paymentMethod === 'online_gateway' && $activeGateway) {
+            $gatewayCode = strtoupper($activeGateway->code);
+            $defaultNote = "Payment settled via {$activeGateway->name} (Super Admin)";
+        } else {
+            $gatewayCode = 'SUPER_ADMIN_PAYMENT';
+            $defaultNote = "Super Admin authorized settlement for {$tvCount} TVs ({$plan->name})";
+        }
+
+        $notes = $request->input('notes') ?: $defaultNote;
+
         $subService->activate($hotel, $plan, $durationMonths, [
             'tv_count' => $tvCount,
             'amount' => $pricing['total_amount'],
-            'payment_method' => $request->input('payment_method', 'super_admin_checkout'),
-            'gateway_code' => 'SUPER_ADMIN_PAYMENT',
-            'transaction_id' => 'TXN_' . strtoupper(\Illuminate\Support\Str::random(12)),
-            'notes' => "Super Admin instant checkout for {$tvCount} TVs ({$plan->name})",
+            'payment_method' => $paymentMethod,
+            'gateway_code' => $gatewayCode,
+            'transaction_id' => $referenceNo,
+            'notes' => $notes,
         ]);
 
         return redirect()->route('super-admin.hotels.show', $hotel->id)
