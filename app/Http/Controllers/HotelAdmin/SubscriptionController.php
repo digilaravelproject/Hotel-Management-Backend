@@ -18,7 +18,7 @@ class SubscriptionController extends Controller
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
-        $hotel->loadMissing('plan');
+        $hotel->loadMissing('plan.tax');
         $plans = Plan::with('tax')
             ->where('status', true)
             ->where(function ($q) use ($hotel) {
@@ -32,7 +32,18 @@ class SubscriptionController extends Controller
             ->get();
         $gateway = PaymentManager::active();
 
-        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway'));
+        $hasActivePlan = $hotel->plan && $hotel->expiry_date && $hotel->expiry_date->isFuture();
+        $remainingDays = $hasActivePlan ? max(1, (int) now()->diffInDays($hotel->expiry_date, false)) : 0;
+        $addonPricing = null;
+        if ($hasActivePlan) {
+            try {
+                $addonPricing = $this->subscriptionService->calculateAddonPricing($hotel, 10);
+            } catch (\Throwable $e) {
+                $addonPricing = null;
+            }
+        }
+
+        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway', 'hasActivePlan', 'remainingDays', 'addonPricing'));
     }
 
     public function createOrder(Request $request)
@@ -154,6 +165,127 @@ class SubscriptionController extends Controller
             'message' => 'Subscription ' . $result['action'] . 'd successfully!',
             'action' => $result['action'],
             'new_expiry' => $result['new_expiry']->format('Y-m-d'),
+        ]);
+    }
+
+    /**
+     * Create payment gateway order for TV Screen Add-On.
+     */
+    public function createAddonOrder(Request $request)
+    {
+        $validated = $request->validate([
+            'additional_tvs' => 'required|integer|min:1|max:1000',
+        ]);
+
+        $hotel = Auth::guard('hotel_admin')->user();
+        if (!$hotel->plan || !$hotel->expiry_date || $hotel->expiry_date->isPast()) {
+            return response()->json(['success' => false, 'message' => 'You do not have an active subscription to add TV screens to.'], 422);
+        }
+
+        $additionalTvs = (int) $validated['additional_tvs'];
+        $pricing = $this->subscriptionService->calculateAddonPricing($hotel, $additionalTvs);
+        $amount = (float) $pricing['total_amount'];
+
+        try {
+            $gateway = PaymentManager::active();
+            if (!$gateway->isEnabled()) {
+                return response()->json(['success' => false, 'message' => 'No payment gateway is enabled. Please contact support.'], 422);
+            }
+            $order = $gateway->createOrder($amount, 'HADDON-' . strtoupper(Str::random(10)), [
+                'name' => $hotel->hotel_name ?? '',
+                'email' => $hotel->email ?? '',
+                'phone' => $hotel->phone ?? '',
+                'product_info' => "TV Add-On: +{$additionalTvs} Screens",
+                'udf1' => (string) $hotel->id,
+                'udf2' => (string) $hotel->plan_id,
+                'udf3' => (string) $pricing['remaining_days'],
+                'udf4' => (string) $additionalTvs,
+                'udf5' => 'hotel_tv_addon',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Payment init failed: ' . $e->getMessage()], 422);
+        }
+
+        return response()->json([
+            'success' => true,
+            'gateway' => $gateway->getCode(),
+            'key_id' => $order['key_id'] ?? null,
+            'order_id' => $order['order_id'],
+            'amount' => $order['amount'] ?? $amount,
+            'currency' => $order['currency'] ?? 'INR',
+            'checkout_url' => $order['checkout_url'] ?? null,
+            'payu_params' => $order['payu_params'] ?? null,
+            'name' => $hotel->hotel_name ?? '',
+            'email' => $hotel->email ?? '',
+            'phone' => $hotel->phone ?? '',
+            'additional_tvs' => $additionalTvs,
+        ]);
+    }
+
+    /**
+     * Verify payment and apply TV Screen Add-on for Hotel Admin.
+     */
+    public function purchaseAddon(Request $request)
+    {
+        $validated = $request->validate([
+            'additional_tvs' => 'required|integer|min:1',
+            'razorpay_order_id' => 'required_without:txnid|nullable|string',
+            'razorpay_payment_id' => 'nullable|string',
+            'razorpay_signature' => 'nullable|string',
+            'txnid' => 'required_without:razorpay_order_id|nullable|string',
+            'hash' => 'nullable|string',
+            'status' => 'nullable|string',
+            'amount' => 'nullable|string',
+            'productinfo' => 'nullable|string',
+            'firstname' => 'nullable|string',
+            'email' => 'nullable|string',
+        ]);
+
+        $hotel = Auth::guard('hotel_admin')->user();
+        if (!$hotel->plan || !$hotel->expiry_date || $hotel->expiry_date->isPast()) {
+            return response()->json(['success' => false, 'message' => 'Active plan required.'], 422);
+        }
+
+        $additionalTvs = (int) $validated['additional_tvs'];
+        $pricing = $this->subscriptionService->calculateAddonPricing($hotel, $additionalTvs);
+        $computedAmount = (float) $pricing['total_amount'];
+
+        $gateway = PaymentManager::active();
+        $gatewayCode = $gateway->getCode();
+
+        $payload = $gatewayCode === 'payu'
+            ? $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash'])
+            : $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
+
+        $transactionId = $payload['razorpay_payment_id'] ?? $payload['txnid'] ?? '';
+
+        if (empty($transactionId)) {
+            return response()->json(['success' => false, 'message' => 'No payment reference received from gateway.'], 422);
+        }
+
+        $already = PaymentTransaction::where('transaction_id', $transactionId)
+            ->where('status', 'success')->exists();
+        if ($already) {
+            return response()->json(['success' => false, 'message' => 'This payment was already processed.'], 422);
+        }
+
+        if (!$gateway->verifyPayment($payload)) {
+            return response()->json(['success' => false, 'message' => 'Payment verification failed.'], 422);
+        }
+
+        $result = $this->subscriptionService->addTvAddon($hotel, $additionalTvs, [
+            'amount' => $computedAmount,
+            'payment_method' => 'online_gateway',
+            'gateway_code' => $gatewayCode,
+            'transaction_id' => $transactionId,
+            'payload' => $payload,
+            'notes' => "Hotel self-service TV Add-On (+{$additionalTvs} TVs, txn: {$transactionId})",
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => "Successfully added +{$additionalTvs} TV screens! Your property TV capacity is now {$result['new_tv_count']} TVs.",
+            'new_tv_count' => $result['new_tv_count'],
         ]);
     }
 }

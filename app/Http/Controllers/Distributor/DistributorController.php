@@ -274,36 +274,64 @@ class DistributorController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
+            'sale_type' => 'nullable|in:subscription,addon',
             'hotel_id' => 'required|exists:hotel_admins,id',
             'plan_id' => 'required|exists:plans,id',
-            'tv_count' => 'required|integer|min:1|max:10000',
-            'duration_months' => 'required|integer|in:1,3,6,12',
+            'tv_count' => 'nullable|integer|min:1|max:10000',
+            'additional_tvs' => 'nullable|integer|min:1|max:5000',
+            'duration_months' => 'nullable|integer|in:1,3,6,12',
         ]);
 
         // Security check: hotel must belong to the authenticated distributor
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
         $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
 
-        $tvCount = max(1, (int) $validated['tv_count']);
-        $durationMonths = (int) $validated['duration_months'];
-        $ratePerTv = $plan->effective_price_per_tv;
-        $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+        $saleType = $request->input('sale_type', 'subscription');
+        $isAddon = ($saleType === 'addon');
 
-        $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
-        $taxType = $plan->tax_type ?? 'exclusive';
-        if ($tax && $tax->rate > 0) {
-            $taxCalc = $tax->calculateTax($subtotal, $taxType);
-            $amount = $taxCalc['total_amount'];
-            $taxAmount = $taxCalc['tax_amount'];
-        } else {
-            $amount = $subtotal;
-            $taxAmount = 0.00;
-            $taxCalc = [
+        if ($isAddon) {
+            $additionalTvs = max(1, (int) ($validated['additional_tvs'] ?? 10));
+            $subService = new \App\Services\SubscriptionService();
+            $addonPricing = $subService->calculateAddonPricing($hotel, $additionalTvs);
+            $amount = $addonPricing['total_amount'];
+            $subtotal = $addonPricing['subtotal'];
+            $taxAmount = $addonPricing['tax_amount'];
+            $productInfo = "TV Add-On: +{$additionalTvs} Screens ({$addonPricing['remaining_days']} days co-termed)";
+            $breakdown = [
+                'is_addon' => true,
+                'additional_tvs' => $additionalTvs,
+                'current_tv_count' => $addonPricing['current_tv_count'],
+                'new_tv_count' => $addonPricing['new_tv_count'],
+                'remaining_days' => $addonPricing['remaining_days'],
                 'subtotal' => $subtotal,
-                'tax_amount' => 0.0,
-                'cgst_amount' => 0.0,
-                'sgst_amount' => 0.0,
-                'total_amount' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $amount,
+            ];
+        } else {
+            $tvCount = max(1, (int) ($validated['tv_count'] ?? 1));
+            $durationMonths = (int) ($validated['duration_months'] ?? 1);
+            $ratePerTv = $plan->effective_price_per_tv;
+            $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+
+            $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+            $taxType = $plan->tax_type ?? 'exclusive';
+            if ($tax && $tax->rate > 0) {
+                $taxCalc = $tax->calculateTax($subtotal, $taxType);
+                $amount = $taxCalc['total_amount'];
+                $taxAmount = $taxCalc['tax_amount'];
+            } else {
+                $amount = $subtotal;
+                $taxAmount = 0.00;
+            }
+            $productInfo = 'Plan: ' . $plan->name . ' (' . $tvCount . ' TVs)';
+            $breakdown = [
+                'is_addon' => false,
+                'tv_count' => $tvCount,
+                'price_per_tv' => $ratePerTv,
+                'duration_months' => $durationMonths,
+                'subtotal' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $amount,
             ];
         }
 
@@ -321,12 +349,12 @@ class DistributorController extends Controller
                 'name' => $user->name ?? '',
                 'email' => $user->email ?? '',
                 'phone' => $user->phone ?? '',
-                'product_info' => 'Plan: ' . $plan->name . ' (' . $tvCount . ' TVs)',
+                'product_info' => $productInfo,
                 'udf1' => (string) $hotel->id,
                 'udf2' => (string) $plan->id,
-                'udf3' => (string) $durationMonths,
+                'udf3' => (string) ($isAddon ? ($addonPricing['remaining_days'] ?? 30) : ($durationMonths ?? 1)),
                 'udf4' => (string) $user->id,
-                'udf5' => (string) $tvCount,
+                'udf5' => $isAddon ? "addon_{$additionalTvs}" : (string) ($tvCount ?? 1),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -347,14 +375,7 @@ class DistributorController extends Controller
             'name' => $user->name ?? '',
             'email' => $user->email ?? '',
             'phone' => $user->phone ?? '',
-            'breakdown' => [
-                'tv_count' => $tvCount,
-                'price_per_tv' => $ratePerTv,
-                'duration_months' => $durationMonths,
-                'subtotal' => $subtotal,
-                'tax_amount' => $taxAmount,
-                'total_amount' => $amount,
-            ],
+            'breakdown' => $breakdown,
         ]);
     }
 
@@ -370,24 +391,38 @@ class DistributorController extends Controller
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
         $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
 
-        $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: 1));
-        $durationMonths = (int) $validated['duration_months'];
-        $ratePerTv = $plan->effective_price_per_tv;
-        $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+        $saleType = $request->input('sale_type', 'subscription');
+        $isAddon = ($saleType === 'addon');
 
-        $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
-        $taxType = $plan->tax_type ?? 'exclusive';
-        if ($tax && $tax->rate > 0) {
-            $taxCalc = $tax->calculateTax($subtotal, $taxType);
-            $computedAmount = $taxCalc['total_amount'];
-            $taxAmount = $taxCalc['tax_amount'];
-            $cgst = $taxCalc['cgst_amount'];
-            $sgst = $taxCalc['sgst_amount'];
+        if ($isAddon) {
+            $additionalTvs = max(1, (int) ($validated['additional_tvs'] ?? $request->input('additional_tvs', 10)));
+            $subService = new \App\Services\SubscriptionService();
+            $addonPricing = $subService->calculateAddonPricing($hotel, $additionalTvs);
+            $computedAmount = $addonPricing['total_amount'];
+            $subtotal = $addonPricing['subtotal'];
+            $taxAmount = $addonPricing['tax_amount'];
+            $cgst = $addonPricing['cgst_amount'];
+            $sgst = $addonPricing['sgst_amount'];
         } else {
-            $computedAmount = $subtotal;
-            $taxAmount = 0.00;
-            $cgst = 0.00;
-            $sgst = 0.00;
+            $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: 1));
+            $durationMonths = (int) ($validated['duration_months'] ?? 1);
+            $ratePerTv = $plan->effective_price_per_tv;
+            $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+
+            $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+            $taxType = $plan->tax_type ?? 'exclusive';
+            if ($tax && $tax->rate > 0) {
+                $taxCalc = $tax->calculateTax($subtotal, $taxType);
+                $computedAmount = $taxCalc['total_amount'];
+                $taxAmount = $taxCalc['tax_amount'];
+                $cgst = $taxCalc['cgst_amount'];
+                $sgst = $taxCalc['sgst_amount'];
+            } else {
+                $computedAmount = $subtotal;
+                $taxAmount = 0.00;
+                $cgst = 0.00;
+                $sgst = 0.00;
+            }
         }
 
         // Strict enforcement: Only verified online gateway payment is accepted
@@ -451,6 +486,25 @@ class DistributorController extends Controller
                     'This payment was already processed. Duplicate submission blocked.'
                 );
             }
+        }
+
+        // Process TV Add-On specifically if sale_type is addon
+        if ($isAddon) {
+            $result = (new \App\Services\SubscriptionService())->addTvAddon($hotel, $additionalTvs, [
+                'distributor_id' => $user->id,
+                'amount' => $computedAmount,
+                'payment_method' => 'online_gateway',
+                'gateway_code' => $code,
+                'transaction_id' => (string) ($transactionId ?: ($payload['razorpay_order_id'] ?? '')),
+                'payload' => $payload,
+                'notes' => "Distributor online TV Add-On (+{$additionalTvs} TVs) for {$hotel->hotel_name}",
+            ]);
+
+            return $this->gatewaySaleResponse(
+                $request,
+                true,
+                "TV Add-On activated successfully! Authorized +{$additionalTvs} extra screens. Hotel property capacity is now {$result['new_tv_count']} TVs."
+            );
         }
 
         // Use the verified gateway amount (in rupees) instead of client-sent value

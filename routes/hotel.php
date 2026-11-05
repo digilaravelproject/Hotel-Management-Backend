@@ -41,6 +41,8 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::get('/hotel/subscription', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'index'])->name('hotel.subscription');
     Route::post('/hotel/subscription/order', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'createOrder'])->name('hotel.subscription.order');
     Route::post('/hotel/subscription/purchase', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'purchase'])->name('hotel.subscription.purchase');
+    Route::post('/hotel/subscription/addon-order', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'createAddonOrder'])->name('hotel.subscription.addon-order');
+    Route::post('/hotel/subscription/addon-purchase', [\App\Http\Controllers\HotelAdmin\SubscriptionController::class, 'purchaseAddon'])->name('hotel.subscription.addon-purchase');
 
 
     // 2FA Management Endpoints

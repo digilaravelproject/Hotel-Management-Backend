@@ -127,6 +127,10 @@
                         <select name="hotel_id" id="hotelSelect" required onchange="onHotelSelectionChanged(this)" class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all">
                             <option value="">-- Choose Partner Hotel --</option>
                             @foreach($hotels as $hotel)
+                                @php
+                                    $hotelHasActive = ($hotel->plan_id && $hotel->expiry_date && \Carbon\Carbon::parse($hotel->expiry_date)->isFuture());
+                                    $hotelDaysLeft = $hotelHasActive ? max(1, (int) \Carbon\Carbon::parse($hotel->expiry_date)->diffInDays(now())) : 0;
+                                @endphp
                                 <option value="{{ $hotel->id }}" 
                                         {{ (old('hotel_id', $selectedHotelId) == $hotel->id) ? 'selected' : '' }} 
                                         data-name="{{ $hotel->hotel_name }}"
@@ -139,6 +143,9 @@
                                         data-license="{{ $hotel->license_key }}"
                                         data-plan-id="{{ $hotel->plan_id }}"
                                         data-plan-name="{{ $hotel->plan ? $hotel->plan->name : 'No Plan' }}" 
+                                        data-plan-cycle="{{ $hotel->plan ? ($hotel->plan->billing_cycle ?? 'monthly') : 'monthly' }}"
+                                        data-has-active="{{ $hotelHasActive ? '1' : '0' }}"
+                                        data-remaining-days="{{ $hotelDaysLeft }}"
                                         data-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('M d, Y') : 'Not Set' }}">
                                     {{ $hotel->hotel_name }} ({{ $hotel->existing_tv_count }} TVs • {{ $hotel->city ?? $hotel->hotel_location }})
                                 </option>
@@ -178,11 +185,61 @@
                     </div>
                 </div>
 
-                <!-- 2. TV Screen Quantity Selector (Number of TVs) -->
                 @php
+                    $hasActivePlan = $selectedHotel && $selectedHotel->plan && $selectedHotel->expiry_date && \Carbon\Carbon::parse($selectedHotel->expiry_date)->isFuture();
+                    $remainingDays = $hasActivePlan ? max(1, (int) \Carbon\Carbon::parse($selectedHotel->expiry_date)->diffInDays(now())) : 0;
+                    $initialMode = request('mode') === 'addon' && $hasActivePlan ? 'addon' : 'subscription';
                     $baseTvCount = $selectedHotel ? $selectedHotel->existing_tv_count : 10;
                     $defaultTvCount = old('tv_count', $baseTvCount);
                 @endphp
+
+                <!-- Transaction Mode Switcher: Prorated Add-On vs Full Renewal -->
+                <input type="hidden" name="sale_type" id="saleTypeInput" value="{{ $initialMode }}">
+                <input type="hidden" name="additional_tvs" id="additionalTvsHidden" value="10">
+
+                <div id="saleModeCard" class="{{ $hasActivePlan ? '' : 'hidden' }} bg-white border border-slate-100 rounded-[28px] p-5 sm:p-6 shadow-sm space-y-3.5">
+                    <div class="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                        <span class="text-xs font-black text-slate-800 uppercase tracking-wider font-mono">Select Transaction Mode</span>
+                        <span class="text-[11px] font-extrabold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200/80 shadow-2xs font-mono flex items-center">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1.5"></span>
+                            Active Plan: <strong id="modeRemainingDaysText" class="ml-1">{{ $remainingDays }}</strong> Days Left
+                        </span>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <button type="button" onclick="setSaleMode('addon')" id="modeBtnAddon" class="p-4 rounded-2xl border-2 text-left transition-all cursor-pointer {{ $initialMode === 'addon' ? 'border-[#150A42] bg-purple-50/40 shadow-xs' : 'border-slate-200 hover:border-slate-300 bg-white' }}">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-xs text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-plus-circle text-purple-600 text-sm"></i>
+                                    <span>Prorated TV Add-On</span>
+                                </span>
+                                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ $initialMode === 'addon' ? 'border-[#150A42] bg-[#150A42]' : 'border-slate-300' }}" id="modeRadioAddon">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white {{ $initialMode === 'addon' ? '' : 'hidden' }}" id="modeDotAddon"></span>
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 font-medium mt-1 leading-relaxed">
+                                Only charge for extra screens for the remaining <strong class="text-slate-700" id="addonCardDaysText">{{ $remainingDays }}</strong> days. Expiry date remains unchanged.
+                            </p>
+                        </button>
+
+                        <button type="button" onclick="setSaleMode('subscription')" id="modeBtnSub" class="p-4 rounded-2xl border-2 text-left transition-all cursor-pointer {{ $initialMode === 'subscription' ? 'border-[#150A42] bg-purple-50/40 shadow-xs' : 'border-slate-200 hover:border-slate-300 bg-white' }}">
+                            <div class="flex items-center justify-between">
+                                <span class="font-black text-xs text-slate-900 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-arrows-rotate text-purple-600 text-sm"></i>
+                                    <span>Full Plan Renewal / Extension</span>
+                                </span>
+                                <span class="w-4 h-4 rounded-full border-2 flex items-center justify-center {{ $initialMode === 'subscription' ? 'border-[#150A42] bg-[#150A42]' : 'border-slate-300' }}" id="modeRadioSub">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-white {{ $initialMode === 'subscription' ? '' : 'hidden' }}" id="modeDotSub"></span>
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-500 font-medium mt-1 leading-relaxed">
+                                Charge full package rate for all TVs and extend hotel subscription validity by 1, 3, 6, or 12 months.
+                            </p>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. TV Screen Quantity Selector (Number of TVs) -->
 
                 <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-4">
                     <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -565,29 +622,92 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnPayAmount = document.getElementById('btnPayAmount');
 
     let currentBaseTvs = @json($baseTvCount);
+    let currentSaleMode = @json($initialMode);
+    let currentHasActive = {{ $hasActivePlan ? 'true' : 'false' }};
+    let currentRemainingDays = {{ $remainingDays }};
+
+    window.setSaleMode = function(mode) {
+        currentSaleMode = mode;
+        const saleTypeInput = document.getElementById('saleTypeInput');
+        if (saleTypeInput) saleTypeInput.value = mode;
+
+        const btnAddon = document.getElementById('modeBtnAddon');
+        const btnSub = document.getElementById('modeBtnSub');
+        const radioAddon = document.getElementById('modeRadioAddon');
+        const radioSub = document.getElementById('modeRadioSub');
+        const dotAddon = document.getElementById('modeDotAddon');
+        const dotSub = document.getElementById('modeDotSub');
+
+        const durationWrapper = document.getElementById('durationSelect')?.parentElement;
+
+        if (mode === 'addon') {
+            if (btnAddon) btnAddon.className = 'p-4 rounded-2xl border-2 text-left transition-all cursor-pointer border-[#150A42] bg-purple-50/40 shadow-xs';
+            if (btnSub) btnSub.className = 'p-4 rounded-2xl border-2 text-left transition-all cursor-pointer border-slate-200 hover:border-slate-300 bg-white';
+            if (radioAddon) radioAddon.className = 'w-4 h-4 rounded-full border-2 flex items-center justify-center border-[#150A42] bg-[#150A42]';
+            if (radioSub) radioSub.className = 'w-4 h-4 rounded-full border-2 flex items-center justify-center border-slate-300';
+            if (dotAddon) dotAddon.classList.remove('hidden');
+            if (dotSub) dotSub.classList.add('hidden');
+
+            const headerBaseTvText = document.getElementById('headerBaseTvText');
+            if (headerBaseTvText) headerBaseTvText.innerText = currentBaseTvs + ' TVs';
+            const displayBaseTvCountText = document.getElementById('displayBaseTvCountText');
+            if (displayBaseTvCountText) displayBaseTvCountText.innerText = currentBaseTvs;
+
+            if (tvCountInput) tvCountInput.value = 10;
+        } else {
+            if (btnAddon) btnAddon.className = 'p-4 rounded-2xl border-2 text-left transition-all cursor-pointer border-slate-200 hover:border-slate-300 bg-white';
+            if (btnSub) btnSub.className = 'p-4 rounded-2xl border-2 text-left transition-all cursor-pointer border-[#150A42] bg-purple-50/40 shadow-xs';
+            if (radioAddon) radioAddon.className = 'w-4 h-4 rounded-full border-2 flex items-center justify-center border-slate-300';
+            if (radioSub) radioSub.className = 'w-4 h-4 rounded-full border-2 flex items-center justify-center border-[#150A42] bg-[#150A42]';
+            if (dotAddon) dotAddon.classList.add('hidden');
+            if (dotSub) dotSub.classList.remove('hidden');
+
+            if (tvCountInput) tvCountInput.value = currentBaseTvs;
+        }
+
+        updateQuickChips(mode === 'addon' ? 0 : currentBaseTvs);
+        calculateTotal();
+    };
 
     function updateQuickChips(base) {
-        base = Math.max(1, parseInt(base) || 10);
         const container = document.getElementById('quickChipsContainer');
         if (!container) return;
 
-        container.innerHTML = `
-            <button type="button" onclick="setTvCount(${base})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
-                <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current (${base} TVs)
-            </button>
-            <button type="button" onclick="setTvCount(${base + 5})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
-                +5 TVs (${base + 5})
-            </button>
-            <button type="button" onclick="setTvCount(${base + 10})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
-                +10 TVs (${base + 10})
-            </button>
-            <button type="button" onclick="setTvCount(${base + 20})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
-                +20 TVs (${base + 20})
-            </button>
-            <button type="button" onclick="setTvCount(${base + 50})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
-                +50 TVs (${base + 50})
-            </button>
-        `;
+        if (currentSaleMode === 'addon') {
+            container.innerHTML = `
+                <button type="button" onclick="setTvCount(5)" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                    +5 Extra TVs
+                </button>
+                <button type="button" onclick="setTvCount(10)" class="px-3 py-1.5 rounded-xl bg-purple-100 hover:bg-purple-200 text-[#150A42] font-black text-xs border border-purple-300 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                    +10 Extra TVs
+                </button>
+                <button type="button" onclick="setTvCount(20)" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +20 Extra TVs
+                </button>
+                <button type="button" onclick="setTvCount(50)" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +50 Extra TVs
+                </button>
+            `;
+        } else {
+            base = Math.max(1, parseInt(base) || 10);
+            container.innerHTML = `
+                <button type="button" onclick="setTvCount(${base})" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-xs border border-purple-200/80 transition-all cursor-pointer active:scale-95 shadow-2xs">
+                    <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current (${base} TVs)
+                </button>
+                <button type="button" onclick="setTvCount(${base + 5})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +5 TVs (${base + 5})
+                </button>
+                <button type="button" onclick="setTvCount(${base + 10})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +10 TVs (${base + 10})
+                </button>
+                <button type="button" onclick="setTvCount(${base + 20})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +20 TVs (${base + 20})
+                </button>
+                <button type="button" onclick="setTvCount(${base + 50})" class="px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all cursor-pointer active:scale-95">
+                    +50 TVs (${base + 50})
+                </button>
+            `;
+        }
     }
 
     function calculateTotal() {
@@ -604,7 +724,17 @@ document.addEventListener('DOMContentLoaded', function() {
         const tvCount = Math.max(1, parseInt(tvCountInput ? tvCountInput.value : 1) || 1);
         const months = parseInt(durationSelect ? durationSelect.value : 1) || 1;
 
-        const subtotal = Math.round((unitRate * tvCount * months) * 100) / 100;
+        let subtotal = 0;
+        const isAddonMode = (currentSaleMode === 'addon' && currentHasActive && currentRemainingDays > 0);
+
+        if (isAddonMode) {
+            const cycle = selectedPlan.dataset.billingCycle || 'monthly';
+            const cycleDays = (cycle === 'yearly') ? 365 : 30;
+            const dailyRate = unitRate / cycleDays;
+            subtotal = Math.round((dailyRate * tvCount * currentRemainingDays) * 100) / 100;
+        } else {
+            subtotal = Math.round((unitRate * tvCount * months) * 100) / 100;
+        }
 
         const taxRate = parseFloat(selectedPlan.dataset.taxRate) || 0;
         const taxName = selectedPlan.dataset.taxName || 'GST';
@@ -638,10 +768,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (amountInput) amountInput.value = totalAmount.toFixed(2);
 
         // Update Summary Elements
-        if (summaryPlanName) summaryPlanName.textContent = name;
+        if (summaryPlanName) {
+            summaryPlanName.textContent = isAddonMode ? (name + ' (TV Add-On)') : name;
+        }
 
         if (summaryTvCount) {
-            if (tvCount > currentBaseTvs) {
+            if (isAddonMode) {
+                const newCap = currentBaseTvs + tvCount;
+                summaryTvCount.innerHTML = '<span class="text-slate-900 font-black">+' + tvCount + ' Extra TVs</span> <span class="text-[10px] text-emerald-600 font-bold block font-sans">(Total: ' + newCap + ' Authorized TVs)</span>';
+            } else if (tvCount > currentBaseTvs) {
                 const added = tvCount - currentBaseTvs;
                 summaryTvCount.innerHTML = '<span class="text-slate-900 font-black">' + tvCount + ' Smart TVs</span> <span class="text-[10px] text-emerald-600 font-bold block font-sans">(+' + added + ' TVs Expansion)</span>';
             } else if (tvCount === currentBaseTvs) {
@@ -652,8 +787,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (summaryUnitRate) summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo`;
-        if (summaryDuration) summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
-        if (summaryFormula) summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${months} mo`;
+        if (summaryDuration) {
+            summaryDuration.textContent = isAddonMode 
+                ? `${currentRemainingDays} Days (Co-Termed Add-On)`
+                : `${months} Month${months > 1 ? 's' : ''}`;
+        }
+        if (summaryFormula) {
+            summaryFormula.textContent = isAddonMode
+                ? `+${tvCount} TVs × (₹${unitRate.toFixed(2)}/mo) × ${currentRemainingDays} days`
+                : `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${months} mo`;
+        }
         if (summarySubtotal) summarySubtotal.textContent = `₹${baseSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
         if (summaryTaxLabel) summaryTaxLabel.textContent = `${taxName} (${taxRate.toFixed(1)}% - ${taxType.charAt(0).toUpperCase() + taxType.slice(1)}):`;
@@ -731,6 +874,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Auto sync TV count with hotel's capacity
         currentBaseTvs = existingTvs;
+        currentHasActive = selectedOpt.dataset.hasActive === '1';
+        currentRemainingDays = parseInt(selectedOpt.dataset.remainingDays) || 0;
+
+        const modeCard = document.getElementById('saleModeCard');
+        if (modeCard) {
+            if (currentHasActive) {
+                modeCard.classList.remove('hidden');
+                const remDaysEl = document.getElementById('modeRemainingDaysText');
+                if (remDaysEl) remDaysEl.textContent = currentRemainingDays;
+                const cardDaysEl = document.getElementById('addonCardDaysText');
+                if (cardDaysEl) cardDaysEl.textContent = currentRemainingDays;
+            } else {
+                modeCard.classList.add('hidden');
+                setSaleMode('subscription');
+            }
+        }
+
         const headerBaseTvText = document.getElementById('headerBaseTvText');
         if (headerBaseTvText) headerBaseTvText.textContent = existingTvs + ' TVs';
         const badgeBaseTvText = document.getElementById('badgeBaseTvText');
@@ -739,10 +899,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (displayBaseTvCountText) displayBaseTvCountText.textContent = existingTvs;
 
         if (tvCountInput) {
-            tvCountInput.value = existingTvs;
+            tvCountInput.value = (currentSaleMode === 'addon') ? 10 : existingTvs;
         }
 
-        updateQuickChips(existingTvs);
+        updateQuickChips((currentSaleMode === 'addon') ? 0 : existingTvs);
 
         // Auto pre-select matching plan if available
         if (planId) {
@@ -822,10 +982,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-Requested-With': 'XMLHttpRequest',
                     },
                     body: JSON.stringify({
+                        sale_type: currentSaleMode,
+                        additional_tvs: (currentSaleMode === 'addon') ? currentTvCount : null,
                         hotel_id: hotelSelect.value,
                         plan_id: document.querySelector('.plan-radio:checked').value,
-                        tv_count: currentTvCount,
-                        duration_months: durationSelect.value,
+                        tv_count: (currentSaleMode === 'addon') ? (currentBaseTvs + currentTvCount) : currentTvCount,
+                        duration_months: (currentSaleMode === 'addon') ? 1 : (durationSelect ? durationSelect.value : 1),
                     }),
                 });
 
@@ -840,13 +1002,18 @@ document.addEventListener('DOMContentLoaded', function() {
                         throw new Error('Razorpay checkout script failed to load. Please refresh the page and try again.');
                     }
 
+                    const isAddonCheckout = (currentSaleMode === 'addon');
+                    const checkoutDesc = isAddonCheckout 
+                        ? 'TV Screen Add-On (+' + currentTvCount + ' TVs)' 
+                        : 'TV Subscription License (' + currentTvCount + ' TVs)';
+
                     const rzp = new Razorpay({
                         key: orderData.key_id,
                         order_id: orderData.order_id,
                         amount: Math.round(parseFloat(orderData.amount) * 100),
                         currency: orderData.currency || 'INR',
                         name: 'PaxTV Hospitality',
-                        description: 'TV Subscription License (' + currentTvCount + ' TVs)',
+                        description: checkoutDesc,
                         prefill: {
                             name: orderData.name || '',
                             email: orderData.email || '',
@@ -864,6 +1031,27 @@ document.addEventListener('DOMContentLoaded', function() {
                                 }
                                 input.value = response[field] || '';
                             });
+
+                            // Ensure sale_type & additional_tvs are present in form
+                            let stInp = form.querySelector('input[name="sale_type"]');
+                            if (!stInp) {
+                                stInp = document.createElement('input');
+                                stInp.type = 'hidden';
+                                stInp.name = 'sale_type';
+                                form.appendChild(stInp);
+                            }
+                            stInp.value = currentSaleMode;
+
+                            if (isAddonCheckout) {
+                                let addInp = form.querySelector('input[name="additional_tvs"]');
+                                if (!addInp) {
+                                    addInp = document.createElement('input');
+                                    addInp.type = 'hidden';
+                                    addInp.name = 'additional_tvs';
+                                    form.appendChild(addInp);
+                                }
+                                addInp.value = currentTvCount;
+                            }
 
                             checkoutSubmitting = false;
                             form.submit();

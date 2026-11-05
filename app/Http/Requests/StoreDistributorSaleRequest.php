@@ -20,10 +20,12 @@ class StoreDistributorSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'sale_type' => 'nullable|in:subscription,addon',
             'hotel_id' => 'required|exists:hotel_admins,id',
             'plan_id' => 'required|exists:plans,id',
-            'tv_count' => 'required|integer|min:1|max:10000',
-            'duration_months' => 'required|integer|in:1,3,6,12',
+            'tv_count' => 'nullable|integer|min:1|max:10000',
+            'additional_tvs' => 'nullable|integer|min:1|max:5000',
+            'duration_months' => 'required_unless:sale_type,addon|nullable|integer|in:1,3,6,12',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:online_gateway',
             'notes' => 'nullable|string|max:500',

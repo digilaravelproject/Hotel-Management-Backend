@@ -322,10 +322,18 @@
 
                                 <!-- Action -->
                                 <td class="px-4 py-4 text-center">
-                                    <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="px-3.5 py-1.5 rounded-xl bg-purple-50 hover:bg-[#150A42] text-[#150A42] hover:text-white border border-purple-200/80 font-black text-xs shadow-2xs transition-all inline-flex items-center space-x-1.5 active:scale-95 cursor-pointer" title="Sell or Renew Subscription Package">
-                                        <i class="fa-solid fa-box-open text-[10px]"></i>
-                                        <span>Sell Package</span>
-                                    </a>
+                                    <div class="inline-flex items-center space-x-1.5">
+                                        @if(!$isExpired && $hotel->plan && $hotel->expiry_date && \Carbon\Carbon::parse($hotel->expiry_date)->isFuture())
+                                            <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id, 'mode' => 'addon']) }}" class="px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-400 text-amber-900 border border-amber-200/80 font-black text-xs shadow-2xs transition-all inline-flex items-center space-x-1 active:scale-95 cursor-pointer" title="Add-On Extra TV Screens">
+                                                <i class="fa-solid fa-plus text-[10px] text-amber-700"></i>
+                                                <span>Add TVs</span>
+                                            </a>
+                                        @endif
+                                        <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-[#150A42] text-[#150A42] hover:text-white border border-purple-200/80 font-black text-xs shadow-2xs transition-all inline-flex items-center space-x-1.5 active:scale-95 cursor-pointer" title="Sell or Renew Subscription Package">
+                                            <i class="fa-solid fa-box-open text-[10px]"></i>
+                                            <span>{{ $isExpired ? 'Renew' : 'Package' }}</span>
+                                        </a>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -386,10 +394,16 @@
                         </button>
                     </div>
 
-                    <div class="pt-1">
-                        <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="w-full py-2.5 px-3 rounded-xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm active:scale-95">
+                    <div class="pt-1 flex items-center space-x-2">
+                        @if(!$isExpired && $hotel->plan && $hotel->expiry_date && \Carbon\Carbon::parse($hotel->expiry_date)->isFuture())
+                            <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id, 'mode' => 'addon']) }}" class="py-2.5 px-3 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300/80 font-black text-xs flex items-center justify-center space-x-1.5 transition-all shadow-2xs active:scale-95 shrink-0">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>Add TVs</span>
+                            </a>
+                        @endif
+                        <a href="{{ route('distributor.sales.create', ['hotel_id' => $hotel->id]) }}" class="flex-1 py-2.5 px-3 rounded-xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs flex items-center justify-center space-x-1.5 transition-all shadow-sm active:scale-95">
                             <i class="fa-solid fa-box-open text-xs"></i>
-                            <span>Sell / Renew Package</span>
+                            <span>{{ $isExpired ? 'Renew Package' : 'Sell Package' }}</span>
                         </a>
                     </div>
                 </div>

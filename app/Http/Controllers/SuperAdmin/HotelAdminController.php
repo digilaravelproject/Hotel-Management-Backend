@@ -174,6 +174,53 @@ class HotelAdminController extends Controller
     }
 
     /**
+     * Show Super Admin TV Capacity Add-on screen for an active hotel.
+     */
+    public function showAddon(int $id, \App\Services\SubscriptionService $subService)
+    {
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor', 'connectedDevices'])->findOrFail($id);
+
+        if (!$hotel->plan) {
+            return redirect()->route('super-admin.hotels.edit', $hotel->id)
+                ->with('error', 'Please assign an active subscription plan first before adding TV slots.');
+        }
+
+        $now = now();
+        $hasActivePlan = $hotel->expiry_date && $hotel->expiry_date->gt($now);
+        $remainingDays = $hasActivePlan ? max(1, (int) $now->diffInDays($hotel->expiry_date, false)) : 30;
+
+        $defaultAdditionalTvs = 10;
+        $pricing = $subService->calculateAddonPricing($hotel, $defaultAdditionalTvs);
+
+        return view('super_admin.hotels.addon', compact('hotel', 'defaultAdditionalTvs', 'pricing', 'remainingDays'));
+    }
+
+    /**
+     * Process Super Admin TV Add-on and update hotel device quota.
+     */
+    public function processAddon(Request $request, int $id, \App\Services\SubscriptionService $subService)
+    {
+        $request->validate([
+            'additional_tvs' => 'required|integer|min:1|max:5000',
+            'is_complimentary' => 'nullable|boolean',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor'])->findOrFail($id);
+        $additionalTvs = (int) $request->input('additional_tvs');
+        $isComplimentary = $request->boolean('is_complimentary');
+
+        $result = $subService->addTvAddon($hotel, $additionalTvs, [
+            'is_complimentary' => $isComplimentary,
+            'payment_method' => $isComplimentary ? 'complimentary_grant' : 'super_admin_manual',
+            'notes' => $request->input('notes') ?: ($isComplimentary ? "Super Admin complimentary TV add-on (+{$additionalTvs} TVs)" : "Super Admin TV Add-On (+{$additionalTvs} TVs)"),
+        ]);
+
+        return redirect()->route('super-admin.hotels.show', $hotel->id)
+            ->with('success', "TV Add-On applied! {$additionalTvs} extra TV slots authorized. Total capacity is now {$result['new_tv_count']} TVs.");
+    }
+
+    /**
      * Toggle the status of a hotel admin (active/inactive).
      */
     public function toggleStatus(int $id)

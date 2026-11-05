@@ -57,6 +57,104 @@
         </div>
     </div>
 
+    <!-- TV Add-On Component for Active Subscribers -->
+    @if(!empty($hasActivePlan) && !empty($addonPricing))
+    <div class="bg-gradient-to-br from-[#150A42] to-[#251068] text-white rounded-3xl p-6 sm:p-8 shadow-lg shadow-[#150A42]/15 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+            <div class="flex items-center space-x-3.5">
+                <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 text-amber-300 flex items-center justify-center text-xl shrink-0 shadow-inner">
+                    <i class="fa-solid fa-plus-circle"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase font-mono tracking-wider border border-amber-300/30">Prorated Add-On</span>
+                        <span class="text-xs text-white/60 font-mono">Plan: {{ $hotel->plan->name }}</span>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-extrabold text-white tracking-tight mt-0.5">Need More Screens? Instant TV Capacity Add-On</h3>
+                    <p class="text-xs text-white/70 font-medium mt-0.5">Add extra TV displays co-termed with your active plan. Only pay for the remaining {{ $remainingDays }} days.</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-2xl border border-white/15 shrink-0 font-mono text-xs font-bold">
+                <i class="fa-solid fa-clock text-amber-300"></i>
+                <span>Remaining: <strong class="text-white">{{ $remainingDays }} Days</strong> (till {{ $hotel->expiry_date->format('M d, Y') }})</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+            <!-- Left: Stepper & Presets (7 cols) -->
+            <div class="lg:col-span-7 space-y-4">
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-white/90">Select Additional TV Screens to Add:</label>
+                    <div class="flex items-center space-x-3">
+                        <button type="button" onclick="adjustHotelAddonTvs(-5)" class="w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer border border-white/15">
+                            <i class="fa-solid fa-minus text-sm"></i>
+                        </button>
+
+                        <div class="relative flex-1 flex items-center bg-white/10 rounded-2xl border-2 border-white/20 focus-within:border-amber-300 transition-all px-3 py-1">
+                            <input type="number" 
+                                   id="hotelAddonTvInput" 
+                                   value="10" 
+                                   min="1" 
+                                   max="1000" 
+                                   inputmode="numeric" 
+                                   oninput="calcHotelAddonPricing()"
+                                   class="w-full text-center py-2 text-xl font-black text-white bg-transparent border-0 focus:ring-0 focus:outline-none font-mono">
+                            <div class="shrink-0 pl-2">
+                                <span class="px-2.5 py-1 rounded-xl bg-amber-400 text-[#150A42] text-[11px] font-black uppercase tracking-wider select-none font-mono">
+                                    Extra TVs
+                                </span>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="adjustHotelAddonTvs(5)" class="w-12 h-12 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-[#150A42] font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-lg shadow-amber-400/20">
+                            <i class="fa-solid fa-plus text-sm"></i>
+                        </button>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-2 pt-1">
+                        <span class="text-[11px] font-bold text-white/60">Quick Presets:</span>
+                        <button type="button" onclick="setHotelAddonTvs(5)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+5 TVs</button>
+                        <button type="button" onclick="setHotelAddonTvs(10)" class="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-black text-xs transition-all cursor-pointer active:scale-95 border border-amber-300/40">+10 TVs</button>
+                        <button type="button" onclick="setHotelAddonTvs(20)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+20 TVs</button>
+                        <button type="button" onclick="setHotelAddonTvs(50)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+50 TVs</button>
+                    </div>
+                </div>
+
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
+                    <span class="text-white/80">Current Licensed Displays: <strong class="text-white">{{ (int)$hotel->room_count }} TVs</strong></span>
+                    <span class="text-amber-300 font-bold font-mono">➔ New Capacity: <strong id="hotelAddonNewTotalText">{{ (int)$hotel->room_count + 10 }} TVs</strong></span>
+                </div>
+            </div>
+
+            <!-- Right: Cost Summary & Instant Checkout Button (5 cols) -->
+            <div class="lg:col-span-5 bg-white/10 border border-white/15 rounded-2xl p-5 space-y-3.5">
+                <div class="space-y-1.5 text-xs text-white/80">
+                    <div class="flex justify-between">
+                        <span>Prorated Subtotal ({{ $remainingDays }} days):</span>
+                        <span class="font-mono font-bold text-white" id="hotelAddonSubtotalText">₹{{ number_format($addonPricing['subtotal'], 2) }}</span>
+                    </div>
+                    <div class="flex justify-between text-white/60">
+                        <span>GST ({{ $addonPricing['tax_rate'] }}%):</span>
+                        <span class="font-mono" id="hotelAddonTaxText">₹{{ number_format($addonPricing['tax_amount'], 2) }}</span>
+                    </div>
+                    <div class="pt-2 border-t border-white/15 flex justify-between items-baseline">
+                        <span class="font-bold text-white text-sm">Total Add-On:</span>
+                        <span class="text-2xl font-black font-mono text-amber-300" id="hotelAddonTotalText">₹{{ number_format($addonPricing['total_amount'], 2) }}</span>
+                    </div>
+                </div>
+
+                <button type="button" id="payHotelAddonBtn" class="w-full py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-98 text-[#150A42] font-black text-sm transition-all shadow-lg shadow-amber-400/25 cursor-pointer flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span id="payHotelAddonBtnText">Pay & Add Extra TVs</span>
+                </button>
+
+                <div id="hotelAddonMsg" class="hidden text-center text-xs font-bold py-1"></div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <!-- Purchase / Upgrade / Renew Flow -->
     <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
         <div class="border-b border-[#E5E7EB] pb-4">
@@ -354,6 +452,182 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     function reset() { processing = false; payBtn.disabled = false; payBtn.innerHTML = '<i class="fa-solid fa-lock mr-1.5"></i> Pay Securely & Activate'; }
+
+    // --- Hotel TV Add-On Handling ---
+    @if(!empty($hasActivePlan) && !empty($addonPricing))
+    const hotelCurrentTvs = {{ (int)$hotel->room_count }};
+    const hotelDailyRate = {{ (float)$addonPricing['daily_rate_per_tv'] }};
+    const hotelRemainingDays = {{ (int)$remainingDays }};
+    const hotelTaxRate = {{ (float)$addonPricing['tax_rate'] }};
+    const hotelIsInclusive = "{{ $hotel->plan->tax_type ?? 'exclusive' }}" === 'inclusive';
+    const hotelAddonOrderUrl = "{{ route('hotel.subscription.addon-order') }}";
+    const hotelAddonPurchaseUrl = "{{ route('hotel.subscription.addon-purchase') }}";
+
+    window.adjustHotelAddonTvs = function(delta) {
+        const inp = document.getElementById('hotelAddonTvInput');
+        if (!inp) return;
+        let cur = parseInt(inp.value) || 0;
+        inp.value = Math.max(1, cur + delta);
+        window.calcHotelAddonPricing();
+    };
+
+    window.setHotelAddonTvs = function(val) {
+        const inp = document.getElementById('hotelAddonTvInput');
+        if (!inp) return;
+        inp.value = val;
+        window.calcHotelAddonPricing();
+    };
+
+    window.calcHotelAddonPricing = function() {
+        const inp = document.getElementById('hotelAddonTvInput');
+        if (!inp) return;
+        const extraTvs = Math.max(1, parseInt(inp.value) || 1);
+        const newTotal = hotelCurrentTvs + extraTvs;
+
+        const newTotalEl = document.getElementById('hotelAddonNewTotalText');
+        if (newTotalEl) newTotalEl.innerText = newTotal + ' TVs';
+
+        const rawSubtotal = extraTvs * hotelDailyRate * hotelRemainingDays;
+        let subtotal = Math.round(rawSubtotal * 100) / 100;
+        let tax = 0;
+        let total = subtotal;
+
+        if (hotelTaxRate > 0) {
+            if (hotelIsInclusive) {
+                total = subtotal;
+                subtotal = Math.round((total / (1 + (hotelTaxRate / 100))) * 100) / 100;
+                tax = Math.round((total - subtotal) * 100) / 100;
+            } else {
+                tax = Math.round((subtotal * (hotelTaxRate / 100)) * 100) / 100;
+                total = Math.round((subtotal + tax) * 100) / 100;
+            }
+        }
+
+        const subEl = document.getElementById('hotelAddonSubtotalText');
+        const taxEl = document.getElementById('hotelAddonTaxText');
+        const totEl = document.getElementById('hotelAddonTotalText');
+
+        if (subEl) subEl.innerText = '₹' + subtotal.toFixed(2);
+        if (taxEl) taxEl.innerText = '₹' + tax.toFixed(2);
+        if (totEl) totEl.innerText = '₹' + total.toFixed(2);
+    };
+
+    const payAddonBtn = document.getElementById('payHotelAddonBtn');
+    const addonMsg = document.getElementById('hotelAddonMsg');
+    let addonProcessing = false;
+
+    function setAddonMsg(txt, isErr) {
+        if (!addonMsg) return;
+        addonMsg.innerText = txt;
+        addonMsg.className = 'text-center text-xs font-bold py-1 ' + (isErr ? 'text-rose-300' : 'text-amber-300');
+        addonMsg.classList.remove('hidden');
+    }
+
+    if (payAddonBtn) {
+        payAddonBtn.addEventListener('click', async function() {
+            if (addonProcessing) return;
+            addonProcessing = true;
+            payAddonBtn.disabled = true;
+            payAddonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Initializing Gateway...';
+            setAddonMsg('Securing payment order...', false);
+
+            const extraTvs = Math.max(1, parseInt(document.getElementById('hotelAddonTvInput').value) || 1);
+
+            try {
+                const res = await fetch(hotelAddonOrderUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ additional_tvs: extraTvs })
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.success) throw new Error(data.message || 'Could not initiate add-on order.');
+
+                if (data.gateway === 'payu' || (data.payu_params && data.checkout_url)) {
+                    setAddonMsg('Redirecting to PayU...', false);
+                    const payuForm = document.createElement('form');
+                    payuForm.method = 'POST';
+                    payuForm.action = data.checkout_url;
+                    payuForm.style.display = 'none';
+
+                    const params = data.payu_params || {};
+                    Object.keys(params).forEach(function(k) {
+                        const inp = document.createElement('input');
+                        inp.type = 'hidden';
+                        inp.name = k;
+                        inp.value = params[k];
+                        payuForm.appendChild(inp);
+                    });
+
+                    document.body.appendChild(payuForm);
+                    payuForm.submit();
+                    return;
+                }
+
+                if (typeof Razorpay === 'undefined') throw new Error('Razorpay failed to load. Please refresh.');
+                const rzp = new Razorpay({
+                    key: data.key_id,
+                    order_id: data.order_id,
+                    amount: Math.round(parseFloat(data.amount) * 100),
+                    currency: data.currency || 'INR',
+                    name: 'PaxTV Hospitality',
+                    description: 'TV Screen Add-On (+' + extraTvs + ' TVs)',
+                    prefill: { name: data.name || '', email: data.email || '', contact: data.phone || '' },
+                    theme: { color: '#150A42' },
+                    handler: function(resp) {
+                        setAddonMsg('Verifying payment and unlocking screens...', false);
+                        fetch(hotelAddonPurchaseUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({
+                                additional_tvs: extraTvs,
+                                razorpay_order_id: resp.razorpay_order_id,
+                                razorpay_payment_id: resp.razorpay_payment_id,
+                                razorpay_signature: resp.razorpay_signature
+                            })
+                        }).then(r => r.json()).then(function(pd) {
+                            if (pd.success) {
+                                window.location.reload();
+                            } else {
+                                setAddonMsg(pd.message || 'Add-on activation failed.', true);
+                                resetAddon();
+                            }
+                        }).catch(function() {
+                            setAddonMsg('Network error during activation.', true);
+                            resetAddon();
+                        });
+                    },
+                    modal: { ondismiss: function() { resetAddon(); } }
+                });
+
+                rzp.on('payment.failed', function(r) {
+                    setAddonMsg('Payment failed: ' + (r.error?.description || 'Try again.'), true);
+                    resetAddon();
+                });
+                rzp.open();
+            } catch (e) {
+                setAddonMsg(e.message, true);
+                resetAddon();
+            }
+        });
+
+        function resetAddon() {
+            addonProcessing = false;
+            payAddonBtn.disabled = false;
+            payAddonBtn.innerHTML = '<i class="fa-solid fa-lock text-xs mr-1.5"></i> Pay & Add Extra TVs';
+        }
+    }
+    @endif
 });
 </script>
 @endsection

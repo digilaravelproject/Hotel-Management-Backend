@@ -283,8 +283,14 @@
                     </div>
                     
                     @if($hotel->payment_status === 'paid' && $hotel->plan_id && (!$hotel->expiry_date || $hotel->expiry_date->isFuture()))
-                        <div class="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold shrink-0 font-mono shadow-xs">
-                            <i class="fa-solid fa-tv mr-1.5 text-emerald-600"></i> {{ $hotel->allowed_device_limit }} TV Slots Authorized
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <div class="px-4 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-extrabold font-mono shadow-xs">
+                                <i class="fa-solid fa-tv mr-1.5 text-emerald-600"></i> {{ $hotel->allowed_device_limit }} TV Slots Authorized
+                            </div>
+                            <a href="{{ route('super-admin.hotels.addon', $hotel->id) }}" class="px-3.5 py-2 rounded-xl bg-[#150A42] hover:bg-[#22106a] text-white text-xs font-extrabold shadow-sm transition-all flex items-center space-x-1.5 active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-plus text-amber-300 text-xs"></i>
+                                <span>Add-On TV Slots</span>
+                            </a>
                         </div>
                     @else
                         <div class="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-extrabold shrink-0 font-mono shadow-xs">
