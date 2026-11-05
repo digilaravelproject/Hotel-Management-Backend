@@ -145,20 +145,24 @@
                     </div>
                 </div>
 
-                <!-- City -->
+                <!-- City with Indian Cities Autocomplete Dropdown List -->
                 <div>
                     <label class="block text-xs font-black text-slate-700 mb-1.5">
-                        City / Region
+                        City / Destination <span class="text-purple-600 font-semibold text-[11px]">(Select from List)</span>
                     </label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                            <i class="fa-solid fa-city text-xs"></i>
+                            <i class="fa-solid fa-location-dot text-xs"></i>
                         </div>
                         <input type="text" 
                                name="city" 
+                               list="indian_cities_list"
                                value="{{ old('city') }}" 
-                               placeholder="e.g. North Goa" 
-                               class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] bg-slate-50/70 hover:bg-white focus:bg-white transition-all text-slate-900 placeholder-slate-400 font-semibold">
+                               placeholder="Select or search Indian city..." 
+                               autocomplete="off"
+                               onclick="if(this.showPicker){try{this.showPicker();}catch(e){}}"
+                               class="w-full pl-10 pr-8 py-2.5 sm:py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] bg-slate-50/70 hover:bg-white focus:bg-white transition-all text-slate-900 placeholder-slate-400 font-semibold cursor-pointer">
+                        <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none opacity-60"></i>
                     </div>
                 </div>
 
@@ -313,4 +317,6 @@
         }
     });
 </script>
+
+@include('partials.indian_cities_datalist')
 @endsection
