@@ -29,7 +29,36 @@ class MenuController extends Controller
             $defaultTree = MenuResolverService::getDefaultMenus();
             $itemCatalog = MenuResolverService::getItemCatalog();
 
-            return view('super_admin.hotels.menus', compact('hotel', 'currentTree', 'defaultTree', 'itemCatalog'));
+            // Fetch Active Theme for this Hotel
+            $selectedThemeId = (int) ($hotel->selected_theme_id ?? 1);
+            $activeTemplate = \App\Models\TvTemplate::where('theme_id', $selectedThemeId)
+                ->where('is_active', true)
+                ->orderBy('id', 'desc')
+                ->first()
+                ?? \App\Models\TvTemplate::where('theme_id', $selectedThemeId)->orderBy('id', 'desc')->first()
+                ?? \App\Models\TvTemplate::where('is_active', true)->orderBy('id', 'desc')->first();
+
+            $themePreviewUrl = null;
+            if ($activeTemplate && !empty($activeTemplate->extracted_path)) {
+                $themePreviewUrl = url($activeTemplate->extracted_path . '/index.html');
+            }
+
+            $themePreviewImage = ($activeTemplate && !empty($activeTemplate->preview_image)) ? asset($activeTemplate->preview_image) : null;
+            $themeName = $activeTemplate ? ($activeTemplate->theme_name ?? 'Theme #' . $activeTemplate->theme_id) : ('Theme #' . $selectedThemeId);
+            $themeVersion = $activeTemplate ? $activeTemplate->version : '1.0';
+
+            return view('super_admin.hotels.menus', compact(
+                'hotel', 
+                'currentTree', 
+                'defaultTree', 
+                'itemCatalog',
+                'selectedThemeId',
+                'activeTemplate',
+                'themePreviewUrl',
+                'themePreviewImage',
+                'themeName',
+                'themeVersion'
+            ));
         } catch (\Throwable $e) {
             Log::error('SuperAdmin\MenuController@edit Error: ' . $e->getMessage(), [
                 'hotel_id' => $hotelId,

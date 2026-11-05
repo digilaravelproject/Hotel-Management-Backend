@@ -101,7 +101,9 @@
                             {{ $hotel->hotel_name }}
                         </a>
                         <span class="text-slate-300">•</span>
-                        <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">TV Menu Engine</span>
+                        <span class="text-xs font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100 font-mono">
+                            <i class="fa-solid fa-paintbrush mr-1 text-purple-600"></i>{{ $themeName }} (Theme #{{ $selectedThemeId }})
+                        </span>
                     </div>
 
                     <div class="flex items-center space-x-3 flex-wrap">
@@ -224,7 +226,7 @@
                 <div class="flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-100 pt-2.5">
                     <div class="flex items-center space-x-1.5">
                         <i class="fa-solid fa-arrows-up-down text-purple-600 text-xs"></i>
-                        <span>Drag with handle <strong>(⋮⋮)</strong> to reorder menus or move between parent groups.</span>
+                        <span>Drag handle <strong>(⋮⋮)</strong> to reorder menus or move between parent groups.</span>
                     </div>
                     <span class="hidden sm:inline-block font-mono text-[#150A42] font-semibold">Websocket TV Broadcast Ready</span>
                 </div>
@@ -271,7 +273,7 @@
 
                                 <!-- Visibility Toggle Switch -->
                                 <div class="flex items-center space-x-2.5 shrink-0">
-                                    <span class="status-badge text-[11px] font-bold font-mono {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
+                                    <span class="status-badge text-[11px] font-extrabold font-mono {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                         {{ $isShown ? 'Visible' : 'Hidden' }}
                                     </span>
                                     <label class="relative inline-flex items-center cursor-pointer" title="Toggle group visibility">
@@ -307,7 +309,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="flex items-center space-x-2 shrink-0">
+                                        <div class="flex items-center space-x-2.5 shrink-0">
                                             <button type="button" 
                                                     onclick="extractToRoot(this)" 
                                                     class="extract-to-root-btn px-2.5 py-1 rounded-xl border border-slate-200 hover:bg-purple-50 hover:text-[#150A42] hover:border-purple-200 text-slate-600 text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1" 
@@ -320,8 +322,8 @@
                                                 <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isSubShown ? 'checked' : '' }} onchange="onNodeToggle(this)">
                                                 <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#150A42]"></div>
                                             </label>
-                                            <span class="status-badge text-[10px] font-bold font-mono {{ $isSubShown ? 'text-emerald-600' : 'text-slate-400' }}">
-                                                {{ $isSubShown ? 'Vis' : 'Hide' }}
+                                            <span class="status-badge text-[11px] font-extrabold font-mono {{ $isSubShown ? 'text-emerald-600' : 'text-slate-400' }}">
+                                                {{ $isSubShown ? 'Visible' : 'Hidden' }}
                                             </span>
                                         </div>
                                     </div>
@@ -364,7 +366,7 @@
                                     <input type="checkbox" class="sr-only peer node-status-checkbox" {{ $isShown ? 'checked' : '' }} onchange="onNodeToggle(this)">
                                     <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#150A42]"></div>
                                 </label>
-                                <span class="status-badge text-[11px] font-bold font-mono {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
+                                <span class="status-badge text-[11px] font-extrabold font-mono {{ $isShown ? 'text-emerald-600' : 'text-slate-400' }}">
                                     {{ $isShown ? 'Visible' : 'Hidden' }}
                                 </span>
                             </div>
@@ -374,22 +376,57 @@
             </div>
         </div>
 
-        <!-- RIGHT COLUMN: Interactive Smart TV Live Mockup (5 Cols Sticky) -->
+        <!-- RIGHT COLUMN: Interactive Smart TV Live Mockup & Real Theme Preview (5 Cols Sticky) -->
         <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-6" id="tvMockupSection">
 
             <!-- TV Mockup Outer Card -->
             <div class="bg-white border border-slate-200/90 rounded-[28px] p-5 sm:p-6 shadow-sm space-y-4">
                 
-                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 uppercase font-mono tracking-wider">
-                            Live Guest TV Simulation
-                        </h3>
+                <!-- Card Header with Theme Info & Mode Toggles -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-3 border-b border-slate-100">
+                    <div class="space-y-0.5 min-w-0">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shrink-0"></div>
+                            <h3 class="text-xs sm:text-sm font-extrabold text-slate-900 uppercase font-mono tracking-wider truncate">
+                                Live Guest TV Simulation
+                            </h3>
+                        </div>
+                        <div class="text-[11px] text-slate-500 font-medium flex items-center space-x-1.5 truncate">
+                            <span class="text-slate-400 shrink-0">Active Suite Theme:</span>
+                            <span class="font-extrabold text-[#150A42] font-mono truncate">{{ $themeName }} (#{{ $selectedThemeId }})</span>
+                            <span class="text-slate-300">•</span>
+                            <span class="text-slate-500 font-mono text-[10px]">v{{ $themeVersion }}</span>
+                        </div>
                     </div>
-                    <span class="text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-100 px-2 py-0.5 rounded-full font-mono">
-                        Android TV Launcher v4.2
-                    </span>
+
+                    <!-- Direct Preview & View Switcher -->
+                    <div class="flex items-center space-x-2 shrink-0">
+                        @if($themePreviewUrl)
+                            <a href="{{ $themePreviewUrl }}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 text-[11px] font-extrabold flex items-center space-x-1.5 transition-all shadow-2xs" title="Open full extracted theme in new tab">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-purple-600"></i>
+                                <span>Preview Link</span>
+                            </a>
+                        @endif
+
+                        <!-- Display View Switcher -->
+                        <div class="inline-flex rounded-xl bg-slate-100 p-0.5 space-x-0.5 text-[10px] font-extrabold font-mono">
+                            <button type="button" 
+                                    onclick="setTvDisplayMode('theme')" 
+                                    id="tvModeThemeBtn" 
+                                    class="px-2.5 py-1 rounded-lg transition-all {{ $themePreviewUrl ? 'bg-white text-slate-900 shadow-2xs' : 'text-slate-400 cursor-not-allowed' }}" 
+                                    {{ $themePreviewUrl ? '' : 'disabled' }}
+                                    title="{{ $themePreviewUrl ? 'View real extracted theme app' : 'No extracted zip preview available' }}">
+                                Theme App
+                            </button>
+                            <button type="button" 
+                                    onclick="setTvDisplayMode('nav')" 
+                                    id="tvModeNavBtn" 
+                                    class="px-2.5 py-1 rounded-lg transition-all {{ $themePreviewUrl ? 'text-slate-600 hover:text-slate-900' : 'bg-white text-slate-900 shadow-2xs' }}"
+                                    title="View dynamic live navigation bar">
+                                Menu Tabs
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Television Physical Casing / Bezel -->
@@ -399,69 +436,85 @@
                     <div class="absolute top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-slate-800 border border-slate-700"></div>
 
                     <!-- Inner 16:9 Screen Display -->
-                    <div class="tv-mockup-frame rounded-xl overflow-hidden relative flex flex-col justify-between p-3.5 text-white select-none">
+                    <div class="tv-mockup-frame rounded-xl overflow-hidden relative flex flex-col justify-between text-white select-none">
                         
-                        <!-- Top TV Header Bar (Clock, Weather, Hotel Brand) -->
-                        <div class="flex items-center justify-between text-[10px] font-mono tracking-tight text-white/90 bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
-                            <div class="flex items-center space-x-2 truncate">
-                                <span class="font-extrabold text-amber-300 font-sans truncate">{{ $hotel->hotel_name }}</span>
-                                <span class="text-white/40">•</span>
-                                <span class="text-white/80 font-bold">Room 101</span>
-                            </div>
-                            <div class="flex items-center space-x-3 shrink-0">
-                                <span class="flex items-center text-amber-300">
-                                    <i class="fa-solid fa-cloud-sun mr-1 text-[10px]"></i> 28°C
-                                </span>
-                                <span id="tvMockupClock" class="font-bold text-white">12:00 PM</span>
-                            </div>
+                        <!-- VIEW 1: LIVE EXTRACTED THEME IFRAME (If available) -->
+                        <div id="tvThemeIframeContainer" class="w-full h-full absolute inset-0 {{ $themePreviewUrl ? '' : 'hidden' }} bg-slate-950">
+                            @if($themePreviewUrl)
+                                <iframe id="tvThemeIframe" 
+                                        src="{{ $themePreviewUrl }}" 
+                                        class="w-full h-full border-0 pointer-events-auto" 
+                                        allowfullscreen 
+                                        loading="lazy"></iframe>
+                            @endif
                         </div>
 
-                        <!-- TV Middle Showcase Greeting -->
-                        <div class="my-auto py-3 text-center space-y-1">
-                            <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/10 text-[9px] uppercase tracking-widest text-amber-300 font-bold font-mono">
-                                In-Room Guest Entertainment
-                            </span>
-                            <h2 class="text-sm sm:text-base font-black tracking-tight text-white drop-shadow-md">
-                                Welcome to {{ Str::limit($hotel->hotel_name, 26) }}
-                            </h2>
-                            <p class="text-[10px] text-white/70 max-w-xs mx-auto drop-shadow-sm line-clamp-1">
-                                Press Menu or Select below to browse services & apps.
-                            </p>
-                        </div>
-
-                        <!-- TV Bottom Navigation Bar (Mirroring current tree) -->
-                        <div class="space-y-1.5">
-                            <div class="text-[9px] font-mono uppercase tracking-wider text-amber-300/80 flex items-center justify-between px-1">
-                                <span><i class="fa-solid fa-arrow-pointer mr-1"></i> Active Navigation Tabs</span>
-                                <span id="tvTabCount">0 Tabs</span>
-                            </div>
+                        <!-- VIEW 2: DYNAMIC MENU TABS SIMULATION (Overlay / Fallback) -->
+                        <div id="tvNavigationContainer" class="w-full h-full flex flex-col justify-between p-3.5 relative z-10 {{ $themePreviewUrl ? 'hidden' : '' }}" style="{{ $themePreviewImage ? 'background: linear-gradient(rgba(13, 9, 38, 0.75), rgba(6, 3, 23, 0.88)), url(' . $themePreviewImage . ') center/cover no-repeat;' : '' }}">
                             
-                            <!-- Dynamic TV Menu Tabs Bar -->
-                            <div id="tvMockupNavBar" class="flex items-center space-x-1.5 overflow-x-auto py-1 px-1.5 rounded-xl bg-black/50 backdrop-blur-md border border-white/10 scrollbar-none">
-                                <!-- Populated dynamically by JS -->
+                            <!-- Top TV Header Bar (Clock, Weather, Hotel Brand) -->
+                            <div class="flex items-center justify-between text-[10px] font-mono tracking-tight text-white/90 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+                                <div class="flex items-center space-x-2 truncate">
+                                    <span class="font-extrabold text-amber-300 font-sans truncate">{{ $hotel->hotel_name }}</span>
+                                    <span class="text-white/40">•</span>
+                                    <span class="text-white/80 font-bold">Room 101</span>
+                                </div>
+                                <div class="flex items-center space-x-3 shrink-0">
+                                    <span class="flex items-center text-amber-300">
+                                        <i class="fa-solid fa-cloud-sun mr-1 text-[10px]"></i> 28°C
+                                    </span>
+                                    <span id="tvMockupClock" class="font-bold text-white">12:00 PM</span>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Bottom TV Submenu Dropdown Popover (Interactive preview on TV) -->
-                        <div id="tvSubMenuPopup" class="hidden absolute bottom-14 left-4 right-4 bg-slate-900/95 backdrop-blur-xl border border-white/20 rounded-xl p-2.5 shadow-2xl z-30 space-y-1.5">
-                            <div class="flex items-center justify-between pb-1 border-b border-white/10 text-[10px] font-bold text-amber-300">
-                                <span id="tvSubMenuTitle">Sub-menu Items</span>
-                                <button type="button" onclick="closeTvSubmenu()" class="text-white/60 hover:text-white p-0.5">
-                                    <i class="fa-solid fa-xmark text-[10px]"></i>
-                                </button>
+                            <!-- TV Middle Showcase Greeting -->
+                            <div class="my-auto py-3 text-center space-y-1">
+                                <span class="inline-block px-2.5 py-0.5 rounded-full bg-white/10 text-[9px] uppercase tracking-widest text-amber-300 font-bold font-mono border border-white/10">
+                                    {{ $themeName }} Launcher Active
+                                </span>
+                                <h2 class="text-sm sm:text-base font-black tracking-tight text-white drop-shadow-md">
+                                    Welcome to {{ Str::limit($hotel->hotel_name, 26) }}
+                                </h2>
+                                <p class="text-[10px] text-white/70 max-w-xs mx-auto drop-shadow-sm line-clamp-1">
+                                    Interactive TV launcher synced in real-time.
+                                </p>
                             </div>
-                            <div id="tvSubMenuItemsGrid" class="grid grid-cols-2 gap-1.5 text-[10px]">
-                                <!-- Populated dynamically -->
+
+                            <!-- TV Bottom Navigation Bar (Mirroring current tree) -->
+                            <div class="space-y-1.5">
+                                <div class="text-[9px] font-mono uppercase tracking-wider text-amber-300/80 flex items-center justify-between px-1">
+                                    <span><i class="fa-solid fa-arrow-pointer mr-1"></i> Active Navigation Tabs</span>
+                                    <span id="tvTabCount">0 Tabs</span>
+                                </div>
+                                
+                                <!-- Dynamic TV Menu Tabs Bar -->
+                                <div id="tvMockupNavBar" class="flex items-center space-x-1.5 overflow-x-auto py-1 px-1.5 rounded-xl bg-black/60 backdrop-blur-md border border-white/10 scrollbar-none">
+                                    <!-- Populated dynamically by JS -->
+                                </div>
                             </div>
+
+                            <!-- Bottom TV Submenu Dropdown Popover (Interactive preview on TV) -->
+                            <div id="tvSubMenuPopup" class="hidden absolute bottom-14 left-4 right-4 bg-slate-900/95 backdrop-blur-xl border border-white/20 rounded-xl p-2.5 shadow-2xl z-30 space-y-1.5">
+                                <div class="flex items-center justify-between pb-1 border-b border-white/10 text-[10px] font-bold text-amber-300">
+                                    <span id="tvSubMenuTitle">Sub-menu Items</span>
+                                    <button type="button" onclick="closeTvSubmenu()" class="text-white/60 hover:text-white p-0.5">
+                                        <i class="fa-solid fa-xmark text-[10px]"></i>
+                                    </button>
+                                </div>
+                                <div id="tvSubMenuItemsGrid" class="grid grid-cols-2 gap-1.5 text-[10px]">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
                         </div>
 
                     </div>
 
                     <!-- Bottom Physical TV Stand / Logo Bar -->
-                    <div class="flex items-center justify-center pt-1.5 pb-0.5">
-                        <span class="text-[8px] font-black uppercase tracking-[0.25em] text-slate-500 font-mono">
-                            PAX TV HOSPITALITY
-                        </span>
+                    <div class="flex items-center justify-between px-2 pt-1.5 pb-0.5 text-[8px] font-mono text-slate-500">
+                        <span class="font-bold text-slate-400">ACTIVE: {{ strtoupper($themeName) }}</span>
+                        <span class="font-black uppercase tracking-[0.2em] text-slate-400">PAX TV HOSPITALITY</span>
+                        <span class="text-emerald-500 font-bold">1080p FHD</span>
                     </div>
                 </div>
 
@@ -514,6 +567,7 @@
     const resetUrl = "{{ route('super-admin.hotels.menus.reset', $hotel->id) }}";
     const csrfToken = "{{ csrf_token() }}";
     let isDirty = false;
+    let tvDisplayMode = "{{ $themePreviewUrl ? 'theme' : 'nav' }}";
 
     // FontAwesome icon lookup for each catalog item
     const iconMap = {
@@ -547,6 +601,27 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
+
+    // Toggle TV display mode between 'theme' (iframe) and 'nav' (interactive tabs)
+    function setTvDisplayMode(mode) {
+        tvDisplayMode = mode;
+        const iframeBox = document.getElementById('tvThemeIframeContainer');
+        const navBox = document.getElementById('tvNavigationContainer');
+        const themeBtn = document.getElementById('tvModeThemeBtn');
+        const navBtn = document.getElementById('tvModeNavBtn');
+
+        if (mode === 'theme' && iframeBox) {
+            iframeBox.classList.remove('hidden');
+            if (navBox) navBox.classList.add('hidden');
+            if (themeBtn) themeBtn.className = 'px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs font-extrabold transition-all';
+            if (navBtn) navBtn.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 font-extrabold transition-all';
+        } else {
+            if (iframeBox) iframeBox.classList.add('hidden');
+            if (navBox) navBox.classList.remove('hidden');
+            if (themeBtn) themeBtn.className = 'px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 font-extrabold transition-all';
+            if (navBtn) navBtn.className = 'px-2.5 py-1 rounded-lg bg-white text-slate-900 shadow-2xs font-extrabold transition-all';
+        }
+    }
 
     // Initialize Sortable on Root List
     const rootEl = document.getElementById('rootMenuList');
@@ -600,7 +675,7 @@
         }
     }
 
-    // Toggle node visibility checkbox handler
+    // Toggle node visibility checkbox handler (Clean English: Visible / Hidden)
     function onNodeToggle(input) {
         const node = input.closest('.menu-node');
         if (!node) return;
@@ -609,8 +684,8 @@
 
         const badge = node.querySelector('.status-badge');
         if (badge) {
-            badge.textContent = isChecked ? (node.classList.contains('sub-item') ? 'Vis' : 'Visible') : (node.classList.contains('sub-item') ? 'Hide' : 'Hidden');
-            badge.className = 'status-badge text-[11px] font-bold font-mono ' + (isChecked ? 'text-emerald-600' : 'text-slate-400');
+            badge.textContent = isChecked ? 'Visible' : 'Hidden';
+            badge.className = 'status-badge text-[11px] font-extrabold font-mono ' + (isChecked ? 'text-emerald-600' : 'text-slate-400');
         }
 
         markDirty();
@@ -663,7 +738,7 @@
                     <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''} onchange="onNodeToggle(this)">
                     <div class="w-8 h-4.5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3.5 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 after:transition-all peer-checked:bg-[#150A42]"></div>
                 </label>
-                <span class="status-badge text-[11px] font-bold font-mono ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
+                <span class="status-badge text-[11px] font-extrabold font-mono ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
                     ${isChecked ? 'Visible' : 'Hidden'}
                 </span>
             </div>
@@ -712,7 +787,7 @@
                     <span class="text-[10px] font-mono text-slate-400 block truncate">ID: ${id}</span>
                 </div>
             </div>
-            <div class="flex items-center space-x-2 shrink-0">
+            <div class="flex items-center space-x-2.5 shrink-0">
                 <button type="button" 
                         onclick="extractToRoot(this)" 
                         class="extract-to-root-btn px-2.5 py-1 rounded-xl border border-slate-200 hover:bg-purple-50 hover:text-[#150A42] hover:border-purple-200 text-slate-600 text-[11px] font-bold transition-all cursor-pointer flex items-center space-x-1" 
@@ -724,8 +799,8 @@
                     <input type="checkbox" class="sr-only peer node-status-checkbox" ${isChecked ? 'checked' : ''} onchange="onNodeToggle(this)">
                     <div class="w-7 h-4 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-3 peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-[#150A42]"></div>
                 </label>
-                <span class="status-badge text-[10px] font-bold font-mono ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
-                    ${isChecked ? 'Vis' : 'Hide'}
+                <span class="status-badge text-[11px] font-extrabold font-mono ${isChecked ? 'text-emerald-600' : 'text-slate-400'}">
+                    ${isChecked ? 'Visible' : 'Hidden'}
                 </span>
             </div>
         `;
