@@ -44,10 +44,47 @@ class AuthenticateTvToken
             ], 403);
         }
 
+        $hotel = $device->hotelAdmin;
+        if ($hotel && !$device->is_demo) {
+            // Real-time subscription validity check
+            if ($hotel->payment_status !== 'paid' || ($hotel->expiry_date && $hotel->expiry_date->isPast())) {
+                return response()->json([
+                    'status' => false,
+                    'error_code' => 'SUBSCRIPTION_EXPIRED',
+                    'message' => 'Hotel subscription has expired or is inactive. Please contact administration.',
+                ], 403);
+            }
+
+            // Strict TV Quota Enforcement:
+            // If the hotel purchased 40 TVs, only up to 40 devices can operate; excess devices are locked
+            $allowedLimit = (int) ($hotel->allowed_device_limit ?? $hotel->room_count ?? 0);
+            if ($allowedLimit > 0) {
+                $allowedDeviceIds = \Illuminate\Support\Facades\Cache::remember(
+                    "hotel_{$hotel->id}_allowed_tv_ids",
+                    60,
+                    function () use ($hotel, $allowedLimit) {
+                        return $hotel->connectedDevices()
+                            ->orderBy('id', 'asc')
+                            ->take($allowedLimit)
+                            ->pluck('id')
+                            ->toArray();
+                    }
+                );
+
+                if (!in_array($device->id, $allowedDeviceIds)) {
+                    return response()->json([
+                        'status' => false,
+                        'error_code' => 'DEVICE_QUOTA_EXCEEDED',
+                        'message' => "Device quota exceeded ({$allowedLimit} TVs authorized for your hotel). This TV screen is currently deactivated.",
+                    ], 403);
+                }
+            }
+        }
+
         // Attach the resolved device and hotel to the request
         $request->merge([
             'current_device' => $device,
-            'current_hotel' => $device->hotelAdmin
+            'current_hotel' => $hotel
         ]);
 
         return $next($request);

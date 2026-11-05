@@ -284,6 +284,8 @@ class HotelService
             'room_count' => $this->resolveRoomCount($saleData['tv_count'] ?? $hotel->room_count, $plan, (int) $plan->room_count),
         ]);
 
+        \Illuminate\Support\Facades\Cache::forget("hotel_{$hotel->id}_allowed_tv_ids");
+
         $sale = DistributorSale::create([
             'distributor_id' => $distributorId,
             'hotel_id' => $hotel->id,

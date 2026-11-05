@@ -15,6 +15,7 @@ class ConnectedDeviceObserver
         $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
         if ($hotelId) {
             TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no, true);
+            \Illuminate\Support\Facades\Cache::forget("hotel_{$hotelId}_allowed_tv_ids");
         }
     }
 
@@ -26,6 +27,7 @@ class ConnectedDeviceObserver
         $hotelId = $device->hotel_admin_id ?? $device->hotel_id;
         if ($hotelId) {
             TvVersionCacheService::clearHotelCache((int) $hotelId, 'DEVICE', $device->room_no);
+            \Illuminate\Support\Facades\Cache::forget("hotel_{$hotelId}_allowed_tv_ids");
 
             if ($device->device_id) {
                 $firestore = app(\App\Services\FirebaseFirestoreService::class);

@@ -345,3 +345,18 @@ select:not(.custom-select) {
     padding-right: 2.25rem;
     border-radius: 0.75rem;
 }
+
+/* =========================================================================
+   GLOBAL NUMBER INPUT SPINNER REMOVAL
+   Hides default browser up/down spin stepper buttons across all browsers
+   ========================================================================= */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+    margin: 0 !important;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield !important;
+    appearance: textfield !important;
+}

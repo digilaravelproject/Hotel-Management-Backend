@@ -215,8 +215,9 @@
                                        min="1" 
                                        max="10000" 
                                        required 
-                                       class="w-full text-center px-4 py-3 text-lg font-black text-slate-900 rounded-2xl border-2 border-slate-200 focus:border-[#150A42] focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 font-mono transition-all">
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">Screens</span>
+                                       style="-webkit-appearance: none; -moz-appearance: textfield; margin: 0;"
+                                       class="w-full text-center px-4 py-3 text-lg font-black text-slate-900 rounded-2xl border-2 border-slate-200 focus:border-[#150A42] focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 font-mono transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none select-none">Screens</span>
                             </div>
 
                             <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#150A42]/15">
