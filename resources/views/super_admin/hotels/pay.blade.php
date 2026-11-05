@@ -66,7 +66,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('super-admin.hotels.pay', $hotel->id) }}" id="renewalForm" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <form method="POST" action="{{ route('super-admin.hotels.pay', $hotel->id) }}" id="renewalForm" data-no-loader="true" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         @csrf
 
         <!-- Left / Main Column (7 cols) -->
@@ -824,6 +824,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const submitBtnLabel = document.getElementById('submitBtnLabel');
             const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
+            if (typeof hideGlobalLoader === 'function') {
+                hideGlobalLoader();
+            }
+
             if (submitBtn) {
                 submitBtn.disabled = true;
                 submitBtn.classList.add('opacity-70', 'cursor-wait');
@@ -888,11 +892,18 @@ document.addEventListener('DOMContentLoaded', function() {
                                 submitBtnLabel.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Payment with Bank...';
                             }
 
+                            if (typeof showGlobalLoader === 'function') {
+                                showGlobalLoader();
+                            }
+
                             form.submit();
                         },
                         modal: {
                             ondismiss: function() {
                                 checkoutSubmitting = false;
+                                if (typeof hideGlobalLoader === 'function') {
+                                    hideGlobalLoader();
+                                }
                                 if (submitBtn) {
                                     submitBtn.disabled = false;
                                     submitBtn.classList.remove('opacity-70', 'cursor-wait');
@@ -904,6 +915,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     rzp.on('payment.failed', function(response) {
                         checkoutSubmitting = false;
+                        if (typeof hideGlobalLoader === 'function') {
+                            hideGlobalLoader();
+                        }
                         if (submitBtn) {
                             submitBtn.disabled = false;
                             submitBtn.classList.remove('opacity-70', 'cursor-wait');
@@ -920,6 +934,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } catch (err) {
                 checkoutSubmitting = false;
+                if (typeof hideGlobalLoader === 'function') {
+                    hideGlobalLoader();
+                }
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.classList.remove('opacity-70', 'cursor-wait');
