@@ -4,6 +4,7 @@
 @section('page_title', 'Subscription Renewal & Checkout')
 
 @section('content')
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <style>
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
@@ -799,6 +800,135 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial run
     syncDurationOptions();
     calculateTotal();
+
+    // Online Gateway Payment Interception (Razorpay Checkout)
+    const form = document.getElementById('renewalForm');
+    let checkoutSubmitting = false;
+
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            if (checkoutSubmitting) return;
+
+            e.preventDefault();
+
+            const selectedPlan = document.querySelector('.plan-radio:checked');
+            if (!selectedPlan) {
+                alert('Please select a subscription plan before proceeding.');
+                return;
+            }
+
+            const currentTvCount = Math.max(1, parseInt(tvCountInput ? tvCountInput.value : 1) || 1);
+            const durationMonths = parseInt(durationSelect ? durationSelect.value : 1) || 1;
+
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnLabel = document.getElementById('submitBtnLabel');
+            const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-70', 'cursor-wait');
+                submitBtnLabel.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Initializing Payment Gateway...';
+            }
+            checkoutSubmitting = true;
+
+            try {
+                const orderUrl = "{{ route('super-admin.hotels.pay.order', $hotel->id) }}";
+                const orderRes = await fetch(orderUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]')?.value || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    body: JSON.stringify({
+                        plan_id: selectedPlan.value,
+                        tv_count: currentTvCount,
+                        duration_months: durationMonths,
+                    }),
+                });
+
+                const orderData = await orderRes.json();
+
+                if (!orderRes.ok || !orderData.success) {
+                    throw new Error(orderData.message || 'Could not initialize payment order.');
+                }
+
+                if (orderData.gateway === 'razorpay') {
+                    if (typeof Razorpay === 'undefined') {
+                        throw new Error('Razorpay script failed to load. Please refresh the page and try again.');
+                    }
+
+                    const rzp = new Razorpay({
+                        key: orderData.key_id,
+                        order_id: orderData.order_id,
+                        amount: Math.round(parseFloat(orderData.amount) * 100),
+                        currency: orderData.currency || 'INR',
+                        name: 'PaxTV Hospitality',
+                        description: 'Subscription Renewal (' + currentTvCount + ' TVs, ' + durationMonths + ' mo)',
+                        prefill: {
+                            name: orderData.name || '',
+                            email: orderData.email || '',
+                            contact: orderData.phone || '',
+                        },
+                        theme: { color: '#150A42' },
+                        handler: function(response) {
+                            ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {
+                                let input = form.querySelector('input[name="' + field + '"]');
+                                if (!input) {
+                                    input = document.createElement('input');
+                                    input.type = 'hidden';
+                                    input.name = field;
+                                    form.appendChild(input);
+                                }
+                                input.value = response[field] || '';
+                            });
+
+                            if (submitBtnLabel) {
+                                submitBtnLabel.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Verifying Payment with Bank...';
+                            }
+
+                            form.submit();
+                        },
+                        modal: {
+                            ondismiss: function() {
+                                checkoutSubmitting = false;
+                                if (submitBtn) {
+                                    submitBtn.disabled = false;
+                                    submitBtn.classList.remove('opacity-70', 'cursor-wait');
+                                    submitBtn.innerHTML = originalBtnHtml;
+                                }
+                            },
+                        },
+                    });
+
+                    rzp.on('payment.failed', function(response) {
+                        checkoutSubmitting = false;
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('opacity-70', 'cursor-wait');
+                            submitBtn.innerHTML = originalBtnHtml;
+                        }
+                        alert('Payment failed: ' + (response.error?.description || 'Transaction cancelled by user.'));
+                    });
+
+                    rzp.open();
+                } else if (orderData.checkout_url && orderData.checkout_url !== '#') {
+                    window.location.href = orderData.checkout_url;
+                } else {
+                    throw new Error('Active gateway returned no checkout endpoint.');
+                }
+            } catch (err) {
+                checkoutSubmitting = false;
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-70', 'cursor-wait');
+                    submitBtn.innerHTML = originalBtnHtml;
+                }
+                alert(err.message || 'Something went wrong while starting the payment.');
+            }
+        });
+    }
 });
 </script>
 @endsection

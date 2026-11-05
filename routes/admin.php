@@ -51,6 +51,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('/hotels/{id}/tv-data', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'tvData'])->name('hotels.tv-data');
     Route::get('/hotels/{id}/pay', [SuperHotelController::class, 'showPayment'])->name('hotels.pay');
     Route::post('/hotels/{id}/pay', [SuperHotelController::class, 'processPayment']);
+    Route::post('/hotels/{id}/pay/order', [SuperHotelController::class, 'createPaymentOrder'])->name('hotels.pay.order');
     Route::get('/hotels/{id}/addon', [SuperHotelController::class, 'showAddon'])->name('hotels.addon');
     Route::post('/hotels/{id}/addon', [SuperHotelController::class, 'processAddon']);
     Route::resource('hotels', SuperHotelController::class);
