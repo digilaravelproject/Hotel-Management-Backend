@@ -90,20 +90,47 @@ class DistributorController extends Controller
                   ->orWhere('owner_name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('phone', 'like', "%{$search}%")
-                  ->orWhere('license_key', 'like', "%{$search}%");
+                  ->orWhere('license_key', 'like', "%{$search}%")
+                  ->orWhere('city', 'like', "%{$search}%");
             });
         }
+
+        if ($request->filled('filter')) {
+            $filter = $request->input('filter');
+            if ($filter === 'active') {
+                $query->where('status', true);
+            } elseif ($filter === 'paid') {
+                $query->where('payment_status', 'paid');
+            } elseif ($filter === 'expiring') {
+                $query->whereNotNull('expiry_date')->whereBetween('expiry_date', [now(), now()->addDays(30)]);
+            } elseif ($filter === 'expired') {
+                $query->whereNotNull('expiry_date')->where('expiry_date', '<', now());
+            } elseif ($filter === 'unpaid') {
+                $query->where(function ($q) {
+                    $q->whereNull('payment_status')->orWhere('payment_status', '!=', 'paid');
+                });
+            }
+        }
+
+        $stats = [
+            'total' => $user->hotels()->count(),
+            'active' => $user->hotels()->where('status', true)->count(),
+            'paid' => $user->hotels()->where('payment_status', 'paid')->count(),
+            'expiring' => $user->hotels()->whereNotNull('expiry_date')->whereBetween('expiry_date', [now(), now()->addDays(30)])->count(),
+            'expired' => $user->hotels()->whereNotNull('expiry_date')->where('expiry_date', '<', now())->count(),
+        ];
 
         $hotels = $query->paginate(12)->withQueryString();
 
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
+                'stats' => $stats,
                 'data' => $hotels,
             ]);
         }
 
-        return view('distributor.hotels.index', compact('hotels'));
+        return view('distributor.hotels.index', compact('hotels', 'stats'));
     }
 
     /**
