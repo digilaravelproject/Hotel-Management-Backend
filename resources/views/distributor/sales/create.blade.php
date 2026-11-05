@@ -6,6 +6,21 @@
 @section('content')
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
+<style>
+    /* Force hide browser native number spinners in all browsers */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        margin: 0 !important;
+        display: none !important;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+    }
+</style>
+
 <div class="max-w-5xl mx-auto space-y-6">
     <!-- Top Breadcrumb & Actions Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -203,24 +218,29 @@
 
                         <!-- Stepper Input -->
                         <div class="flex items-center space-x-3">
-                            <button type="button" onclick="adjustTvCount(-1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-2xs">
+                            <button type="button" onclick="adjustTvCount(-1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-2xs shrink-0">
                                 <i class="fa-solid fa-minus text-sm"></i>
                             </button>
 
-                            <div class="relative flex-1">
+                            <div class="relative flex-1 flex items-center bg-white rounded-2xl border-2 border-slate-200 focus-within:border-[#150A42] focus-within:ring-4 focus-within:ring-purple-500/10 transition-all px-3 py-1 shadow-2xs">
                                 <input type="number" 
                                        name="tv_count" 
                                        id="tvCountInput" 
                                        value="{{ $defaultTvCount }}" 
                                        min="1" 
                                        max="10000" 
+                                       inputmode="numeric"
                                        required 
-                                       style="-webkit-appearance: none; -moz-appearance: textfield; margin: 0;"
-                                       class="w-full text-center px-4 py-3 text-lg font-black text-slate-900 rounded-2xl border-2 border-slate-200 focus:border-[#150A42] focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 font-mono transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none select-none">Screens</span>
+                                       class="w-full text-center py-2 text-xl font-black text-slate-900 border-0 focus:ring-0 focus:outline-none font-mono">
+                                <div class="shrink-0 pl-2">
+                                    <span class="px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-[11px] font-black text-[#150A42] uppercase tracking-wider select-none font-mono flex items-center gap-1">
+                                        <i class="fa-solid fa-display text-[10px] text-purple-600"></i>
+                                        <span>Screens</span>
+                                    </span>
+                                </div>
                             </div>
 
-                            <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#150A42]/15">
+                            <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-md shadow-[#150A42]/15 shrink-0">
                                 <i class="fa-solid fa-plus text-sm text-amber-300"></i>
                             </button>
                         </div>
