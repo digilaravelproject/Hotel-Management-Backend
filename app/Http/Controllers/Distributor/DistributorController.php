@@ -192,9 +192,17 @@ class DistributorController extends Controller
     public function createSale(Request $request)
     {
         $user = auth()->user();
-        $hotels = $user->hotels()->orderBy('hotel_name')->get();
+        $hotels = $user->hotels()->with('plan')->withCount('connectedDevices')->orderBy('hotel_name')->get();
         $plans = Plan::where('status', 1)->where('is_hidden', false)->get();
         $selectedHotelId = $request->query('hotel_id');
+        $selectedHotel = null;
+
+        if ($selectedHotelId) {
+            $selectedHotel = $hotels->firstWhere('id', (int) $selectedHotelId);
+            if (!$selectedHotel) {
+                $selectedHotel = $user->hotels()->with('plan')->withCount('connectedDevices')->find($selectedHotelId);
+            }
+        }
 
         $activeGatewayRecord = \App\Models\PaymentGateway::where('is_enabled', true)->first();
         $gateway = null;
@@ -204,7 +212,7 @@ class DistributorController extends Controller
             $gateway = null;
         }
 
-        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId', 'activeGatewayRecord', 'gateway'));
+        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId', 'selectedHotel', 'activeGatewayRecord', 'gateway'));
     }
 
     /**
