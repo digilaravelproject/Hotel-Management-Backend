@@ -403,6 +403,17 @@
                                             </div>
 
                                             <div class="py-1">
+                                                @if($hotel->is_expired || $hotel->payment_status !== 'paid')
+                                                    <a href="{{ route('super-admin.hotels.pay', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-bold text-emerald-600 hover:bg-emerald-50 transition-colors">
+                                                        <i class="fa-solid fa-rotate w-4 text-center text-emerald-500"></i>
+                                                        <span>Renew / Settle Plan</span>
+                                                    </a>
+                                                @else
+                                                    <a href="{{ route('super-admin.hotels.addon', $hotel->id) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors">
+                                                        <i class="fa-solid fa-plus w-4 text-center text-purple-500"></i>
+                                                        <span>Add-On TV Slots</span>
+                                                    </a>
+                                                @endif
                                                 <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 transition-colors">
                                                     <i class="fa-solid fa-tv w-4 text-center text-emerald-500"></i>
                                                     <span>Connected TVs ({{ $deviceCount }})</span>

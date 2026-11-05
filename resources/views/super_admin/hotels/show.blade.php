@@ -293,8 +293,14 @@
                             </a>
                         </div>
                     @else
-                        <div class="px-4 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-extrabold shrink-0 font-mono shadow-xs">
-                            <i class="fa-solid fa-lock mr-1.5 text-rose-600"></i> Locked (Payment Required)
+                        <div class="flex items-center space-x-2 shrink-0">
+                            <div class="px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-extrabold shrink-0 font-mono shadow-xs">
+                                <i class="fa-solid fa-lock mr-1.5 text-rose-600"></i> Locked (Expired / Unpaid)
+                            </div>
+                            <a href="{{ route('super-admin.hotels.pay', $hotel->id) }}" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shadow-sm transition-all flex items-center space-x-1.5 active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-rotate text-emerald-200 text-xs"></i>
+                                <span>Renew / Settle Plan</span>
+                            </a>
                         </div>
                     @endif
                 </div>
