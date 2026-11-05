@@ -402,7 +402,10 @@
                     <!-- Direct Preview & View Switcher -->
                     <div class="flex items-center space-x-2 shrink-0">
                         @if($themePreviewUrl)
-                            <a href="{{ $themePreviewUrl }}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 text-[11px] font-extrabold flex items-center space-x-1.5 transition-all shadow-2xs" title="Open full extracted theme in new tab">
+                            <button type="button" onclick="reloadTvIframe()" class="w-7 h-7 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition-all cursor-pointer shadow-2xs" title="Refresh Live TV Theme Preview">
+                                <i class="fa-solid fa-rotate-right text-[11px]"></i>
+                            </button>
+                            <a href="{{ $themePreviewUrl }}" target="_blank" class="px-2.5 py-1.5 rounded-xl bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 text-[11px] font-extrabold flex items-center space-x-1.5 transition-all shadow-2xs" title="Open full extracted theme in new tab with real hotel data">
                                 <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-purple-600"></i>
                                 <span>Preview Link</span>
                             </a>
@@ -910,7 +913,26 @@
         if (grpEl) grpEl.textContent = groups;
         if (tabCountEl) tabCountEl.textContent = `${navBar.children.length} Tabs`;
 
+        // Broadcast real-time menus update to theme iframe
+        try {
+            const iframe = document.getElementById('tvThemeIframe');
+            if (iframe && iframe.contentWindow) {
+                iframe.contentWindow.postMessage({
+                    type: 'UPDATE_MENU',
+                    menus: buildMenuHierarchy()
+                }, '*');
+            }
+        } catch(e) {}
+
         initDropzones();
+    }
+
+    // Reload the TV theme iframe
+    function reloadTvIframe() {
+        const iframe = document.getElementById('tvThemeIframe');
+        if (iframe) {
+            iframe.src = iframe.src;
+        }
     }
 
     // Open sub-menu preview popover on TV mockup

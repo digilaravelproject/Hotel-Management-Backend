@@ -47,6 +47,8 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'edit'])->name('hotels.menus');
     Route::post('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'update']);
     Route::post('/hotels/{id}/menus/reset', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'reset'])->name('hotels.menus.reset');
+    Route::get('/hotels/{id}/theme-preview', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'themePreview'])->name('hotels.theme-preview');
+    Route::get('/hotels/{id}/tv-data', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'tvData'])->name('hotels.tv-data');
     Route::get('/hotels/{id}/pay', [SuperHotelController::class, 'showPayment'])->name('hotels.pay');
     Route::post('/hotels/{id}/pay', [SuperHotelController::class, 'processPayment']);
     Route::get('/hotels/{id}/addon', [SuperHotelController::class, 'showAddon'])->name('hotels.addon');
