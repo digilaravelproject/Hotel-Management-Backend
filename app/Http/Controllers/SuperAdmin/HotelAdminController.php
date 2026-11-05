@@ -126,23 +126,24 @@ class HotelAdminController extends Controller
     }
 
     /**
-     * Show Super Admin instant checkout for a hotel subscription.
+     * Show Super Admin instant checkout for a hotel subscription renewal.
      */
     public function showPayment(int $id)
     {
-        $hotel = HotelAdmin::with(['plan.tax', 'distributor'])->findOrFail($id);
+        $hotel = HotelAdmin::with(['plan.tax', 'distributor', 'connectedDevices'])->findOrFail($id);
 
         if (!$hotel->plan) {
             return redirect()->route('super-admin.hotels.edit', $hotel->id)
                 ->with('error', 'Please assign a subscription plan first.');
         }
 
+        $allPlans = \App\Models\Plan::with('tax')->where('is_active', true)->get();
         $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
 
         $tvCount = max(1, (int) ($hotel->room_count ?: 1));
         $pricing = $hotel->plan->calculatePricing($tvCount);
 
-        return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing', 'activeGateway'));
+        return view('super_admin.hotels.pay', compact('hotel', 'tvCount', 'pricing', 'activeGateway', 'allPlans'));
     }
 
     /**
@@ -151,7 +152,9 @@ class HotelAdminController extends Controller
     public function processPayment(Request $request, int $id, \App\Services\SubscriptionService $subService)
     {
         $hotel = HotelAdmin::with(['plan.tax', 'distributor'])->findOrFail($id);
-        $plan = $hotel->plan;
+        
+        $planId = $request->input('plan_id', $hotel->plan_id);
+        $plan = \App\Models\Plan::with('tax')->find($planId) ?: $hotel->plan;
 
         if (!$plan) {
             return redirect()->route('super-admin.hotels.edit', $hotel->id)
@@ -160,26 +163,51 @@ class HotelAdminController extends Controller
 
         $activeGateway = \App\Models\PaymentGateway::where('is_enabled', true)->first();
 
-        $tvCount = max(1, (int) ($hotel->room_count ?: 1));
-        $pricing = $plan->calculatePricing($tvCount);
-        $durationMonths = ($plan->billing_cycle === 'yearly') ? 12 : 1;
+        $tvCount = max(1, (int) ($request->input('tv_count', $hotel->room_count ?: 1)));
+        $durationMonths = (int) ($request->input('duration_months', ($plan->billing_cycle === 'yearly' ? 12 : 1)));
+        if ($durationMonths < 1) {
+            $durationMonths = ($plan->billing_cycle === 'yearly' ? 12 : 1);
+        }
+
+        // Calculate dynamic subtotal & taxes based on duration and TV count
+        $unitRate = (float) $plan->effective_price_per_tv;
+        $isYearly = ($plan->billing_cycle === 'yearly');
+        $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+        $subtotal = round($unitRate * $tvCount * $multiplier, 2);
+
+        $tax = $plan->tax;
+        $taxType = $plan->tax_type ?? 'exclusive';
+        $taxRate = $tax ? (float) $tax->rate : 0.0;
+
+        $taxAmount = 0.00;
+        $totalAmount = $subtotal;
+
+        if ($taxRate > 0) {
+            if ($taxType === 'inclusive') {
+                $taxAmount = round($subtotal - ($subtotal / (1 + ($taxRate / 100))), 2);
+                $totalAmount = $subtotal;
+            } else {
+                $taxAmount = round($subtotal * ($taxRate / 100), 2);
+                $totalAmount = round($subtotal + $taxAmount, 2);
+            }
+        }
 
         $paymentMethod = $request->input('payment_method', 'online_gateway');
         $referenceNo = $request->input('transaction_id') ?: ('TXN_' . strtoupper(\Illuminate\Support\Str::random(12)));
 
         if ($paymentMethod === 'online_gateway' && $activeGateway) {
             $gatewayCode = strtoupper($activeGateway->code);
-            $defaultNote = "Payment settled via {$activeGateway->name} (Super Admin)";
+            $defaultNote = "Payment settled via {$activeGateway->name} (Super Admin Renewal)";
         } else {
             $gatewayCode = 'SUPER_ADMIN_PAYMENT';
-            $defaultNote = "Super Admin authorized settlement for {$tvCount} TVs ({$plan->name})";
+            $defaultNote = "Super Admin renewal settlement for {$tvCount} TVs ({$plan->name})";
         }
 
         $notes = $request->input('notes') ?: $defaultNote;
 
         $subService->activate($hotel, $plan, $durationMonths, [
             'tv_count' => $tvCount,
-            'amount' => $pricing['total_amount'],
+            'amount' => $totalAmount,
             'payment_method' => $paymentMethod,
             'gateway_code' => $gatewayCode,
             'transaction_id' => $referenceNo,
@@ -187,7 +215,7 @@ class HotelAdminController extends Controller
         ]);
 
         return redirect()->route('super-admin.hotels.show', $hotel->id)
-            ->with('success', "Payment settled successfully! TV Pairing License generated and {$tvCount} TV slots authorized.");
+            ->with('success', "Renewal successful! Plan renewed for {$durationMonths} months, {$tvCount} TV slots active, and Tax Invoice generated.");
     }
 
     /**

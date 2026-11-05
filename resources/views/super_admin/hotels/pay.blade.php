@@ -1,12 +1,26 @@
 @extends('layouts.super_admin')
 
-@section('title', 'Subscription Checkout - ' . $hotel->hotel_name)
-@section('page_title', 'Subscription Settlement & TV Authorization')
+@section('title', 'Review & Settle Subscription Renewal - ' . $hotel->hotel_name)
+@section('page_title', 'Subscription Renewal & Checkout')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6 sm:space-y-8">
+<style>
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        margin: 0 !important;
+        display: none !important;
+    }
+    input[type="number"] {
+        -moz-appearance: textfield !important;
+        appearance: textfield !important;
+    }
+</style>
 
-    <!-- Top Breadcrumb Header -->
+<div class="max-w-6xl mx-auto space-y-6 sm:space-y-8">
+
+    <!-- Top Breadcrumb & Actions Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
@@ -19,318 +33,538 @@
                     {{ $hotel->hotel_name }}
                 </a>
                 <span>/</span>
-                <span class="text-[#150A42]">Subscription Checkout</span>
+                <span class="text-[#150A42] font-black">Renewal Checkout</span>
             </div>
-            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight font-sans">Authorize & Settle Subscription</h1>
-            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Generate TV pairing license key and authorize in-room streaming devices.</p>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Review & Settle Subscription Renewal</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Itemized TV device licensing, duration term, statutory GST assessment, and verified gateway settlement.</p>
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
-            <a href="{{ route('super-admin.hotels.edit', $hotel->id) }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
-                <i class="fa-regular fa-pen-to-square text-xs text-purple-600"></i>
-                <span>Edit Hotel</span>
+            <a href="{{ route('super-admin.invoices.index') }}" class="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 active:scale-95">
+                <i class="fa-solid fa-file-invoice-dollar text-xs text-purple-600"></i>
+                <span>Tax Invoices</span>
             </a>
-            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="px-3.5 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
+            <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 active:scale-95">
                 <i class="fa-solid fa-xmark text-xs"></i>
                 <span>Cancel</span>
             </a>
         </div>
     </div>
 
-    <!-- Main Checkout Container Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    @if ($errors->any())
+        <div class="p-5 rounded-[24px] bg-rose-50/90 border border-rose-200 text-rose-800 text-xs space-y-1 shadow-2xs">
+            <div class="font-black flex items-center space-x-2 text-rose-900">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                <span>Please fix the following validation errors:</span>
+            </div>
+            <ul class="list-disc list-inside space-y-0.5 pl-4 font-medium">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-        <!-- Left Column: Hotel & Order Summary (7 Cols) -->
-        <div class="lg:col-span-7 space-y-5">
-            <!-- Hotel Card -->
-            <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-6 shadow-xs space-y-4">
-                <div class="flex items-center space-x-3.5 pb-4 border-b border-slate-100">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-lg shrink-0 shadow-xs">
-                        <i class="fa-solid fa-hotel"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Billed Hotel Client</span>
-                        <h2 class="text-base sm:text-lg font-extrabold text-slate-900 truncate">{{ $hotel->hotel_name }}</h2>
-                        <div class="text-xs text-slate-500 font-medium flex items-center mt-0.5">
-                            <i class="fa-solid fa-location-dot mr-1 text-slate-400 text-[10px]"></i>
-                            <span>{{ $hotel->city ?? $hotel->hotel_location }}</span>
+    <form method="POST" action="{{ route('super-admin.hotels.pay', $hotel->id) }}" id="renewalForm" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        @csrf
+
+        <!-- Left / Main Column (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+            <!-- 1. Billed Hotel Property Card -->
+            <div class="bg-white border border-slate-100 rounded-[28px] p-5 sm:p-6 shadow-sm space-y-4 relative overflow-hidden">
+                <div class="flex items-center justify-between pb-3.5 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5 min-w-0">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-lg shrink-0 shadow-2xs overflow-hidden">
+                            @if($hotel->hotel_logo)
+                                <img src="{{ asset($hotel->hotel_logo) }}" alt="Logo" class="w-full h-full object-cover">
+                            @else
+                                <i class="fa-solid fa-hotel"></i>
+                            @endif
                         </div>
+                        <div class="min-w-0">
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Billed Hotel Property</span>
+                            <h3 class="text-base sm:text-lg font-black text-slate-900 truncate">
+                                {{ $hotel->hotel_name }}
+                            </h3>
+                            <p class="text-xs text-slate-400 font-semibold truncate flex items-center mt-0.5">
+                                <i class="fa-solid fa-location-dot mr-1 text-purple-600 text-[10px]"></i>
+                                <span>{{ $hotel->city ?? $hotel->hotel_location ?? 'Not specified' }}</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        @php
+                            $isExpired = !$hotel->expiry_date || \Carbon\Carbon::parse($hotel->expiry_date)->isPast();
+                        @endphp
+                        @if($isExpired)
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 border border-rose-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-600 animate-pulse mr-1.5"></span> Subscription Expired
+                            </span>
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span> Active until {{ \Carbon\Carbon::parse($hotel->expiry_date)->format('d M, Y') }}
+                            </span>
+                        @endif
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3 text-xs">
-                    <div class="space-y-0.5">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Owner Contact</span>
-                        <div class="font-bold text-slate-800">{{ $hotel->owner_name }}</div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs pt-1">
+                    <div class="p-3 rounded-2xl bg-slate-50/70 border border-slate-100">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">Owner Contact</span>
+                        <div class="font-bold text-slate-800 truncate mt-0.5">{{ $hotel->owner_name }}</div>
                         <div class="text-slate-500 font-mono text-[11px]">{{ $hotel->phone }}</div>
                     </div>
-                    <div class="space-y-0.5">
-                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Channel Partner</span>
-                        <div class="font-bold text-slate-800">
+
+                    <div class="p-3 rounded-2xl bg-slate-50/70 border border-slate-100">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">Channel Partner</span>
+                        <div class="font-bold text-slate-800 truncate mt-0.5">
                             {{ $hotel->distributor ? $hotel->distributor->name : 'Direct Enterprise' }}
                         </div>
                         <div class="text-slate-400 text-[11px]">Pax TV Hospitality Network</div>
                     </div>
+
+                    <div class="p-3 rounded-2xl bg-slate-50/70 border border-slate-100">
+                        <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider block">Hardware Capacity</span>
+                        <div class="font-bold text-purple-700 font-mono text-xs mt-0.5">{{ $hotel->room_count }} Rooms / TVs</div>
+                        <div class="text-slate-400 text-[11px]">{{ $hotel->connectedDevices->count() ?? 0 }} Paired Displays</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Plan Itemization Card -->
-            <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-6 shadow-xs space-y-4">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-sm font-bold shrink-0">
+            <!-- 2. Subscription Plan Selection -->
+            <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
                             <i class="fa-solid fa-layer-group"></i>
                         </div>
                         <div>
-                            <h3 class="text-sm font-extrabold text-slate-900">{{ $hotel->plan->name }}</h3>
-                            <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100">
-                                {{ strtoupper($pricing['billing_cycle']) }} BILLING
-                            </span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xs font-bold text-slate-400 block font-mono">Unit Rate</span>
-                        <span class="text-sm font-extrabold text-slate-900 font-mono">₹{{ number_format($pricing['price_per_tv'], 2) }}</span>
-                        <span class="text-[10px] text-slate-400 block">/ TV / {{ $pricing['billing_cycle'] === 'yearly' ? 'yr' : 'mo' }}</span>
-                    </div>
-                </div>
-
-                <!-- TVs Calculation Line -->
-                <div class="flex items-center justify-between p-3.5 rounded-2xl bg-[#F8F9FD] border border-slate-200/70 text-xs">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 flex items-center justify-center text-[#150A42] font-bold">
-                            <i class="fa-solid fa-tv text-xs"></i>
-                        </div>
-                        <div>
-                            <span class="font-extrabold text-slate-900 text-sm font-mono">{{ $tvCount }} Connected TVs</span>
-                            <span class="text-[11px] text-slate-400 block">Hardware device pairing slots</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="font-mono text-sm font-extrabold text-slate-900">
-                            {{ $tvCount }} × ₹{{ number_format($pricing['price_per_tv'], 2) }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Tax & Price Breakdown Table -->
-                <div class="space-y-2 pt-1 text-xs">
-                    <div class="flex items-center justify-between text-slate-600">
-                        <span>Base Subtotal:</span>
-                        <span class="font-bold font-mono text-slate-900">₹{{ number_format($pricing['subtotal'], 2) }}</span>
-                    </div>
-
-                    @if(!empty($pricing['tax_rate']) && $pricing['tax_rate'] > 0)
-                        <div class="flex items-center justify-between text-slate-600">
-                            <span>
-                                {{ $pricing['tax_name'] }} ({{ number_format($pricing['tax_rate'], 1) }}% - {{ ucfirst($pricing['tax_type']) }}):
-                            </span>
-                            <span class="font-bold font-mono text-slate-900">+ ₹{{ number_format($pricing['tax_amount'], 2) }}</span>
-                        </div>
-                        @if(!empty($pricing['cgst_amount']) && $pricing['cgst_amount'] > 0)
-                            <div class="flex items-center justify-between text-[11px] text-slate-400 pl-3">
-                                <span>CGST ({{ number_format($pricing['tax_rate']/2, 1) }}%):</span>
-                                <span class="font-mono">₹{{ number_format($pricing['cgst_amount'], 2) }}</span>
-                            </div>
-                            <div class="flex items-center justify-between text-[11px] text-slate-400 pl-3">
-                                <span>SGST ({{ number_format($pricing['tax_rate']/2, 1) }}%):</span>
-                                <span class="font-mono">₹{{ number_format($pricing['sgst_amount'], 2) }}</span>
-                            </div>
-                        @endif
-                    @else
-                        <div class="flex items-center justify-between text-slate-400 text-[11px]">
-                            <span>Tax Assessment:</span>
-                            <span class="font-mono">0.00 (Zero Rated / No Tax)</span>
-                        </div>
-                    @endif
-
-                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-slate-900">
-                        <div>
-                            <span class="text-sm font-black">Total Amount Payable:</span>
-                            <span class="text-[10px] text-slate-400 block font-medium">All statutory taxes and platform pairings included</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-xl sm:text-2xl font-black text-[#150A42] font-mono tracking-tight">
-                                ₹{{ number_format($pricing['total_amount'], 2) }}
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Right Column: Settlement & Payment Action (5 Cols) -->
-        <div class="lg:col-span-5 space-y-5">
-            <div class="bg-gradient-to-br from-[#150A42] via-[#1e0e5a] to-[#251068] text-white rounded-[26px] p-6 shadow-xl space-y-5">
-                
-                <!-- Card Header -->
-                <div class="flex items-center justify-between pb-3 border-b border-white/10">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-amber-400 text-base">
-                            <i class="fa-solid fa-shield-halved"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] font-bold text-white/70 uppercase tracking-wider font-mono">Payment Verification</span>
-                            <h3 class="text-base font-extrabold tracking-tight">Authorize & Settle Plan</h3>
+                            <h3 class="text-base font-black text-slate-900">Select Subscription Tier</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Choose the Smart TV license package for this hotel property.</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Active System Gateway Status Callout -->
-                @if($activeGateway && $activeGateway->is_enabled)
-                    <div class="p-3.5 rounded-2xl bg-white/10 border border-white/15 flex items-center justify-between gap-3">
-                        <div class="flex items-center space-x-3 min-w-0">
-                            <div class="w-9 h-9 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 flex items-center justify-center shrink-0">
-                                @if($activeGateway->code === 'razorpay')
-                                    <i class="fa-solid fa-bolt text-sm"></i>
-                                @elseif($activeGateway->code === 'icici')
-                                    <i class="fa-solid fa-building-columns text-sm"></i>
-                                @else
-                                    <i class="fa-solid fa-credit-card text-sm"></i>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    @foreach($allPlans as $p)
+                        @php
+                            $isSelected = ($p->id == $hotel->plan_id);
+                            $effTax = $p->tax;
+                            $tRate = $effTax ? (float) $effTax->rate : 0.0;
+                            $tName = $effTax ? $effTax->name : 'GST';
+                            $tType = $p->tax_type ?? 'exclusive';
+                            $pCycle = strtolower($p->billing_cycle ?? 'monthly');
+                            $uRate = (float) $p->effective_price_per_tv;
+                        @endphp
+                        <label class="plan-card relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all {{ $isSelected ? 'border-[#150A42] bg-purple-50/30 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
+                            <div>
+                                <div class="flex items-start justify-between">
+                                    <div class="w-8 h-8 rounded-xl bg-purple-100/70 text-[#150A42] flex items-center justify-center text-xs font-bold">
+                                        <i class="fa-solid fa-tv"></i>
+                                    </div>
+                                    <input type="radio" 
+                                           name="plan_id" 
+                                           value="{{ $p->id }}" 
+                                           {{ $isSelected ? 'checked' : '' }}
+                                           data-name="{{ $p->name }}"
+                                           data-unit-rate="{{ $uRate }}"
+                                           data-billing-cycle="{{ $pCycle }}"
+                                           data-tax-name="{{ $tName }}"
+                                           data-tax-rate="{{ $tRate }}"
+                                           data-tax-type="{{ $tType }}"
+                                           data-is-split="{{ ($effTax && $effTax->is_split) ? '1' : '0' }}"
+                                           class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-purple-500">
+                                </div>
+
+                                <div class="font-black text-slate-900 text-sm sm:text-base mt-2">{{ $p->name }}</div>
+                                <div class="text-xl font-black text-[#150A42] font-mono mt-1">
+                                    ₹{{ number_format($uRate, 2) }}
+                                    <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / {{ $pCycle === 'yearly' ? 'year' : 'month' }}</span>
+                                </div>
+
+                                <div class="mt-2 flex items-center space-x-1.5">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                                        {{ $tName }} ({{ number_format($tRate, 0) }}% {{ ucfirst($tType) }})
+                                    </span>
+                                </div>
+
+                                @if($p->description)
+                                    <p class="text-[11px] text-slate-400 mt-2 font-medium line-clamp-2">
+                                        {{ $p->description }}
+                                    </p>
                                 @endif
                             </div>
-                            <div class="min-w-0">
-                                <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-300 font-bold block">Active System Gateway</span>
-                                <div class="text-xs font-black text-white truncate">{{ $activeGateway->name }}</div>
+
+                            <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-[10px] text-slate-600 font-semibold">
+                                <div class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                    <span>Full In-Room TV Launcher & Themes</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                    <span>Cloud Remote Broadcast & Updates</span>
+                                </div>
                             </div>
-                        </div>
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider bg-emerald-400/20 text-emerald-200 border border-emerald-400/30 shrink-0 font-mono">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse mr-1"></span> Enabled
-                        </span>
-                    </div>
-                @else
-                    <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-400/20 flex items-center space-x-2 text-amber-200 text-xs">
-                        <i class="fa-solid fa-triangle-exclamation text-amber-300"></i>
-                        <span>No online gateway enabled. Offline direct authorization available.</span>
-                    </div>
-                @endif
-
-                <form action="{{ route('super-admin.hotels.pay', $hotel->id) }}" method="POST" class="space-y-4">
-                    @csrf
-
-                    <!-- Select Payment Verification Channel -->
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold text-white/90">
-                            Select Payment Channel <span class="text-amber-400">*</span>
                         </label>
+                    @endforeach
+                </div>
+            </div>
 
-                        <div class="space-y-2 text-xs">
-                            <!-- 1. Active Online Payment Gateway -->
-                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/10 hover:bg-white/15 border-2 border-amber-400/80 cursor-pointer transition-all">
-                                <input type="radio" 
-                                       name="payment_method" 
-                                       value="online_gateway" 
-                                       checked 
-                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
-                                <div class="min-w-0">
-                                    <div class="flex items-center space-x-1.5">
-                                        <span class="font-extrabold text-white">
-                                            {{ $activeGateway ? $activeGateway->name : 'Primary Online Gateway' }}
-                                        </span>
-                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-emerald-500/30 text-emerald-200 border border-emerald-400/30">DEFAULT</span>
-                                    </div>
-                                    <p class="text-[11px] text-white/70 mt-0.5">
-                                        Settlement recorded through the active {{ $activeGateway ? strtoupper($activeGateway->code) : 'Gateway' }} pipeline.
-                                    </p>
-                                </div>
-                            </label>
-
-                            <!-- 2. Direct Admin Override -->
-                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
-                                <input type="radio" 
-                                       name="payment_method" 
-                                       value="super_admin_authorized" 
-                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
-                                <div class="min-w-0">
-                                    <span class="font-extrabold text-white">Direct Admin Authorized (Complimentary / Internal)</span>
-                                    <p class="text-[11px] text-white/70 mt-0.5">
-                                        Direct Super Admin executive grant without charging external payment gateway.
-                                    </p>
-                                </div>
-                            </label>
-
-                            <!-- 3. Bank Wire / NEFT / RTGS -->
-                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
-                                <input type="radio" 
-                                       name="payment_method" 
-                                       value="bank_transfer" 
-                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
-                                <div class="min-w-0">
-                                    <span class="font-extrabold text-white">Bank Transfer / NEFT / RTGS / Cheque</span>
-                                    <p class="text-[11px] text-white/70 mt-0.5">
-                                        Direct corporate bank wire transfer with UTR bank reference.
-                                    </p>
-                                </div>
-                            </label>
-
-                            <!-- 4. UPI Direct -->
-                            <label class="payment-channel-card flex items-start space-x-3 p-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 cursor-pointer transition-all">
-                                <input type="radio" 
-                                       name="payment_method" 
-                                       value="upi" 
-                                       class="mt-1 text-amber-400 focus:ring-amber-400 h-4 w-4 bg-white/20 border-white/30">
-                                <div class="min-w-0">
-                                    <span class="font-extrabold text-white">UPI Direct Instant Settlement</span>
-                                    <p class="text-[11px] text-white/70 mt-0.5">
-                                        Instant QR or VPA payment settlement with 12-digit UPI RRN reference.
-                                    </p>
-                                </div>
-                            </label>
-                        </div>
+            <!-- 3. Duration & TV Capacity Settlement -->
+            <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
+                    <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                        <i class="fa-solid fa-calendar-days"></i>
                     </div>
-
-                    <!-- Reference Number / Transaction ID -->
                     <div>
-                        <label class="block text-xs font-bold text-white/90 mb-1.5">
-                            Transaction Reference / UTR # <span class="text-white/50 text-[10px] font-normal">(Optional)</span>
-                        </label>
-                        <input type="text" 
-                               name="transaction_id" 
-                               placeholder="e.g. UTR20261105001 or leave blank for auto-generated ID" 
-                               class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-amber-400/50">
+                        <h3 class="text-base font-black text-slate-900">Renewal Term & TV Pairing Slots</h3>
+                        <p class="text-xs text-slate-400 font-medium mt-0.5">Select validity term and confirm number of connected TV displays.</p>
                     </div>
+                </div>
 
-                    <!-- Internal Notes -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-white/90 mb-1.5">
-                            Internal Settlement Notes <span class="text-white/50 text-[10px] font-normal">(Optional)</span>
+                        <label class="block text-xs font-black text-slate-700 mb-1.5">
+                            Renewal Validity Period <span class="text-rose-500">*</span>
                         </label>
-                        <input type="text" 
-                               name="notes" 
-                               placeholder="e.g. Authorized by Super Admin for {{ $tvCount }} displays" 
-                               class="w-full px-3.5 py-2.5 rounded-xl bg-white/10 border border-white/20 text-white placeholder:text-white/40 text-xs focus:outline-none focus:ring-2 focus:ring-amber-400/50">
+                        <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm font-bold text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all cursor-pointer">
+                            <option value="1">1 Month (Monthly Pack)</option>
+                            <option value="3">3 Months (Quarterly Pack)</option>
+                            <option value="6">6 Months (Semi-Annual Pack)</option>
+                            <option value="12" selected>12 Months (1 Year - Annual Pack)</option>
+                            <option value="24">24 Months (2-Year Pack)</option>
+                            <option value="36">36 Months (3-Year Pack)</option>
+                        </select>
                     </div>
 
-                    <!-- Recap Badge -->
-                    <div class="p-3.5 rounded-xl bg-white/5 border border-white/10 text-xs space-y-1">
-                        <div class="flex items-center justify-between text-white/80">
-                            <span>Authorized TV Displays:</span>
-                            <span class="font-bold font-mono text-white">{{ $tvCount }} Smart TVs</span>
-                        </div>
-                        <div class="flex items-center justify-between text-white/80">
-                            <span>License Duration:</span>
-                            <span class="font-bold font-mono text-white">
-                                {{ $pricing['billing_cycle'] === 'yearly' ? '365 Days (1 Year)' : '30 Days (1 Month)' }}
+                    <div>
+                        <label class="block text-xs font-black text-slate-700 mb-1.5">
+                            Connected TV Hardware Slots <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <input type="number" 
+                                   name="tv_count" 
+                                   id="tvCountInput" 
+                                   min="1" 
+                                   max="5000" 
+                                   value="{{ $tvCount }}" 
+                                   required 
+                                   class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-mono transition-all">
+                            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 font-sans pointer-events-none">
+                                TVs
                             </span>
                         </div>
                     </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="w-full py-3.5 px-5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm transition-all shadow-lg shadow-amber-400/25 flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-circle-check text-sm"></i>
-                        <span>Authorize & Settle ₹{{ number_format($pricing['total_amount'], 2) }}</span>
-                    </button>
-                </form>
-
-                <div class="pt-2 text-center">
-                    <span class="text-[10px] text-white/60">
-                        <i class="fa-solid fa-lock mr-1"></i> Generates Tax-Compliant Invoice & 16-Char License Key Instantly
-                    </span>
                 </div>
+
+                <!-- 4. Payment Verification Channel (Matching Distributor Layout) -->
+                <div class="pt-2">
+                    <input type="hidden" name="payment_method" id="paymentMethod" value="online_gateway">
+                    <label class="block text-xs font-black text-slate-700 mb-2">Payment Verification Channel <span class="text-rose-500">*</span></label>
+                    
+                    @if($activeGateway && $activeGateway->is_enabled)
+                        <div class="p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+                            <div class="flex items-center space-x-3.5">
+                                <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black shrink-0 shadow-2xs">
+                                    @if($activeGateway->code === 'razorpay')
+                                        <i class="fa-solid fa-bolt text-blue-600 text-lg"></i>
+                                    @elseif($activeGateway->code === 'icici')
+                                        <i class="fa-solid fa-building-columns text-amber-700 text-lg"></i>
+                                    @else
+                                        <i class="fa-solid fa-credit-card text-emerald-700 text-lg"></i>
+                                    @endif
+                                </div>
+                                <div>
+                                    <div class="flex items-center space-x-2">
+                                        <h4 class="text-xs font-black text-slate-900">{{ $activeGateway->name }}</h4>
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1"></span> Live Gateway
+                                        </span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-500 font-medium mt-0.5">Automated server-side verification with instant license renewal and statutory GST tax invoice.</p>
+                                </div>
+                            </div>
+                            <div class="text-xs font-bold text-emerald-700 shrink-0 flex items-center space-x-1">
+                                <i class="fa-solid fa-shield-halved"></i>
+                                <span>Verified Gateway</span>
+                            </div>
+                        </div>
+                    @else
+                        <div class="p-4 sm:p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 flex items-center space-x-3 text-rose-800">
+                            <i class="fa-solid fa-triangle-exclamation text-xl shrink-0"></i>
+                            <div class="text-xs">
+                                <p class="font-black">No Active Payment Gateway</p>
+                                <p class="text-[11px] text-rose-700 mt-0.5">Please enable an online payment gateway from Gateway Settings to process automated settlements.</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Right Column: Tax Assessment & Settlement (5 cols, sticky) -->
+        <div class="lg:col-span-5 space-y-6 sticky top-24">
+            <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
+                <div class="border-b border-slate-100 pb-4">
+                    <div class="flex items-center justify-between">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/60 shadow-2xs font-mono">
+                            Tax Invoice Assessment
+                        </span>
+                        <span class="text-[11px] font-bold text-emerald-600 flex items-center">
+                            <i class="fa-solid fa-shield-check mr-1"></i> GST Compliant
+                        </span>
+                    </div>
+                    <div class="text-xl font-black text-slate-900 mt-2 tracking-tight">Order Breakdown & Total</div>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Itemized TV licensing cost and statutory taxes.</p>
+                </div>
+
+                <!-- Itemized Specs Table -->
+                <div class="space-y-3 text-xs">
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-400 font-medium">Billed Hotel:</span>
+                        <span class="font-black text-slate-900 truncate max-w-[200px]">
+                            {{ $hotel->hotel_name }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-400 font-medium">Subscription Tier:</span>
+                        <span id="summaryPlanName" class="font-black text-slate-900">{{ $hotel->plan->name }}</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-400 font-medium">Connected TVs:</span>
+                        <span id="summaryTvCount" class="font-black font-mono text-purple-700">{{ $tvCount }} Smart TVs</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-400 font-medium">Rate per TV:</span>
+                        <span id="summaryUnitRate" class="font-black font-mono text-slate-900">
+                            ₹{{ number_format($hotel->plan->effective_price_per_tv, 2) }}
+                        </span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100">
+                        <span class="text-slate-400 font-medium">Billing Duration:</span>
+                        <span id="summaryDuration" class="font-black text-slate-900">12 Months (1 Year)</span>
+                    </div>
+
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 bg-slate-50/70 p-2.5 rounded-xl">
+                        <div>
+                            <span class="text-slate-600 font-bold block">Base Subtotal:</span>
+                            <span id="summaryFormula" class="text-[10px] text-slate-400 font-mono block">
+                                {{ $tvCount }} TVs × ₹{{ number_format($hotel->plan->effective_price_per_tv, 2) }}
+                            </span>
+                        </div>
+                        <span id="summarySubtotal" class="font-black font-mono text-slate-900 self-center text-sm">
+                            ₹{{ number_format($pricing['subtotal'], 2) }}
+                        </span>
+                    </div>
+
+                    <!-- Tax Breakdown Rows -->
+                    <div id="taxBreakdownBox" class="space-y-1.5 pt-1">
+                        <div class="flex justify-between text-slate-600">
+                            <span id="summaryTaxLabel">GST (18% Exclusive):</span>
+                            <span id="summaryTaxAmount" class="font-mono font-bold text-slate-900">+ ₹0.00</span>
+                        </div>
+                        <div id="cgstRow" class="flex justify-between text-[11px] text-slate-400 pl-3">
+                            <span id="summaryCgstLabel">CGST (9%):</span>
+                            <span id="summaryCgstAmount" class="font-mono">₹0.00</span>
+                        </div>
+                        <div id="sgstRow" class="flex justify-between text-[11px] text-slate-400 pl-3">
+                            <span id="summarySgstLabel">SGST (9%):</span>
+                            <span id="summarySgstAmount" class="font-mono">₹0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- Total Payable Line -->
+                    <div class="pt-3 border-t-2 border-slate-900 flex justify-between items-center text-slate-900">
+                        <div>
+                            <span class="text-sm font-black block">Total Payable:</span>
+                            <span class="text-[10px] text-slate-400 block font-medium">All taxes & TV pairing licenses included</span>
+                        </div>
+                        <span id="summaryTotal" class="font-black font-mono text-[#150A42] text-2xl tracking-tight">
+                            ₹{{ number_format($pricing['total_amount'], 2) }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Automatic Invoice Guarantee Box -->
+                <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/60 text-[11px] text-purple-950 space-y-1.5">
+                    <div class="font-black flex items-center space-x-1.5">
+                        <i class="fa-solid fa-file-invoice text-purple-600"></i>
+                        <span>Automated Tax Invoice Generation</span>
+                    </div>
+                    <p class="text-purple-900/80 text-[10px] leading-relaxed font-medium">Upon verified payment, a formal tax-compliant invoice is immediately issued with serial numbering and downloadable under Tax Invoices.</p>
+                </div>
+
+                <button type="submit" 
+                        id="submitBtn" 
+                        class="w-full py-4 px-4 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2 transition-all active:scale-95 cursor-pointer">
+                    <i class="fa-solid fa-lock text-xs text-amber-300"></i>
+                    <span id="submitBtnLabel">Confirm & Settle Renewal ₹{{ number_format($pricing['total_amount'], 2) }}</span>
+                </button>
+
+                <p class="text-[10px] text-slate-400 text-center leading-relaxed font-medium">
+                    <i class="fa-solid fa-shield-check text-emerald-600 mr-1"></i>
+                    Payments processed securely via {{ $activeGateway ? $activeGateway->name : 'Payment Gateway' }}.
+                </p>
             </div>
         </div>
 
-    </div>
+    </form>
 
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const planRadios = document.querySelectorAll('.plan-radio');
+    const durationSelect = document.getElementById('durationSelect');
+    const tvCountInput = document.getElementById('tvCountInput');
+
+    const summaryPlanName = document.getElementById('summaryPlanName');
+    const summaryTvCount = document.getElementById('summaryTvCount');
+    const summaryUnitRate = document.getElementById('summaryUnitRate');
+    const summaryDuration = document.getElementById('summaryDuration');
+    const summaryFormula = document.getElementById('summaryFormula');
+    const summarySubtotal = document.getElementById('summarySubtotal');
+    const summaryTaxLabel = document.getElementById('summaryTaxLabel');
+    const summaryTaxAmount = document.getElementById('summaryTaxAmount');
+    const summaryCgstLabel = document.getElementById('summaryCgstLabel');
+    const summaryCgstAmount = document.getElementById('summaryCgstAmount');
+    const summarySgstLabel = document.getElementById('summarySgstLabel');
+    const summarySgstAmount = document.getElementById('summarySgstAmount');
+    const cgstRow = document.getElementById('cgstRow');
+    const sgstRow = document.getElementById('sgstRow');
+    const summaryTotal = document.getElementById('summaryTotal');
+    const submitBtnLabel = document.getElementById('submitBtnLabel');
+
+    function calculateTotal() {
+        let selectedPlan = document.querySelector('.plan-radio:checked');
+        if (!selectedPlan && planRadios.length > 0) {
+            selectedPlan = planRadios[0];
+            selectedPlan.checked = true;
+        }
+        if (!selectedPlan) return;
+
+        // Card highlight styling
+        document.querySelectorAll('.plan-card').forEach(card => {
+            const radio = card.querySelector('.plan-radio');
+            if (radio && radio.checked) {
+                card.className = 'plan-card relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all border-[#150A42] bg-purple-50/30 shadow-xs';
+            } else {
+                card.className = 'plan-card relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all border-slate-200/90 hover:border-slate-300 bg-white';
+            }
+        });
+
+        const name = selectedPlan.dataset.name || 'Plan';
+        const unitRate = parseFloat(selectedPlan.dataset.unitRate) || 0;
+        const cycle = (selectedPlan.dataset.billingCycle || 'monthly').toLowerCase();
+        const isYearly = (cycle === 'yearly');
+
+        let tvCount = parseInt(tvCountInput.value) || 1;
+        if (tvCount < 1) tvCount = 1;
+
+        let months = parseInt(durationSelect.value) || (isYearly ? 12 : 1);
+
+        const multiplier = isYearly ? Math.max(1, Math.round((months / 12) * 100) / 100) : months;
+        let subtotal = Math.round((unitRate * tvCount * multiplier) * 100) / 100;
+
+        const taxRate = parseFloat(selectedPlan.dataset.taxRate) || 0;
+        const taxName = selectedPlan.dataset.taxName || 'GST';
+        const taxType = selectedPlan.dataset.taxType || 'exclusive';
+        const isSplit = selectedPlan.dataset.isSplit === '1';
+
+        let taxAmount = 0.00;
+        let totalAmount = subtotal;
+        let baseSubtotal = subtotal;
+        let cgst = 0.00;
+        let sgst = 0.00;
+
+        if (taxRate > 0) {
+            if (taxType === 'inclusive') {
+                taxAmount = Math.round((subtotal - (subtotal / (1 + (taxRate / 100)))) * 100) / 100;
+                baseSubtotal = Math.round((subtotal - taxAmount) * 100) / 100;
+                totalAmount = subtotal;
+            } else {
+                taxAmount = Math.round((subtotal * (taxRate / 100)) * 100) / 100;
+                totalAmount = Math.round((subtotal + taxAmount) * 100) / 100;
+                baseSubtotal = subtotal;
+            }
+
+            if (isSplit) {
+                cgst = Math.round((taxAmount / 2) * 100) / 100;
+                sgst = Math.round((taxAmount - cgst) * 100) / 100;
+            }
+        }
+
+        // Update Summary Elements
+        if (summaryPlanName) summaryPlanName.textContent = name;
+        if (summaryTvCount) summaryTvCount.textContent = `${tvCount} Smart TVs`;
+        if (summaryUnitRate) {
+            summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / ${isYearly ? 'year' : 'month'}`;
+        }
+        if (summaryDuration) {
+            if (isYearly) {
+                const yrs = Math.max(1, Math.round(months / 12));
+                summaryDuration.textContent = `${yrs} Year${yrs > 1 ? 's' : ''} (${months} Months)`;
+            } else {
+                summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
+            }
+        }
+
+        if (summaryFormula) {
+            const timeStr = isYearly 
+                ? (multiplier === 1 ? '1 yr' : `${multiplier} yrs`) 
+                : (months === 1 ? '1 mo' : `${months} mos`);
+            summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${timeStr}`;
+        }
+
+        if (summarySubtotal) {
+            summarySubtotal.textContent = `₹${baseSubtotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        }
+
+        if (taxRate > 0) {
+            if (summaryTaxLabel) {
+                summaryTaxLabel.textContent = `${taxName} (${taxRate.toFixed(0)}% ${taxType.charAt(0).toUpperCase() + taxType.slice(1)}):`;
+            }
+            if (summaryTaxAmount) {
+                summaryTaxAmount.textContent = `+ ₹${taxAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            }
+
+            if (isSplit) {
+                if (cgstRow) cgstRow.style.display = 'flex';
+                if (sgstRow) sgstRow.style.display = 'flex';
+                if (summaryCgstLabel) summaryCgstLabel.textContent = `CGST (${(taxRate / 2).toFixed(1)}%):`;
+                if (summaryCgstAmount) summaryCgstAmount.textContent = `₹${cgst.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                if (summarySgstLabel) summarySgstLabel.textContent = `SGST (${(taxRate / 2).toFixed(1)}%):`;
+                if (summarySgstAmount) summarySgstAmount.textContent = `₹${sgst.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            } else {
+                if (cgstRow) cgstRow.style.display = 'none';
+                if (sgstRow) sgstRow.style.display = 'none';
+            }
+        } else {
+            if (summaryTaxLabel) summaryTaxLabel.textContent = 'Statutory Tax:';
+            if (summaryTaxAmount) summaryTaxAmount.textContent = '₹0.00 (Zero Rated)';
+            if (cgstRow) cgstRow.style.display = 'none';
+            if (sgstRow) sgstRow.style.display = 'none';
+        }
+
+        const totalFormatted = `₹${totalAmount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+        if (summaryTotal) summaryTotal.textContent = totalFormatted;
+        if (submitBtnLabel) submitBtnLabel.textContent = `Confirm & Settle Renewal ${totalFormatted}`;
+    }
+
+    planRadios.forEach(r => r.addEventListener('change', calculateTotal));
+    if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
+    if (tvCountInput) tvCountInput.addEventListener('input', calculateTotal);
+
+    // Initial run
+    calculateTotal();
+});
+</script>
 @endsection
