@@ -1,4 +1,4 @@
-﻿@extends('layouts.distributor')
+@extends('layouts.distributor')
 
 @section('title', 'Sell Package - Distributor Hub')
 @section('page_title', 'Sell Subscription Package')
@@ -8,28 +8,25 @@
 <div class="max-w-4xl mx-auto space-y-6">
     <!-- Back Header -->
     <div class="flex items-center justify-between">
-        <a href="{{ route('distributor.sales.index') }}" class="inline-flex items-center text-xs font-bold text-slate-500 hover:text-slate-900 transition-colors">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
+        <a href="{{ route('distributor.sales.index') }}" class="inline-flex items-center space-x-2 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white hover:bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-200/90 shadow-2xs transition-all active:scale-95">
+            <i class="fa-solid fa-arrow-left text-[11px] text-slate-400"></i>
             <span>Back to Sales Ledger</span>
         </a>
+
+        <div class="hidden sm:flex items-center space-x-2 text-xs text-slate-400 font-semibold">
+            <span>Distributor Hub</span>
+            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+            <span class="text-slate-800 font-extrabold">Sell Package</span>
+        </div>
     </div>
 
-    @if (session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs">
-            <div class="font-bold flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>{{ session('error') }}</span>
-            </div>
-        </div>
-    @endif
-
     @if ($errors->any())
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs space-y-1">
-            <div class="font-bold flex items-center space-x-2">
-                <i class="fa-solid fa-triangle-exclamation"></i>
+        <div class="p-5 rounded-[24px] bg-rose-50/90 border border-rose-200 text-rose-800 text-xs space-y-1 shadow-2xs">
+            <div class="font-black flex items-center space-x-2 text-rose-900">
+                <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
                 <span>Please fix the following validation errors:</span>
             </div>
-            <ul class="list-disc list-inside space-y-0.5 pl-4">
+            <ul class="list-disc list-inside space-y-0.5 pl-4 font-medium">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -38,14 +35,16 @@
     @endif
 
     @if($hotels->isEmpty())
-        <div class="bg-amber-50 border border-amber-200 rounded-3xl p-8 text-center space-y-3">
-            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl mx-auto">
+        <div class="bg-white border border-slate-100 rounded-[28px] p-10 text-center space-y-4 shadow-sm">
+            <div class="w-14 h-14 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-2xl mx-auto shadow-2xs">
                 <i class="fa-solid fa-hotel"></i>
             </div>
-            <h3 class="font-extrabold text-slate-900 text-base">No Hotels Available to Sell Packages</h3>
-            <p class="text-xs text-slate-600 max-w-md mx-auto">You must onboard at least one partner hotel under your account before you can sell or assign subscription packages.</p>
             <div>
-                <a href="{{ route('distributor.hotels.create') }}" class="px-5 py-2.5 rounded-xl bg-amber-500 text-slate-950 font-bold text-xs inline-flex items-center space-x-2">
+                <h3 class="font-black text-slate-900 text-base">No Hotels Available to Sell Packages</h3>
+                <p class="text-xs text-slate-400 max-w-md mx-auto mt-1 font-medium">You must onboard at least one partner hotel under your account before you can sell or assign subscription packages.</p>
+            </div>
+            <div class="pt-2">
+                <a href="{{ route('distributor.hotels.create') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs inline-flex items-center space-x-2 shadow-md shadow-[#150A42]/15 active:scale-95">
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Onboard Hotel First</span>
                 </a>
@@ -58,15 +57,20 @@
             <!-- Form Left/Center (2 columns) -->
             <div class="lg:col-span-2 space-y-6">
                 <!-- Select Hotel & Plan -->
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-                    <div class="border-b border-slate-100 pb-4">
-                        <h3 class="text-base font-extrabold text-slate-900">1. Target Hotel & Package</h3>
-                        <p class="text-xs text-slate-500">Choose which hotel to license and select the subscription tier.</p>
+                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-8 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                            <i class="fa-solid fa-hotel"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-slate-900">1. Target Hotel & Package Tier</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Choose which hotel to license and select the subscription plan.</p>
+                        </div>
                     </div>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Select Hotel Property <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-black text-slate-700 mb-1.5">Select Hotel Property <span class="text-rose-500">*</span></label>
                             <x-dropdown name="hotel_id" id="hotelSelect" required theme="dist">
                                 <option value="">-- Choose Hotel --</option>
                                 @foreach($hotels as $hotel)
@@ -78,20 +82,23 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Select Subscription Plan <span class="text-rose-500">*</span></label>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="block text-xs font-black text-slate-700 mb-2">Select Subscription Plan <span class="text-rose-500">*</span></label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 @foreach($plans as $plan)
-                                    <label class="relative flex flex-col justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all hover:border-slate-400 bg-white has-[:checked]:border-amber-500 has-[:checked]:bg-amber-50/20">
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="w-7 h-7 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold">
+                                    <label class="relative flex flex-col justify-between p-4 sm:p-5 rounded-[22px] border-2 cursor-pointer transition-all hover:border-slate-300 bg-white has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/30 has-[:checked]:shadow-xs">
+                                        <div class="flex items-center justify-between mb-2.5">
+                                            <span class="w-9 h-9 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-xs font-black shadow-2xs">
                                                 <i class="fa-solid fa-layer-group"></i>
                                             </span>
-                                            <input type="radio" name="plan_id" value="{{ $plan->id }}" {{ old('plan_id', $loop->first ? $plan->id : '') == $plan->id ? 'checked' : '' }} data-price="{{ $plan->price }}" data-name="{{ $plan->name }}" data-rooms="{{ $plan->room_count }}" class="plan-radio w-4 h-4 text-amber-600 border-slate-300 focus:ring-amber-500">
+                                            <input type="radio" name="plan_id" value="{{ $plan->id }}" {{ old('plan_id', $loop->first ? $plan->id : '') == $plan->id ? 'checked' : '' }} data-price="{{ $plan->price }}" data-name="{{ $plan->name }}" data-rooms="{{ $plan->room_count }}" class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-purple-500">
                                         </div>
                                         <div>
-                                            <div class="font-extrabold text-slate-900 text-xs">{{ $plan->name }}</div>
-                                            <div class="text-sm font-extrabold text-amber-600 mt-0.5">₹{{ number_format($plan->price, 0) }} <span class="text-[10px] text-slate-400 font-normal">/mo</span></div>
-                                            <p class="text-[10px] text-slate-500 mt-1">Up to {{ $plan->room_count }} rooms</p>
+                                            <div class="font-black text-slate-900 text-xs sm:text-sm">{{ $plan->name }}</div>
+                                            <div class="text-base font-black text-[#150A42] mt-0.5">
+                                                ₹{{ number_format($plan->price, 0) }} 
+                                                <span class="text-[10px] text-slate-400 font-normal">/mo</span>
+                                            </div>
+                                            <p class="text-[10px] text-slate-400 mt-1 font-medium">Up to {{ $plan->room_count }} rooms license</p>
                                         </div>
                                     </label>
                                 @endforeach
@@ -101,15 +108,20 @@
                 </div>
 
                 <!-- Duration & Payment Method -->
-                <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-                    <div class="border-b border-slate-100 pb-4">
-                        <h3 class="text-base font-extrabold text-slate-900">2. Duration & Payment Details</h3>
-                        <p class="text-xs text-slate-500">Choose validity duration and payment collection method.</p>
+                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-8 shadow-sm space-y-6">
+                    <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
+                        <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                            <i class="fa-solid fa-credit-card"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-base font-black text-slate-900">2. Duration & Payment Details</h3>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Choose validity duration and online payment gateway.</p>
+                        </div>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">License Duration <span class="text-rose-500">*</span></label>
+                            <label class="block text-xs font-black text-slate-700 mb-1.5">License Duration <span class="text-rose-500">*</span></label>
                             <x-dropdown name="duration_months" id="durationSelect" required theme="dist">
                                 <option value="1" {{ old('duration_months') == '1' ? 'selected' : '' }}>1 Month (Standard)</option>
                                 <option value="3" {{ old('duration_months') == '3' ? 'selected' : '' }}>3 Months (Quarterly)</option>
@@ -119,20 +131,20 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-bold text-slate-700 mb-1">Total Amount (₹) <span class="text-rose-500">*</span></label>
-                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-3.5 py-2.5 text-xs font-extrabold text-slate-900 rounded-xl border border-slate-200 bg-slate-100/80 cursor-not-allowed">
+                            <label class="block text-xs font-black text-slate-700 mb-1.5">Total Amount (₹) <span class="text-rose-500">*</span></label>
+                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-4 py-2.5 text-xs font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-100/80 cursor-not-allowed">
                         </div>
                     </div>
 
-                    <!-- Active Payment Gateway Only (No Offline/Unverified Bypasses) -->
+                    <!-- Active Payment Gateway Only -->
                     <div class="pt-2">
                         <input type="hidden" name="payment_method" id="paymentMethod" value="online_gateway">
-                        <label class="block text-xs font-bold text-slate-700 mb-2">Authorized Payment Channel <span class="text-rose-500">*</span></label>
+                        <label class="block text-xs font-black text-slate-700 mb-2">Authorized Payment Gateway <span class="text-rose-500">*</span></label>
                         
                         @if($activeGatewayRecord && $activeGatewayRecord->is_enabled)
-                            <div class="p-4 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div class="p-4 sm:p-5 rounded-2xl border-2 border-emerald-500/40 bg-emerald-50/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
                                 <div class="flex items-center space-x-3.5">
-                                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold shrink-0">
+                                    <div class="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black shrink-0 shadow-2xs">
                                         @if($activeGatewayRecord->code === 'razorpay')
                                             <i class="fa-solid fa-bolt text-blue-600 text-lg"></i>
                                         @elseif($activeGatewayRecord->code === 'icici')
@@ -143,12 +155,12 @@
                                     </div>
                                     <div>
                                         <div class="flex items-center space-x-2">
-                                            <h4 class="text-xs font-extrabold text-slate-900">{{ $activeGatewayRecord->name }}</h4>
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-emerald-100 text-emerald-800 uppercase tracking-wider">
+                                            <h4 class="text-xs font-black text-slate-900">{{ $activeGatewayRecord->name }}</h4>
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black bg-emerald-100 text-emerald-800 uppercase tracking-wider">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1"></span> Active Gateway
                                             </span>
                                         </div>
-                                        <p class="text-[11px] text-slate-500 mt-0.5">Secure online processing. Offline / manual payment is disabled.</p>
+                                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">Secure payment processing with instant license key activation.</p>
                                     </div>
                                 </div>
                                 <div class="text-xs font-bold text-emerald-700 shrink-0 flex items-center space-x-1">
@@ -157,11 +169,11 @@
                                 </div>
                             </div>
                         @else
-                            <div class="p-4 rounded-2xl border-2 border-rose-300 bg-rose-50 flex items-center space-x-3 text-rose-800">
-                                <i class="fa-solid fa-triangle-exclamation text-lg shrink-0"></i>
+                            <div class="p-4 sm:p-5 rounded-2xl border-2 border-rose-300 bg-rose-50 flex items-center space-x-3 text-rose-800">
+                                <i class="fa-solid fa-triangle-exclamation text-xl shrink-0"></i>
                                 <div class="text-xs">
-                                    <p class="font-bold">No Active Payment Gateway</p>
-                                    <p class="text-[11px] text-rose-700">Please enable a payment gateway in Super Admin settings before purchasing.</p>
+                                    <p class="font-black">No Active Payment Gateway</p>
+                                    <p class="text-[11px] text-rose-700 mt-0.5">Please contact administration to enable an online payment gateway.</p>
                                 </div>
                             </div>
                         @endif
@@ -171,47 +183,47 @@
 
             <!-- Summary / Checkout Card (1 column) -->
             <div class="space-y-6">
-                <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 shadow-sm space-y-6 sticky top-28">
-                    <div class="border-b border-[#E5E7EB] pb-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#F1F5F9] text-[#111827] border border-[#C5A880]/30">Order Summary</span>
-                        <div class="text-xl font-extrabold text-[#111827] mt-1.5">Package Activation</div>
+                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-6 sticky top-28">
+                    <div class="border-b border-slate-100 pb-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/60 shadow-2xs">Order Summary</span>
+                        <div class="text-xl font-black text-slate-900 mt-2 tracking-tight">Package Activation</div>
                     </div>
 
                     <div class="space-y-3 text-xs">
-                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
-                            <span class="text-[#6B7280]">Package:</span>
-                            <span id="summaryPlanName" class="font-bold text-[#111827]">Select plan</span>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="text-slate-400 font-medium">Package:</span>
+                            <span id="summaryPlanName" class="font-black text-slate-900">Select plan</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
-                            <span class="text-[#6B7280]">Monthly Rate:</span>
-                            <span id="summaryPlanRate" class="font-bold text-[#111827]">₹0</span>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="text-slate-400 font-medium">Monthly Rate:</span>
+                            <span id="summaryPlanRate" class="font-black text-slate-900">₹0</span>
                         </div>
-                        <div class="flex justify-between py-1 border-b border-[#E5E7EB]">
-                            <span class="text-[#6B7280]">Duration:</span>
-                            <span id="summaryDuration" class="font-bold text-[#111827]">1 Month</span>
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="text-slate-400 font-medium">Duration:</span>
+                            <span id="summaryDuration" class="font-black text-slate-900">1 Month</span>
                         </div>
-                        <div class="flex justify-between py-2 text-sm pt-2">
-                            <span class="text-[#111827] font-bold">Total Payable:</span>
-                            <span id="summaryTotal" class="font-black text-[#111827] text-lg">₹0</span>
+                        <div class="flex justify-between py-2.5 text-sm pt-2">
+                            <span class="text-slate-900 font-bold">Total Payable:</span>
+                            <span id="summaryTotal" class="font-black text-[#150A42] text-xl">₹0</span>
                         </div>
                     </div>
 
-                    <div class="p-3.5 rounded-xl bg-[#F1F5F9] border border-[#C5A880]/30 text-[11px] text-[#111827] space-y-1">
-                        <div class="font-bold flex items-center space-x-1.5">
-                            <i class="fa-solid fa-bolt text-[#C5A880]"></i>
-                            <span>Mandatory Payment Verification</span>
+                    <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/60 text-[11px] text-purple-950 space-y-1">
+                        <div class="font-black flex items-center space-x-1.5">
+                            <i class="fa-solid fa-bolt text-purple-600"></i>
+                            <span>Instant Digital License</span>
                         </div>
-                        <p class="text-[#6B7280] text-[10px] leading-relaxed">License and TV room limits are activated only after payment is completed and verified through the active gateway.</p>
+                        <p class="text-purple-900/80 text-[10px] leading-relaxed font-medium">License validity and TV room quotas are automatically activated as soon as payment is confirmed.</p>
                     </div>
 
-                    <button type="submit" id="saleSubmitBtn" {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} class="btn-dist-primary w-full py-3.5 px-4 text-xs shadow-md shadow-[#C5A880]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <button type="submit" id="saleSubmitBtn" {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} class="w-full py-3.5 px-4 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/15 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-lock text-xs"></i>
                         <span id="saleSubmitLabel">Proceed to Pay ₹<span id="btnPayAmount">0</span> & Activate</span>
                     </button>
 
-                    <p class="text-[10px] text-slate-400 text-center leading-relaxed">
+                    <p class="text-[10px] text-slate-400 text-center leading-relaxed font-medium">
                         <i class="fa-solid fa-shield-check text-emerald-600 mr-1"></i>
-                        Online gateway payments are verified server-side via {{ $activeGatewayRecord ? $activeGatewayRecord->name : 'active gateway' }} before license activation.
+                        Online gateway payments are verified server-side via {{ $activeGatewayRecord ? $activeGatewayRecord->name : 'active gateway' }}.
                     </p>
                 </div>
             </div>
@@ -279,18 +291,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function showError(message) {
-        alert(message); // simple fallback; session('error') also renders server-side
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Payment Error',
+                text: message,
+                confirmButtonColor: '#150A42',
+                customClass: { popup: 'rounded-[28px]' }
+            });
+        } else {
+            alert(message);
+        }
     }
 
     form.addEventListener('submit', async function(e) {
-        // Only intercept when "Online Card / Gateway" is selected
         if (paymentMethodSelect.value !== 'online_gateway' || checkoutSubmitting) {
             return;
         }
 
         e.preventDefault();
 
-        // Client-side guard: hotel & plan must be selected before creating an order
         const hotelSelect = document.getElementById('hotelSelect');
         if (!hotelSelect || !hotelSelect.value) {
             showError('Please select a target hotel before proceeding with online payment.');
@@ -305,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
         checkoutSubmitting = true;
 
         try {
-            // 1. Create a Razorpay order on the server
             const orderRes = await fetch(orderUrl, {
                 method: 'POST',
                 headers: {
@@ -327,7 +346,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(orderData.message || 'Could not create payment order.');
             }
 
-            // 2. Route by active gateway
             if (orderData.gateway === 'razorpay') {
                 if (typeof Razorpay === 'undefined') {
                     throw new Error('Razorpay checkout script failed to load. Please refresh the page and try again.');
@@ -336,7 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const rzp = new Razorpay({
                     key: orderData.key_id,
                     order_id: orderData.order_id,
-                    amount: Math.round(parseFloat(orderData.amount) * 100), // paise
+                    amount: Math.round(parseFloat(orderData.amount) * 100),
                     currency: orderData.currency || 'INR',
                     name: 'PaxTV Hospitality',
                     description: 'Package Activation',
@@ -345,9 +363,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         email: orderData.email || '',
                         contact: orderData.phone || '',
                     },
-                    theme: { color: '#C5A880' },
+                    theme: { color: '#150A42' },
                     handler: function(response) {
-                        // 3. Append gateway response to the form and submit for server-side verification
                         ['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature'].forEach(function(field) {
                             let input = form.querySelector('input[name="' + field + '"]');
                             if (!input) {
@@ -359,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             input.value = response[field] || '';
                         });
 
-                        checkoutSubmitting = false; // allow real submit through
+                        checkoutSubmitting = false;
                         form.submit();
                     },
                     modal: {

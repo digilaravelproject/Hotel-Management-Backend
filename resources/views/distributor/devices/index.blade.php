@@ -1,18 +1,18 @@
-﻿@extends('layouts.distributor')
+@extends('layouts.distributor')
 
 @section('title', 'Connected TVs - Distributor Portal')
-@section('page_title', 'Connected TVs Network')
+@section('page_title', 'Connected Smart TVs')
 
 @section('content')
 <div class="space-y-6">
     <!-- Top Filter & Search Bar -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-5 sm:p-6 shadow-xs">
+    <div class="bg-white border border-slate-100 rounded-[28px] p-5 sm:p-6 shadow-sm">
         <form method="GET" action="{{ route('distributor.devices.index') }}" class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
             <!-- Filter & Search Controls -->
             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
                 <!-- Hotel Filter Dropdown -->
                 <div class="w-full sm:w-64 shrink-0">
-                    <label for="hotelFilter" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Filter by Hotel</label>
+                    <label for="hotelFilter" class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Filter by Hotel</label>
                     <div class="relative">
                         @php
                             $hotelOptions = ['' => 'All My Hotels (' . $hotels->count() . ')'] + $hotels->pluck('hotel_name', 'id')->toArray();
@@ -23,10 +23,10 @@
 
                 <!-- Search Input -->
                 <div class="flex-1">
-                    <label for="searchInput" class="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1">Search Devices</label>
+                    <label for="searchInput" class="block text-[11px] font-black text-slate-400 uppercase tracking-wider mb-1">Search Devices</label>
                     <div class="relative">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Search room no, device ID, MAC, IP, brand..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50/80 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all placeholder:text-slate-400">
+                        <input type="text" name="search" id="searchInput" value="{{ request('search') }}" placeholder="Search room no, device ID, MAC, IP, brand..." class="w-full pl-9 pr-8 py-2.5 rounded-2xl border border-slate-200 bg-slate-50/70 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all placeholder:text-slate-400">
                         @if(request('search'))
                             <a href="{{ route('distributor.devices.index', array_filter(['hotel_id' => request('hotel_id')])) }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                 <i class="fa-solid fa-circle-xmark"></i>
@@ -36,7 +36,7 @@
                 </div>
 
                 <div class="self-end sm:self-auto sm:pt-5">
-                    <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition-all flex items-center justify-center space-x-1.5">
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center justify-center space-x-1.5 active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-filter text-xs"></i>
                         <span>Apply</span>
                     </button>
@@ -45,16 +45,16 @@
 
             <!-- Stats / Counter Indicator -->
             <div class="flex items-center justify-between sm:justify-end gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
-                <div class="px-4 py-2.5 rounded-2xl bg-amber-50 border border-amber-200/80 text-amber-900 flex items-center space-x-2.5">
-                    <div class="w-8 h-8 rounded-xl bg-amber-500 text-slate-950 flex items-center justify-center text-xs font-bold shadow-xs">
+                <div class="px-5 py-3 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center space-x-3 shadow-2xs">
+                    <div class="w-10 h-10 rounded-xl bg-[#150A42] text-white flex items-center justify-center text-sm font-black shadow-xs">
                         <i class="fa-solid fa-tv"></i>
                     </div>
                     <div>
-                        <div class="text-[10px] uppercase font-bold text-amber-600 tracking-wider">Connected TVs</div>
-                        <div class="text-sm font-extrabold text-slate-900">
-                            {{ $devices->total() }} <span class="text-xs font-semibold text-slate-500">screens</span>
+                        <div class="text-[10px] uppercase font-black text-purple-700 tracking-wider">Connected Fleet</div>
+                        <div class="text-base font-black text-slate-900 leading-tight">
+                            {{ $devices->total() }} <span class="text-xs font-bold text-slate-400">screens</span>
                             @if(isset($selectedHotel))
-                                <span class="text-xs font-bold text-amber-600">/ {{ $selectedHotel->allowed_device_limit }} max</span>
+                                <span class="text-xs font-black text-purple-700">/ {{ $selectedHotel->allowed_device_limit }} cap</span>
                             @endif
                         </div>
                     </div>
@@ -63,14 +63,14 @@
         </form>
     </div>
 
-    <!-- Desktop & Tablet Table View (No remove actions) -->
-    <div class="hidden md:block bg-white border border-slate-200/80 rounded-3xl overflow-hidden shadow-xs">
+    <!-- Desktop & Tablet Table View -->
+    <div class="hidden md:block bg-white border border-slate-100 rounded-[28px] overflow-hidden shadow-sm">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-700">
-                <thead class="bg-slate-50/90 border-b border-slate-200/80 text-slate-400 font-bold uppercase tracking-wider text-[11px]">
+            <table class="w-full text-left text-xs text-slate-800">
+                <thead class="bg-slate-50/70 border-b border-slate-100 text-slate-400 font-black uppercase tracking-wider text-[11px]">
                     <tr>
                         <th class="px-5 py-4 w-12 text-center">#</th>
-                        <th class="px-5 py-4">Hotel Client</th>
+                        <th class="px-5 py-4">Hotel Property</th>
                         <th class="px-5 py-4">Room</th>
                         <th class="px-5 py-4">Hardware & OS</th>
                         <th class="px-5 py-4">Device & Network</th>
@@ -100,35 +100,35 @@
                                 'disconnect_url' => route('distributor.devices.destroy', $device->id),
                             ];
                         @endphp
-                        <tr class="hover:bg-slate-50/70 transition-colors">
+                        <tr class="hover:bg-slate-50/60 transition-colors">
                             <td class="px-5 py-4 text-center font-bold text-slate-400">
                                 {{ $devices->firstItem() + $index }}
                             </td>
                             <td class="px-5 py-4">
-                                <div class="font-extrabold text-slate-900">{{ $device->hotelAdmin->hotel_name ?? 'Unknown Hotel' }}</div>
-                                <div class="text-[11px] text-slate-400 font-medium truncate max-w-[180px]">{{ $device->hotelAdmin->owner_name ?? '' }}</div>
+                                <div class="font-black text-slate-900">{{ $device->hotelAdmin->hotel_name ?? 'Unknown Hotel' }}</div>
+                                <div class="text-[11px] text-slate-400 font-semibold truncate max-w-[180px]">{{ $device->hotelAdmin->owner_name ?? '' }}</div>
                             </td>
                             <td class="px-5 py-4">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-amber-50 border border-amber-200/80 text-amber-800 font-extrabold text-xs">
-                                    <i class="fa-solid fa-door-closed mr-1.5 text-amber-600 text-[10px]"></i>
+                                <span class="inline-flex items-center px-3 py-1 rounded-xl bg-purple-50 border border-purple-200/70 text-[#150A42] font-black text-xs shadow-2xs">
+                                    <i class="fa-solid fa-door-closed mr-1.5 text-purple-600 text-[10px]"></i>
                                     Room {{ $device->room_no }}
                                 </span>
                             </td>
                             <td class="px-5 py-4">
                                 @if($device->brand || $device->model)
                                     <div class="font-bold text-slate-800 capitalize flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-tv text-slate-400 text-[11px]"></i>
+                                        <i class="fa-solid fa-tv text-purple-600 text-[11px]"></i>
                                         <span>{{ $device->brand }} {{ $device->model }}</span>
                                     </div>
                                     @if($device->os_version)
-                                        <span class="text-[10px] text-slate-500 font-semibold bg-slate-100 px-1.5 py-0.5 rounded">Android {{ $device->os_version }}</span>
+                                        <span class="text-[10px] text-slate-500 font-bold bg-slate-100 px-2 py-0.5 rounded-md mt-0.5 inline-block">Android {{ $device->os_version }}</span>
                                     @endif
                                 @else
                                     <span class="text-slate-400 italic">Smart TV Device</span>
                                 @endif
                             </td>
                             <td class="px-5 py-4">
-                                <div class="font-mono text-[11px] font-bold text-slate-700 truncate max-w-[160px]" title="{{ $device->device_id }}">
+                                <div class="font-mono text-[11px] font-bold text-slate-800 truncate max-w-[160px]" title="{{ $device->device_id }}">
                                     {{ Str::limit($device->device_id, 16) }}
                                 </div>
                                 <div class="text-[10px] font-mono text-slate-400 flex items-center gap-2 mt-0.5">
@@ -137,17 +137,17 @@
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-slate-500 font-medium whitespace-nowrap">
-                                <div>{{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}</div>
+                                <div class="font-bold text-slate-800">{{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}</div>
                                 <div class="text-[10px] text-slate-400">{{ $device->created_at ? $device->created_at->format('h:i A') : '' }}</div>
                             </td>
                             <td class="px-5 py-4 text-center">
                                 <div class="inline-flex items-center space-x-1.5">
-                                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-50 border border-slate-200 hover:border-amber-200 text-slate-700 hover:text-amber-800 font-bold text-xs transition-all shadow-2xs" title="View Details">
-                                        <i class="fa-solid fa-eye text-amber-600"></i>
+                                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-purple-50 hover:bg-[#150A42] text-[#150A42] hover:text-white border border-purple-200/80 font-black text-xs transition-all shadow-2xs active:scale-95 cursor-pointer" title="View Details">
+                                        <i class="fa-solid fa-eye text-xs"></i>
                                         <span>View</span>
                                     </button>
-                                    <button type="button" onclick="confirmDisconnect('{{ route('distributor.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }} ({{ $device->hotelAdmin->hotel_name ?? 'Hotel' }})')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs transition-colors shadow-2xs" title="Disconnect TV">
-                                        <i class="fa-solid fa-power-off text-rose-500"></i>
+                                    <button type="button" onclick="confirmDisconnect('{{ route('distributor.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }} ({{ $device->hotelAdmin->hotel_name ?? 'Hotel' }})')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-rose-200 bg-rose-50/60 text-rose-600 hover:bg-rose-600 hover:text-white font-bold text-xs transition-all shadow-2xs active:scale-95 cursor-pointer" title="Disconnect TV">
+                                        <i class="fa-solid fa-power-off text-xs"></i>
                                     </button>
                                 </div>
                             </td>
@@ -155,10 +155,10 @@
                     @empty
                         <tr>
                             <td colspan="7" class="px-6 py-14 text-center">
-                                <div class="w-14 h-14 mx-auto rounded-3xl bg-slate-100 flex items-center justify-center text-slate-400 text-2xl mb-3">
+                                <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] text-xl mb-3 shadow-xs">
                                     <i class="fa-solid fa-tv"></i>
                                 </div>
-                                <h4 class="text-sm font-extrabold text-slate-800">No Connected TV Screens Found</h4>
+                                <h4 class="text-sm font-black text-slate-900">No Connected TV Screens Found</h4>
                                 <p class="text-xs text-slate-400 mt-1 max-w-sm mx-auto">No TV devices found under your hotels for the selected criteria.</p>
                             </td>
                         </tr>
@@ -191,22 +191,22 @@
                     'disconnect_url' => route('distributor.devices.destroy', $device->id),
                 ];
             @endphp
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+            <div class="bg-white border border-slate-100 rounded-[24px] p-4 shadow-sm space-y-3">
                 <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
                     <div class="min-w-0">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-amber-50 border border-amber-200/80 text-amber-800 font-extrabold text-[11px] mb-1">
-                            <i class="fa-solid fa-door-closed mr-1 text-amber-600 text-[10px]"></i>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg bg-purple-50 border border-purple-200/70 text-[#150A42] font-black text-[11px] mb-1">
+                            <i class="fa-solid fa-door-closed mr-1 text-purple-600 text-[10px]"></i>
                             Room {{ $device->room_no }}
                         </span>
-                        <h4 class="text-xs font-extrabold text-slate-900 truncate">{{ $device->hotelAdmin->hotel_name ?? 'Unknown Hotel' }}</h4>
+                        <h4 class="text-xs font-black text-slate-900 truncate">{{ $device->hotelAdmin->hotel_name ?? 'Unknown Hotel' }}</h4>
                     </div>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 shrink-0">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 shrink-0">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Online
                     </span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    <div class="bg-slate-50/80 rounded-xl p-2 border border-slate-100">
+                    <div class="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100">
                         <div class="text-[10px] uppercase font-bold text-slate-400">Hardware</div>
                         <div class="font-bold text-slate-800 truncate mt-0.5">
                             {{ $device->brand || $device->model ? trim($device->brand . ' ' . $device->model) : 'Smart TV' }}
@@ -216,7 +216,7 @@
                         @endif
                     </div>
 
-                    <div class="bg-slate-50/80 rounded-xl p-2 border border-slate-100">
+                    <div class="bg-slate-50/80 rounded-xl p-2.5 border border-slate-100">
                         <div class="text-[10px] uppercase font-bold text-slate-400">Connected</div>
                         <div class="font-bold text-slate-800 truncate mt-0.5">
                             {{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}
@@ -225,13 +225,13 @@
                     </div>
                 </div>
 
-                <div class="text-[10px] font-mono text-slate-500 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-100 truncate">
+                <div class="text-[10px] font-mono text-slate-500 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 truncate">
                     <span class="font-bold text-slate-400">ID:</span> {{ $device->device_id }}
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 pt-1 border-t border-slate-100">
-                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="w-full py-2 px-3 rounded-xl bg-slate-100 hover:bg-amber-50 border border-slate-200 hover:border-amber-200 text-slate-700 hover:text-amber-800 font-bold text-xs flex items-center justify-center space-x-1 transition-all">
-                        <i class="fa-solid fa-eye text-amber-600"></i>
+                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="w-full py-2 px-3 rounded-xl bg-purple-50 hover:bg-[#150A42] text-[#150A42] hover:text-white border border-purple-200/80 font-black text-xs flex items-center justify-center space-x-1 transition-all">
+                        <i class="fa-solid fa-eye text-xs"></i>
                         <span>Details & Key</span>
                     </button>
                     <button type="button" onclick="confirmDisconnect('{{ route('distributor.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }} ({{ $device->hotelAdmin->hotel_name ?? 'Hotel' }})')" class="w-full py-2 px-3 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
@@ -241,34 +241,36 @@
                 </div>
             </div>
         @empty
-            <div class="bg-white border border-slate-200/80 rounded-2xl p-8 text-center">
-                <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center text-slate-400 text-xl mb-2">
+            <div class="bg-white border border-slate-100 rounded-[24px] p-8 text-center shadow-sm">
+                <div class="w-12 h-12 mx-auto rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] text-xl mb-2">
                     <i class="fa-solid fa-tv"></i>
                 </div>
-                <h4 class="text-xs font-extrabold text-slate-800">No TV Screens Found</h4>
+                <h4 class="text-xs font-black text-slate-800">No TV Screens Found</h4>
                 <p class="text-[11px] text-slate-400 mt-1">No connected TV screens found for your hotels.</p>
             </div>
         @endforelse
     </div>
 
     <!-- Pagination -->
-    <div class="pt-2">
-        {{ $devices->links() }}
-    </div>
+    @if($devices->hasPages())
+        <div class="bg-white border border-slate-100 rounded-[28px] p-4 shadow-sm">
+            {{ $devices->links() }}
+        </div>
+    @endif
 </div>
 
 <!-- Reusable Device & License Details Modal -->
-<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closeDeviceModalOnBackdrop(event)">
-    <div class="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 flex flex-col max-h-[84vh] sm:max-h-[86vh] min-h-0 overflow-hidden" onclick="event.stopPropagation()">
+<div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-[#0B0424]/75 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closeDeviceModalOnBackdrop(event)">
+    <div class="bg-white border border-slate-100 rounded-[28px] max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 flex flex-col max-h-[84vh] sm:max-h-[86vh] min-h-0 overflow-hidden" onclick="event.stopPropagation()">
         <!-- Modal Header -->
-        <div class="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
-            <div class="flex items-center space-x-3 min-w-0 pr-2">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
+        <div class="px-5 py-4 sm:px-6 sm:py-5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
+            <div class="flex items-center space-x-3.5 min-w-0 pr-2">
+                <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shrink-0 shadow-2xs">
                     <i class="fa-solid fa-tv"></i>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-sm sm:text-base font-extrabold text-slate-900 leading-tight truncate">Device & License Details</h3>
-                    <p id="modalSubtitle" class="text-[11px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Hotel Details</p>
+                    <h3 class="text-sm sm:text-base font-black text-slate-900 leading-tight truncate">Device & License Details</h3>
+                    <p id="modalSubtitle" class="text-[11px] sm:text-xs text-slate-400 font-bold truncate mt-0.5">Room 101 • Hotel Details</p>
                 </div>
             </div>
             <!-- Top Actions: Disconnect button (desktop) & Close button -->
@@ -277,40 +279,40 @@
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span>Disconnect</span>
                 </button>
-                <button type="button" onclick="closeDeviceDetailsModal()" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors" title="Close">
-                    <i class="fa-solid fa-xmark text-base sm:text-lg"></i>
+                <button type="button" onclick="closeDeviceDetailsModal()" class="w-9 h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" title="Close">
+                    <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
         </div>
 
         <!-- Scrollable Modal Content (touch scroll enabled) -->
-        <div class="px-4 py-4 sm:px-6 sm:py-5 overflow-y-auto overscroll-contain flex-1 min-h-0 space-y-3.5 sm:space-y-4" style="-webkit-overflow-scrolling: touch;">
+        <div class="px-5 py-5 sm:px-6 sm:py-6 overflow-y-auto overscroll-contain flex-1 min-h-0 space-y-4" style="-webkit-overflow-scrolling: touch;">
             <!-- License Key Highlight Box -->
-            <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-orange-50/60 to-yellow-50/40 border border-amber-200/80 space-y-2.5 sm:space-y-3">
+            <div class="p-4 sm:p-5 rounded-2xl bg-purple-50/60 border border-purple-100 space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-amber-800 flex items-center space-x-1.5">
-                        <i class="fa-solid fa-key text-[10px]"></i>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-purple-900 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-key text-[10px] text-purple-600"></i>
                         <span>Hotel License Key</span>
                     </span>
-                    <span class="px-2 py-0.5 rounded-md bg-amber-600/10 text-amber-800 text-[10px] font-bold">Authorized</span>
+                    <span class="px-2.5 py-0.5 rounded-full bg-purple-200/60 text-purple-900 text-[10px] font-black">Authorized</span>
                 </div>
-                <div class="flex items-center justify-between gap-2 bg-white/90 rounded-xl p-2.5 border border-amber-200/60 shadow-2xs">
-                    <span id="modalLicenseKey" class="font-mono font-black text-xs sm:text-base text-amber-950 tracking-wide select-all truncate">
+                <div class="flex items-center justify-between gap-2 bg-white rounded-xl p-3 border border-purple-100 shadow-2xs">
+                    <span id="modalLicenseKey" class="font-mono font-black text-xs sm:text-base text-slate-900 tracking-wide select-all truncate">
                         ---
                     </span>
-                    <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
+                    <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3.5 py-1.5 rounded-xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-[11px] shadow-xs transition-all flex items-center space-x-1 cursor-pointer">
                         <i class="fa-solid fa-copy text-[11px]" id="copyKeyIcon"></i>
                         <span id="copyKeyText">Copy</span>
                     </button>
                 </div>
 
-                <!-- Whose license key is this? Clear Hotel & License Identification -->
-                <div class="bg-white/90 rounded-xl p-3 border border-amber-100 text-xs space-y-2">
-                    <div class="flex items-center justify-between border-b border-amber-100/80 pb-1.5">
-                        <span class="text-[11px] text-slate-500 font-semibold flex items-center">
-                            <i class="fa-solid fa-hotel text-amber-600 mr-1.5 text-[11px]"></i> Assigned Hotel:
+                <!-- Assigned Hotel Identification -->
+                <div class="bg-white rounded-xl p-3.5 border border-purple-100 text-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                        <span class="text-[11px] text-slate-400 font-bold flex items-center">
+                            <i class="fa-solid fa-hotel text-purple-600 mr-1.5 text-[11px]"></i> Assigned Hotel:
                         </span>
-                        <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[200px] sm:max-w-[240px]">---</span>
+                        <span id="modalKeyHotelName" class="font-black text-slate-900 truncate max-w-[200px] sm:max-w-[240px]">---</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-[10px]">
                         <div>
@@ -319,7 +321,7 @@
                         </div>
                         <div>
                             <span class="text-slate-400 font-medium">Plan:</span>
-                            <span id="modalKeyPlan" class="font-bold text-amber-700 ml-1 truncate">---</span>
+                            <span id="modalKeyPlan" class="font-bold text-purple-700 ml-1 truncate">---</span>
                         </div>
                         <div>
                             <span class="text-slate-400 font-medium">Expiry:</span>
@@ -332,62 +334,62 @@
                     </div>
                 </div>
 
-                <p class="text-[10px] text-amber-700 font-medium leading-relaxed">Use this license key when pairing or authorizing TV screens in this hotel.</p>
+                <p class="text-[10px] text-purple-700 font-medium leading-relaxed">Use this license key when pairing or authorizing TV screens in this hotel.</p>
             </div>
 
             <!-- Device Technical Specs Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 text-xs">
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Hotel Name</div>
-                    <div id="modalHotelName" class="font-extrabold text-slate-900 truncate">---</div>
-                    <div id="modalOwnerName" class="text-[10px] text-slate-500 font-medium truncate">---</div>
+                    <div id="modalHotelName" class="font-black text-slate-900 truncate">---</div>
+                    <div id="modalOwnerName" class="text-[10px] text-slate-400 font-medium truncate">---</div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Room Number</div>
-                    <div id="modalRoomNo" class="font-extrabold text-amber-700">---</div>
-                    <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <div id="modalRoomNo" class="font-black text-purple-700">---</div>
+                    <div class="text-[10px] text-emerald-600 font-bold flex items-center space-x-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                         <span>Status: Connected</span>
                     </div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Device Unique ID</div>
                     <div class="flex items-center justify-between gap-2">
                         <div id="modalDeviceId" class="font-mono font-bold text-slate-800 text-[11px] truncate select-all">---</div>
-                        <button type="button" onclick="copyToClipboard(document.getElementById('modalDeviceId').innerText, this)" class="text-slate-400 hover:text-slate-700 text-xs shrink-0 p-1" title="Copy Device ID">
+                        <button type="button" onclick="copyToClipboard(document.getElementById('modalDeviceId').innerText, this)" class="text-slate-400 hover:text-slate-700 text-xs shrink-0 p-1 cursor-pointer" title="Copy Device ID">
                             <i class="fa-solid fa-copy"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Hardware / Model</div>
                     <div id="modalHardware" class="font-bold text-slate-800 truncate">---</div>
-                    <div id="modalOsVersion" class="text-[10px] text-slate-500 font-semibold">---</div>
+                    <div id="modalOsVersion" class="text-[10px] text-slate-400 font-bold">---</div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Network Info</div>
-                    <div id="modalIpAddress" class="font-mono text-slate-700 font-semibold text-[11px]">IP: ---</div>
+                    <div id="modalIpAddress" class="font-mono text-slate-700 font-bold text-[11px]">IP: ---</div>
                     <div id="modalMacAddress" class="font-mono text-[10px] text-slate-400">MAC: ---</div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
+                <div class="p-3.5 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5 sm:col-span-2">
                     <div class="text-[10px] uppercase font-bold text-slate-400">Connection Timestamp</div>
-                    <div id="modalConnectedAt" class="font-semibold text-slate-700 text-[11px]">---</div>
+                    <div id="modalConnectedAt" class="font-bold text-slate-700 text-[11px]">---</div>
                 </div>
             </div>
         </div>
 
-        <!-- Modal Footer (Always visible and pinned) -->
-        <div class="px-4 py-3 sm:px-6 sm:py-4 border-t border-slate-100 flex items-center justify-between space-x-2.5 shrink-0 bg-slate-50/80">
-            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs">
+        <!-- Modal Footer -->
+        <div class="px-5 py-4 sm:px-6 sm:py-4 border-t border-slate-100 flex items-center justify-between space-x-2.5 shrink-0 bg-slate-50/80">
+            <button type="button" onclick="disconnectFromModal()" class="px-4 py-2.5 rounded-2xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-600 text-xs font-bold transition-all flex items-center space-x-1.5 shadow-2xs active:scale-95 cursor-pointer">
                 <i class="fa-solid fa-power-off text-xs"></i>
                 <span>Disconnect TV</span>
             </button>
-            <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors shadow-2xs">
+            <button type="button" onclick="closeDeviceDetailsModal()" class="px-5 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors shadow-2xs active:scale-95 cursor-pointer">
                 Close
             </button>
         </div>
@@ -504,7 +506,7 @@
                 confirmButtonText: 'Yes, Disconnect',
                 cancelButtonText: 'Cancel',
                 customClass: {
-                    popup: 'rounded-3xl',
+                    popup: 'rounded-[28px]',
                     confirmButton: 'rounded-xl font-bold text-xs px-5 py-2.5',
                     cancelButton: 'rounded-xl font-bold text-xs px-5 py-2.5'
                 }
