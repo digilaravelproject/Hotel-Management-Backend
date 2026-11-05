@@ -22,11 +22,23 @@ class WalletController extends Controller
         $user = auth()->user();
         $wallet = DistributorWallet::getForDistributor($user->id);
 
-        $recentTransactions = $wallet->transactions()->latest()->take(10)->get();
-        $transactions = $wallet->transactions()->latest()->paginate(15);
+        $recentTransactions = $wallet->transactions()
+            ->with(['distributorSale.hotel', 'distributorSale.plan'])
+            ->latest()
+            ->take(10)
+            ->get();
+        $transactions = $wallet->transactions()
+            ->with(['distributorSale.hotel', 'distributorSale.plan'])
+            ->latest()
+            ->paginate(15);
 
         $recentWithdrawals = $wallet->withdrawalRequests()->latest()->take(5)->get();
         $withdrawals = $wallet->withdrawalRequests()->latest()->paginate(15);
+
+        $totalHotelsCount = $user->hotels()->count();
+        $totalSalesCount = $user->distributorSales()->count();
+        $pendingWithdrawalAmount = (float) $wallet->withdrawalRequests()->where('status', 'pending')->sum('amount');
+        $approvedWithdrawalCount = $wallet->withdrawalRequests()->where('status', 'approved')->count();
 
         $metrics = [
             'balance' => (float) $wallet->balance,
@@ -36,6 +48,10 @@ class WalletController extends Controller
             'total_withdrawn' => (float) $wallet->total_withdrawn,
             'commission_rate' => $user->effective_commission_percentage,
             'is_override' => ($user->commission_percentage !== null),
+            'total_hotels_count' => $totalHotelsCount,
+            'total_sales_count' => $totalSalesCount,
+            'pending_withdrawals_amount' => $pendingWithdrawalAmount,
+            'approved_withdrawals_count' => $approvedWithdrawalCount,
         ];
 
         if ($request->wantsJson()) {
@@ -67,7 +83,9 @@ class WalletController extends Controller
     {
         $user = auth()->user();
         $wallet = DistributorWallet::getForDistributor($user->id);
-        $query = $wallet->transactions()->latest();
+        $query = $wallet->transactions()
+            ->with(['distributorSale.hotel', 'distributorSale.plan'])
+            ->latest();
 
         if ($request->filled('type') && in_array($request->type, ['credit', 'debit'])) {
             $query->where('type', $request->type);

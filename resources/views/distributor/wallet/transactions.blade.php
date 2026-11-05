@@ -16,7 +16,7 @@
             </div>
             <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Complete Transaction Ledger</h2>
             <p class="text-xs sm:text-sm text-slate-500 max-w-xl font-medium leading-relaxed">
-                Every credit earned through hotel client sales and every debit disbursed through administrator payouts is permanently logged here with balance checkpoints.
+                Every credit earned through hotel client renewals or new sales and every debit disbursed through administrator payouts is permanently logged here with balance checkpoints.
             </p>
         </div>
 
@@ -59,13 +59,19 @@
                         <th class="px-6 py-4">Transaction ID</th>
                         <th class="px-6 py-4">Date & Time</th>
                         <th class="px-6 py-4">Type</th>
-                        <th class="px-6 py-4">Description / Reference</th>
+                        <th class="px-6 py-4">Source / Hotel Details</th>
                         <th class="px-6 py-4">Amount</th>
                         <th class="px-6 py-4 text-right">Balance After</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($transactions as $tx)
+                        @php
+                            $sale = $tx->distributorSale;
+                            $hotel = $tx->hotel ?? $sale?->hotel;
+                            $plan = $tx->plan ?? $sale?->plan;
+                            $isRenewal = $tx->is_renewal;
+                        @endphp
                         <tr class="hover:bg-purple-50/20 transition-colors group">
                             <td class="px-6 py-4 font-mono font-bold text-slate-600">
                                 <div class="inline-flex items-center space-x-1.5">
@@ -85,20 +91,64 @@
                             <td class="px-6 py-4">
                                 @if($tx->type === 'credit')
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 border border-emerald-200/60 shadow-2xs">
-                                        <i class="fa-solid fa-arrow-down-left mr-1.5 text-[9px] text-emerald-600"></i> Credit
+                                        <i class="fa-solid fa-arrow-down mr-1.5 text-[9px] text-emerald-600"></i> Credit
                                     </span>
                                 @else
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200/60 shadow-2xs">
-                                        <i class="fa-solid fa-arrow-up-right mr-1.5 text-[9px] text-rose-600"></i> Debit
+                                        <i class="fa-solid fa-arrow-up mr-1.5 text-[9px] text-rose-600"></i> Debit
                                     </span>
                                 @endif
                             </td>
                             <td class="px-6 py-4">
-                                <div class="font-black text-slate-900">{{ $tx->description }}</div>
-                                @if($tx->reference_type)
-                                    <div class="text-[10px] text-slate-400 font-mono mt-0.5 font-bold">
-                                        Ref: {{ strtoupper($tx->reference_type) }} #{{ $tx->reference_id }}
+                                @if($tx->type === 'credit')
+                                    <div class="space-y-1">
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            @if($hotel)
+                                                <span class="font-black text-slate-900 text-xs">{{ $hotel->hotel_name }}</span>
+                                            @else
+                                                <span class="font-black text-slate-900 text-xs">{{ $tx->description }}</span>
+                                            @endif
+
+                                            @if($isRenewal)
+                                                <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-50 text-purple-700 border border-purple-200/80 inline-flex items-center space-x-1">
+                                                    <i class="fa-solid fa-arrows-rotate text-[9px] text-purple-600"></i>
+                                                    <span>License Renewal</span>
+                                                </span>
+                                            @else
+                                                <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200/80 inline-flex items-center space-x-1">
+                                                    <i class="fa-solid fa-hotel text-[9px] text-blue-600"></i>
+                                                    <span>Package Sale</span>
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-slate-500 font-medium">
+                                            @if($plan)
+                                                <span class="font-bold text-slate-700">{{ $plan->name }}</span>
+                                            @endif
+                                            @if($hotel && $hotel->room_count)
+                                                <span class="text-slate-300">•</span>
+                                                <span>{{ $hotel->room_count }} TVs</span>
+                                            @endif
+                                            @if($hotel && $hotel->city)
+                                                <span class="text-slate-300">•</span>
+                                                <span>{{ $hotel->city }}</span>
+                                            @endif
+                                            @if($sale && $sale->amount)
+                                                <span class="text-slate-300">•</span>
+                                                <span class="font-mono text-[10px] text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded">
+                                                    Sale: ₹{{ number_format($sale->amount, 2) }}
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
+                                @else
+                                    <div class="font-black text-slate-900">{{ $tx->description }}</div>
+                                    @if($tx->reference_type)
+                                        <div class="text-[10px] text-slate-400 font-mono mt-0.5 font-bold">
+                                            Ref: {{ strtoupper($tx->reference_type) }} #{{ $tx->reference_id }}
+                                        </div>
+                                    @endif
                                 @endif
                             </td>
                             <td class="px-6 py-4">

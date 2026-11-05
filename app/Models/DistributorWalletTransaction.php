@@ -37,8 +37,44 @@ class DistributorWalletTransaction extends Model
         return $this->belongsTo(DistributorSale::class, 'distributor_sale_id');
     }
 
+    public function withdrawalRequest()
+    {
+        return $this->belongsTo(WithdrawalRequest::class, 'reference_id');
+    }
+
     public function wallet()
     {
         return $this->belongsTo(DistributorWallet::class, 'distributor_id', 'distributor_id');
+    }
+
+    /**
+     * Determine if this transaction is related to a plan renewal.
+     */
+    public function getIsRenewalAttribute(): bool
+    {
+        $sale = $this->distributorSale;
+        if ($sale) {
+            $notes = strtolower($sale->notes ?? '');
+            if (str_contains($notes, 'renewal') || str_contains($notes, 'renew')) {
+                return true;
+            }
+        }
+        return str_contains(strtolower($this->description ?? ''), 'renewal') || str_contains(strtolower($this->description ?? ''), 'renew');
+    }
+
+    /**
+     * Resolve associated hotel model.
+     */
+    public function getHotelAttribute(): ?HotelAdmin
+    {
+        return $this->distributorSale?->hotel;
+    }
+
+    /**
+     * Resolve associated plan model.
+     */
+    public function getPlanAttribute(): ?Plan
+    {
+        return $this->distributorSale?->plan;
     }
 }

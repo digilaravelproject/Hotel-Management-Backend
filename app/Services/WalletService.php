@@ -134,12 +134,18 @@ class WalletService
         $commissionService = app(CommissionService::class);
         $result = $commissionService->calculateCommission($distributor, (float) $sale->amount);
 
+        $sale->loadMissing(['hotel', 'plan']);
+        $hotelName = $sale->hotel?->hotel_name ?? 'Hotel Client';
+        $planName = $sale->plan?->name ?? 'Package';
+        $isRenewal = str_contains(strtolower($sale->notes ?? ''), 'renewal') || str_contains(strtolower($sale->notes ?? ''), 'renew');
+        $eventType = $isRenewal ? 'Renewal' : 'Sale';
+
         return $this->credit(
             $distributor->id,
             $result['commission_amount'],
             'sale',
             $sale->id,
-            "Commission earned from sale #{$sale->id} (Rate: {$result['rate']}%)",
+            "Commission ({$eventType}): {$hotelName} • {$planName} (Rate: {$result['rate']}%)",
             $sale->id
         );
     }

@@ -6,7 +6,7 @@
 @section('content')
 <div class="space-y-8">
 
-    <!-- Top Wallet Header Card (Signature Luxury Midnight Navy & Purple Theme) -->
+    <!-- Top Wallet Header Card -->
     <div class="bg-white rounded-[28px] p-6 sm:p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
         <div class="absolute -right-16 -top-16 w-64 h-64 bg-gradient-to-br from-purple-100/50 to-indigo-50/30 rounded-full blur-3xl pointer-events-none"></div>
         <div class="absolute left-1/3 -bottom-12 w-48 h-48 bg-purple-50/40 rounded-full blur-2xl pointer-events-none"></div>
@@ -58,51 +58,53 @@
         </div>
     @endif
 
-    <!-- 4 Metrics Cards: Modern High-Impact Grid -->
+    <!-- 4 Stats Cards: Harmonious, Consistent & High-Impact Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         
-        <!-- Card 1: Available Balance (Hero Card in Midnight Purple) -->
-        <div class="bg-gradient-to-br from-[#150A42] via-[#1d0e57] to-[#2B1270] text-white rounded-[28px] p-6 shadow-xl shadow-[#150A42]/15 border border-purple-900/40 relative overflow-hidden group flex flex-col justify-between">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-500 pointer-events-none"></div>
+        <!-- Card 1: Available Balance -->
+        <div class="bg-white rounded-[26px] p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-28 h-28 bg-purple-50/80 rounded-full blur-2xl pointer-events-none"></div>
             
             <div>
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-purple-200/70">Available Balance</span>
-                    <span class="w-9 h-9 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-sm text-amber-300">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Available Balance</span>
+                    <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100/80 text-[#150A42] flex items-center justify-center text-lg shadow-2xs group-hover:scale-105 transition-transform shrink-0">
                         <i class="fa-solid fa-wallet"></i>
-                    </span>
+                    </div>
                 </div>
-                <div class="text-3xl font-black text-white mt-2 tracking-tight">
+                <div class="text-3xl font-black text-slate-900 mt-2 tracking-tight">
                     ₹{{ number_format($metrics['available_balance'], 2) }}
                 </div>
             </div>
 
-            <div class="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between text-xs">
+            <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">
                 @if($metrics['locked_balance'] > 0)
-                    <div class="inline-flex items-center space-x-1.5 text-amber-300 font-bold text-[11px]">
-                        <i class="fa-solid fa-lock text-[10px]"></i>
-                        <span>₹{{ number_format($metrics['locked_balance'], 2) }} pending review</span>
+                    <div class="inline-flex items-center text-amber-600 font-bold text-[11px]">
+                        <i class="fa-solid fa-lock text-[10px] mr-1"></i>
+                        <span>₹{{ number_format($metrics['locked_balance'], 2) }} locked in review</span>
                     </div>
                 @else
-                    <div class="inline-flex items-center space-x-1.5 text-emerald-400 font-bold text-[11px]">
-                        <i class="fa-solid fa-circle-check text-[10px]"></i>
-                        <span>100% ready for payout</span>
+                    <div class="inline-flex items-center text-emerald-600 font-bold text-[11px]">
+                        <i class="fa-solid fa-circle-check text-[10px] mr-1"></i>
+                        <span>Ready for payout</span>
                     </div>
                 @endif
                 <button type="button" 
                         onclick="openWithdrawModal()" 
-                        class="text-[11px] font-black text-white hover:text-amber-300 underline underline-offset-2 transition-colors cursor-pointer">
+                        class="text-[11px] font-black text-purple-700 hover:text-purple-950 underline underline-offset-2 transition-colors cursor-pointer">
                     Withdraw ↗
                 </button>
             </div>
         </div>
 
         <!-- Card 2: Lifetime Earned Commission -->
-        <div class="bg-white border border-slate-100 rounded-[28px] p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden group flex flex-col justify-between">
+        <div class="bg-white rounded-[26px] p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-28 h-28 bg-emerald-50/80 rounded-full blur-2xl pointer-events-none"></div>
+
             <div>
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Lifetime Earnings</span>
-                    <div class="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Lifetime Earnings</span>
+                    <div class="w-11 h-11 rounded-2xl bg-emerald-50 border border-emerald-100/80 text-emerald-600 flex items-center justify-center text-lg shadow-2xs group-hover:scale-105 transition-transform shrink-0">
                         <i class="fa-solid fa-arrow-trend-up"></i>
                     </div>
                 </div>
@@ -110,20 +112,23 @@
                     ₹{{ number_format($metrics['total_earned'], 2) }}
                 </div>
             </div>
+
             <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                <span class="text-slate-400 font-semibold">Cumulative hotel sales</span>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-extrabold text-[10px] border border-emerald-100">
-                    Gross Inflow
+                <span class="text-slate-500 font-semibold">Total Revenue Inflow</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700 font-extrabold text-[10px]">
+                    {{ $metrics['total_sales_count'] ?? 0 }} Transactions
                 </span>
             </div>
         </div>
 
         <!-- Card 3: Total Settled / Disbursed -->
-        <div class="bg-white border border-slate-100 rounded-[28px] p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden group flex flex-col justify-between">
+        <div class="bg-white rounded-[26px] p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-28 h-28 bg-blue-50/80 rounded-full blur-2xl pointer-events-none"></div>
+
             <div>
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Total Settled</span>
-                    <div class="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Total Settled</span>
+                    <div class="w-11 h-11 rounded-2xl bg-blue-50 border border-blue-100/80 text-blue-600 flex items-center justify-center text-lg shadow-2xs group-hover:scale-105 transition-transform shrink-0">
                         <i class="fa-solid fa-building-columns"></i>
                     </div>
                 </div>
@@ -131,20 +136,23 @@
                     ₹{{ number_format($metrics['total_withdrawn'], 2) }}
                 </div>
             </div>
+
             <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                <span class="text-slate-400 font-semibold">Transferred to Bank/UPI</span>
-                <span class="px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 font-extrabold text-[10px] border border-blue-100">
-                    Settled
+                <span class="text-slate-500 font-semibold">Disbursed to Bank/UPI</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-100 text-blue-700 font-extrabold text-[10px]">
+                    {{ $metrics['approved_withdrawals_count'] ?? 0 }} Settled
                 </span>
             </div>
         </div>
 
         <!-- Card 4: Active Commission Tier -->
-        <div class="bg-white border border-slate-100 rounded-[28px] p-6 shadow-sm hover:shadow-md transition-all relative overflow-hidden group flex flex-col justify-between">
+        <div class="bg-white rounded-[26px] p-6 border border-slate-100 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-28 h-28 bg-amber-50/80 rounded-full blur-2xl pointer-events-none"></div>
+
             <div>
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-black uppercase tracking-wider text-slate-400">Your Commission Tier</span>
-                    <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-purple-700 flex items-center justify-center text-sm shadow-2xs group-hover:scale-105 transition-transform">
+                    <span class="text-[11px] font-black uppercase tracking-wider text-slate-400">Your Commission Tier</span>
+                    <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100/80 text-amber-600 flex items-center justify-center text-lg shadow-2xs group-hover:scale-105 transition-transform shrink-0">
                         <i class="fa-solid fa-percent"></i>
                     </div>
                 </div>
@@ -152,11 +160,14 @@
                     {{ number_format($metrics['commission_rate'], 2) }}%
                 </div>
             </div>
+
             <div class="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
                 <span class="font-bold {{ $metrics['is_override'] ? 'text-purple-700' : 'text-slate-500' }}">
-                    {{ $metrics['is_override'] ? 'VIP Partner Override' : 'Network Standard' }}
+                    {{ $metrics['is_override'] ? 'VIP Partner Override' : 'Standard Network Rate' }}
                 </span>
-                <span class="text-[10px] text-slate-400 font-medium">Per Renewal/Sale</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 border border-purple-100 text-purple-700 font-extrabold text-[10px]">
+                    {{ $metrics['total_hotels_count'] ?? 0 }} Hotels
+                </span>
             </div>
         </div>
 
@@ -188,7 +199,7 @@
     <!-- 2 Column Section: Recent Ledger & Withdrawal Status -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
 
-        <!-- Column 1: Recent Wallet Transactions Ledger -->
+        <!-- Column 1: Recent Wallet Transactions Ledger (with Rich Hotel & Renewal Source Details) -->
         <div class="bg-white border border-slate-100 rounded-[28px] shadow-sm overflow-hidden flex flex-col justify-between">
             <div>
                 <!-- Card Header with Filter Pills -->
@@ -200,7 +211,7 @@
                                 {{ $recentTransactions->count() }}
                             </span>
                         </div>
-                        <p class="text-xs text-slate-400 font-medium mt-0.5">Real-time credit & debit ledger entries</p>
+                        <p class="text-xs text-slate-400 font-medium mt-0.5">Hotel renewals, onboarding commissions & payouts</p>
                     </div>
 
                     <div class="flex items-center space-x-1.5">
@@ -228,37 +239,130 @@
                 <!-- Transaction List -->
                 <div class="divide-y divide-slate-100" id="transactionsContainer">
                     @forelse($recentTransactions as $tx)
-                        <div class="tx-item p-4 sm:p-5 flex items-center justify-between hover:bg-purple-50/20 transition-colors group" data-type="{{ $tx->type }}">
-                            <div class="flex items-center space-x-3.5 min-w-0">
-                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs {{ $tx->type === 'credit' ? 'bg-emerald-50 text-emerald-600 border border-emerald-100' : 'bg-rose-50 text-rose-600 border border-rose-100' }}">
-                                    <i class="fa-solid {{ $tx->type === 'credit' ? 'fa-arrow-down-left' : 'fa-arrow-up-right' }} text-xs"></i>
+                        @php
+                            $sale = $tx->distributorSale;
+                            $hotel = $tx->hotel ?? $sale?->hotel;
+                            $plan = $tx->plan ?? $sale?->plan;
+                            $isRenewal = $tx->is_renewal;
+                        @endphp
+                        <div class="tx-item p-4 sm:p-5 flex items-start justify-between hover:bg-purple-50/20 transition-colors group gap-3" data-type="{{ $tx->type }}">
+                            <div class="flex items-start space-x-3.5 min-w-0 flex-1">
+                                <!-- Directional Icon Badge (Fixed FontAwesome Classes for 100% Reliable Render) -->
+                                <div class="w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-2xs mt-0.5 {{ $tx->type === 'credit' ? 'bg-emerald-50 text-emerald-600 border border-emerald-200/70' : 'bg-rose-50 text-rose-600 border border-rose-200/70' }}">
+                                    @if($tx->type === 'credit')
+                                        <i class="fa-solid fa-arrow-down text-sm"></i>
+                                    @else
+                                        <i class="fa-solid fa-arrow-up text-sm"></i>
+                                    @endif
                                 </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center space-x-2">
-                                        <h4 class="text-xs font-black text-slate-900 truncate">{{ $tx->description }}</h4>
-                                        <button type="button" 
-                                                onclick="copyText('#TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}')" 
-                                                title="Copy ID" 
-                                                class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-purple-700 text-[10px] cursor-pointer">
-                                            <i class="fa-regular fa-copy"></i>
-                                        </button>
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-2 mt-1">
-                                        <span class="text-[10px] text-slate-400 font-medium">
-                                            {{ $tx->created_at->format('M d, Y • h:i A') }}
-                                        </span>
-                                        <span class="text-[10px] text-slate-300">•</span>
-                                        <span class="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.2 rounded-md">
-                                            Bal: ₹{{ number_format($tx->balance_after, 2) }}
-                                        </span>
-                                    </div>
+
+                                <div class="min-w-0 flex-1 space-y-1">
+                                    @if($tx->type === 'credit')
+                                        <!-- Primary Event Header: Hotel Name & Badges -->
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            @if($hotel)
+                                                <h4 class="text-xs font-black text-slate-900 truncate group-hover:text-purple-900 transition-colors">
+                                                    {{ $hotel->hotel_name }}
+                                                </h4>
+                                            @else
+                                                <h4 class="text-xs font-black text-slate-900 truncate">
+                                                    {{ $tx->description }}
+                                                </h4>
+                                            @endif
+
+                                            @if($isRenewal)
+                                                <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-purple-50 text-purple-700 border border-purple-200/80 inline-flex items-center space-x-1 shrink-0">
+                                                    <i class="fa-solid fa-arrows-rotate text-[9px] text-purple-600"></i>
+                                                    <span>License Renewal</span>
+                                                </span>
+                                            @else
+                                                <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-blue-50 text-blue-700 border border-blue-200/80 inline-flex items-center space-x-1 shrink-0">
+                                                    <i class="fa-solid fa-hotel text-[9px] text-blue-600"></i>
+                                                    <span>Package Sale</span>
+                                                </span>
+                                            @endif
+
+                                            <button type="button" 
+                                                    onclick="copyText('#TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}')" 
+                                                    title="Copy Transaction ID" 
+                                                    class="opacity-0 group-hover:opacity-100 transition-opacity text-slate-400 hover:text-purple-700 text-[10px] cursor-pointer">
+                                                <i class="fa-regular fa-copy"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Plan & Hotel Specs Metadata -->
+                                        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] text-slate-600 font-medium">
+                                            @if($plan)
+                                                <span class="inline-flex items-center space-x-1 text-slate-700 font-bold">
+                                                    <i class="fa-solid fa-box text-[9px] text-purple-500"></i>
+                                                    <span>{{ $plan->name }}</span>
+                                                </span>
+                                            @endif
+
+                                            @if($hotel && $hotel->room_count)
+                                                <span class="text-slate-300">•</span>
+                                                <span class="inline-flex items-center space-x-1 text-slate-600 font-semibold">
+                                                    <i class="fa-solid fa-tv text-[9px] text-slate-400"></i>
+                                                    <span>{{ $hotel->room_count }} TVs</span>
+                                                </span>
+                                            @endif
+
+                                            @if($hotel && $hotel->city)
+                                                <span class="text-slate-300">•</span>
+                                                <span class="inline-flex items-center space-x-1 text-slate-500">
+                                                    <i class="fa-solid fa-location-dot text-[9px] text-slate-400"></i>
+                                                    <span>{{ $hotel->city }}</span>
+                                                </span>
+                                            @endif
+
+                                            @if($sale && $sale->amount)
+                                                <span class="text-slate-300">•</span>
+                                                <span class="text-[10px] font-mono text-slate-500 bg-slate-100 px-1.5 py-0.2 rounded">
+                                                    Sale: ₹{{ number_format($sale->amount, 2) }}
+                                                </span>
+                                            @endif
+                                        </div>
+
+                                        <!-- Timestamp & Balance Bar -->
+                                        <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                                            <span class="text-[10px] text-slate-400 font-medium">
+                                                {{ $tx->created_at->format('M d, Y • h:i A') }}
+                                            </span>
+                                            <span class="text-[10px] text-slate-300">•</span>
+                                            <span class="text-[10px] font-mono font-bold text-slate-600 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
+                                                Bal After: ₹{{ number_format($tx->balance_after, 2) }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <!-- Debit / Payout Settlement Event -->
+                                        <div class="flex flex-wrap items-center gap-1.5">
+                                            <h4 class="text-xs font-black text-slate-900">
+                                                Payout Settlement Disbursed
+                                            </h4>
+                                            <span class="px-2 py-0.5 rounded-md text-[10px] font-black bg-rose-50 text-rose-700 border border-rose-200/80 inline-flex items-center space-x-1 shrink-0">
+                                                <i class="fa-solid fa-arrow-up text-[9px] text-rose-600"></i>
+                                                <span>Withdrawal</span>
+                                            </span>
+                                        </div>
+                                        <p class="text-[11px] text-slate-500">{{ $tx->description }}</p>
+                                        <div class="flex flex-wrap items-center gap-2 pt-0.5">
+                                            <span class="text-[10px] text-slate-400 font-medium">
+                                                {{ $tx->created_at->format('M d, Y • h:i A') }}
+                                            </span>
+                                            <span class="text-[10px] text-slate-300">•</span>
+                                            <span class="text-[10px] font-mono font-bold text-slate-600 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
+                                                Bal After: ₹{{ number_format($tx->balance_after, 2) }}
+                                            </span>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="text-right shrink-0 pl-3">
-                                <span class="text-sm font-black {{ $tx->type === 'credit' ? 'text-emerald-600' : 'text-slate-900' }}">
+
+                            <div class="text-right shrink-0 pl-3 space-y-0.5">
+                                <span class="text-sm sm:text-base font-black {{ $tx->type === 'credit' ? 'text-emerald-600' : 'text-slate-900' }}">
                                     {{ $tx->type === 'credit' ? '+' : '-' }}₹{{ number_format($tx->amount, 2) }}
                                 </span>
-                                <div class="text-[10px] text-slate-400 font-mono mt-0.5">
+                                <div class="text-[10px] text-slate-400 font-mono">
                                     #TXN-{{ str_pad($tx->id, 6, '0', STR_PAD_LEFT) }}
                                 </div>
                             </div>
@@ -417,7 +521,7 @@
 
 </div>
 
-<!-- Interactive Modal: Request Withdrawal (Ultra-Clean, Step-Aware & Verified UX) -->
+<!-- Interactive Modal: Request Withdrawal -->
 <div id="withdrawModal" class="fixed inset-0 z-50 bg-[#0B0424]/75 backdrop-blur-xs hidden items-center justify-center p-4">
     <div class="bg-white rounded-[28px] max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-150">
         <form method="POST" action="{{ route('distributor.wallet.withdraw') }}" id="withdrawForm" onsubmit="return validateWithdrawForm(event)" class="space-y-0">
