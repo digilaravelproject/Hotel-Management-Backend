@@ -118,13 +118,15 @@ class HotelService
     public function createHotelForDistributor(int $distributorId, array $data): HotelAdmin
     {
         $planId = !empty($data['plan_id']) ? (int) $data['plan_id'] : null;
+        $isPendingPayment = in_array($data['payment_action'] ?? '', ['pay_later', 'pay_now']);
+        $paymentStatus = ($planId && !$isPendingPayment) ? 'paid' : 'pending';
 
         $payload = array_merge($data, [
             'distributor_id' => $distributorId,
             'approval_status' => 'approved',
             'status' => true,
-            'payment_status' => $planId ? 'paid' : 'pending',
-            'record_distributor_sale' => (bool) $planId,
+            'payment_status' => $paymentStatus,
+            'record_distributor_sale' => ($planId && !$isPendingPayment),
             'payment_method' => 'distributor_direct',
             'sale_notes' => 'Distributor portal onboarding',
         ]);

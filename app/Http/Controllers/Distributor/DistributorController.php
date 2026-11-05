@@ -138,8 +138,9 @@ class DistributorController extends Controller
      */
     public function createHotel()
     {
-        $plans = Plan::where('status', 1)->where('is_hidden', false)->get();
-        return view('distributor.hotels.create', compact('plans'));
+        $plans = Plan::with('tax')->where('status', 1)->where('is_hidden', false)->get();
+        $defaultTax = \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+        return view('distributor.hotels.create', compact('plans', 'defaultTax'));
     }
 
     /**
@@ -148,7 +149,17 @@ class DistributorController extends Controller
     public function storeHotel(\App\Http\Requests\StoreHotelRequest $request)
     {
         $user = auth()->user();
-        $hotel = $this->hotelService->createHotelForDistributor($user->id, $request->validated());
+        $validated = $request->validated();
+
+        // Enforce plan TV limit if plan is selected
+        if (!empty($validated['plan_id'])) {
+            $plan = Plan::find($validated['plan_id']);
+            if ($plan && $plan->room_count > 0 && !empty($validated['room_count']) && (int) $validated['room_count'] > $plan->room_count) {
+                $validated['room_count'] = $plan->room_count;
+            }
+        }
+
+        $hotel = $this->hotelService->createHotelForDistributor($user->id, $validated);
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -158,8 +169,15 @@ class DistributorController extends Controller
             ], 201);
         }
 
+        if ($request->input('payment_action') === 'pay_now' && $hotel->plan_id) {
+            return redirect()->route('distributor.sales.create', [
+                'hotel_id' => $hotel->id,
+                'plan_id' => $hotel->plan_id,
+            ])->with('info', "Hotel '{$hotel->hotel_name}' registered! Proceed to complete payment for {$hotel->room_count} TVs.");
+        }
+
         return redirect()->route('distributor.hotels.index')
-                         ->with('success', "Hotel '{$hotel->hotel_name}' registered successfully! License Key: {$hotel->license_key}");
+                         ->with('success', "Hotel '{$hotel->hotel_name}' registered successfully! TV Capacity: {$hotel->room_count} Screens" . ($hotel->license_key ? " | License Key: {$hotel->license_key}" : " (Waiting for Payment)"));
     }
 
     /**
