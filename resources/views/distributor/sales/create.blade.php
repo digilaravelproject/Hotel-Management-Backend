@@ -23,17 +23,17 @@
                 <span class="text-[#150A42] font-black">Package Checkout</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Sell & Settle Subscription Package</h1>
-            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Activate smart TV licensing, expand room quotas, and process online gateway payments.</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Select connected TVs, assess statutory taxes, and process online gateway payment with instant tax invoice.</p>
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
+            <a href="{{ route('distributor.invoices.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 active:scale-95">
+                <i class="fa-solid fa-file-invoice-dollar text-xs text-purple-600"></i>
+                <span>Tax Invoices</span>
+            </a>
             <a href="{{ route('distributor.hotels.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 active:scale-95">
                 <i class="fa-solid fa-hotel text-xs text-purple-600"></i>
                 <span>My Hotels</span>
-            </a>
-            <a href="{{ route('distributor.sales.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 active:scale-95">
-                <i class="fa-solid fa-receipt text-xs text-purple-600"></i>
-                <span>Sales Ledger</span>
             </a>
         </div>
     </div>
@@ -160,38 +160,109 @@
                             </span>
                         </div>
                     </div>
-
-                    <!-- License Key Quick Copy Bar -->
-                    @if($selectedHotel && $selectedHotel->license_key)
-                        <div id="licenseBar" class="flex items-center justify-between p-3 rounded-2xl bg-purple-50/60 border border-purple-100 text-xs">
-                            <div class="flex items-center space-x-2 min-w-0">
-                                <i class="fa-solid fa-key text-purple-600 text-xs"></i>
-                                <span class="text-slate-500 font-bold text-[11px]">Hardware License Key:</span>
-                                <span id="displayLicenseKey" class="font-mono font-black text-slate-900 text-xs select-all truncate">{{ $selectedHotel->license_key }}</span>
-                            </div>
-                            <button type="button" onclick="navigator.clipboard.writeText(document.getElementById('displayLicenseKey').innerText); this.innerHTML='<i class=\'fa-solid fa-check text-emerald-600\'></i>'; setTimeout(() => this.innerHTML='<i class=\'fa-regular fa-copy\'></i>', 1500);" class="p-1 text-slate-400 hover:text-purple-700 shrink-0 cursor-pointer" title="Copy Key">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                        </div>
-                    @endif
                 </div>
 
-                <!-- 2. Select Subscription Package Tier -->
+                <!-- 2. TV Screen Quantity Selector (Number of TVs) -->
+                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-4">
+                    <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                                <i class="fa-solid fa-tv"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-slate-900">Connected TV Capacity & Screen Slots</h3>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">Specify how many guest room Smart TVs will be authorized and paired.</p>
+                            </div>
+                        </div>
+
+                        <span class="px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 text-[10px] font-black uppercase font-mono border border-purple-100">
+                            Per-TV Model
+                        </span>
+                    </div>
+
+                    @php
+                        $defaultTvCount = old('tv_count', $selectedHotel ? max(1, (int) ($selectedHotel->room_count ?: 1)) : 10);
+                    @endphp
+
+                    <div class="space-y-3">
+                        <label class="block text-xs font-black text-slate-700">
+                            Number of Authorized Smart TVs <span class="text-rose-500">*</span>
+                        </label>
+
+                        <!-- Stepper Input -->
+                        <div class="flex items-center space-x-3">
+                            <button type="button" onclick="adjustTvCount(-1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer">
+                                <i class="fa-solid fa-minus text-sm"></i>
+                            </button>
+
+                            <div class="relative flex-1">
+                                <input type="number" 
+                                       name="tv_count" 
+                                       id="tvCountInput" 
+                                       value="{{ $defaultTvCount }}" 
+                                       min="1" 
+                                       max="10000" 
+                                       required 
+                                       class="w-full text-center px-4 py-3 text-lg font-black text-slate-900 rounded-2xl border-2 border-slate-200 focus:border-[#150A42] focus:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 font-mono transition-all">
+                                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400 pointer-events-none">Screens</span>
+                            </div>
+
+                            <button type="button" onclick="adjustTvCount(1)" class="w-12 h-12 rounded-2xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 font-black text-lg flex items-center justify-center transition-all cursor-pointer">
+                                <i class="fa-solid fa-plus text-sm"></i>
+                            </button>
+                        </div>
+
+                        <!-- Quick TV Count Chips -->
+                        <div class="flex flex-wrap items-center gap-2 pt-1 text-xs">
+                            <span class="text-[11px] font-bold text-slate-400">Quick Select:</span>
+                            @if($selectedHotel && $selectedHotel->room_count > 0)
+                                <button type="button" onclick="setTvCount({{ $selectedHotel->room_count }})" class="px-3 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-[11px] border border-purple-200/80 transition-all cursor-pointer active:scale-95">
+                                    Hotel Rooms ({{ $selectedHotel->room_count }} TVs)
+                                </button>
+                            @endif
+                            <button type="button" onclick="setTvCount(10)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
+                                10 TVs
+                            </button>
+                            <button type="button" onclick="setTvCount(25)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
+                                25 TVs
+                            </button>
+                            <button type="button" onclick="setTvCount(50)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
+                                50 TVs
+                            </button>
+                            <button type="button" onclick="setTvCount(100)" class="px-2.5 py-1 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] transition-all cursor-pointer active:scale-95">
+                                100 TVs
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Select Subscription Package Tier -->
                 <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
-                    <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
-                        <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
-                            <i class="fa-solid fa-layer-group"></i>
+                    <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-black text-slate-900">Select Subscription Tier</h3>
+                                <p class="text-xs text-slate-400 font-medium mt-0.5">Per-TV rates with statutory tax compliance and launcher features.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h3 class="text-base font-black text-slate-900">Select Subscription Tier</h3>
-                            <p class="text-xs text-slate-400 font-medium mt-0.5">Select a package tier to activate or renew in-room TV services.</p>
-                        </div>
+
+                        <span class="text-xs font-mono font-bold text-slate-400">
+                            {{ $plans->count() }} Tiers
+                        </span>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                         @foreach($plans as $plan)
                             @php
                                 $isHotelPlan = $selectedHotel && $selectedHotel->plan_id == $plan->id;
+                                $effectiveTax = $plan->tax ?: $defaultTax;
+                                $taxRate = $effectiveTax ? (float) $effectiveTax->rate : 18.0;
+                                $taxName = $effectiveTax ? $effectiveTax->name : 'GST';
+                                $taxType = $plan->tax_type ?? 'exclusive';
+                                $unitRate = $plan->effective_price_per_tv;
                             @endphp
                             <label class="relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all hover:border-slate-300 bg-white has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/30 has-[:checked]:shadow-xs group">
                                 <div>
@@ -207,31 +278,45 @@
                                                    name="plan_id" 
                                                    value="{{ $plan->id }}" 
                                                    {{ (old('plan_id', $selectedHotel && $selectedHotel->plan_id ? $selectedHotel->plan_id : ($loop->first ? $plan->id : '')) == $plan->id) ? 'checked' : '' }} 
-                                                   data-price="{{ $plan->price }}" 
+                                                   data-unit-rate="{{ $unitRate }}"
                                                    data-name="{{ $plan->name }}" 
-                                                   data-rooms="{{ $plan->room_count }}" 
+                                                   data-billing-cycle="{{ $plan->billing_cycle ?? 'monthly' }}"
+                                                   data-tax-id="{{ $effectiveTax ? $effectiveTax->id : '' }}"
+                                                   data-tax-name="{{ $taxName }}"
+                                                   data-tax-rate="{{ $taxRate }}"
+                                                   data-tax-type="{{ $taxType }}"
+                                                   data-is-split="{{ ($effectiveTax && $effectiveTax->is_split) ? '1' : '0' }}"
                                                    class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-purple-500">
                                         </div>
                                     </div>
 
                                     <div class="font-black text-slate-900 text-sm sm:text-base">{{ $plan->name }}</div>
-                                    <div class="text-lg font-black text-[#150A42] mt-1">
-                                        ₹{{ number_format($plan->price, 0) }} 
-                                        <span class="text-[11px] text-slate-400 font-normal">/month</span>
+                                    <div class="text-xl font-black text-[#150A42] font-mono mt-1">
+                                        ₹{{ number_format($unitRate, 2) }} 
+                                        <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / month</span>
                                     </div>
-                                    <p class="text-[11px] text-slate-400 mt-1.5 font-medium">
-                                        Supports up to <strong class="text-slate-700 font-bold">{{ $plan->room_count }}</strong> licensed hotel rooms.
-                                    </p>
+
+                                    <div class="mt-2 flex items-center space-x-1.5">
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100">
+                                            {{ $taxName }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                        </span>
+                                    </div>
+
+                                    @if($plan->description)
+                                        <p class="text-[11px] text-slate-400 mt-2 font-medium line-clamp-2">
+                                            {{ $plan->description }}
+                                        </p>
+                                    @endif
                                 </div>
 
-                                <div class="mt-4 pt-3 border-t border-slate-100 space-y-1 text-[10px] text-slate-500 font-semibold">
+                                <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-[10px] text-slate-600 font-semibold">
                                     <div class="flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-check text-emerald-600"></i>
-                                        <span>Full In-Room TV Launcher</span>
+                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                        <span>Full In-Room TV Launcher & Themes</span>
                                     </div>
                                     <div class="flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-check text-emerald-600"></i>
-                                        <span>Weather & Flight Status Widgets</span>
+                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
+                                        <span>Live Weather, Flight & Hotel Facilities</span>
                                     </div>
                                 </div>
                             </label>
@@ -239,7 +324,7 @@
                     </div>
                 </div>
 
-                <!-- 3. License Duration & Payment Channel -->
+                <!-- 4. License Duration & Payment Channel -->
                 <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
                     <div class="border-b border-slate-100 pb-4 flex items-center space-x-3.5">
                         <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-black text-lg shadow-2xs shrink-0">
@@ -247,7 +332,7 @@
                         </div>
                         <div>
                             <h3 class="text-base font-black text-slate-900">Duration & Payment Settlement</h3>
-                            <p class="text-xs text-slate-400 font-medium mt-0.5">Select validity period and verified payment gateway.</p>
+                            <p class="text-xs text-slate-400 font-medium mt-0.5">Select validity term and verified payment gateway.</p>
                         </div>
                     </div>
 
@@ -263,8 +348,8 @@
                         </div>
 
                         <div>
-                            <label class="block text-xs font-black text-slate-700 mb-1.5">Calculated Amount (₹) <span class="text-rose-500">*</span></label>
-                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-100/80 cursor-not-allowed">
+                            <label class="block text-xs font-black text-slate-700 mb-1.5">Calculated Total Payable (₹) <span class="text-rose-500">*</span></label>
+                            <input type="number" step="0.01" name="amount" id="amountInput" value="{{ old('amount') }}" readonly required class="w-full px-4 py-3 text-sm font-black text-slate-900 rounded-2xl border border-slate-200 bg-slate-100/80 cursor-not-allowed font-mono">
                         </div>
                     </div>
 
@@ -292,7 +377,7 @@
                                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 animate-pulse mr-1"></span> Live Gateway
                                             </span>
                                         </div>
-                                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">Automated server-side verification with instant license generation.</p>
+                                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">Automated server-side verification with instant license generation and GST tax invoice.</p>
                                     </div>
                                 </div>
                                 <div class="text-xs font-bold text-emerald-700 shrink-0 flex items-center space-x-1">
@@ -314,58 +399,105 @@
 
             </div>
 
-            <!-- Summary & Checkout Column (5 cols, sticky) -->
+            <!-- Summary & Tax Breakdown Column (5 cols, sticky) -->
             <div class="lg:col-span-5 space-y-6 sticky top-24">
-                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-6">
+                <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-7 shadow-sm space-y-5">
                     <div class="border-b border-slate-100 pb-4">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/60 shadow-2xs">Order Invoice</span>
-                        <div class="text-xl font-black text-slate-900 mt-2 tracking-tight">Summary & Checkout</div>
+                        <div class="flex items-center justify-between">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-purple-50 text-purple-700 border border-purple-200/60 shadow-2xs font-mono">
+                                Tax Invoice Assessment
+                            </span>
+                            <span class="text-[11px] font-bold text-emerald-600 flex items-center">
+                                <i class="fa-solid fa-shield-check mr-1"></i> GST Compliant
+                            </span>
+                        </div>
+                        <div class="text-xl font-black text-slate-900 mt-2 tracking-tight">Order Breakdown & Total</div>
+                        <p class="text-xs text-slate-400 font-medium mt-0.5">Itemized TV licensing cost and statutory taxes.</p>
                     </div>
 
-                    <div class="space-y-3.5 text-xs">
+                    <!-- Itemized Specs Table -->
+                    <div class="space-y-3 text-xs">
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
                             <span class="text-slate-400 font-medium">Billed Hotel:</span>
                             <span id="summaryHotelName" class="font-black text-slate-900 truncate max-w-[200px]">
                                 {{ $selectedHotel ? $selectedHotel->hotel_name : 'Select Hotel' }}
                             </span>
                         </div>
+
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-400 font-medium">Selected Tier:</span>
+                            <span class="text-slate-400 font-medium">Subscription Tier:</span>
                             <span id="summaryPlanName" class="font-black text-slate-900">Select Plan</span>
                         </div>
+
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-400 font-medium">Base Monthly Rate:</span>
-                            <span id="summaryPlanRate" class="font-black text-slate-900">₹0</span>
+                            <span class="text-slate-400 font-medium">Connected TVs:</span>
+                            <span id="summaryTvCount" class="font-black font-mono text-purple-700">10 Smart TVs</span>
                         </div>
+
                         <div class="flex justify-between py-1.5 border-b border-slate-100">
-                            <span class="text-slate-400 font-medium">Validity Duration:</span>
+                            <span class="text-slate-400 font-medium">Rate per TV:</span>
+                            <span id="summaryUnitRate" class="font-black font-mono text-slate-900">₹0.00 / TV / mo</span>
+                        </div>
+
+                        <div class="flex justify-between py-1.5 border-b border-slate-100">
+                            <span class="text-slate-400 font-medium">Billing Duration:</span>
                             <span id="summaryDuration" class="font-black text-slate-900">1 Month</span>
                         </div>
-                        <div class="flex justify-between py-2 text-sm pt-2">
-                            <span class="text-slate-900 font-bold">Total Payable:</span>
-                            <span id="summaryTotal" class="font-black text-[#150A42] text-2xl tracking-tight">₹0</span>
+
+                        <div class="flex justify-between py-1.5 border-b border-slate-100 bg-slate-50/70 p-2.5 rounded-xl">
+                            <div>
+                                <span class="text-slate-600 font-bold block">Base Subtotal:</span>
+                                <span id="summaryFormula" class="text-[10px] text-slate-400 font-mono block">10 TVs × ₹0 × 1 mo</span>
+                            </div>
+                            <span id="summarySubtotal" class="font-black font-mono text-slate-900 self-center text-sm">₹0.00</span>
+                        </div>
+
+                        <!-- Tax Breakdown Rows -->
+                        <div id="taxBreakdownBox" class="space-y-1.5 pt-1">
+                            <div class="flex justify-between text-slate-600">
+                                <span id="summaryTaxLabel">GST (18% Exclusive):</span>
+                                <span id="summaryTaxAmount" class="font-mono font-bold text-slate-900">+ ₹0.00</span>
+                            </div>
+                            <div id="cgstRow" class="flex justify-between text-[11px] text-slate-400 pl-3">
+                                <span id="summaryCgstLabel">CGST (9%):</span>
+                                <span id="summaryCgstAmount" class="font-mono">₹0.00</span>
+                            </div>
+                            <div id="sgstRow" class="flex justify-between text-[11px] text-slate-400 pl-3">
+                                <span id="summarySgstLabel">SGST (9%):</span>
+                                <span id="summarySgstAmount" class="font-mono">₹0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Total Payable Line -->
+                        <div class="pt-3 border-t-2 border-slate-900 flex justify-between items-center text-slate-900">
+                            <div>
+                                <span class="text-sm font-black block">Total Payable:</span>
+                                <span class="text-[10px] text-slate-400 block font-medium">All taxes & TV pairing licenses included</span>
+                            </div>
+                            <span id="summaryTotal" class="font-black font-mono text-[#150A42] text-2xl tracking-tight">₹0.00</span>
                         </div>
                     </div>
 
-                    <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/60 text-[11px] text-purple-950 space-y-1">
+                    <!-- Automatic Invoice Guarantee -->
+                    <div class="p-4 rounded-2xl bg-purple-50/70 border border-purple-200/60 text-[11px] text-purple-950 space-y-1.5">
                         <div class="font-black flex items-center space-x-1.5">
-                            <i class="fa-solid fa-bolt text-purple-600"></i>
-                            <span>Instant Digital Activation</span>
+                            <i class="fa-solid fa-file-invoice text-purple-600"></i>
+                            <span>Automated Tax Invoice Generation</span>
                         </div>
-                        <p class="text-purple-900/80 text-[10px] leading-relaxed font-medium">Smart TV device licenses are immediately validated on Firebase as soon as payment is confirmed.</p>
+                        <p class="text-purple-900/80 text-[10px] leading-relaxed font-medium">Upon verified payment, a formal tax-compliant invoice is immediately issued and available for print and download in your Distributor Tax Invoices section.</p>
                     </div>
 
                     <button type="submit" 
                             id="saleSubmitBtn" 
                             {{ (!$activeGatewayRecord || !$activeGatewayRecord->is_enabled) ? 'disabled' : '' }} 
-                            class="w-full py-4 px-4 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 cursor-pointer">
-                        <i class="fa-solid fa-lock text-xs"></i>
-                        <span id="saleSubmitLabel">Proceed to Pay ₹<span id="btnPayAmount">0</span> & Activate</span>
+                            class="w-full py-4 px-4 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs sm:text-sm shadow-lg shadow-[#150A42]/20 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95 cursor-pointer">
+                        <i class="fa-solid fa-lock text-xs text-amber-300"></i>
+                        <span id="saleSubmitLabel">Proceed to Pay ₹<span id="btnPayAmount">0</span> & Settle</span>
                     </button>
 
                     <p class="text-[10px] text-slate-400 text-center leading-relaxed font-medium">
                         <i class="fa-solid fa-shield-check text-emerald-600 mr-1"></i>
-                        Online gateway payments are secured via {{ $activeGatewayRecord ? $activeGatewayRecord->name : 'active gateway' }}.
+                        Payments processed securely via {{ $activeGatewayRecord ? $activeGatewayRecord->name : 'Payment Gateway' }}.
                     </p>
                 </div>
             </div>
@@ -377,13 +509,27 @@
 document.addEventListener('DOMContentLoaded', function() {
     const planRadios = document.querySelectorAll('.plan-radio');
     const durationSelect = document.getElementById('durationSelect');
+    const tvCountInput = document.getElementById('tvCountInput');
     const amountInput = document.getElementById('amountInput');
+
     const summaryPlanName = document.getElementById('summaryPlanName');
-    const summaryPlanRate = document.getElementById('summaryPlanRate');
+    const summaryTvCount = document.getElementById('summaryTvCount');
+    const summaryUnitRate = document.getElementById('summaryUnitRate');
     const summaryDuration = document.getElementById('summaryDuration');
+    const summaryFormula = document.getElementById('summaryFormula');
+    const summarySubtotal = document.getElementById('summarySubtotal');
+    const summaryTaxLabel = document.getElementById('summaryTaxLabel');
+    const summaryTaxAmount = document.getElementById('summaryTaxAmount');
+    const summaryCgstLabel = document.getElementById('summaryCgstLabel');
+    const summaryCgstAmount = document.getElementById('summaryCgstAmount');
+    const summarySgstLabel = document.getElementById('summarySgstLabel');
+    const summarySgstAmount = document.getElementById('summarySgstAmount');
+    const cgstRow = document.getElementById('cgstRow');
+    const sgstRow = document.getElementById('sgstRow');
     const summaryTotal = document.getElementById('summaryTotal');
     const summaryHotelName = document.getElementById('summaryHotelName');
     const hotelSelect = document.getElementById('hotelSelect');
+    const btnPayAmount = document.getElementById('btnPayAmount');
 
     function calculateTotal() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
@@ -392,25 +538,98 @@ document.addEventListener('DOMContentLoaded', function() {
             selectedPlan = planRadios[0];
         }
 
-        if (selectedPlan) {
-            const price = parseFloat(selectedPlan.dataset.price) || 0;
-            const name = selectedPlan.dataset.name || 'Custom Plan';
-            const months = parseInt(durationSelect ? durationSelect.value : 1) || 1;
-            const total = price * months;
+        if (!selectedPlan) return;
 
-            if (amountInput) amountInput.value = total.toFixed(2);
-            if (summaryPlanName) summaryPlanName.textContent = name;
-            if (summaryPlanRate) summaryPlanRate.textContent = `₹${price.toLocaleString()}/mo`;
-            if (summaryDuration) summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
-            if (summaryTotal) summaryTotal.textContent = `₹${total.toLocaleString()}`;
+        const unitRate = parseFloat(selectedPlan.dataset.unitRate) || 150;
+        const name = selectedPlan.dataset.name || 'Subscription Plan';
+        const tvCount = Math.max(1, parseInt(tvCountInput ? tvCountInput.value : 1) || 1);
+        const months = parseInt(durationSelect ? durationSelect.value : 1) || 1;
 
-            const btnPayAmount = document.getElementById('btnPayAmount');
-            if (btnPayAmount) btnPayAmount.textContent = total.toLocaleString();
+        const subtotal = Math.round((unitRate * tvCount * months) * 100) / 100;
+
+        const taxRate = parseFloat(selectedPlan.dataset.taxRate) || 0;
+        const taxName = selectedPlan.dataset.taxName || 'GST';
+        const taxType = selectedPlan.dataset.taxType || 'exclusive';
+        const isSplit = selectedPlan.dataset.isSplit === '1';
+
+        let taxAmount = 0.00;
+        let totalAmount = subtotal;
+        let baseSubtotal = subtotal;
+        let cgst = 0.00;
+        let sgst = 0.00;
+
+        if (taxRate > 0) {
+            if (taxType === 'inclusive') {
+                taxAmount = Math.round((subtotal - (subtotal / (1 + (taxRate / 100)))) * 100) / 100;
+                baseSubtotal = Math.round((subtotal - taxAmount) * 100) / 100;
+                totalAmount = subtotal;
+            } else {
+                taxAmount = Math.round((subtotal * (taxRate / 100)) * 100) / 100;
+                totalAmount = Math.round((subtotal + taxAmount) * 100) / 100;
+                baseSubtotal = subtotal;
+            }
+
+            if (isSplit) {
+                cgst = Math.round((taxAmount / 2) * 100) / 100;
+                sgst = Math.round((taxAmount - cgst) * 100) / 100;
+            }
         }
+
+        // Update form values
+        if (amountInput) amountInput.value = totalAmount.toFixed(2);
+
+        // Update Summary Elements
+        if (summaryPlanName) summaryPlanName.textContent = name;
+        if (summaryTvCount) summaryTvCount.textContent = `${tvCount} Smart TVs`;
+        if (summaryUnitRate) summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo`;
+        if (summaryDuration) summaryDuration.textContent = `${months} Month${months > 1 ? 's' : ''}`;
+        if (summaryFormula) summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${months} mo`;
+        if (summarySubtotal) summarySubtotal.textContent = `₹${baseSubtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+        if (summaryTaxLabel) summaryTaxLabel.textContent = `${taxName} (${taxRate.toFixed(1)}% - ${taxType.charAt(0).toUpperCase() + taxType.slice(1)}):`;
+        if (summaryTaxAmount) summaryTaxAmount.textContent = taxAmount > 0 ? `+ ₹${taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '₹0.00 (Zero Rated)';
+
+        if (cgstRow && sgstRow) {
+            if (taxAmount > 0 && isSplit) {
+                cgstRow.classList.remove('hidden');
+                sgstRow.classList.remove('hidden');
+                if (summaryCgstLabel) summaryCgstLabel.textContent = `CGST (${(taxRate / 2).toFixed(1)}%):`;
+                if (summaryCgstAmount) summaryCgstAmount.textContent = `₹${cgst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                if (summarySgstLabel) summarySgstLabel.textContent = `SGST (${(taxRate / 2).toFixed(1)}%):`;
+                if (summarySgstAmount) summarySgstAmount.textContent = `₹${sgst.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            } else {
+                cgstRow.classList.add('hidden');
+                sgstRow.classList.add('hidden');
+            }
+        }
+
+        if (summaryTotal) summaryTotal.textContent = `₹${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+        if (btnPayAmount) btnPayAmount.textContent = totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    window.adjustTvCount = function(delta) {
+        if (!tvCountInput) return;
+        let current = parseInt(tvCountInput.value) || 1;
+        let next = Math.max(1, Math.min(10000, current + delta));
+        tvCountInput.value = next;
+        calculateTotal();
+    };
+
+    window.setTvCount = function(val) {
+        if (!tvCountInput) return;
+        tvCountInput.value = Math.max(1, parseInt(val) || 1);
+        calculateTotal();
+    };
+
+    if (tvCountInput) {
+        tvCountInput.addEventListener('input', calculateTotal);
+        tvCountInput.addEventListener('change', calculateTotal);
     }
 
     planRadios.forEach(radio => radio.addEventListener('change', calculateTotal));
     if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
+
+    // Initial run
     calculateTotal();
 
     window.toggleHotelSelector = function() {
@@ -426,9 +645,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const name = selectedOpt.dataset.name || 'Select Hotel Property';
         const location = selectedOpt.dataset.location || '—';
-        const rooms = selectedOpt.dataset.rooms || '—';
+        const rooms = parseInt(selectedOpt.dataset.rooms) || 1;
         const devices = selectedOpt.dataset.devices || '0';
-        const license = selectedOpt.dataset.license || '—';
         const planName = selectedOpt.dataset.planName || 'Unassigned';
         const expiry = selectedOpt.dataset.expiry || 'Not Set';
         const planId = selectedOpt.dataset.planId;
@@ -441,17 +659,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('displayHotelExpiry').textContent = expiry;
         if (summaryHotelName) summaryHotelName.textContent = name;
 
-        const displayLicenseKey = document.getElementById('displayLicenseKey');
-        if (displayLicenseKey) displayLicenseKey.textContent = license;
+        // Auto sync TV count with hotel's capacity
+        if (tvCountInput && rooms > 0) {
+            tvCountInput.value = rooms;
+        }
 
         // Auto pre-select matching plan if available
         if (planId) {
             const matchRadio = document.querySelector('.plan-radio[value="' + planId + '"]');
             if (matchRadio) {
                 matchRadio.checked = true;
-                calculateTotal();
             }
         }
+
+        calculateTotal();
     };
 
     // ---------------------------------------------------------------
@@ -471,7 +692,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (submitLabel) {
             submitLabel.innerHTML = state 
                 ? '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Opening Gateway...' 
-                : 'Proceed to Pay ₹<span id="btnPayAmount">' + (amountInput ? parseFloat(amountInput.value || 0).toLocaleString() : '0') + '</span> & Activate';
+                : 'Proceed to Pay ₹<span id="btnPayAmount">' + (amountInput ? parseFloat(amountInput.value || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00') + '</span> & Settle';
         }
     }
 
@@ -506,6 +727,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            const currentTvCount = Math.max(1, parseInt(tvCountInput ? tvCountInput.value : 1) || 1);
+
             setSubmitting(true);
             checkoutSubmitting = true;
 
@@ -521,6 +744,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     body: JSON.stringify({
                         hotel_id: hotelSelect.value,
                         plan_id: document.querySelector('.plan-radio:checked').value,
+                        tv_count: currentTvCount,
                         duration_months: durationSelect.value,
                     }),
                 });
@@ -542,7 +766,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         amount: Math.round(parseFloat(orderData.amount) * 100),
                         currency: orderData.currency || 'INR',
                         name: 'PaxTV Hospitality',
-                        description: 'Package Activation',
+                        description: 'TV Subscription License (' + currentTvCount + ' TVs)',
                         prefill: {
                             name: orderData.name || '',
                             email: orderData.email || '',

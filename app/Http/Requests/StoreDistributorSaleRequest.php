@@ -22,6 +22,7 @@ class StoreDistributorSaleRequest extends FormRequest
         return [
             'hotel_id' => 'required|exists:hotel_admins,id',
             'plan_id' => 'required|exists:plans,id',
+            'tv_count' => 'required|integer|min:1|max:10000',
             'duration_months' => 'required|integer|in:1,3,6,12',
             'amount' => 'required|numeric|min:0',
             'payment_method' => 'required|in:online_gateway',
@@ -37,6 +38,7 @@ class StoreDistributorSaleRequest extends FormRequest
         return [
             'hotel_id' => 'Target Hotel',
             'plan_id' => 'Subscription Plan',
+            'tv_count' => 'Number of Connected TVs',
             'duration_months' => 'Plan Duration',
             'amount' => 'Package Amount',
             'payment_method' => 'Payment Method',

@@ -281,7 +281,7 @@ class HotelService
             'expiry_date' => $newExpiry,
             'auto_renew' => $saleData['auto_renew'] ?? false,
             'renewal_type' => ($saleData['auto_renew'] ?? false) ? 'auto' : 'manual',
-            'room_count' => $this->resolveRoomCount($hotel->room_count, $plan, (int) $plan->room_count),
+            'room_count' => $this->resolveRoomCount($saleData['tv_count'] ?? $hotel->room_count, $plan, (int) $plan->room_count),
         ]);
 
         $sale = DistributorSale::create([

@@ -11,10 +11,16 @@
             <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Sales & Revenue Ledger</h2>
             <p class="text-xs text-slate-500 font-medium mt-0.5">Complete transaction audit trail of all smart TV packages sold to your partner hotels.</p>
         </div>
-        <a href="{{ route('distributor.sales.create') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/15 transition-all flex items-center space-x-2 active:scale-95 shrink-0 cursor-pointer">
-            <i class="fa-solid fa-box-open text-xs"></i>
-            <span>Sell New Package</span>
-        </a>
+        <div class="flex items-center space-x-2.5 shrink-0">
+            <a href="{{ route('distributor.invoices.index') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200/90 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-2 active:scale-95">
+                <i class="fa-solid fa-file-invoice-dollar text-xs text-purple-600"></i>
+                <span>Tax Invoices</span>
+            </a>
+            <a href="{{ route('distributor.sales.create') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-extrabold text-xs shadow-lg shadow-[#150A42]/15 transition-all flex items-center space-x-2 active:scale-95 cursor-pointer">
+                <i class="fa-solid fa-box-open text-xs text-amber-300"></i>
+                <span>Sell New Package</span>
+            </a>
+        </div>
     </div>
 
     <!-- Sales Table Container -->

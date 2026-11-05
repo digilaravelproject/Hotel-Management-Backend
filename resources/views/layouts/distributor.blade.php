@@ -132,6 +132,11 @@
                         </span>
                     @endif
                 </a>
+
+                <a href="{{ route('distributor.invoices.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('distributor.invoices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                    <i class="fa-solid fa-file-invoice-dollar text-sm w-5 text-center {{ Request::routeIs('distributor.invoices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                    <span>Tax Invoices</span>
+                </a>
             </nav>
 
             <!-- Bottom Brand Info -->

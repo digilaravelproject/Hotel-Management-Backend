@@ -41,5 +41,9 @@ Route::middleware(['auth:web', 'role:distributor|super_admin'])->prefix('distrib
     Route::get('wallet/transactions', [\App\Http\Controllers\Distributor\WalletController::class, 'transactions'])->name('wallet.transactions');
     Route::get('wallet/withdrawals', [\App\Http\Controllers\Distributor\WalletController::class, 'withdrawals'])->name('wallet.withdrawals');
     Route::post('wallet/withdraw', [\App\Http\Controllers\Distributor\WalletController::class, 'requestWithdrawal'])->name('wallet.withdraw');
+
+    // Tax Invoices & Billing
+    Route::get('invoices', [DistributorController::class, 'invoices'])->name('invoices.index');
+    Route::get('invoices/{id}', [DistributorController::class, 'showInvoice'])->name('invoices.show');
 });
 

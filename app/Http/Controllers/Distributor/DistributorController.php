@@ -193,7 +193,7 @@ class DistributorController extends Controller
     {
         $user = auth()->user();
         $hotels = $user->hotels()->with('plan')->withCount('connectedDevices')->orderBy('hotel_name')->get();
-        $plans = Plan::where('status', 1)->where('is_hidden', false)->get();
+        $plans = Plan::with('tax')->where('status', 1)->where('is_hidden', false)->get();
         $selectedHotelId = $request->query('hotel_id');
         $selectedHotel = null;
 
@@ -204,6 +204,8 @@ class DistributorController extends Controller
             }
         }
 
+        $defaultTax = \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+
         $activeGatewayRecord = \App\Models\PaymentGateway::where('is_enabled', true)->first();
         $gateway = null;
         try {
@@ -212,7 +214,7 @@ class DistributorController extends Controller
             $gateway = null;
         }
 
-        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId', 'selectedHotel', 'activeGatewayRecord', 'gateway'));
+        return view('distributor.sales.create', compact('hotels', 'plans', 'selectedHotelId', 'selectedHotel', 'activeGatewayRecord', 'gateway', 'defaultTax'));
     }
 
     /**
@@ -226,15 +228,36 @@ class DistributorController extends Controller
         $validated = $request->validate([
             'hotel_id' => 'required|exists:hotel_admins,id',
             'plan_id' => 'required|exists:plans,id',
+            'tv_count' => 'required|integer|min:1|max:10000',
             'duration_months' => 'required|integer|in:1,3,6,12',
         ]);
 
         // Security check: hotel must belong to the authenticated distributor
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
-        $plan = Plan::findOrFail($validated['plan_id']);
+        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
 
-        // Amount is always computed server-side to prevent tampering
-        $amount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+        $tvCount = max(1, (int) $validated['tv_count']);
+        $durationMonths = (int) $validated['duration_months'];
+        $ratePerTv = $plan->effective_price_per_tv;
+        $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+
+        $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+        $taxType = $plan->tax_type ?? 'exclusive';
+        if ($tax && $tax->rate > 0) {
+            $taxCalc = $tax->calculateTax($subtotal, $taxType);
+            $amount = $taxCalc['total_amount'];
+            $taxAmount = $taxCalc['tax_amount'];
+        } else {
+            $amount = $subtotal;
+            $taxAmount = 0.00;
+            $taxCalc = [
+                'subtotal' => $subtotal,
+                'tax_amount' => 0.0,
+                'cgst_amount' => 0.0,
+                'sgst_amount' => 0.0,
+                'total_amount' => $subtotal,
+            ];
+        }
 
         try {
             $gateway = PaymentManager::active();
@@ -250,12 +273,12 @@ class DistributorController extends Controller
                 'name' => $user->name ?? '',
                 'email' => $user->email ?? '',
                 'phone' => $user->phone ?? '',
-                'product_info' => 'Plan: ' . $plan->name,
+                'product_info' => 'Plan: ' . $plan->name . ' (' . $tvCount . ' TVs)',
                 'udf1' => (string) $hotel->id,
                 'udf2' => (string) $plan->id,
-                'udf3' => (string) $validated['duration_months'],
+                'udf3' => (string) $durationMonths,
                 'udf4' => (string) $user->id,
-                'udf5' => 'distributor_sale',
+                'udf5' => (string) $tvCount,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -276,6 +299,14 @@ class DistributorController extends Controller
             'name' => $user->name ?? '',
             'email' => $user->email ?? '',
             'phone' => $user->phone ?? '',
+            'breakdown' => [
+                'tv_count' => $tvCount,
+                'price_per_tv' => $ratePerTv,
+                'duration_months' => $durationMonths,
+                'subtotal' => $subtotal,
+                'tax_amount' => $taxAmount,
+                'total_amount' => $amount,
+            ],
         ]);
     }
 
@@ -289,10 +320,27 @@ class DistributorController extends Controller
 
         // Security check: ensure hotel belongs to authenticated distributor
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
-        $plan = Plan::findOrFail($validated['plan_id']);
+        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
 
-        // Amount is always computed server-side for gateway sales to prevent tampering
-        $computedAmount = round((float) $plan->price * (int) $validated['duration_months'], 2);
+        $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: 1));
+        $durationMonths = (int) $validated['duration_months'];
+        $ratePerTv = $plan->effective_price_per_tv;
+        $subtotal = round($ratePerTv * $tvCount * $durationMonths, 2);
+
+        $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
+        $taxType = $plan->tax_type ?? 'exclusive';
+        if ($tax && $tax->rate > 0) {
+            $taxCalc = $tax->calculateTax($subtotal, $taxType);
+            $computedAmount = $taxCalc['total_amount'];
+            $taxAmount = $taxCalc['tax_amount'];
+            $cgst = $taxCalc['cgst_amount'];
+            $sgst = $taxCalc['sgst_amount'];
+        } else {
+            $computedAmount = $subtotal;
+            $taxAmount = 0.00;
+            $cgst = 0.00;
+            $sgst = 0.00;
+        }
 
         // Strict enforcement: Only verified online gateway payment is accepted
         if (($validated['payment_method'] ?? '') !== 'online_gateway') {
@@ -359,6 +407,7 @@ class DistributorController extends Controller
 
         // Use the verified gateway amount (in rupees) instead of client-sent value
         $validated['amount'] = $computedAmount;
+        $validated['tv_count'] = $tvCount;
         $validated['notes'] = trim(
             ($validated['notes'] ?? '') .
             " | {$gateway->getName()} Verified: " . ($transactionId ?? $payload['razorpay_order_id'])
@@ -371,6 +420,42 @@ class DistributorController extends Controller
             $validated,
             $user->id
         );
+
+        // Update hotel TV capacity to matched purchased quota
+        $hotel->update(['room_count' => $tvCount]);
+
+        // Auto-generate Tax-Compliant Invoice for Distributor and Hotel Client
+        $invoice = null;
+        try {
+            $invoice = \App\Models\Invoice::create([
+                'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
+                'hotel_admin_id' => $hotel->id,
+                'distributor_id' => $user->id,
+                'plan_id' => $plan->id,
+                'plan_name' => $plan->name,
+                'billing_cycle' => $plan->billing_cycle ?? 'monthly',
+                'tv_count' => $tvCount,
+                'price_per_tv' => $ratePerTv,
+                'subtotal' => $subtotal,
+                'tax_id' => $tax ? $tax->id : null,
+                'tax_name' => $tax ? $tax->name : null,
+                'tax_rate' => $tax ? (float) $tax->rate : 0.00,
+                'tax_type' => $taxType,
+                'tax_amount' => $taxAmount,
+                'cgst_amount' => $cgst,
+                'sgst_amount' => $sgst,
+                'total_amount' => $computedAmount,
+                'payment_status' => 'paid',
+                'payment_method' => 'online_gateway',
+                'transaction_id' => (string) ($transactionId ?: ($payload['razorpay_order_id'] ?? '')),
+                'paid_at' => now(),
+                'period_start' => now(),
+                'period_end' => $result['new_expiry'],
+                'notes' => "Distributor sale for {$tvCount} TVs ({$durationMonths} months) - {$plan->name}",
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning("Distributor Invoice generation skipped or failed: " . $e->getMessage());
+        }
 
         // Record successful gateway transaction in the ledger
         PaymentTransaction::create([
@@ -390,14 +475,60 @@ class DistributorController extends Controller
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
-                'message' => "Package '{$plan->name}' successfully sold to '{$hotel->hotel_name}'.",
+                'message' => "Package '{$plan->name}' for {$tvCount} TVs successfully sold to '{$hotel->hotel_name}'.",
                 'sale' => $result['sale']->load(['hotel', 'plan']),
+                'invoice_id' => $invoice ? $invoice->id : null,
+                'invoice_number' => $invoice ? $invoice->invoice_number : null,
+                'invoice_url' => $invoice ? route('distributor.invoices.show', $invoice->id) : null,
                 'new_expiry' => $result['new_expiry']->format('Y-m-d'),
             ], 201);
         }
 
-        return redirect()->route('distributor.sales.index')
-                         ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}'! Valid until {$result['new_expiry']->format('M d, Y')}.");
+        $invMsg = $invoice ? " Tax Invoice #{$invoice->invoice_number} generated." : "";
+        return redirect()->route('distributor.invoices.index')
+                         ->with('success', "Package '{$plan->name}' successfully activated for '{$hotel->hotel_name}' ({$tvCount} TVs)! Valid until {$result['new_expiry']->format('M d, Y')}.{$invMsg}");
+    }
+
+    /**
+     * Display a listing of tax invoices for the distributor.
+     */
+    public function invoices(Request $request)
+    {
+        $user = auth()->user();
+        $query = \App\Models\Invoice::with(['hotel', 'plan', 'tax'])
+            ->where('distributor_id', $user->id)
+            ->latest();
+
+        if ($request->filled('status')) {
+            $query->where('payment_status', $request->status);
+        }
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('invoice_number', 'LIKE', "%{$search}%")
+                  ->orWhereHas('hotel', fn($hq) => $hq->where('hotel_name', 'LIKE', "%{$search}%"));
+            });
+        }
+
+        $invoices = $query->paginate(15);
+        $totalPaidAmount = \App\Models\Invoice::where('distributor_id', $user->id)->where('payment_status', 'paid')->sum('total_amount');
+        $totalInvoicesCount = \App\Models\Invoice::where('distributor_id', $user->id)->count();
+
+        return view('distributor.invoices.index', compact('invoices', 'totalPaidAmount', 'totalInvoicesCount'));
+    }
+
+    /**
+     * Display the specified invoice detail / print view for distributor.
+     */
+    public function showInvoice($id)
+    {
+        $user = auth()->user();
+        $invoice = \App\Models\Invoice::with(['hotel', 'plan', 'tax'])
+            ->where('distributor_id', $user->id)
+            ->findOrFail($id);
+
+        return view('distributor.invoices.show', compact('invoice'));
     }
 
     /**
