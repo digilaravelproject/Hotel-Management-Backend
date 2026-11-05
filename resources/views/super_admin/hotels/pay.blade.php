@@ -314,11 +314,13 @@
                     </div>
                 </div>
 
-                <div>
+                <div class="relative">
                     <label class="block text-xs font-black text-slate-700 mb-1.5">
-                        License Validity Period <span class="text-rose-500">*</span>
+                        <span id="durationSelectLabel">License Validity Period</span> <span class="text-rose-500">*</span>
                     </label>
-                    <select name="duration_months" id="durationSelect" required class="w-full px-4 py-3 text-xs sm:text-sm font-bold text-slate-900 rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all cursor-pointer">
+
+                    <!-- Hidden native select for form submit and script access -->
+                    <select name="duration_months" id="durationSelect" required class="sr-only">
                         <option value="1">1 Month (Monthly Pack)</option>
                         <option value="3">3 Months (Quarterly Pack)</option>
                         <option value="6">6 Months (Semi-Annual Pack)</option>
@@ -326,6 +328,27 @@
                         <option value="24">24 Months (2-Year Pack)</option>
                         <option value="36">36 Months (3-Year Pack)</option>
                     </select>
+
+                    <!-- Custom Duration Trigger Button -->
+                    <button type="button" 
+                            id="durationCustomTriggerBtn" 
+                            onclick="toggleDurationCustomDropdown(event)" 
+                            class="w-full px-4 py-3 text-xs sm:text-sm rounded-2xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-purple-300 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] font-semibold text-slate-800 transition-all flex items-center justify-between shadow-xs cursor-pointer group">
+                        <div class="flex items-center space-x-2.5 min-w-0">
+                            <div class="w-7 h-7 rounded-lg bg-purple-100 text-[#150A42] flex items-center justify-center text-xs shrink-0 font-bold">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <span id="durationCustomTriggerLabel" class="block font-black text-slate-900 truncate text-xs sm:text-sm">
+                                12 Months (1 Year - Annual Pack)
+                            </span>
+                        </div>
+                        <i id="durationCustomChevron" class="fa-solid fa-chevron-down text-slate-400 group-hover:text-purple-700 text-xs transition-transform duration-200 ml-2"></i>
+                    </button>
+
+                    <!-- Floating Custom Dropdown Menu -->
+                    <div id="durationCustomMenu" 
+                         class="hidden absolute z-50 left-0 right-0 top-full mt-2 bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-1.5 max-h-60 overflow-y-auto space-y-1 backdrop-blur-md">
+                    </div>
                 </div>
 
                 <!-- Payment Verification Channel (Matching Distributor Layout) -->
@@ -526,6 +549,127 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateTotal();
     };
 
+    function renderCustomDurationMenu() {
+        const customMenu = document.getElementById('durationCustomMenu');
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (!customMenu || !durationSelect) return;
+
+        customMenu.innerHTML = '';
+        const selectedVal = String(durationSelect.value);
+
+        Array.from(durationSelect.options).forEach(opt => {
+            const isSelected = String(opt.value) === selectedVal;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `w-full p-2.5 rounded-xl text-left transition-all flex items-center justify-between hover:bg-purple-50 group cursor-pointer text-xs font-bold ${isSelected ? 'bg-purple-50 text-[#150A42]' : 'text-slate-700'}`;
+            btn.innerHTML = `
+                <div class="flex items-center space-x-2 truncate">
+                    <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-purple-600' : 'bg-slate-300'}"></span>
+                    <span class="truncate">${opt.text}</span>
+                </div>
+                ${isSelected ? '<span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] shrink-0 ml-2"><i class="fa-solid fa-check"></i></span>' : ''}
+            `;
+            btn.onclick = function(e) {
+                selectDurationOption(opt.value, opt.text, e);
+            };
+            customMenu.appendChild(btn);
+
+            if (isSelected && customLabel) {
+                customLabel.textContent = opt.text;
+            }
+        });
+    }
+
+    window.toggleDurationCustomDropdown = function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (!customMenu) return;
+
+        const isClosed = customMenu.classList.contains('hidden');
+        if (isClosed) {
+            customMenu.classList.remove('hidden');
+            if (chevron) chevron.classList.add('rotate-180');
+        } else {
+            customMenu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    };
+
+    window.selectDurationOption = function(val, text, e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!durationSelect) return;
+        durationSelect.value = val;
+
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (customLabel) customLabel.textContent = text;
+
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (customMenu) customMenu.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+
+        renderCustomDurationMenu();
+        calculateTotal();
+    };
+
+    function syncDurationOptions() {
+        let selectedPlan = document.querySelector('.plan-radio:checked');
+        if (!selectedPlan && planRadios.length > 0) {
+            selectedPlan = planRadios[0];
+        }
+        if (!selectedPlan || !durationSelect) return;
+
+        const cycle = (selectedPlan.dataset.billingCycle || 'monthly').toLowerCase();
+        const isYearly = (cycle === 'yearly');
+        const currentVal = parseInt(durationSelect.value) || (isYearly ? 12 : 1);
+
+        const durationLabel = document.getElementById('durationSelectLabel');
+        if (durationLabel) {
+            durationLabel.textContent = isYearly ? 'License Validity Period (Annual Pack)' : 'License Validity Period (Monthly Pack)';
+        }
+
+        const isCurrentlyYearlyDropdown = (durationSelect.querySelector('option[value="24"]') !== null && durationSelect.querySelector('option[value="1"]') === null);
+
+        if (isYearly && !isCurrentlyYearlyDropdown) {
+            durationSelect.innerHTML = `
+                <option value="12">1 Year (12 Months - Annual Pack)</option>
+                <option value="24">2 Years (24 Months - 2-Year Pack)</option>
+                <option value="36">3 Years (36 Months - 3-Year Pack)</option>
+            `;
+            durationSelect.value = (currentVal >= 12 && [12, 24, 36].includes(currentVal)) ? currentVal : 12;
+        } else if (!isYearly && isCurrentlyYearlyDropdown) {
+            durationSelect.innerHTML = `
+                <option value="1">1 Month (Monthly Pack)</option>
+                <option value="3">3 Months (Quarterly Pack)</option>
+                <option value="6">6 Months (Semi-Annual Pack)</option>
+                <option value="12">12 Months (1 Year - Annual Pack)</option>
+                <option value="24">24 Months (2-Year Pack)</option>
+                <option value="36">36 Months (3-Year Pack)</option>
+            `;
+            durationSelect.value = [1, 3, 6, 12, 24, 36].includes(currentVal) ? currentVal : 1;
+        }
+
+        renderCustomDurationMenu();
+    }
+
+    // Close dropdown on outside click
+    document.addEventListener('click', function(e) {
+        const customMenu = document.getElementById('durationCustomMenu');
+        const triggerBtn = document.getElementById('durationCustomTriggerBtn');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (customMenu && !customMenu.contains(e.target) && triggerBtn && !triggerBtn.contains(e.target)) {
+            customMenu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    });
+
     function calculateTotal() {
         let selectedPlan = document.querySelector('.plan-radio:checked');
         if (!selectedPlan && planRadios.length > 0) {
@@ -642,7 +786,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (submitBtnLabel) submitBtnLabel.textContent = `Confirm & Settle Renewal ${totalFormatted}`;
     }
 
-    planRadios.forEach(r => r.addEventListener('change', calculateTotal));
+    planRadios.forEach(r => r.addEventListener('change', () => {
+        syncDurationOptions();
+        calculateTotal();
+    }));
     if (durationSelect) durationSelect.addEventListener('change', calculateTotal);
     if (tvCountInput) {
         tvCountInput.addEventListener('input', calculateTotal);
@@ -650,6 +797,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initial run
+    syncDurationOptions();
     calculateTotal();
 });
 </script>
