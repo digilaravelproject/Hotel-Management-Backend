@@ -82,6 +82,10 @@
                     <i class="fa-solid fa-credit-card text-base w-5 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#C5A880]' : 'text-[#B8A6AE]' }}"></i>
                     <span>Plan & Billing</span>
                 </a>
+                <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-[#3D242F] text-[#FFFFFF] font-bold border-l-4 border-[#C5A880] shadow-sm' : 'text-[#B8A6AE] hover:text-[#FFFFFF] hover:bg-[#3D242F]/60' }}">
+                    <i class="fa-solid fa-file-invoice-dollar text-base w-5 text-center {{ Request::routeIs('hotel.invoices.*') ? 'text-[#C5A880]' : 'text-[#B8A6AE]' }}"></i>
+                    <span>Tax Invoices</span>
+                </a>
                 <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all {{ Request::routeIs('hotel.package') ? 'bg-[#3D242F] text-[#FFFFFF] font-bold border-l-4 border-[#C5A880] shadow-sm' : 'text-[#B8A6AE] hover:text-[#FFFFFF] hover:bg-[#3D242F]/60' }}">
                     <i class="fa-solid fa-brands fa-google-play text-base w-5 text-center {{ Request::routeIs('hotel.package') ? 'text-[#C5A880]' : 'text-[#B8A6AE]' }}"></i>
                     <span>OTT Apps Control</span>

@@ -43,7 +43,13 @@ class SubscriptionController extends Controller
             }
         }
 
-        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway', 'hasActivePlan', 'remainingDays', 'addonPricing'));
+        $recentInvoices = \App\Models\Invoice::with(['plan', 'tax'])
+            ->where('hotel_admin_id', $hotel->id)
+            ->latest('id')
+            ->take(5)
+            ->get();
+
+        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway', 'hasActivePlan', 'remainingDays', 'addonPricing', 'recentInvoices'));
     }
 
     public function createOrder(Request $request)
@@ -287,5 +293,53 @@ class SubscriptionController extends Controller
             'message' => "Successfully added +{$additionalTvs} TV screens! Your property TV capacity is now {$result['new_tv_count']} TVs.",
             'new_tv_count' => $result['new_tv_count'],
         ]);
+    }
+
+    /**
+     * List all tax invoices for the authenticated hotel admin.
+     */
+    public function invoices(Request $request)
+    {
+        $hotel = Auth::guard('hotel_admin')->user();
+        $query = \App\Models\Invoice::with(['plan', 'tax', 'distributor'])
+            ->where('hotel_admin_id', $hotel->id)
+            ->latest('id');
+
+        if ($request->filled('status')) {
+            $query->where('payment_status', $request->input('status'));
+        }
+
+        if ($request->filled('search')) {
+            $term = trim($request->input('search'));
+            $query->where(function ($q) use ($term) {
+                $q->where('invoice_number', 'LIKE', "%{$term}%")
+                  ->orWhere('plan_name', 'LIKE', "%{$term}%")
+                  ->orWhere('transaction_id', 'LIKE', "%{$term}%");
+            });
+        }
+
+        $invoices = $query->paginate(15)->withQueryString();
+
+        $allHotelInvoices = \App\Models\Invoice::where('hotel_admin_id', $hotel->id)->get(['id', 'total_amount', 'payment_status']);
+        $stats = [
+            'total_invoiced' => (float) $allHotelInvoices->sum('total_amount'),
+            'total_paid' => (float) $allHotelInvoices->where('payment_status', 'paid')->sum('total_amount'),
+            'invoices_count' => $allHotelInvoices->count(),
+        ];
+
+        return view('hotel_admin.invoices.index', compact('hotel', 'invoices', 'stats'));
+    }
+
+    /**
+     * View and print a specific tax invoice for the authenticated hotel admin.
+     */
+    public function showInvoice($id)
+    {
+        $hotel = Auth::guard('hotel_admin')->user();
+        $invoice = \App\Models\Invoice::with(['hotel', 'plan', 'tax', 'distributor'])
+            ->where('hotel_admin_id', $hotel->id)
+            ->findOrFail($id);
+
+        return view('hotel_admin.invoices.show', compact('hotel', 'invoice'));
     }
 }
