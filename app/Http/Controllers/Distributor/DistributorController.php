@@ -188,20 +188,161 @@ class DistributorController extends Controller
         $user = auth()->user();
         $query = $user->distributorSales()->with(['hotel', 'plan'])->latest();
 
+        // Search by hotel name, city, location, owner, license key, or notes
+        if ($request->filled('search')) {
+            $term = trim($request->input('search'));
+            $query->where(function ($q) use ($term) {
+                $q->where('license_key_issued', 'LIKE', "%{$term}%")
+                  ->orWhere('notes', 'LIKE', "%{$term}%")
+                  ->orWhere('payment_method', 'LIKE', "%{$term}%")
+                  ->orWhereHas('hotel', function ($hq) use ($term) {
+                      $hq->where('hotel_name', 'LIKE', "%{$term}%")
+                         ->orWhere('hotel_location', 'LIKE', "%{$term}%")
+                         ->orWhere('city', 'LIKE', "%{$term}%")
+                         ->orWhere('owner_name', 'LIKE', "%{$term}%");
+                  });
+            });
+        }
+
+        // Filter by hotel property
         if ($request->filled('hotel_id')) {
             $query->where('hotel_id', $request->input('hotel_id'));
         }
 
+        // Filter by payment status
+        if ($request->filled('payment_status')) {
+            $status = $request->input('payment_status');
+            if ($status === 'completed' || $status === 'paid') {
+                $query->whereIn('payment_status', ['completed', 'paid']);
+            } else {
+                $query->where('payment_status', $status);
+            }
+        }
+
+        // Aggregate statistics for the KPI cards
+        $allSales = $user->distributorSales()->get(['id', 'hotel_id', 'amount', 'payment_status', 'created_at']);
+        $totalRevenue = (float) $allSales->where('payment_status', '!=', 'failed')->sum('amount');
+        $totalSalesCount = $allSales->count();
+        $uniqueHotelsCount = $allSales->pluck('hotel_id')->unique()->filter()->count();
+        $avgSaleValue = $totalSalesCount > 0 ? ($totalRevenue / $totalSalesCount) : 0;
+
+        $stats = [
+            'total_revenue' => $totalRevenue,
+            'total_sales' => $totalSalesCount,
+            'unique_hotels' => $uniqueHotelsCount,
+            'avg_sale' => $avgSaleValue,
+        ];
+
         $sales = $query->paginate(15)->withQueryString();
+
+        // Efficiently match invoices for each sale in this page
+        $hotelIds = $sales->pluck('hotel_id')->unique()->filter()->values();
+        $invoices = \App\Models\Invoice::where('distributor_id', $user->id)
+            ->whereIn('hotel_admin_id', $hotelIds)
+            ->orderBy('id', 'desc')
+            ->get();
+
+        foreach ($sales as $sale) {
+            // Find closest invoice matching hotel_admin_id and within 24 hours of sale creation
+            $matched = $invoices->first(function ($inv) use ($sale) {
+                if ($inv->hotel_admin_id != $sale->hotel_id) return false;
+                $diffSeconds = abs($inv->created_at->diffInSeconds($sale->created_at));
+                return $diffSeconds <= 86400; // 24 hours
+            });
+
+            if (!$matched) {
+                // Fallback: match by hotel_admin_id
+                $matched = $invoices->firstWhere('hotel_admin_id', $sale->hotel_id);
+            }
+
+            $sale->matched_invoice = $matched;
+        }
+
+        $hotels = $user->hotels()->orderBy('hotel_name')->get(['id', 'hotel_name', 'city', 'hotel_location']);
 
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => true,
                 'data' => $sales,
+                'stats' => $stats,
             ]);
         }
 
-        return view('distributor.sales.index', compact('sales'));
+        return view('distributor.sales.index', compact('sales', 'stats', 'hotels'));
+    }
+
+    /**
+     * Resolve and view the tax invoice for a specific package sale.
+     */
+    public function saleInvoice($id)
+    {
+        $user = auth()->user();
+        $sale = $user->distributorSales()->with(['hotel', 'plan'])->findOrFail($id);
+
+        // Look for existing invoice for this sale / hotel / distributor around the same time
+        $invoice = \App\Models\Invoice::where('distributor_id', $user->id)
+            ->where('hotel_admin_id', $sale->hotel_id)
+            ->whereBetween('created_at', [
+                $sale->created_at->copy()->subHours(24),
+                $sale->created_at->copy()->addHours(24)
+            ])
+            ->latest('id')
+            ->first();
+
+        if (!$invoice) {
+            $invoice = \App\Models\Invoice::where('distributor_id', $user->id)
+                ->where('hotel_admin_id', $sale->hotel_id)
+                ->latest('id')
+                ->first();
+        }
+
+        // If no invoice exists, generate an official invoice retrospectively from the sale
+        if (!$invoice) {
+            $plan = $sale->plan;
+            $hotel = $sale->hotel;
+            $tvCount = (int) ($hotel ? ($hotel->room_count ?: 1) : 1);
+            $ratePerTv = $plan ? (float) $plan->effective_price_per_tv : 150.00;
+            $tax = $plan ? $plan->tax : \App\Models\Tax::where('is_default', true)->first();
+            $taxRate = $tax ? (float) $tax->rate : 18.00;
+            $taxName = $tax ? $tax->name : 'GST';
+            $taxType = $plan ? ($plan->tax_type ?? 'exclusive') : 'exclusive';
+
+            $total = (float) $sale->amount;
+            $subtotal = $taxType === 'inclusive' ? round($total / (1 + ($taxRate / 100)), 2) : $total;
+            $taxAmount = round($total - $subtotal, 2);
+            $cgst = round($taxAmount / 2, 2);
+            $sgst = round($taxAmount - $cgst, 2);
+
+            $invoice = \App\Models\Invoice::create([
+                'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
+                'hotel_admin_id' => $sale->hotel_id,
+                'distributor_id' => $user->id,
+                'plan_id' => $sale->plan_id,
+                'plan_name' => $plan ? $plan->name : 'Smart TV Licensing Tier',
+                'billing_cycle' => $plan ? ($plan->billing_cycle ?? 'monthly') : 'monthly',
+                'tv_count' => $tvCount,
+                'price_per_tv' => $ratePerTv,
+                'subtotal' => $subtotal,
+                'tax_id' => $tax ? $tax->id : null,
+                'tax_name' => $taxName,
+                'tax_rate' => $taxRate,
+                'tax_type' => $taxType,
+                'tax_amount' => $taxAmount,
+                'cgst_amount' => $cgst,
+                'sgst_amount' => $sgst,
+                'total_amount' => $total,
+                'payment_status' => in_array($sale->payment_status, ['failed']) ? 'failed' : 'paid',
+                'payment_method' => $sale->payment_method ?? 'online_gateway',
+                'transaction_id' => 'DSALE-' . $sale->id,
+                'paid_at' => $sale->created_at,
+                'period_start' => $sale->created_at,
+                'period_end' => $hotel ? $hotel->expiry_date : $sale->created_at->copy()->addMonth(),
+                'notes' => $sale->notes ?: "Package sale: " . ($plan ? $plan->name : 'Plan'),
+                'created_at' => $sale->created_at,
+            ]);
+        }
+
+        return redirect()->route('distributor.invoices.show', $invoice->id);
     }
 
     /**
