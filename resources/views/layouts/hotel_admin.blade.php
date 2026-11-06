@@ -352,7 +352,7 @@
 
             <!-- Main Content Container with Centralized Alerts -->
             <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto pb-24 md:pb-8">
-                @if(!$isPaidAndActive)
+                @if(!$isPaidAndActive && !Request::routeIs('hotel.subscription*'))
                     <div class="mb-6 p-5 rounded-[24px] bg-gradient-to-r from-rose-50 via-amber-50 to-purple-50 border-2 border-rose-200/90 text-rose-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm animate-in fade-in duration-200">
                         <div class="flex items-center space-x-3.5">
                             <div class="w-11 h-11 rounded-2xl bg-rose-500 text-white flex items-center justify-center font-black text-lg shrink-0 shadow-md">
@@ -369,12 +369,10 @@
                                 </p>
                             </div>
                         </div>
-                        @if(!Request::routeIs('hotel.subscription*'))
-                            <a href="{{ route('hotel.subscription') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center space-x-2 shrink-0 active:scale-95 cursor-pointer">
-                                <i class="fa-solid fa-credit-card text-amber-300 text-xs"></i>
-                                <span>Choose Plan & Pay</span>
-                            </a>
-                        @endif
+                        <a href="{{ route('hotel.subscription') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center space-x-2 shrink-0 active:scale-95 cursor-pointer">
+                            <i class="fa-solid fa-credit-card text-purple-200 text-xs"></i>
+                            <span>Choose Plan & Pay</span>
+                        </a>
                     </div>
                 @endif
                 @if(session('success'))
