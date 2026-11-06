@@ -115,7 +115,7 @@
             <!-- Step 2: Choose Plan Tier -->
             <div class="space-y-2">
                 <span class="text-[10px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 2 • Choose Plan Tier</span>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
                     @foreach($plans as $plan)
                         @php
                             $rate = (float) $plan->effective_price_per_tv;
@@ -126,16 +126,16 @@
                             $isCurrentPlan = ($hotel->plan_id == $plan->id);
                             $isPreSelected = ($hotel->plan_id == $plan->id || $loop->first);
                         @endphp
-                        <label class="plan-tier-card relative flex flex-col justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all {{ $isPreSelected ? 'border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
+                        <label class="plan-tier-card relative flex flex-col justify-between p-3 sm:p-4 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all {{ $isPreSelected ? 'border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
                             <div>
-                                <div class="flex items-center justify-between mb-2.5">
+                                <div class="flex items-center justify-between mb-2">
                                     @if($cycle === 'yearly')
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-[#150A42] text-white text-[9px] font-black uppercase font-mono tracking-wider shadow-2xs">
-                                            <i class="fa-solid fa-crown text-[8px] text-purple-300 mr-1"></i> Annual Pack
+                                        <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-[#150A42] text-white text-[8px] sm:text-[9px] font-black uppercase font-mono tracking-wider shadow-2xs">
+                                            <i class="fa-solid fa-crown text-[7px] sm:text-[8px] text-purple-300 mr-1"></i> Annual
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-purple-100 text-[#150A42] text-[9px] font-black uppercase font-mono tracking-wider">
-                                            <i class="fa-solid fa-calendar-days text-[8px] text-purple-600 mr-1"></i> Monthly Pack
+                                        <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-purple-100 text-[#150A42] text-[8px] sm:text-[9px] font-black uppercase font-mono tracking-wider">
+                                            <i class="fa-solid fa-calendar-days text-[7px] sm:text-[8px] text-purple-600 mr-1"></i> Monthly
                                         </span>
                                     @endif
 
@@ -149,46 +149,46 @@
                                            data-tax-type="{{ $taxType }}"
                                            data-is-split="{{ ($tax && $tax->is_split) ? '1' : '0' }}"
                                            data-name="{{ $plan->name }}" 
-                                           class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-[#150A42]" 
+                                           class="plan-radio w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#150A42] border-slate-300 focus:ring-[#150A42]" 
                                            {{ $isPreSelected ? 'checked' : '' }}>
                                 </div>
 
                                 <div>
-                                    <div class="font-black text-slate-900 text-sm">{{ $plan->name }}</div>
-                                    <div class="text-xl font-black text-[#150A42] mt-0.5 font-mono">
-                                        ₹{{ number_format($rate, 2) }} 
-                                        <span class="text-[10px] text-slate-400 font-sans font-medium">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
+                                    <div class="font-black text-slate-900 text-xs sm:text-sm truncate">{{ $plan->name }}</div>
+                                    <div class="text-base sm:text-xl font-black text-[#150A42] mt-0.5 font-mono">
+                                        ₹{{ number_format($rate, 0) }} 
+                                        <span class="text-[9px] sm:text-[10px] text-slate-400 font-sans font-medium block sm:inline">/ TV / {{ $cycle === 'yearly' ? 'yr' : 'mo' }}</span>
                                     </div>
 
                                     <!-- Tax Pill -->
-                                    <div class="mt-2">
+                                    <div class="mt-1.5">
                                         @if($taxRate > 0)
-                                            <span class="inline-flex items-center text-[9px] font-bold font-mono px-2 py-0.5 rounded-md {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-purple-50 text-purple-800 border border-purple-200/80' }}">
-                                                {{ $tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                            <span class="inline-flex items-center text-[8px] sm:text-[9px] font-bold font-mono px-1.5 sm:px-2 py-0.5 rounded-md {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-purple-50 text-purple-800 border border-purple-200/80' }}">
+                                                {{ $tax->name }} ({{ number_format($taxRate, 0) }}%)
                                             </span>
                                         @else
-                                            <span class="inline-block text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
-                                                No Tax Applied
+                                            <span class="inline-block text-[8px] sm:text-[9px] font-mono px-1.5 sm:px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                                                No Tax
                                             </span>
                                         @endif
                                     </div>
 
                                     @if($isCurrentPlan)
-                                        <span class="inline-flex items-center mt-2 text-[9px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
-                                            <i class="fa-solid fa-circle-check text-[8px] mr-1 text-emerald-600"></i> Current Active Plan
+                                        <span class="inline-flex items-center mt-1.5 text-[8px] sm:text-[9px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
+                                            <i class="fa-solid fa-circle-check text-[7px] mr-1 text-emerald-600"></i> Active Plan
                                         </span>
                                     @endif
                                 </div>
                             </div>
 
-                            <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-1 text-[10px] text-slate-600 font-semibold">
-                                <div class="flex items-center space-x-1.5">
-                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[10px]"></i>
-                                    <span>Complete TV Launcher & Themes</span>
+                            <div class="mt-2.5 pt-2 border-t border-slate-100 space-y-1 text-[9px] sm:text-[10px] text-slate-600 font-medium">
+                                <div class="flex items-center space-x-1.5 truncate">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[9px] shrink-0"></i>
+                                    <span class="truncate">TV Launcher & Themes</span>
                                 </div>
-                                <div class="flex items-center space-x-1.5">
-                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[10px]"></i>
-                                    <span>Hotel CMS & Remote Controls</span>
+                                <div class="flex items-center space-x-1.5 truncate">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[9px] shrink-0"></i>
+                                    <span class="truncate">Cloud CMS & Controls</span>
                                 </div>
                             </div>
                         </label>
