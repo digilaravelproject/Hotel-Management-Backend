@@ -1,4 +1,4 @@
-﻿@extends('layouts.hotel_admin')
+@extends('layouts.hotel_admin')
 
 @section('title', 'Connected TVs - Hotel Admin')
 @section('page_title', 'Connected TVs Network')
@@ -13,44 +13,44 @@
         </div>
         
         <div class="w-full md:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <button type="button" onclick="openPairModal()" class="px-5 py-3 rounded-xl bg-[#3D242F] hover:bg-[#8C7250] text-white font-extrabold text-xs shadow-md shadow-[#C5A880]/20 transition-all flex items-center justify-center space-x-2 shrink-0">
-                <i class="fa-solid fa-tv text-sm"></i>
+            <button type="button" onclick="openPairModal()" class="px-5 py-3 rounded-2xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95">
+                <i class="fa-solid fa-tv text-sm text-amber-300"></i>
                 <span>Pair TV Screen</span>
             </button>
 
-            <div class="space-y-2 bg-[#F4F5F7] p-3 rounded-xl border border-[#E5E7EB] min-w-[200px]">
+            <div class="space-y-2 bg-slate-50 p-3.5 rounded-2xl border border-slate-200/80 min-w-[220px]">
                 @php
                     $connectedCount = $devices->total();
                     $allowedLimit = $hotel->allowed_device_limit;
                     $percent = $allowedLimit > 0 ? min(100, ($connectedCount / $allowedLimit) * 100) : 0;
                 @endphp
-                <div class="text-xs font-semibold text-[#6B7280] flex items-center justify-between space-x-2">
-                    <span class="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">Usage:</span>
+                <div class="text-xs font-semibold text-slate-500 flex items-center justify-between space-x-2">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Usage:</span>
                     <div>
-                        <span class="text-sm font-extrabold text-[#2A1820]">{{ $connectedCount }}</span> / <strong class="text-[#111827]">{{ $allowedLimit }} TVs</strong>
+                        <span class="text-sm font-black text-slate-900">{{ $connectedCount }}</span> / <strong class="text-slate-900">{{ $allowedLimit }} TVs</strong>
                     </div>
                 </div>
-                <div class="w-full bg-[#E5E7EB] h-2 rounded-full overflow-hidden">
-                    <div class="h-full bg-[#3D242F] rounded-full transition-all duration-500" style="width: {{ $percent }}%;"></div>
+                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-purple-600 to-[#150A42] rounded-full transition-all duration-500" style="width: {{ $percent }}%;"></div>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filter & Search Bar -->
-    <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 sm:p-5 shadow-xs">
+    <div class="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs">
         <form method="GET" action="{{ route('hotel.devices.index') }}" class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <div class="relative flex-1">
-                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-[#6B7280] text-xs"></i>
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by room number, device ID, MAC, IP, brand..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-[#CBD5E1] bg-[#F4F5F7] text-xs font-semibold text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880] transition-all placeholder:text-[#6B7280]">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Search by room number, device ID, MAC, IP, brand..." class="w-full pl-9 pr-8 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all placeholder:text-slate-400">
                 @if(request('search'))
-                    <a href="{{ route('hotel.devices.index') }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7280] hover:text-[#111827] text-xs">
+                    <a href="{{ route('hotel.devices.index') }}" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </a>
                 @endif
             </div>
             <div class="flex items-center gap-2">
-                <button type="submit" class="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-[#2A1820] hover:bg-[#3D242F] text-white font-bold text-xs transition-colors flex items-center justify-center space-x-1.5">
+                <button type="submit" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#150A42] hover:bg-[#1f105e] text-white font-bold text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-xs">
                     <i class="fa-solid fa-filter text-xs"></i>
                     <span>Search</span>
                 </button>
@@ -59,31 +59,31 @@
     </div>
 
     <!-- Pair TV Modal (Pair Code only - no Quick Add) -->
-    <div id="pairModal" class="fixed inset-0 z-50 bg-[#111827]/70 backdrop-blur-sm flex items-center justify-center hidden p-3 sm:p-4" onclick="closePairModalOnBackdrop(event)">
-        <div class="bg-white border border-[#E5E7EB] rounded-2xl sm:rounded-3xl p-5 sm:p-7 max-w-md w-full shadow-2xl space-y-5 max-h-[88vh] overflow-y-auto overscroll-contain" onclick="event.stopPropagation()">
+    <div id="pairModal" class="fixed inset-0 z-50 bg-[#0B0424]/75 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4" onclick="closePairModalOnBackdrop(event)">
+        <div class="bg-white border border-slate-100 rounded-3xl p-6 sm:p-7 max-w-md w-full shadow-2xl space-y-5 max-h-[88vh] overflow-y-auto overscroll-contain animate-in fade-in zoom-in-95 duration-150" onclick="event.stopPropagation()">
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-[#F7F3F5] border border-[#C5A880]/30 text-[#2A1820] flex items-center justify-center text-lg">
+                    <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-lg shadow-2xs shrink-0">
                         <i class="fa-solid fa-tv"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-extrabold text-[#111827]">Pair TV Screen</h3>
-                        <p class="text-xs text-[#6B7280] font-medium">Connect TV via 8-digit screen code or QR scan</p>
+                        <h3 class="text-base font-black text-slate-900">Pair TV Screen</h3>
+                        <p class="text-xs text-slate-400 font-medium">Connect TV via 8-digit screen code or QR scan</p>
                     </div>
                 </div>
-                <button onclick="closePairModal()" class="text-[#6B7280] hover:text-[#111827] p-1 rounded-lg">
+                <button onclick="closePairModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
             <!-- Sub Tab: Manual Code vs Camera Scanner -->
-            <div class="flex items-center p-1 bg-[#F4F5F7] border border-[#E5E7EB] rounded-xl text-[11px]">
-                <button type="button" id="tabManualBtn" onclick="switchPairSubTab('manual')" class="flex-1 py-1.5 font-bold rounded-lg bg-white text-[#2A1820] shadow-xs transition-all flex items-center justify-center space-x-1.5">
+            <div class="flex items-center p-1 bg-slate-100 border border-slate-200/80 rounded-xl text-[11px]">
+                <button type="button" id="tabManualBtn" onclick="switchPairSubTab('manual')" class="flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
                     <i class="fa-solid fa-keyboard text-[10px]"></i>
                     <span>Type Code</span>
                 </button>
-                <button type="button" id="tabScanBtn" onclick="switchPairSubTab('scan')" class="flex-1 py-1.5 font-bold rounded-lg text-[#6B7280] hover:text-[#111827] transition-all flex items-center justify-center space-x-1.5">
+                <button type="button" id="tabScanBtn" onclick="switchPairSubTab('scan')" class="flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
                     <i class="fa-solid fa-camera text-[10px]"></i>
                     <span>Scan TV QR</span>
                 </button>
@@ -91,30 +91,30 @@
 
             <!-- Camera Scanner Box -->
             <div id="qrScannerBox" class="hidden space-y-2 text-center">
-                <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-[#C5A880]/40 bg-[#111827] aspect-square flex items-center justify-center"></div>
-                <p class="text-[11px] text-[#6B7280] font-medium">Point your camera at the QR code displayed on TV screen</p>
+                <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-purple-200 bg-slate-900 aspect-square flex items-center justify-center"></div>
+                <p class="text-[11px] text-slate-400 font-medium">Point your camera at the QR code displayed on TV screen</p>
             </div>
 
             <!-- Pair Form -->
             <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
                 @csrf
                 <div id="pairCodeInputWrapper" class="space-y-1.5">
-                    <label class="text-xs font-bold text-[#111827]">8-Digit Pairing Code <span class="text-[#B91C1C]">*</span></label>
-                    <p class="text-[11px] text-[#6B7280]">Enter the code shown on your TV screen</p>
-                    <input type="text" id="pairCodeInput" required placeholder="e.g. 8F2A-9K3P" maxlength="10" class="w-full px-4 py-3 bg-[#F4F5F7] border border-[#CBD5E1] rounded-xl text-center font-mono font-extrabold text-xl tracking-widest text-[#2A1820] uppercase focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <label class="text-xs font-bold text-slate-900">8-Digit Pairing Code <span class="text-rose-600">*</span></label>
+                    <p class="text-[11px] text-slate-400">Enter the code shown on your TV screen</p>
+                    <input type="text" id="pairCodeInput" required placeholder="e.g. 8F2A-9K3P" maxlength="10" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-black text-xl tracking-widest text-[#150A42] uppercase focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42]">
                 </div>
 
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-[#111827]">Assign Room Number <span class="text-[#B91C1C]">*</span></label>
-                    <input type="text" id="roomNoInput" required placeholder="e.g. 101, 204, Suite-A" class="w-full px-4 py-2.5 bg-[#F4F5F7] border border-[#CBD5E1] rounded-xl text-sm font-bold text-[#111827] focus:outline-none focus:ring-2 focus:ring-[#C5A880]/20 focus:border-[#C5A880]">
+                    <label class="text-xs font-bold text-slate-900">Assign Room Number <span class="text-rose-600">*</span></label>
+                    <input type="text" id="roomNoInput" required placeholder="e.g. 101, 204, Suite-A" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42]">
                 </div>
 
                 <div id="pairFormAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
 
                 <div class="pt-2 flex items-center justify-end space-x-3">
-                    <button type="button" onclick="closePairModal()" class="px-5 py-2.5 rounded-xl border border-[#CBD5E1] text-[#111827] hover:bg-[#F4F5F7] text-xs font-bold">Cancel</button>
-                    <button type="submit" id="pairSubmitBtn" class="px-6 py-2.5 rounded-xl bg-[#3D242F] hover:bg-[#8C7250] text-white font-bold text-xs shadow-md shadow-[#C5A880]/20 flex items-center space-x-2">
-                        <i class="fa-solid fa-link text-xs"></i>
+                    <button type="button" onclick="closePairModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold cursor-pointer">Cancel</button>
+                    <button type="submit" id="pairSubmitBtn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-bold text-xs shadow-md shadow-[#150A42]/15 flex items-center space-x-2 cursor-pointer active:scale-95">
+                        <i class="fa-solid fa-link text-xs text-amber-300"></i>
                         <span>Connect & Pair TV</span>
                     </button>
                 </div>
@@ -206,22 +206,22 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 <div class="inline-flex items-center space-x-1.5">
-                                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-[#CBD5E1] text-[#2A1820] hover:bg-[#F7F3F5] font-bold text-[11px] transition-colors" title="Manage OTT Apps">
-                                        <i class="fa-solid fa-sliders mr-1 text-[#8C7250]"></i> OTT
+                                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-slate-200 text-[#150A42] hover:bg-purple-50 font-bold text-[11px] transition-colors" title="Manage OTT Apps">
+                                        <i class="fa-solid fa-sliders mr-1 text-purple-600"></i> OTT
                                     </a>
-                                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-[#CBD5E1] text-[#8C7250] hover:bg-[#F7F3F5] font-bold text-[11px] transition-colors" title="Manage TV Menus">
+                                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="px-2.5 py-1.5 rounded-xl border border-slate-200 text-purple-700 hover:bg-purple-50 font-bold text-[11px] transition-colors" title="Manage TV Menus">
                                         <i class="fa-solid fa-list-check mr-1"></i> Menus
                                     </a>
                                 </div>
                             </td>
                             <td class="px-5 py-4 text-center">
                                 <div class="inline-flex items-center space-x-1.5">
-                                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-[#F4F5F7] hover:bg-white border border-[#E5E7EB] text-[#111827] font-bold text-xs transition-all shadow-2xs" title="View Details">
-                                        <i class="fa-solid fa-eye text-[#8C7250]"></i>
+                                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 text-slate-800 font-bold text-xs transition-all shadow-2xs cursor-pointer" title="View Details">
+                                        <i class="fa-solid fa-eye text-purple-600"></i>
                                         <span>View</span>
                                     </button>
-                                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-[#FEE2E2] text-[#B91C1C] hover:bg-[#FEF2F2]/50 font-bold text-xs transition-colors shadow-2xs" title="Disconnect TV">
-                                        <i class="fa-solid fa-power-off text-[#B91C1C]"></i>
+                                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs transition-colors shadow-2xs cursor-pointer" title="Disconnect TV">
+                                        <i class="fa-solid fa-power-off text-rose-600"></i>
                                     </button>
                                 </div>
                             </td>
@@ -265,65 +265,65 @@
                     'disconnect_url' => route('hotel.devices.destroy', $device->id),
                 ];
             @endphp
-            <div class="bg-white border border-[#E5E7EB] rounded-2xl p-4 shadow-xs space-y-3">
-                <div class="flex items-start justify-between gap-2 border-b border-[#E5E7EB] pb-2.5">
+            <div class="bg-white border border-slate-200/80 rounded-2xl p-4 shadow-xs space-y-3">
+                <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
                     <div class="min-w-0">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-[#F7F3F5] border border-[#C5A880]/30 text-[#2A1820] font-extrabold text-[11px] mb-1">
-                            <i class="fa-solid fa-door-closed mr-1 text-[#8C7250] text-[10px]"></i>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-purple-50 border border-purple-200/60 text-[#150A42] font-black text-[11px] mb-1">
+                            <i class="fa-solid fa-door-closed mr-1 text-purple-600 text-[10px]"></i>
                             Room {{ $device->room_no }}
                         </span>
                         @if($activeGuest = $activeGuests->get($device->room_no))
-                            <div class="text-xs font-bold text-[#111827] truncate">
-                                <i class="fa-solid fa-user text-[#15803D] text-[10px] mr-1"></i> {{ $activeGuest->name }}
+                            <div class="text-xs font-bold text-slate-900 truncate">
+                                <i class="fa-solid fa-user text-emerald-600 text-[10px] mr-1"></i> {{ $activeGuest->name }}
                             </div>
                         @else
-                            <div class="text-[11px] text-[#6B7280] italic">Vacant Room</div>
+                            <div class="text-[11px] text-slate-400 italic">Vacant Room</div>
                         @endif
                     </div>
-                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-[#F0FDF4] text-[#15803D] text-[10px] font-bold border border-[#16A34A]/20 shrink-0">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#16A34A] mr-1.5 animate-pulse"></span> Online
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200 shrink-0">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span> Online
                     </span>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 text-[11px]">
-                    <div class="bg-[#F4F5F7] rounded-xl p-2 border border-[#E5E7EB]">
-                        <div class="text-[10px] uppercase font-bold text-[#6B7280]">Hardware</div>
-                        <div class="font-bold text-[#111827] truncate mt-0.5">
+                    <div class="bg-slate-50 rounded-xl p-2 border border-slate-200/60">
+                        <div class="text-[10px] uppercase font-bold text-slate-400">Hardware</div>
+                        <div class="font-bold text-slate-900 truncate mt-0.5">
                             {{ $device->brand || $device->model ? trim($device->brand . ' ' . $device->model) : 'Smart TV' }}
                         </div>
                         @if($device->os_version)
-                            <div class="text-[9px] text-[#6B7280] font-semibold">Android {{ $device->os_version }}</div>
+                            <div class="text-[9px] text-slate-400 font-semibold">Android {{ $device->os_version }}</div>
                         @endif
                     </div>
 
-                    <div class="bg-[#F4F5F7] rounded-xl p-2 border border-[#E5E7EB]">
-                        <div class="text-[10px] uppercase font-bold text-[#6B7280]">Connected</div>
-                        <div class="font-bold text-[#111827] truncate mt-0.5">
+                    <div class="bg-slate-50 rounded-xl p-2 border border-slate-200/60">
+                        <div class="text-[10px] uppercase font-bold text-slate-400">Connected</div>
+                        <div class="font-bold text-slate-900 truncate mt-0.5">
                             {{ $device->created_at ? $device->created_at->format('d M, Y') : 'N/A' }}
                         </div>
-                        <div class="text-[9px] text-[#6B7280]">{{ $device->created_at ? $device->created_at->format('h:i A') : '' }}</div>
+                        <div class="text-[9px] text-slate-400">{{ $device->created_at ? $device->created_at->format('h:i A') : '' }}</div>
                     </div>
                 </div>
 
-                <div class="text-[10px] font-mono text-[#6B7280] bg-[#F4F5F7] px-2.5 py-1.5 rounded-lg border border-[#E5E7EB] truncate">
-                    <span class="font-bold text-[#6B7280]">ID:</span> {{ $device->device_id }}
+                <div class="text-[10px] font-mono text-slate-600 bg-slate-50 px-2.5 py-1.5 rounded-lg border border-slate-200/60 truncate">
+                    <span class="font-bold text-slate-400">ID:</span> {{ $device->device_id }}
                 </div>
 
                 <!-- Action Controls: Config OTT/Menus, Details & Disconnect -->
-                <div class="flex items-center gap-2 pt-1 border-t border-[#E5E7EB]">
-                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-[#CBD5E1] text-[#2A1820] hover:bg-[#F7F3F5] font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
-                        <i class="fa-solid fa-sliders text-[11px] text-[#8C7250]"></i>
+                <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
+                    <a href="{{ route('hotel.devices.ott', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-slate-200 text-[#150A42] hover:bg-purple-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
+                        <i class="fa-solid fa-sliders text-[11px] text-purple-600"></i>
                         <span>OTT</span>
                     </a>
-                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-[#CBD5E1] text-[#8C7250] hover:bg-[#F7F3F5] font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
+                    <a href="{{ route('hotel.devices.menus', $device->id) }}" class="flex-1 py-2 px-2 rounded-xl border border-slate-200 text-purple-700 hover:bg-purple-50 font-bold text-xs flex items-center justify-center space-x-1 transition-colors">
                         <i class="fa-solid fa-list-check text-[11px]"></i>
                         <span>Menus</span>
                     </a>
-                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="py-2 px-3 rounded-xl bg-[#F4F5F7] hover:bg-white border border-[#E5E7EB] text-[#111827] font-bold text-xs flex items-center justify-center transition-all" title="View Details">
-                        <i class="fa-solid fa-eye text-[#8C7250]"></i>
+                    <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="py-2 px-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 text-slate-900 font-bold text-xs flex items-center justify-center transition-all cursor-pointer" title="View Details">
+                        <i class="fa-solid fa-eye text-purple-600"></i>
                     </button>
-                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="py-2 px-3 rounded-xl border border-[#FEE2E2] text-[#B91C1C] hover:bg-[#FEF2F2]/50 font-bold text-xs flex items-center justify-center transition-colors" title="Disconnect TV">
-                        <i class="fa-solid fa-power-off text-[#B91C1C]"></i>
+                    <button type="button" onclick="confirmDisconnect('{{ route('hotel.devices.destroy', $device->id) }}', 'Room {{ $device->room_no }}')" class="py-2 px-3 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 font-bold text-xs flex items-center justify-center transition-colors cursor-pointer" title="Disconnect TV">
+                        <i class="fa-solid fa-power-off text-rose-600"></i>
                     </button>
                 </div>
             </div>
@@ -348,23 +348,23 @@
 <div id="deviceDetailsModal" class="fixed inset-0 z-50 bg-[#111827]/70 backdrop-blur-xs flex items-center justify-center hidden p-3 sm:p-4 overflow-hidden" onclick="closeDeviceModalOnBackdrop(event)">
     <div class="bg-white border border-[#E5E7EB] rounded-2xl sm:rounded-3xl max-w-lg w-full shadow-2xl animate-in fade-in zoom-in duration-150 flex flex-col max-h-[84vh] sm:max-h-[86vh] min-h-0 overflow-hidden" onclick="event.stopPropagation()">
         <!-- Modal Header -->
-        <div class="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-[#E5E7EB] flex items-center justify-between shrink-0 bg-white">
+        <div class="px-4 py-3.5 sm:px-6 sm:py-4 border-b border-slate-200/80 flex items-center justify-between shrink-0 bg-white">
             <div class="flex items-center space-x-3 min-w-0 pr-2">
-                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-[#F7F3F5] border border-[#C5A880]/30 text-[#2A1820] flex items-center justify-center font-bold text-base sm:text-lg shrink-0">
+                <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center font-bold text-base sm:text-lg shrink-0 shadow-2xs">
                     <i class="fa-solid fa-tv"></i>
                 </div>
                 <div class="min-w-0">
-                    <h3 class="text-sm sm:text-base font-extrabold text-[#111827] leading-tight truncate">Device & License Details</h3>
-                    <p id="modalSubtitle" class="text-[11px] sm:text-xs text-[#6B7280] font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
+                    <h3 class="text-sm sm:text-base font-black text-slate-900 leading-tight truncate">Device & License Details</h3>
+                    <p id="modalSubtitle" class="text-[11px] sm:text-xs text-slate-500 font-semibold truncate mt-0.5">Room 101 • Device Specs</p>
                 </div>
             </div>
             <!-- Top Actions: Disconnect button (desktop) & Close button -->
             <div class="flex items-center space-x-1.5 shrink-0">
-                <button type="button" onclick="disconnectFromModal()" class="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#FEE2E2] bg-[#FEF2F2]/30 hover:bg-[#DC2626] hover:text-white text-[#B91C1C] text-xs font-bold transition-all shadow-2xs" title="Disconnect this TV">
+                <button type="button" onclick="disconnectFromModal()" class="hidden sm:inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-600 hover:text-white text-rose-700 text-xs font-bold transition-all shadow-2xs cursor-pointer" title="Disconnect this TV">
                     <i class="fa-solid fa-power-off text-xs"></i>
                     <span>Disconnect</span>
                 </button>
-                <button type="button" onclick="closeDeviceDetailsModal()" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-[#6B7280] hover:text-[#111827] rounded-xl hover:bg-[#F4F5F7] transition-colors" title="Close">
+                <button type="button" onclick="closeDeviceDetailsModal()" class="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer" title="Close">
                     <i class="fa-solid fa-xmark text-base sm:text-lg"></i>
                 </button>
             </div>
@@ -373,40 +373,40 @@
         <!-- Scrollable Modal Content (touch scroll enabled) -->
         <div class="px-4 py-4 sm:px-6 sm:py-5 overflow-y-auto overscroll-contain flex-1 min-h-0 space-y-3.5 sm:space-y-4" style="-webkit-overflow-scrolling: touch;">
             <!-- License Key Highlight Box -->
-            <div class="p-3.5 sm:p-5 rounded-2xl bg-[#F7F3F5] border border-[#C5A880]/30 space-y-2.5 sm:space-y-3">
+            <div class="p-3.5 sm:p-5 rounded-2xl bg-purple-50/70 border border-purple-200/60 space-y-2.5 sm:space-y-3">
                 <div class="flex items-center justify-between">
-                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-[#2A1820] flex items-center space-x-1.5">
-                        <i class="fa-solid fa-key text-[10px] text-[#8C7250]"></i>
+                    <span class="text-[10px] font-black uppercase tracking-wider text-purple-900 flex items-center space-x-1.5">
+                        <i class="fa-solid fa-key text-[10px] text-purple-600"></i>
                         <span>Hotel License Key</span>
                     </span>
-                    <span class="px-2 py-0.5 rounded-md bg-[#F0FDF4] text-[#15803D] text-[10px] font-bold border border-[#16A34A]/20">Authorized</span>
+                    <span class="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">Authorized</span>
                 </div>
-                <div class="flex items-center justify-between gap-2 bg-white rounded-xl p-2.5 border border-[#C5A880]/30 shadow-2xs">
-                    <span id="modalLicenseKey" class="font-mono font-black text-xs sm:text-base text-[#2A1820] tracking-wide select-all truncate">
+                <div class="flex items-center justify-between gap-2 bg-white rounded-xl p-2.5 border border-purple-200/80 shadow-2xs">
+                    <span id="modalLicenseKey" class="font-mono font-black text-xs sm:text-base text-[#150A42] tracking-wide select-all truncate">
                         ---
                     </span>
-                    <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-[#3D242F] hover:bg-[#8C7250] text-white font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1">
+                    <button type="button" onclick="copyLicenseKey()" id="copyKeyBtn" class="shrink-0 px-3 py-1.5 rounded-lg bg-[#150A42] hover:bg-[#1f105e] text-white font-bold text-[11px] shadow-xs transition-all flex items-center space-x-1 cursor-pointer">
                         <i class="fa-solid fa-copy text-[11px]" id="copyKeyIcon"></i>
                         <span id="copyKeyText">Copy</span>
                     </button>
                 </div>
 
                 <!-- Whose license key is this? Clear Hotel & License Identification -->
-                <div class="bg-white rounded-xl p-3 border border-[#E5E7EB] text-xs space-y-2">
-                    <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-1.5">
-                        <span class="text-[11px] text-[#6B7280] font-semibold flex items-center">
-                            <i class="fa-solid fa-hotel text-[#8C7250] mr-1.5 text-[11px]"></i> Assigned Hotel:
+                <div class="bg-white rounded-xl p-3 border border-slate-200/80 text-xs space-y-2">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                        <span class="text-[11px] text-slate-500 font-semibold flex items-center">
+                            <i class="fa-solid fa-hotel text-purple-600 mr-1.5 text-[11px]"></i> Assigned Hotel:
                         </span>
-                        <span id="modalKeyHotelName" class="font-bold text-[#111827] truncate max-w-[200px] sm:max-w-[240px]">---</span>
+                        <span id="modalKeyHotelName" class="font-bold text-slate-900 truncate max-w-[200px] sm:max-w-[240px]">---</span>
                     </div>
                     <div class="grid grid-cols-2 gap-2 text-[10px]">
                         <div>
-                            <span class="text-[#6B7280] font-medium">Owner / Contact:</span>
-                            <span id="modalKeyOwner" class="font-bold text-[#111827] ml-1 truncate">---</span>
+                            <span class="text-slate-500 font-medium">Owner / Contact:</span>
+                            <span id="modalKeyOwner" class="font-bold text-slate-900 ml-1 truncate">---</span>
                         </div>
                         <div>
-                            <span class="text-[#6B7280] font-medium">Plan:</span>
-                            <span id="modalKeyPlan" class="font-bold text-[#2A1820] ml-1 truncate">---</span>
+                            <span class="text-slate-500 font-medium">Plan:</span>
+                            <span id="modalKeyPlan" class="font-bold text-[#150A42] ml-1 truncate">---</span>
                         </div>
                         <div>
                             <span class="text-[#6B7280] font-medium">Expiry:</span>

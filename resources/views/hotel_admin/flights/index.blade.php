@@ -1,4 +1,4 @@
-﻿@extends('layouts.hotel_admin')
+@extends('layouts.hotel_admin')
 
 @section('page_title', 'Hotel Flights & Airport Configuration')
 
@@ -7,8 +7,8 @@
     <!-- Top Info Card -->
     <div class="bg-white border border-[#E5E7EB] rounded-2xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
         <div class="relative z-10 max-w-2xl">
-            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-extrabold bg-[#F7F3F5] text-[#2A1820] border border-[#C5A880]/30 mb-3">
-                <i class="fa-solid fa-location-dot mr-1.5 text-[#8C7250]"></i> Detected Hotel City: {{ $hotel->city ?? 'Not Set' }}
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-purple-50 text-[#150A42] border border-purple-200/80 mb-3 font-mono shadow-2xs">
+                <i class="fa-solid fa-location-dot mr-1.5 text-purple-600"></i> Detected Hotel City: {{ $hotel->city ?? 'Not Set' }}
             </span>
             <h2 class="text-2xl sm:text-3xl font-extrabold text-[#111827] tracking-tight">Airport Flight Schedule Setup</h2>
             <p class="text-xs sm:text-sm text-[#6B7280] mt-2">
@@ -333,7 +333,7 @@
                     </div>
 
                     <div class="pt-3">
-                        <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-[#3D242F] hover:bg-[#8C7250] active:scale-[0.99] text-white font-extrabold text-sm transition-all shadow-md shadow-[#C5A880]/20 flex items-center justify-center space-x-2 cursor-pointer">
+                        <button type="submit" class="w-full py-3.5 px-6 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] active:scale-[0.99] text-white font-black text-sm transition-all shadow-md shadow-[#150A42]/15 flex items-center justify-center space-x-2 cursor-pointer">
                             <i class="fa-solid fa-floppy-disk text-white/80"></i>
                             <span>Save Airport Settings</span>
                         </button>

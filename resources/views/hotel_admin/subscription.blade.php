@@ -302,17 +302,17 @@
 
     <!-- Recent Tax Invoices & Billing History -->
     <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-        <div class="flex items-center justify-between border-b border-[#E5E7EB] pb-4">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
             <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-xl bg-[#F7F3F5] text-[#2A1820] flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold shadow-2xs">
+                    <i class="fa-solid fa-file-invoice-dollar text-purple-600"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-extrabold text-[#111827]">Recent Tax Invoices & Receipts</h3>
-                    <p class="text-xs text-[#6B7280]">Download or print official GST tax receipts for your subscription payments.</p>
+                    <h3 class="text-base font-black text-slate-900">Recent Tax Invoices & Receipts</h3>
+                    <p class="text-xs text-slate-400">Download or print official GST tax receipts for your subscription payments.</p>
                 </div>
             </div>
-            <a href="{{ route('hotel.invoices.index') }}" class="text-xs font-bold text-[#8C7250] hover:text-[#2A1820] flex items-center space-x-1">
+            <a href="{{ route('hotel.invoices.index') }}" class="text-xs font-bold text-purple-700 hover:text-purple-950 flex items-center space-x-1">
                 <span>View All Invoices</span>
                 <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </a>
@@ -322,7 +322,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left text-xs">
                     <thead>
-                        <tr class="text-[#6B7280] font-black uppercase tracking-wider text-[10px] font-mono border-b border-[#E5E7EB]">
+                        <tr class="text-slate-400 font-black uppercase tracking-wider text-[10px] font-mono border-b border-slate-100">
                             <th class="py-3 px-3">Invoice #</th>
                             <th class="py-3 px-3">Date</th>
                             <th class="py-3 px-3">Plan & Screens</th>
@@ -331,21 +331,21 @@
                             <th class="py-3 px-3 text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-[#E5E7EB]">
+                    <tbody class="divide-y divide-slate-100">
                         @foreach($recentInvoices as $rInv)
-                            <tr class="hover:bg-[#F9FAFB]">
-                                <td class="py-3.5 px-3 font-mono font-bold text-[#111827]">{{ $rInv->invoice_number }}</td>
-                                <td class="py-3.5 px-3 text-[#6B7280]">{{ $rInv->created_at->format('d M, Y') }}</td>
-                                <td class="py-3.5 px-3 font-bold text-[#111827]">{{ $rInv->plan_name }} ({{ $rInv->tv_count }} TVs)</td>
-                                <td class="py-3.5 px-3 font-mono font-black text-[#111827]">₹{{ number_format($rInv->total_amount, 2) }}</td>
+                            <tr class="hover:bg-purple-50/20 transition-colors">
+                                <td class="py-3.5 px-3 font-mono font-bold text-slate-900">{{ $rInv->invoice_number }}</td>
+                                <td class="py-3.5 px-3 text-slate-400">{{ $rInv->created_at->format('d M, Y') }}</td>
+                                <td class="py-3.5 px-3 font-bold text-slate-900">{{ $rInv->plan_name }} ({{ $rInv->tv_count }} TVs)</td>
+                                <td class="py-3.5 px-3 font-mono font-black text-slate-900">₹{{ number_format($rInv->total_amount, 2) }}</td>
                                 <td class="py-3.5 px-3">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
                                         <i class="fa-solid fa-circle-check text-[9px] mr-1"></i> Paid
                                     </span>
                                 </td>
                                 <td class="py-3.5 px-3 text-right">
-                                    <a href="{{ route('hotel.invoices.show', $rInv->id) }}" class="inline-flex items-center px-3 py-1 rounded-xl bg-[#2A1820] text-white hover:bg-[#3D242F] text-xs font-bold shadow-xs">
-                                        <i class="fa-solid fa-print text-[10px] text-[#C5A880] mr-1"></i>
+                                    <a href="{{ route('hotel.invoices.show', $rInv->id) }}" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-[#150A42] text-white hover:bg-[#1f105e] text-xs font-bold shadow-xs transition-all active:scale-95">
+                                        <i class="fa-solid fa-print text-[10px] text-amber-300 mr-1.5"></i>
                                         <span>Print</span>
                                     </a>
                                 </td>

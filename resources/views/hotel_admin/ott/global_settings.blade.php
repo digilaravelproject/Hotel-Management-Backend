@@ -4,31 +4,48 @@
 @section('page_title', 'Global OTT Access Settings')
 
 @section('content')
-<div class="max-w-4xl mx-auto space-y-6">
+<div class="max-w-5xl mx-auto space-y-6">
+
     <!-- Top Action Bar -->
-    <div class="flex items-center justify-between">
-        <a href="{{ route('hotel.package') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-white border border-slate-200/80 text-slate-600 hover:text-slate-900 hover:bg-slate-50 text-xs font-bold transition-all shadow-xs">
-            <i class="fa-solid fa-arrow-left mr-2 text-indigo-600"></i> Back to My Package
-        </a>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+            <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
+                <a href="{{ route('hotel.package') }}" class="hover:text-[#150A42] transition-colors flex items-center">
+                    <i class="fa-solid fa-arrow-left mr-1.5 text-[11px]"></i>
+                    <span>My Package</span>
+                </a>
+                <span>/</span>
+                <span class="text-[#150A42] font-black">Global OTT Visibility</span>
+            </div>
+            <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Hotel Default OTT Visibility</h1>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Control which streaming applications appear on guest room Smart TVs across the entire hotel.</p>
+        </div>
+
+        <div class="flex items-center space-x-2.5 shrink-0">
+            <a href="{{ route('hotel.package') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-2 active:scale-95">
+                <i class="fa-solid fa-arrow-left text-xs"></i>
+                <span>Back to Package</span>
+            </a>
+        </div>
     </div>
 
     <!-- Main Clean Container -->
-    <div class="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+    <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-8 shadow-sm space-y-6">
         <!-- Header Banner -->
         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-5 gap-4">
             <div class="flex items-center space-x-3.5">
-                <div class="w-11 h-11 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
-                    <i class="fa-solid fa-brands fa-google-play text-lg"></i>
+                <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 flex items-center justify-center text-[#150A42] shrink-0 text-xl shadow-2xs">
+                    <i class="fa-brands fa-google-play"></i>
                 </div>
                 <div>
-                    <h3 class="text-lg font-extrabold text-slate-900 tracking-tight">Hotel Default OTT Access</h3>
-                    <p class="text-xs text-slate-500 font-medium">Enable or disable streaming apps across all hotel room TVs by default.</p>
+                    <h3 class="text-lg font-black text-slate-900 tracking-tight">In-Room TV Streaming Platforms</h3>
+                    <p class="text-xs text-slate-400 font-medium mt-0.5">Checked platforms will be visible to guests. Per-room custom overrides can also be configured under Connected TVs.</p>
                 </div>
             </div>
             
             @if(count($availablePlatforms) > 0)
-                <label class="inline-flex items-center space-x-2 text-xs font-bold text-indigo-600 cursor-pointer select-none bg-indigo-50 px-3.5 py-1.5 rounded-full border border-indigo-100">
-                    <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500">
+                <label class="inline-flex items-center space-x-2 text-xs font-black text-purple-700 cursor-pointer select-none bg-purple-50 hover:bg-purple-100 px-3.5 py-1.5 rounded-full border border-purple-200/80 transition-colors shadow-2xs">
+                    <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded-lg border-purple-300 text-[#150A42] focus:ring-purple-500">
                     <span>Select All Included</span>
                 </label>
             @endif
@@ -41,41 +58,43 @@
             @if(count($availablePlatforms) > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($availablePlatforms as $ott)
-                        <label class="p-4 rounded-2xl bg-slate-50/70 border border-slate-200/80 hover:border-indigo-300 flex items-center justify-between cursor-pointer transition-all hover:bg-white group">
+                        <label class="p-4 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 hover:border-purple-300 flex items-center justify-between cursor-pointer transition-all hover:bg-white group shadow-2xs">
                             <div class="flex items-center space-x-3 overflow-hidden">
-                                <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0">
+                                <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-[#150A42] group-hover:bg-[#150A42] group-hover:text-white transition-colors shrink-0 shadow-2xs">
                                     <i class="fa-solid fa-film text-sm"></i>
                                 </div>
-                                <div class="overflow-hidden">
-                                    <h4 class="text-xs font-extrabold text-slate-900 group-hover:text-indigo-600 transition-colors truncate">{{ $ott['name'] }}</h4>
-                                    <span class="text-[10px] font-mono text-slate-400 truncate block" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
+                                <div class="overflow-hidden min-w-0">
+                                    <h4 class="text-xs font-black text-slate-900 group-hover:text-purple-700 transition-colors truncate">{{ $ott['name'] }}</h4>
+                                    <span class="text-[10px] font-mono text-slate-400 truncate block mt-0.5" title="{{ $ott['package'] }}">{{ $ott['package'] }}</span>
                                 </div>
                             </div>
                             
                             <!-- Toggle switch -->
-                            <input type="checkbox" name="ott_platforms[]" value="{{ $ott['package'] }}" class="ott-checkbox w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" {{ in_array($ott['package'], $currentGlobalSettings) ? 'checked' : '' }}>
+                            <input type="checkbox" name="ott_platforms[]" value="{{ $ott['package'] }}" class="ott-checkbox w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-purple-500" {{ in_array($ott['package'], $currentGlobalSettings) ? 'checked' : '' }}>
                         </label>
                     @endforeach
                 </div>
             @else
-                <div class="text-center py-10 text-xs text-slate-400 font-semibold bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                    <i class="fa-solid fa-circle-exclamation text-xl block mb-2 text-slate-300"></i>
+                <div class="text-center py-12 text-xs text-slate-400 font-bold bg-[#F8F9FD] rounded-2xl border border-dashed border-slate-200">
+                    <i class="fa-solid fa-circle-exclamation text-2xl block mb-2 text-slate-300"></i>
                     No OTT platforms available in your current Subscription Plan.
                 </div>
             @endif
 
             <!-- Submit Controls -->
-            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-3">
-                <a href="{{ route('hotel.package') }}" class="btn-secondary px-6 py-3">Cancel</a>
-                <button type="submit" id="saveOttBtn" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="btn-hotel-primary px-8 py-3 flex items-center space-x-2">
-                    <i class="fa-solid fa-floppy-disk"></i>
+            <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                <a href="{{ route('hotel.package') }}" class="px-6 py-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs text-center transition-all shadow-2xs">Cancel</a>
+                <button type="submit" id="saveOttBtn" {{ count($availablePlatforms) === 0 ? 'disabled' : '' }} class="px-8 py-3 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs flex items-center justify-center space-x-2 shadow-md shadow-[#150A42]/15 transition-all active:scale-95 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fa-solid fa-floppy-disk text-xs"></i>
                     <span>Save Global Settings</span>
                 </button>
             </div>
         </form>
     </div>
 </div>
+@endsection
 
+@section('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const selectAllCheckbox = document.getElementById('selectAllOtt');
@@ -97,68 +116,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     ottCheckboxes.forEach(cb => { cb.addEventListener('change', updateSelectAllState); });
     updateSelectAllState();
-
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-    });
-
-    // Async AJAX submit for OTT settings
-    const ottForm = document.getElementById('ottForm');
-    if (ottForm) {
-        ottForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('saveOttBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin"></i><span>Syncing Realtime...</span>';
-            btn.classList.add('opacity-90');
-            if (typeof showGlobalLoader === 'function') showGlobalLoader();
-
-            const formData = new FormData(this);
-
-            try {
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    },
-                    body: formData
-                });
-
-                const result = await response.json();
-
-                if (response.ok && result.status === 'success') {
-                    Toast.fire({
-                        icon: 'success',
-                        title: 'OTT Settings Synced in Realtime! ⚡'
-                    });
-                } else {
-                    Toast.fire({
-                        icon: 'error',
-                        title: result.message || 'Failed to save settings.'
-                    });
-                }
-            } catch (error) {
-                console.error('Save error:', error);
-                Toast.fire({
-                    icon: 'error',
-                    title: 'Network error while syncing.'
-                });
-            } finally {
-                if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i><span>Save Global Settings</span>';
-                btn.classList.remove('opacity-90');
-            }
-        });
-    }
 });
-</script>
 </script>
 @endsection

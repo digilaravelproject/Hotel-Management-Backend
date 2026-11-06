@@ -40,14 +40,14 @@
     --color-dist-gold-tint: #F1F5F9;
 
     /* Hotel Admin Palette (colors.md Section 2C) */
-    --color-hotel-sidebar: #2A1820;
-    --color-hotel-inactive: #B8A6AE;
-    --color-hotel-active: #3D242F;
+    --color-hotel-sidebar: #150A42;
+    --color-hotel-inactive: #A5B4FC;
+    --color-hotel-active: rgba(255, 255, 255, 0.12);
     --color-hotel-gold: #C5A880;
-    --color-hotel-btn: #3D242F;
-    --color-hotel-btn-hover: #2A1820;
+    --color-hotel-btn: #150A42;
+    --color-hotel-btn-hover: #1f105e;
     --color-hotel-gold-hover: #8C7250;
-    --color-hotel-gold-tint: #F7F3F5;
+    --color-hotel-gold-tint: #F8F9FD;
 
     /* System Status & Alert Colors (colors.md Section 4) */
     --color-status-active: #15803D;
@@ -165,9 +165,9 @@ textarea,
     font-weight: 700;
     border-radius: 0.75rem;
     /* rounded-xl */
-    background-color: #3D242F;
+    background-color: #150A42;
     color: #FFFFFF;
-    box-shadow: 0 1px 2px 0 rgba(61, 36, 47, 0.25);
+    box-shadow: 0 1px 3px 0 rgba(21, 10, 66, 0.25);
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     border: none;
@@ -175,9 +175,9 @@ textarea,
 }
 
 .btn-hotel-primary:hover {
-    background-color: #2A1820;
+    background-color: #1f105e;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px -1px rgba(42, 24, 32, 0.35);
+    box-shadow: 0 4px 12px -1px rgba(21, 10, 66, 0.35);
 }
 
 .btn-hotel-primary:active {

@@ -1,4 +1,4 @@
-﻿@extends('layouts.hotel_admin')
+@extends('layouts.hotel_admin')
 
 @section('title', 'Manage Room Info - Hotel Admin')
 @section('page_title', 'Room Information Management')
@@ -72,7 +72,7 @@
                             <td class="px-6 py-4">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input type="checkbox" onchange="toggleRoomInfoStatus({{ $info->id }})" {{ $info->status ? 'checked' : '' }} class="sr-only peer">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#2A1820]"></div>
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
                                 </label>
                             </td>
                             <td class="px-6 py-4 text-center">
