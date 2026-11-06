@@ -3,430 +3,421 @@
 @section('page_title', 'Subscription Plan & Billing')
 @section('content')
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<div class="max-w-5xl mx-auto space-y-6">
+
+<div class="max-w-6xl mx-auto space-y-4">
     @if (session('error'))
-        <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center space-x-2">
+        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center space-x-2">
             <i class="fa-solid fa-triangle-exclamation"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
     @if (session('success'))
-        <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center space-x-2">
+        <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center space-x-2">
             <i class="fa-solid fa-circle-check"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
-    <!-- Current Active Subscription Details -->
-    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-        <div class="border-b border-[#E5E7EB] pb-4 flex items-center justify-between">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-hotel"></i>
-                </div>
-                <h3 class="text-base sm:text-lg font-extrabold text-[#111827] tracking-tight">Active Hotel Subscription</h3>
-            </div>
-            @if($hotel->payment_status !== 'paid' || !$hotel->plan_id)
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">Payment Required (Unpaid)</span>
-            @elseif($hotel->expiry_date && $hotel->expiry_date->isPast())
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">Expired</span>
-            @elseif($hotel->expiry_date && $hotel->expiry_date->diffInDays(now()) <= 7)
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">Expires Soon</span>
-            @elseif($hotel->expiry_date)
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">Active</span>
-            @else
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">No Plan</span>
-            @endif
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4 pt-1">
-            <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] space-y-1">
-                <span class="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Current Plan</span>
-                <p class="text-sm font-extrabold text-[#111827] truncate">{{ $hotel->plan->name ?? 'None' }}</p>
-            </div>
-            <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] space-y-1">
-                <span class="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Expiry Date</span>
-                <p class="text-sm font-extrabold text-[#111827]">{{ $hotel->expiry_date ? $hotel->expiry_date->format('d M, Y') : 'N/A' }}</p>
-            </div>
-            <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] space-y-1">
-                <span class="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">Connected TVs</span>
-                <p class="text-sm font-extrabold text-[#111827]">{{ $hotel->room_count }} Displays</p>
-            </div>
-            <div class="p-4 rounded-2xl bg-[#F4F5F7] border border-[#E5E7EB] space-y-1">
-                <span class="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider block">License Key</span>
-                <p class="text-sm font-extrabold text-[#111827] font-mono truncate" title="{{ $hotel->license_key }}">{{ $hotel->license_key ?? 'N/A' }}</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- TV Add-On Component for Active Subscribers -->
-    @if(!empty($hasActivePlan) && !empty($addonPricing))
-    <div class="bg-gradient-to-br from-[#150A42] to-[#251068] text-white rounded-3xl p-6 sm:p-8 shadow-lg shadow-[#150A42]/15 space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
-            <div class="flex items-center space-x-3.5">
-                <div class="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 text-amber-300 flex items-center justify-center text-xl shrink-0 shadow-inner">
-                    <i class="fa-solid fa-plus-circle"></i>
+    <!-- Compact Status Banner -->
+    @if(!empty($hasActivePlan))
+        <div class="bg-white border border-slate-200/90 rounded-2xl px-5 py-3 shadow-2xs flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold shadow-2xs">
+                    <i class="fa-solid fa-hotel text-purple-700"></i>
                 </div>
                 <div>
                     <div class="flex items-center space-x-2">
-                        <span class="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[10px] font-black uppercase font-mono tracking-wider border border-amber-300/30">Prorated Add-On</span>
-                        <span class="text-xs text-white/60 font-mono">Plan: {{ $hotel->plan->name }}</span>
+                        <span class="text-xs font-black text-slate-900">{{ $hotel->plan->name ?? 'Active Plan' }}</span>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-emerald-50 text-emerald-700 border border-emerald-200">Active</span>
                     </div>
-                    <h3 class="text-lg sm:text-xl font-extrabold text-white tracking-tight mt-0.5">Need More Screens? Instant TV Capacity Add-On</h3>
-                    <p class="text-xs text-white/70 font-medium mt-0.5">Add extra TV displays co-termed with your active plan. Only pay for the remaining {{ $remainingDays }} days.</p>
+                    <p class="text-[11px] text-slate-500 font-medium">
+                        Valid till: <strong class="text-slate-800">{{ $hotel->expiry_date->format('d M, Y') }}</strong> ({{ $remainingDays }} days left) • License: <span class="font-mono font-bold text-purple-900">{{ $hotel->license_key }}</span>
+                    </p>
                 </div>
             </div>
-
-            <div class="flex items-center space-x-2 bg-white/10 px-4 py-2 rounded-2xl border border-white/15 shrink-0 font-mono text-xs font-bold">
-                <i class="fa-solid fa-clock text-amber-300"></i>
-                <span>Remaining: <strong class="text-white">{{ $remainingDays }} Days</strong> (till {{ $hotel->expiry_date->format('M d, Y') }})</span>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-            <!-- Left: Stepper & Presets (7 cols) -->
-            <div class="lg:col-span-7 space-y-4">
-                <div class="space-y-2">
-                    <label class="block text-xs font-bold text-white/90">Select Additional TV Screens to Add:</label>
-                    <div class="flex items-center space-x-3">
-                        <button type="button" onclick="adjustHotelAddonTvs(-5)" class="w-12 h-12 rounded-2xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-black text-lg flex items-center justify-center transition-all cursor-pointer border border-white/15">
-                            <i class="fa-solid fa-minus text-sm"></i>
-                        </button>
-
-                        <div class="relative flex-1 flex items-center bg-white/10 rounded-2xl border-2 border-white/20 focus-within:border-amber-300 transition-all px-3 py-1">
-                            <input type="number" 
-                                   id="hotelAddonTvInput" 
-                                   value="10" 
-                                   min="1" 
-                                   max="1000" 
-                                   inputmode="numeric" 
-                                   oninput="calcHotelAddonPricing()"
-                                   class="w-full text-center py-2 text-xl font-black text-white bg-transparent border-0 focus:ring-0 focus:outline-none font-mono">
-                            <div class="shrink-0 pl-2">
-                                <span class="px-2.5 py-1 rounded-xl bg-amber-400 text-[#150A42] text-[11px] font-black uppercase tracking-wider select-none font-mono">
-                                    Extra TVs
-                                </span>
-                            </div>
-                        </div>
-
-                        <button type="button" onclick="adjustHotelAddonTvs(5)" class="w-12 h-12 rounded-2xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-[#150A42] font-black text-lg flex items-center justify-center transition-all cursor-pointer shadow-lg shadow-amber-400/20">
-                            <i class="fa-solid fa-plus text-sm"></i>
-                        </button>
-                    </div>
-
-                    <div class="flex flex-wrap items-center gap-2 pt-1">
-                        <span class="text-[11px] font-bold text-white/60">Quick Presets:</span>
-                        <button type="button" onclick="setHotelAddonTvs(5)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+5 TVs</button>
-                        <button type="button" onclick="setHotelAddonTvs(10)" class="px-3 py-1.5 rounded-xl bg-amber-400/20 hover:bg-amber-400/30 text-amber-300 font-black text-xs transition-all cursor-pointer active:scale-95 border border-amber-300/40">+10 TVs</button>
-                        <button type="button" onclick="setHotelAddonTvs(20)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+20 TVs</button>
-                        <button type="button" onclick="setHotelAddonTvs(50)" class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-all cursor-pointer active:scale-95 border border-white/10">+50 TVs</button>
-                    </div>
-                </div>
-
-                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between text-xs">
-                    <span class="text-white/80">Current Licensed Displays: <strong class="text-white">{{ (int)$hotel->room_count }} TVs</strong></span>
-                    <span class="text-amber-300 font-bold font-mono">➔ New Capacity: <strong id="hotelAddonNewTotalText">{{ (int)$hotel->room_count + 10 }} TVs</strong></span>
-                </div>
-            </div>
-
-            <!-- Right: Cost Summary & Instant Checkout Button (5 cols) -->
-            <div class="lg:col-span-5 bg-white/10 border border-white/15 rounded-2xl p-5 space-y-3.5">
-                <div class="space-y-1.5 text-xs text-white/80">
-                    <div class="flex justify-between">
-                        <span>Prorated Subtotal ({{ $remainingDays }} days):</span>
-                        <span class="font-mono font-bold text-white" id="hotelAddonSubtotalText">₹{{ number_format($addonPricing['subtotal'], 2) }}</span>
-                    </div>
-                    <div class="flex justify-between text-white/60">
-                        <span>GST ({{ $addonPricing['tax_rate'] }}%):</span>
-                        <span class="font-mono" id="hotelAddonTaxText">₹{{ number_format($addonPricing['tax_amount'], 2) }}</span>
-                    </div>
-                    <div class="pt-2 border-t border-white/15 flex justify-between items-baseline">
-                        <span class="font-bold text-white text-sm">Total Add-On:</span>
-                        <span class="text-2xl font-black font-mono text-amber-300" id="hotelAddonTotalText">₹{{ number_format($addonPricing['total_amount'], 2) }}</span>
-                    </div>
-                </div>
-
-                <button type="button" id="payHotelAddonBtn" class="w-full py-3 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-98 text-[#150A42] font-black text-sm transition-all shadow-lg shadow-amber-400/25 cursor-pointer flex items-center justify-center space-x-2">
-                    <i class="fa-solid fa-lock text-xs"></i>
-                    <span id="payHotelAddonBtnText">Pay & Add Extra TVs</span>
-                </button>
-
-                <div id="hotelAddonMsg" class="hidden text-center text-xs font-bold py-1"></div>
+            <div class="flex items-center space-x-2">
+                <span class="px-3 py-1.5 rounded-xl bg-purple-50 text-[#150A42] text-xs font-mono font-black border border-purple-200/70">
+                    <i class="fa-solid fa-tv mr-1.5 text-purple-600"></i>{{ $hotel->room_count }} Licensed Displays
+                </span>
             </div>
         </div>
-    </div>
+    @else
+        <div class="bg-rose-50/80 border border-rose-200/90 rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-2xs">
+            <div class="flex items-center space-x-2.5 min-w-0">
+                <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-700 flex items-center justify-center text-xs shrink-0 font-bold">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <div class="min-w-0">
+                    <span class="text-xs font-black text-rose-900 block truncate">
+                        {{ $hotel->expiry_date && $hotel->expiry_date->isPast() ? 'Subscription Expired — Renewal Required' : 'Plan Activation Required' }}
+                    </span>
+                    <p class="text-[11px] text-rose-700 font-medium truncate">
+                        Select a plan below and complete payment to unlock hotel features and TV cloud sync.
+                    </p>
+                </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-mono font-black bg-rose-100 text-rose-800 border border-rose-200 shrink-0 uppercase tracking-wider">
+                {{ $hotel->expiry_date && $hotel->expiry_date->isPast() ? 'Expired' : 'Unpaid' }}
+            </span>
+        </div>
     @endif
 
-    <!-- Purchase / Upgrade / Renew Flow -->
-    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-6">
-        <div class="border-b border-[#E5E7EB] pb-4">
-            <h3 class="text-lg font-extrabold text-[#111827] tracking-tight">Per-TV Subscription Checkout</h3>
-            <p class="text-xs text-[#6B7280] font-medium mt-1">Select the number of Connected TVs in your property and choose your preferred billing cycle.</p>
-        </div>
-
-        <!-- Step 1: Number of TVs in Hotel -->
-        <div class="p-5 sm:p-6 rounded-2xl bg-[#F8F9FD] border border-slate-200/90 space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <div>
-                    <span class="text-[11px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 1 • Hardware Licensing</span>
-                    <h4 class="text-base font-extrabold text-slate-900 mt-0.5">How many Connected TVs need licensing?</h4>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <span class="px-3 py-1 rounded-full bg-purple-100 text-[#150A42] text-xs font-mono font-black border border-purple-200/80 shadow-2xs">
-                        Selected: <strong id="tvCountDisplay" class="text-purple-900">{{ max(1, $hotel->room_count ?: 30) }}</strong> TVs
+    <!-- Main Checkout: Compact 2-Column Responsive Layout (Single screen on desktop, no scrolling needed) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+        
+        <!-- Left Column: Step 1 (TV Stepper) + Step 2 (Plan Cards) (7 cols) -->
+        <div class="lg:col-span-7 space-y-4">
+            
+            <!-- Step 1: Connected TV Stepper -->
+            <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 1 • Hardware Licensing</span>
+                        <h4 class="text-sm font-extrabold text-slate-900 mt-0.5">How many Connected TVs need active licensing?</h4>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-full bg-purple-100 text-[#150A42] text-xs font-mono font-black border border-purple-200/80 shadow-2xs">
+                        Selected: <strong id="tvCountDisplay" class="text-purple-900 font-black">{{ max(1, $hotel->room_count ?: 30) }}</strong> TVs
                     </span>
                 </div>
-            </div>
 
-            <div class="flex flex-col sm:flex-row items-center gap-4 pt-1">
-                <div class="flex items-center space-x-2.5">
-                    <button type="button" onclick="adjustHotelTvs(-5)" class="w-11 h-11 rounded-xl bg-white border border-slate-200 hover:border-purple-300 hover:bg-slate-50 active:scale-95 flex items-center justify-center font-bold text-sm transition-all shadow-xs cursor-pointer text-slate-700">
-                        <i class="fa-solid fa-minus text-xs"></i>
-                    </button>
-                    <div class="relative">
+                <div class="flex flex-col sm:flex-row items-center gap-3 pt-1">
+                    <div class="flex items-center space-x-2">
+                        <button type="button" onclick="adjustHotelTvs(-5)" class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200 hover:border-purple-300 hover:bg-white active:scale-95 flex items-center justify-center font-bold text-xs text-slate-700 transition-all cursor-pointer shadow-2xs">
+                            <i class="fa-solid fa-minus"></i>
+                        </button>
                         <input type="number" 
                                id="tvCountInput" 
                                min="1" 
                                max="1000" 
                                value="{{ max(1, $hotel->room_count ?: 30) }}" 
                                oninput="calcDynamicPricing()" 
-                               class="w-32 text-center py-2.5 px-3 bg-white text-[#150A42] font-mono font-black text-xl rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 shadow-inner">
+                               class="w-24 text-center py-2 px-2 bg-slate-50 text-[#150A42] font-mono font-black text-lg rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 focus:bg-white shadow-inner">
+                        <button type="button" onclick="adjustHotelTvs(5)" class="w-10 h-10 rounded-xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 flex items-center justify-center font-bold text-xs text-white transition-all cursor-pointer shadow-sm">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
                     </div>
-                    <button type="button" onclick="adjustHotelTvs(5)" class="w-11 h-11 rounded-xl bg-[#150A42] hover:bg-[#1f105e] active:scale-95 flex items-center justify-center font-bold text-sm transition-all shadow-md shadow-[#150A42]/20 cursor-pointer text-white">
+
+                    <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="text-[10px] text-slate-400 font-black uppercase tracking-wider">Presets:</span>
+                        <button type="button" onclick="setHotelTvs(15)" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-white border border-slate-200 hover:border-[#150A42] text-[11px] font-bold font-mono text-slate-800 transition-all active:scale-95">15</button>
+                        <button type="button" onclick="setHotelTvs(30)" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-white border border-slate-200 hover:border-[#150A42] text-[11px] font-bold font-mono text-slate-800 transition-all active:scale-95">30</button>
+                        <button type="button" onclick="setHotelTvs(50)" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-white border border-slate-200 hover:border-[#150A42] text-[11px] font-bold font-mono text-slate-800 transition-all active:scale-95">50</button>
+                        <button type="button" onclick="setHotelTvs(100)" class="px-2.5 py-1 rounded-lg bg-slate-50 hover:bg-white border border-slate-200 hover:border-[#150A42] text-[11px] font-bold font-mono text-slate-800 transition-all active:scale-95">100</button>
+                        @if($hotel->room_count)
+                            <button type="button" onclick="setHotelTvs({{ (int)$hotel->room_count }})" class="px-2.5 py-1 rounded-lg bg-purple-50 hover:bg-purple-100 border border-purple-200 text-[11px] font-black font-mono text-purple-900 transition-all active:scale-95">
+                                <i class="fa-solid fa-rotate-left mr-1 text-[9px]"></i>Reset ({{ (int)$hotel->room_count }})
+                            </button>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Choose Plan Tier -->
+            <div class="space-y-2">
+                <span class="text-[10px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 2 • Choose Plan Tier</span>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                    @foreach($plans as $plan)
+                        @php
+                            $rate = (float) $plan->effective_price_per_tv;
+                            $tax = $plan->tax;
+                            $taxRate = $tax ? $tax->rate : 0;
+                            $taxType = $plan->tax_type ?? 'exclusive';
+                            $cycle = strtolower($plan->billing_cycle ?? 'monthly');
+                            $isCurrentPlan = ($hotel->plan_id == $plan->id);
+                            $isPreSelected = ($hotel->plan_id == $plan->id || $loop->first);
+                        @endphp
+                        <label class="plan-tier-card relative flex flex-col justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all {{ $isPreSelected ? 'border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
+                            <div>
+                                <div class="flex items-center justify-between mb-2.5">
+                                    @if($cycle === 'yearly')
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-[#150A42] text-white text-[9px] font-black uppercase font-mono tracking-wider shadow-2xs">
+                                            <i class="fa-solid fa-crown text-[8px] text-purple-300 mr-1"></i> Annual Pack
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-purple-100 text-[#150A42] text-[9px] font-black uppercase font-mono tracking-wider">
+                                            <i class="fa-solid fa-calendar-days text-[8px] text-purple-600 mr-1"></i> Monthly Pack
+                                        </span>
+                                    @endif
+
+                                    <input type="radio" 
+                                           name="plan_id" 
+                                           value="{{ $plan->id }}" 
+                                           data-rate="{{ $rate }}" 
+                                           data-cycle="{{ $cycle }}"
+                                           data-tax-rate="{{ $taxRate }}"
+                                           data-tax-name="{{ $tax ? $tax->name : 'GST' }}"
+                                           data-tax-type="{{ $taxType }}"
+                                           data-is-split="{{ ($tax && $tax->is_split) ? '1' : '0' }}"
+                                           data-name="{{ $plan->name }}" 
+                                           class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-[#150A42]" 
+                                           {{ $isPreSelected ? 'checked' : '' }}>
+                                </div>
+
+                                <div>
+                                    <div class="font-black text-slate-900 text-sm">{{ $plan->name }}</div>
+                                    <div class="text-xl font-black text-[#150A42] mt-0.5 font-mono">
+                                        ₹{{ number_format($rate, 2) }} 
+                                        <span class="text-[10px] text-slate-400 font-sans font-medium">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
+                                    </div>
+
+                                    <!-- Tax Pill -->
+                                    <div class="mt-2">
+                                        @if($taxRate > 0)
+                                            <span class="inline-flex items-center text-[9px] font-bold font-mono px-2 py-0.5 rounded-md {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-purple-50 text-purple-800 border border-purple-200/80' }}">
+                                                {{ $tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                            </span>
+                                        @else
+                                            <span class="inline-block text-[9px] font-mono px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">
+                                                No Tax Applied
+                                            </span>
+                                        @endif
+                                    </div>
+
+                                    @if($isCurrentPlan)
+                                        <span class="inline-flex items-center mt-2 text-[9px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full shadow-2xs">
+                                            <i class="fa-solid fa-circle-check text-[8px] mr-1 text-emerald-600"></i> Current Active Plan
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div class="mt-3 pt-2.5 border-t border-slate-100 space-y-1 text-[10px] text-slate-600 font-semibold">
+                                <div class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[10px]"></i>
+                                    <span>Complete TV Launcher & Themes</span>
+                                </div>
+                                <div class="flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[10px]"></i>
+                                    <span>Hotel CMS & Remote Controls</span>
+                                </div>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Step 3 Duration Selector & Live Itemized Breakdown (5 cols, sticky) -->
+        <div class="lg:col-span-5 space-y-4 lg:sticky lg:top-20">
+            <div class="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                
+                <div class="border-b border-slate-100 pb-3">
+                    <span class="text-[10px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 3 • Settlement Summary</span>
+                    <h4 class="text-sm font-extrabold text-slate-900 mt-0.5">Duration & Transparent Invoice Breakdown</h4>
+                </div>
+
+                <!-- Custom Duration Dropdown (Distributor/SuperAdmin Style) -->
+                <div class="relative">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-black text-slate-800" id="durationSelectLabel">
+                            License Validity Period
+                        </label>
+                        <span id="durationCycleBadge" class="px-2 py-0.5 rounded-full bg-purple-100 text-[#150A42] text-[9px] font-black uppercase font-mono tracking-wider">
+                            Monthly Billing
+                        </span>
+                    </div>
+
+                    <!-- Hidden native select for script access -->
+                    <select name="duration_months" id="durationSelect" required class="sr-only">
+                        <option value="1">1 Month (Monthly Pack)</option>
+                        <option value="3">3 Months (Quarterly Pack)</option>
+                        <option value="6">6 Months (Semi-Annual Pack)</option>
+                        <option value="12">12 Months (Annual Pack)</option>
+                    </select>
+
+                    <!-- Custom Duration Trigger Button -->
+                    <button type="button" 
+                            id="durationCustomTriggerBtn" 
+                            onclick="toggleDurationCustomDropdown(event)" 
+                            class="w-full px-3.5 py-2.5 text-xs font-bold rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-purple-300 focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 font-semibold text-slate-800 transition-all flex items-center justify-between shadow-xs cursor-pointer group">
+                        <div class="flex items-center space-x-2.5 min-w-0">
+                            <div class="w-6 h-6 rounded-lg bg-purple-100 text-[#150A42] flex items-center justify-center text-xs shrink-0 font-bold">
+                                <i class="fa-solid fa-calendar-days text-[11px]"></i>
+                            </div>
+                            <span id="durationCustomTriggerLabel" class="block font-black text-slate-900 truncate text-xs">
+                                1 Month (Monthly Pack)
+                            </span>
+                        </div>
+                        <i id="durationCustomChevron" class="fa-solid fa-chevron-down text-slate-400 group-hover:text-purple-700 text-[10px] transition-transform duration-200 ml-2"></i>
+                    </button>
+
+                    <!-- Floating Custom Dropdown Menu -->
+                    <div id="durationCustomMenu" 
+                         class="hidden absolute z-50 left-0 right-0 top-full mt-1.5 bg-white rounded-2xl border border-slate-200/90 shadow-2xl p-1.5 max-h-60 overflow-y-auto space-y-1 backdrop-blur-md">
+                    </div>
+                </div>
+
+                <!-- Itemized Breakdown Box -->
+                <div class="space-y-2 text-xs text-slate-600 bg-slate-50/60 p-3.5 rounded-xl border border-slate-100">
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/60">
+                        <div>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block font-mono">Plan</span>
+                            <span id="summaryPlanName" class="text-xs font-black text-slate-900">Deluxe Plan</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider block font-mono">Screens</span>
+                            <span id="summaryTvCount" class="text-xs font-black text-purple-900 font-mono">15 Smart TVs</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <span>Rate per Display:</span>
+                        <span id="summaryRateDisplay" class="font-mono font-bold text-slate-800">₹150.00 / TV / mo</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span>Validity Duration:</span>
+                        <span id="summaryDurationText" class="font-mono font-bold text-purple-900">1 Month</span>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1 border-t border-slate-200/60">
+                        <div>
+                            <span class="block text-slate-700 font-bold">Base Subtotal:</span>
+                            <span id="summaryFormula" class="text-[10px] text-purple-700 font-mono font-bold block">15 TVs × ₹150.00 × 1 mo</span>
+                        </div>
+                        <span id="summarySubtotal" class="font-mono font-black text-slate-900 text-xs">₹2,250.00</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <span id="summaryTaxName">Applicable GST / Tax:</span>
+                        <span id="summaryTaxAmount" class="font-mono font-bold text-slate-900">+₹405.00</span>
+                    </div>
+
+                    <!-- CGST / SGST breakdown rows -->
+                    <div id="cgstRow" class="hidden items-center justify-between text-[11px] text-slate-500 pl-2">
+                        <span id="summaryCgstLabel">CGST (9%):</span>
+                        <span id="summaryCgstAmount" class="font-mono font-bold text-slate-700">₹202.50</span>
+                    </div>
+                    <div id="sgstRow" class="hidden items-center justify-between text-[11px] text-slate-500 pl-2">
+                        <span id="summarySgstLabel">SGST (9%):</span>
+                        <span id="summarySgstAmount" class="font-mono font-bold text-slate-700">₹202.50</span>
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-200/70 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs font-black text-slate-900 uppercase tracking-tight block">Total Payable</span>
+                            <span class="text-[9px] text-slate-400 font-medium">Inclusive of GST</span>
+                        </div>
+                        <div id="totalBox" class="text-xl sm:text-2xl font-black text-[#150A42] font-mono tracking-tight">₹2,655.00</div>
+                    </div>
+                </div>
+
+                <!-- Pay Button -->
+                <div>
+                    <button id="payBtn" type="button" class="w-full py-3 px-5 rounded-xl bg-[#150A42] hover:bg-[#1f105e] active:scale-98 text-white font-extrabold text-xs transition-all shadow-md shadow-[#150A42]/20 cursor-pointer flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-lock text-purple-300"></i>
+                        <span id="payBtnLabel">Pay Securely <span id="payBtnAmount">₹2,655.00</span> & Activate</span>
+                    </button>
+                    <p id="payMsg" class="text-xs text-center mt-2 hidden"></p>
+                </div>
+
+                <div class="text-center text-[10px] text-slate-400 flex items-center justify-center space-x-1.5 font-medium">
+                    <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                    <span>256-Bit SSL Encrypted • Instant TV License Generation</span>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- TV Add-On Component for Active Subscribers Only (Compact) -->
+    @if(!empty($hasActivePlan) && !empty($addonPricing))
+    <div class="bg-gradient-to-br from-[#150A42] to-[#251068] text-white rounded-2xl p-5 shadow-md shadow-[#150A42]/15 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-3">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-white/10 border border-white/20 text-purple-300 flex items-center justify-center text-sm shrink-0">
+                    <i class="fa-solid fa-plus-circle"></i>
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2 py-0.5 rounded-full bg-purple-400/20 text-purple-200 text-[9px] font-black uppercase font-mono tracking-wider border border-purple-300/30">Prorated Add-On</span>
+                        <span class="text-[11px] text-white/60 font-mono">Plan: {{ $hotel->plan->name }}</span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-white tracking-tight mt-0.5">Need More Screens? Instant TV Capacity Add-On</h3>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 bg-white/10 px-3 py-1.5 rounded-xl border border-white/15 shrink-0 font-mono text-[11px] font-bold">
+                <i class="fa-solid fa-clock text-purple-300"></i>
+                <span>Remaining: <strong class="text-white">{{ $remainingDays }} Days</strong></span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
+            <div class="lg:col-span-7 space-y-2">
+                <label class="block text-[11px] font-bold text-white/90">Select Extra TV Screens:</label>
+                <div class="flex items-center space-x-2">
+                    <button type="button" onclick="adjustHotelAddonTvs(-5)" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white font-black text-sm flex items-center justify-center transition-all cursor-pointer border border-white/15">
+                        <i class="fa-solid fa-minus text-xs"></i>
+                    </button>
+
+                    <div class="relative flex-1 flex items-center bg-white/10 rounded-xl border border-white/20 px-2 py-1">
+                        <input type="number" 
+                               id="hotelAddonTvInput" 
+                               value="10" 
+                               min="1" 
+                               max="1000" 
+                               inputmode="numeric" 
+                               oninput="calcHotelAddonPricing()"
+                               class="w-full text-center py-1 text-base font-black text-white bg-transparent border-0 focus:ring-0 focus:outline-none font-mono">
+                        <span class="px-2 py-0.5 rounded-lg bg-purple-500/30 text-purple-200 text-[10px] font-bold uppercase tracking-wider select-none font-mono">
+                            Extra TVs
+                        </span>
+                    </div>
+
+                    <button type="button" onclick="adjustHotelAddonTvs(5)" class="w-9 h-9 rounded-xl bg-purple-500 hover:bg-purple-400 active:scale-95 text-white font-black text-sm flex items-center justify-center transition-all cursor-pointer shadow-sm">
                         <i class="fa-solid fa-plus text-xs"></i>
                     </button>
                 </div>
 
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="text-[11px] text-slate-400 font-black uppercase tracking-wider">Presets:</span>
-                    <button type="button" onclick="setHotelTvs(15)" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-[#150A42] text-xs font-black font-mono text-slate-800 transition-all active:scale-95 shadow-2xs">15 TVs</button>
-                    <button type="button" onclick="setHotelTvs(30)" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-[#150A42] text-xs font-black font-mono text-slate-800 transition-all active:scale-95 shadow-2xs">30 TVs</button>
-                    <button type="button" onclick="setHotelTvs(50)" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-[#150A42] text-xs font-black font-mono text-slate-800 transition-all active:scale-95 shadow-2xs">50 TVs</button>
-                    <button type="button" onclick="setHotelTvs(100)" class="px-3 py-1.5 rounded-xl bg-white border border-slate-200 hover:border-[#150A42] text-xs font-black font-mono text-slate-800 transition-all active:scale-95 shadow-2xs">100 TVs</button>
-                    @if($hotel->room_count)
-                        <button type="button" onclick="setHotelTvs({{ (int)$hotel->room_count }})" class="px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200 hover:bg-purple-100 text-xs font-black font-mono text-purple-900 transition-all active:scale-95 shadow-2xs">
-                            <i class="fa-solid fa-rotate-left mr-1 text-[10px]"></i> Current ({{ (int)$hotel->room_count }})
-                        </button>
-                    @endif
+                <div class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                    <span class="text-[10px] text-white/60 font-bold">Presets:</span>
+                    <button type="button" onclick="setHotelAddonTvs(5)" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] transition-all cursor-pointer active:scale-95 border border-white/10">+5 TVs</button>
+                    <button type="button" onclick="setHotelAddonTvs(10)" class="px-2 py-0.5 rounded-lg bg-purple-500/30 hover:bg-purple-500/40 text-purple-200 font-bold text-[10px] transition-all cursor-pointer active:scale-95 border border-purple-400/40">+10 TVs</button>
+                    <button type="button" onclick="setHotelAddonTvs(20)" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] transition-all cursor-pointer active:scale-95 border border-white/10">+20 TVs</button>
+                    <button type="button" onclick="setHotelAddonTvs(50)" class="px-2 py-0.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-[10px] transition-all cursor-pointer active:scale-95 border border-white/10">+50 TVs</button>
                 </div>
             </div>
-        </div>
 
-        <!-- Step 2: Select Plan Tier -->
-        <div class="space-y-3">
-            <span class="text-[11px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 2 • Choose Plan Tier</span>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                @foreach($plans as $plan)
-                    @php
-                        $rate = (float) $plan->effective_price_per_tv;
-                        $tax = $plan->tax;
-                        $taxRate = $tax ? $tax->rate : 0;
-                        $taxType = $plan->tax_type ?? 'exclusive';
-                        $cycle = strtolower($plan->billing_cycle ?? 'monthly');
-                        $isCurrentPlan = ($hotel->plan_id == $plan->id);
-                        $isPreSelected = ($hotel->plan_id == $plan->id || $loop->first);
-                    @endphp
-                    <label class="plan-tier-card relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl border-2 cursor-pointer transition-all {{ $isPreSelected ? 'border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
-                        <div>
-                            <div class="flex items-center justify-between mb-3.5">
-                                @if($cycle === 'yearly')
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-[#150A42] text-white text-[10px] font-black uppercase font-mono tracking-wider shadow-2xs">
-                                        <i class="fa-solid fa-crown text-[9px] text-purple-300 mr-1.5"></i> Annual Pack
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-purple-100 text-[#150A42] text-[10px] font-black uppercase font-mono tracking-wider">
-                                        <i class="fa-solid fa-calendar-days text-[9px] text-purple-600 mr-1.5"></i> Monthly Pack
-                                    </span>
-                                @endif
-
-                                <input type="radio" 
-                                       name="plan_id" 
-                                       value="{{ $plan->id }}" 
-                                       data-rate="{{ $rate }}" 
-                                       data-cycle="{{ $cycle }}"
-                                       data-tax-rate="{{ $taxRate }}"
-                                       data-tax-name="{{ $tax ? $tax->name : 'GST' }}"
-                                       data-tax-type="{{ $taxType }}"
-                                       data-is-split="{{ ($tax && $tax->is_split) ? '1' : '0' }}"
-                                       data-name="{{ $plan->name }}" 
-                                       class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-[#150A42]" 
-                                       {{ $isPreSelected ? 'checked' : '' }}>
-                            </div>
-
-                            <div>
-                                <div class="font-black text-slate-900 text-base">{{ $plan->name }}</div>
-                                <div class="text-2xl font-black text-[#150A42] mt-1 font-mono">
-                                    ₹{{ number_format($rate, 2) }} 
-                                    <span class="text-xs text-slate-400 font-sans font-medium">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
-                                </div>
-
-                                <!-- Tax Pill -->
-                                <div class="mt-2.5">
-                                    @if($taxRate > 0)
-                                        <span class="inline-flex items-center text-[10px] font-bold font-mono px-2.5 py-1 rounded-lg {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-purple-50 text-purple-800 border border-purple-200/80' }}">
-                                            {{ $tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
-                                        </span>
-                                    @else
-                                        <span class="inline-block text-[10px] font-mono px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600">
-                                            No Tax Applied
-                                        </span>
-                                    @endif
-                                </div>
-
-                                @if($isCurrentPlan)
-                                    <span class="inline-flex items-center mt-2.5 text-[10px] font-black text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-full shadow-2xs">
-                                        <i class="fa-solid fa-circle-check text-[9px] mr-1.5 text-emerald-600"></i> Current Active Plan
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="mt-4 pt-3.5 border-t border-slate-100 space-y-1.5 text-[11px] text-slate-600 font-semibold">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                <span>Complete TV Launcher & Themes</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                <span>Hotel CMS & Remote Controls</span>
-                            </div>
-                        </div>
-                    </label>
-                @endforeach
-            </div>
-        </div>
-
-        <!-- Step 3: Duration & Invoice Summary Checkout -->
-        <div class="p-6 rounded-2xl bg-[#F8FAFC] border border-slate-200/90 space-y-5">
-            <div class="border-b border-slate-200/80 pb-3 flex items-center justify-between">
-                <div>
-                    <span class="text-[11px] font-black uppercase font-mono text-purple-700 tracking-wider block">Step 3 • Settlement Summary</span>
-                    <h4 class="text-base font-extrabold text-slate-900 mt-0.5">Duration & Transparent Invoice Breakdown</h4>
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <!-- Duration Selector (5 cols) -->
-                <div class="lg:col-span-5 space-y-3">
-                    <div>
-                        <div class="flex items-center justify-between mb-1.5">
-                            <label class="block text-xs font-black text-slate-800" id="durationSelectLabel">
-                                License Validity Period
-                            </label>
-                            <span id="durationCycleBadge" class="px-2.5 py-0.5 rounded-full bg-purple-100 text-[#150A42] text-[10px] font-black uppercase font-mono tracking-wider">
-                                Monthly Billing
-                            </span>
-                        </div>
-
-                        <div class="relative">
-                            <select id="durationSelect" 
-                                    onchange="calcDynamicPricing()" 
-                                    class="w-full pl-10 pr-10 py-3 text-xs sm:text-sm font-bold rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xs hover:border-purple-300 focus:outline-none focus:ring-2 focus:ring-[#150A42]/20 focus:border-[#150A42] appearance-none cursor-pointer">
-                                <option value="1">1 Month (Monthly Pack)</option>
-                                <option value="3">3 Months (Quarterly Pack)</option>
-                                <option value="6">6 Months (Semi-Annual Pack)</option>
-                                <option value="12">12 Months (1 Year - Annual Pack)</option>
-                                <option value="24">24 Months (2-Year Pack)</option>
-                                <option value="36">36 Months (3-Year Pack)</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-purple-600">
-                                <i class="fa-solid fa-calendar-days text-sm"></i>
-                            </div>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
-                                <i class="fa-solid fa-chevron-down text-xs"></i>
-                            </div>
-                        </div>
+            <div class="lg:col-span-5 bg-white/10 border border-white/15 rounded-xl p-3.5 space-y-2.5">
+                <div class="space-y-1 text-xs text-white/80">
+                    <div class="flex justify-between">
+                        <span>Prorated Subtotal:</span>
+                        <span class="font-mono font-bold text-white" id="hotelAddonSubtotalText">₹{{ number_format($addonPricing['subtotal'], 2) }}</span>
                     </div>
-
-                    <div class="p-3.5 rounded-xl bg-purple-50/70 border border-purple-100 text-[11px] text-purple-900 font-medium space-y-1">
-                        <div class="flex items-center space-x-1.5 font-bold">
-                            <i class="fa-solid fa-shield-halved text-purple-700"></i>
-                            <span>Instant Auto-Activation Guarantee</span>
-                        </div>
-                        <p class="text-slate-600 leading-relaxed">
-                            Upon online settlement, TV licenses and cloud sync are activated immediately with zero downtime.
-                        </p>
+                    <div class="flex justify-between text-white/60 text-[11px]">
+                        <span>GST ({{ $addonPricing['tax_rate'] }}%):</span>
+                        <span class="font-mono" id="hotelAddonTaxText">₹{{ number_format($addonPricing['tax_amount'], 2) }}</span>
+                    </div>
+                    <div class="pt-1.5 border-t border-white/15 flex justify-between items-baseline">
+                        <span class="font-bold text-white text-xs">Total:</span>
+                        <span class="text-lg font-black font-mono text-purple-200" id="hotelAddonTotalText">₹{{ number_format($addonPricing['total_amount'], 2) }}</span>
                     </div>
                 </div>
 
-                <!-- Live Itemized Invoice Breakdown (7 cols) -->
-                <div class="lg:col-span-7 bg-white p-5 rounded-2xl border border-slate-200/90 shadow-2xs space-y-3.5">
-                    <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-                        <div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-mono">Order Target</span>
-                            <span id="summaryPlanName" class="text-sm font-extrabold text-slate-900">Plan</span>
-                        </div>
-                        <div class="text-right">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block font-mono">Screens</span>
-                            <span id="summaryTvCount" class="text-sm font-extrabold text-purple-900 font-mono">15 Smart TVs</span>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2 text-xs text-slate-600">
-                        <div class="flex items-center justify-between">
-                            <span>Licensed Unit Rate:</span>
-                            <span id="summaryRateDisplay" class="font-mono font-bold text-slate-800">₹150.00 / TV / month</span>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span>Validity Duration:</span>
-                            <span id="summaryDurationText" class="font-mono font-bold text-purple-900">1 Month</span>
-                        </div>
-
-                        <div class="flex items-center justify-between pt-1 border-t border-slate-100">
-                            <div>
-                                <span class="block text-slate-700 font-bold">Base Subtotal:</span>
-                                <span id="summaryFormula" class="text-[11px] text-purple-700 font-mono font-bold block">15 TVs × ₹150.00 × 1 mo</span>
-                            </div>
-                            <span id="summarySubtotal" class="font-mono font-black text-slate-900 text-sm">₹2,250.00</span>
-                        </div>
-
-                        <div class="flex items-center justify-between">
-                            <span id="summaryTaxName">Applicable GST / Tax:</span>
-                            <span id="summaryTaxAmount" class="font-mono font-bold text-slate-900">+₹405.00</span>
-                        </div>
-
-                        <!-- CGST / SGST breakdown rows -->
-                        <div id="cgstRow" class="hidden items-center justify-between text-[11px] text-slate-500 pl-3">
-                            <span id="summaryCgstLabel">CGST (9%):</span>
-                            <span id="summaryCgstAmount" class="font-mono font-bold text-slate-700">₹202.50</span>
-                        </div>
-                        <div id="sgstRow" class="hidden items-center justify-between text-[11px] text-slate-500 pl-3">
-                            <span id="summarySgstLabel">SGST (9%):</span>
-                            <span id="summarySgstAmount" class="font-mono font-bold text-slate-700">₹202.50</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-3 border-t-2 border-slate-100 flex items-center justify-between">
-                        <div>
-                            <span class="text-xs sm:text-sm font-black text-slate-900 uppercase tracking-tight block">Total Payable</span>
-                            <span class="text-[10px] text-slate-400 font-medium">Inclusive of all taxes & fees</span>
-                        </div>
-                        <div id="totalBox" class="text-2xl sm:text-3xl font-black text-[#150A42] font-mono tracking-tight">₹2,655.00</div>
-                    </div>
-
-                    <div class="pt-2">
-                        <button id="payBtn" type="button" class="w-full py-3.5 px-6 rounded-xl bg-[#150A42] hover:bg-[#1f105e] active:scale-98 text-white font-extrabold text-sm transition-all shadow-md shadow-[#150A42]/25 cursor-pointer flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-lock text-purple-300"></i>
-                            <span id="payBtnLabel">Pay Securely <span id="payBtnAmount">₹2,655.00</span> & Activate</span>
-                        </button>
-                        <p id="payMsg" class="text-xs text-center mt-2 hidden"></p>
-                    </div>
-                </div>
+                <button type="button" id="payHotelAddonBtn" class="w-full py-2.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 active:scale-98 text-white font-black text-xs transition-all shadow-md shadow-purple-950/30 cursor-pointer flex items-center justify-center space-x-1.5">
+                    <i class="fa-solid fa-lock text-xs"></i>
+                    <span id="payHotelAddonBtnText">Pay & Add Extra TVs</span>
+                </button>
+                <div id="hotelAddonMsg" class="hidden text-center text-xs font-bold py-1"></div>
             </div>
         </div>
     </div>
+    @endif
 
-    <!-- Recent Tax Invoices & Billing History -->
-    <div class="bg-white border border-[#E5E7EB] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+    <!-- Recent Tax Invoices & Receipts: ONLY DISPLAYED IF ACTIVE PLAN EXISTS -->
+    @if(!empty($hasActivePlan) && !empty($recentInvoices) && $recentInvoices->count() > 0)
+    <div class="bg-white border border-[#E5E7EB] rounded-2xl p-5 shadow-xs space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div class="flex items-center space-x-2.5">
-                <div class="w-9 h-9 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-sm font-bold shadow-2xs">
-                    <i class="fa-solid fa-file-invoice-dollar text-purple-600"></i>
+                <div class="w-8 h-8 rounded-xl bg-purple-50 text-[#150A42] flex items-center justify-center text-xs font-bold shadow-2xs">
+                    <i class="fa-solid fa-file-invoice-dollar text-purple-700"></i>
                 </div>
                 <div>
-                    <h3 class="text-base font-black text-slate-900">Recent Tax Invoices & Receipts</h3>
-                    <p class="text-xs text-slate-400">Download or print official GST tax receipts for your subscription payments.</p>
+                    <h3 class="text-sm font-black text-slate-900">Recent Tax Invoices & Receipts</h3>
+                    <p class="text-[11px] text-slate-400">Download or print official GST tax receipts for your records.</p>
                 </div>
             </div>
             <a href="{{ route('hotel.invoices.index') }}" class="text-xs font-bold text-purple-700 hover:text-purple-950 flex items-center space-x-1">
@@ -435,48 +426,43 @@
             </a>
         </div>
 
-        @if(!empty($recentInvoices) && $recentInvoices->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs">
-                    <thead>
-                        <tr class="text-slate-400 font-black uppercase tracking-wider text-[10px] font-mono border-b border-slate-100">
-                            <th class="py-3 px-3">Invoice #</th>
-                            <th class="py-3 px-3">Date</th>
-                            <th class="py-3 px-3">Plan & Screens</th>
-                            <th class="py-3 px-3">Total Amount</th>
-                            <th class="py-3 px-3">Status</th>
-                            <th class="py-3 px-3 text-right">Action</th>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="text-slate-400 font-black uppercase tracking-wider text-[10px] font-mono border-b border-slate-100">
+                        <th class="py-2.5 px-3">Invoice #</th>
+                        <th class="py-2.5 px-3">Date</th>
+                        <th class="py-2.5 px-3">Plan & Screens</th>
+                        <th class="py-2.5 px-3">Total Amount</th>
+                        <th class="py-2.5 px-3">Status</th>
+                        <th class="py-2.5 px-3 text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @foreach($recentInvoices as $rInv)
+                        <tr class="hover:bg-purple-50/20 transition-colors">
+                            <td class="py-3 px-3 font-mono font-bold text-slate-900">{{ $rInv->invoice_number }}</td>
+                            <td class="py-3 px-3 text-slate-400 text-[11px]">{{ $rInv->created_at->format('d M, Y') }}</td>
+                            <td class="py-3 px-3 font-bold text-slate-900">{{ $rInv->plan_name }} ({{ $rInv->tv_count }} TVs)</td>
+                            <td class="py-3 px-3 font-mono font-black text-slate-900">₹{{ number_format($rInv->total_amount, 2) }}</td>
+                            <td class="py-3 px-3">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold bg-emerald-50 text-emerald-700">
+                                    <i class="fa-solid fa-circle-check text-[8px] mr-1"></i> Paid
+                                </span>
+                            </td>
+                            <td class="py-3 px-3 text-right">
+                                <a href="{{ route('hotel.invoices.show', $rInv->id) }}" class="inline-flex items-center px-2.5 py-1 rounded-lg bg-[#150A42] text-white hover:bg-[#1f105e] text-xs font-bold shadow-xs transition-all active:scale-95">
+                                    <i class="fa-solid fa-print text-[9px] text-purple-300 mr-1"></i>
+                                    <span>Print</span>
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100">
-                        @foreach($recentInvoices as $rInv)
-                            <tr class="hover:bg-purple-50/20 transition-colors">
-                                <td class="py-3.5 px-3 font-mono font-bold text-slate-900">{{ $rInv->invoice_number }}</td>
-                                <td class="py-3.5 px-3 text-slate-400">{{ $rInv->created_at->format('d M, Y') }}</td>
-                                <td class="py-3.5 px-3 font-bold text-slate-900">{{ $rInv->plan_name }} ({{ $rInv->tv_count }} TVs)</td>
-                                <td class="py-3.5 px-3 font-mono font-black text-slate-900">₹{{ number_format($rInv->total_amount, 2) }}</td>
-                                <td class="py-3.5 px-3">
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700">
-                                        <i class="fa-solid fa-circle-check text-[9px] mr-1"></i> Paid
-                                    </span>
-                                </td>
-                                <td class="py-3.5 px-3 text-right">
-                                    <a href="{{ route('hotel.invoices.show', $rInv->id) }}" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-[#150A42] text-white hover:bg-[#1f105e] text-xs font-bold shadow-xs transition-all active:scale-95">
-                                        <i class="fa-solid fa-print text-[10px] text-purple-300 mr-1.5"></i>
-                                        <span>Print</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @else
-            <div class="text-center py-6 text-slate-400 text-xs">
-                No past invoices yet. Once a subscription or TV add-on payment is confirmed, official receipts will be archived here.
-            </div>
-        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
+    @endif
 </div>
 @endsection
 
@@ -504,6 +490,93 @@ document.addEventListener('DOMContentLoaded', function() {
         calcDynamicPricing();
     };
 
+    // Render custom dropdown items matching distributor/superadmin
+    function renderCustomDurationMenu() {
+        const customMenu = document.getElementById('durationCustomMenu');
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (!customMenu || !durationSelect) return;
+
+        customMenu.innerHTML = '';
+        const options = Array.from(durationSelect.options);
+
+        options.forEach(opt => {
+            const isSelected = opt.value === durationSelect.value;
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
+                isSelected 
+                    ? 'bg-purple-50 text-[#150A42] border border-purple-200/80 shadow-2xs font-black' 
+                    : 'text-slate-700 hover:bg-slate-50 hover:text-slate-900'
+            }`;
+            btn.innerHTML = `
+                <div class="flex items-center space-x-2 truncate">
+                    <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-purple-600' : 'bg-slate-300'}"></span>
+                    <span class="truncate">${opt.text}</span>
+                </div>
+                ${isSelected ? '<span class="w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[9px] shrink-0 ml-1.5"><i class="fa-solid fa-check"></i></span>' : ''}
+            `;
+            btn.onclick = function(e) {
+                selectDurationOption(opt.value, opt.text, e);
+            };
+            customMenu.appendChild(btn);
+
+            if (isSelected && customLabel) {
+                customLabel.textContent = opt.text;
+            }
+        });
+    }
+
+    window.toggleDurationCustomDropdown = function(e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (!customMenu) return;
+
+        const isClosed = customMenu.classList.contains('hidden');
+        if (isClosed) {
+            customMenu.classList.remove('hidden');
+            if (chevron) chevron.classList.add('rotate-180');
+        } else {
+            customMenu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    };
+
+    window.selectDurationOption = function(val, text, e) {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        if (!durationSelect) return;
+        durationSelect.value = val;
+
+        const customLabel = document.getElementById('durationCustomTriggerLabel');
+        if (customLabel) customLabel.textContent = text;
+
+        const customMenu = document.getElementById('durationCustomMenu');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (customMenu) customMenu.classList.add('hidden');
+        if (chevron) chevron.classList.remove('rotate-180');
+
+        renderCustomDurationMenu();
+        calcDynamicPricing();
+    };
+
+    // Close custom dropdown on outside click
+    document.addEventListener('click', function(e) {
+        const customMenu = document.getElementById('durationCustomMenu');
+        const triggerBtn = document.getElementById('durationCustomTriggerBtn');
+        const chevron = document.getElementById('durationCustomChevron');
+        if (customMenu && !customMenu.contains(e.target) && triggerBtn && !triggerBtn.contains(e.target)) {
+            customMenu.classList.add('hidden');
+            if (chevron) chevron.classList.remove('rotate-180');
+        }
+    });
+
+    // Dynamically synchronize options: ONLY MONTHS for Monthly Plan; YEARS for Yearly Plan
     function syncDurationOptions() {
         const sel = document.querySelector('.plan-radio:checked');
         if (!sel || !durationSelect) return;
@@ -521,8 +594,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (durationCycleBadge) {
             durationCycleBadge.textContent = isYearly ? 'Annual Billing' : 'Monthly Billing';
             durationCycleBadge.className = isYearly 
-                ? 'px-2.5 py-0.5 rounded-full bg-[#150A42] text-white text-[10px] font-black uppercase font-mono tracking-wider'
-                : 'px-2.5 py-0.5 rounded-full bg-purple-100 text-[#150A42] text-[10px] font-black uppercase font-mono tracking-wider';
+                ? 'px-2 py-0.5 rounded-full bg-[#150A42] text-white text-[9px] font-black uppercase font-mono tracking-wider'
+                : 'px-2 py-0.5 rounded-full bg-purple-100 text-[#150A42] text-[9px] font-black uppercase font-mono tracking-wider';
         }
 
         const isCurrentlyYearlyDropdown = (durationSelect.querySelector('option[value="24"]') !== null && durationSelect.querySelector('option[value="1"]') === null);
@@ -535,16 +608,17 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             durationSelect.value = (currentVal >= 12 && [12, 24, 36].includes(currentVal)) ? String(currentVal) : '12';
         } else if (!isYearly && isCurrentlyYearlyDropdown) {
+            // Strictly monthly packs (no multi-year for monthly plans)
             durationSelect.innerHTML = `
                 <option value="1">1 Month (Monthly Pack)</option>
                 <option value="3">3 Months (Quarterly Pack)</option>
                 <option value="6">6 Months (Semi-Annual Pack)</option>
-                <option value="12">12 Months (1 Year - Annual Pack)</option>
-                <option value="24">24 Months (2-Year Pack)</option>
-                <option value="36">36 Months (3-Year Pack)</option>
+                <option value="12">12 Months (Annual Pack)</option>
             `;
-            durationSelect.value = [1, 3, 6, 12, 24, 36].includes(currentVal) ? String(currentVal) : '1';
+            durationSelect.value = [1, 3, 6, 12].includes(currentVal) ? String(currentVal) : '1';
         }
+
+        renderCustomDurationMenu();
     }
 
     window.calcDynamicPricing = function() {
@@ -556,9 +630,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.plan-tier-card').forEach(card => {
             const rad = card.querySelector('.plan-radio');
             if (rad && rad.checked) {
-                card.className = 'plan-tier-card relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl border-2 cursor-pointer transition-all border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs';
+                card.className = 'plan-tier-card relative flex flex-col justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-[#150A42] bg-purple-50/40 ring-2 ring-purple-500/20 shadow-xs';
             } else {
-                card.className = 'plan-tier-card relative flex flex-col justify-between p-5 sm:p-6 rounded-2xl border-2 cursor-pointer transition-all border-slate-200/90 hover:border-slate-300 bg-white';
+                card.className = 'plan-tier-card relative flex flex-col justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all border-slate-200/90 hover:border-slate-300 bg-white';
             }
         });
 
@@ -686,7 +760,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (durationSelect) durationSelect.addEventListener('change', calcDynamicPricing);
     if (tvCountInput) tvCountInput.addEventListener('input', calcDynamicPricing);
 
-    // Initial run
+    // Initial setup
     syncDurationOptions();
     calcDynamicPricing();
 
@@ -796,18 +870,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (e) { setMsg(e.message, true); reset(); }
     });
 
-    function reset() { 
-        processing = false; 
-        if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
-        if (payBtn) {
-            payBtn.disabled = false; 
-            payBtn.classList.remove('opacity-70', 'cursor-wait');
-            const d = calcDynamicPricing();
-            const totalFormatted = '₹' + (d.amount ? d.amount.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2}) : '0.00');
-            payBtn.innerHTML = '<i class="fa-solid fa-lock text-purple-300"></i><span id="payBtnLabel">Pay Securely <span id="payBtnAmount">' + totalFormatted + '</span> & Activate</span>';
-        }
-    }
-
     // --- Hotel TV Add-On Handling ---
     @if(!empty($hasActivePlan) && !empty($addonPricing))
     const hotelCurrentTvs = {{ (int)$hotel->room_count }};
@@ -837,56 +899,55 @@ document.addEventListener('DOMContentLoaded', function() {
         const inp = document.getElementById('hotelAddonTvInput');
         if (!inp) return;
         const extraTvs = Math.max(1, parseInt(inp.value) || 1);
-        const newTotal = hotelCurrentTvs + extraTvs;
-
-        const newTotalEl = document.getElementById('hotelAddonNewTotalText');
-        if (newTotalEl) newTotalEl.innerText = newTotal + ' TVs';
 
         const rawSubtotal = extraTvs * hotelDailyRate * hotelRemainingDays;
-        let subtotal = Math.round(rawSubtotal * 100) / 100;
-        let tax = 0;
-        let total = subtotal;
+        let subtotal = 0;
+        let taxAmount = 0;
+        let total = 0;
 
-        if (hotelTaxRate > 0) {
-            if (hotelIsInclusive) {
-                total = subtotal;
-                subtotal = Math.round((total / (1 + (hotelTaxRate / 100))) * 100) / 100;
-                tax = Math.round((total - subtotal) * 100) / 100;
-            } else {
-                tax = Math.round((subtotal * (hotelTaxRate / 100)) * 100) / 100;
-                total = Math.round((subtotal + tax) * 100) / 100;
-            }
+        if (hotelIsInclusive) {
+            total = Math.round(rawSubtotal * 100) / 100;
+            subtotal = Math.round((total / (1 + (hotelTaxRate / 100))) * 100) / 100;
+            taxAmount = Math.round((total - subtotal) * 100) / 100;
+        } else {
+            subtotal = Math.round(rawSubtotal * 100) / 100;
+            taxAmount = Math.round((subtotal * (hotelTaxRate / 100)) * 100) / 100;
+            total = Math.round((subtotal + taxAmount) * 100) / 100;
         }
 
         const subEl = document.getElementById('hotelAddonSubtotalText');
         const taxEl = document.getElementById('hotelAddonTaxText');
         const totEl = document.getElementById('hotelAddonTotalText');
 
-        if (subEl) subEl.innerText = '₹' + subtotal.toFixed(2);
-        if (taxEl) taxEl.innerText = '₹' + tax.toFixed(2);
-        if (totEl) totEl.innerText = '₹' + total.toFixed(2);
+        if (subEl) subEl.innerText = '₹' + subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (taxEl) taxEl.innerText = '₹' + taxAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        if (totEl) totEl.innerText = '₹' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        return { extraTvs, total, subtotal, taxAmount };
     };
 
-    const payAddonBtn = document.getElementById('payHotelAddonBtn');
+    const addonBtn = document.getElementById('payHotelAddonBtn');
     const addonMsg = document.getElementById('hotelAddonMsg');
     let addonProcessing = false;
 
-    function setAddonMsg(txt, isErr) {
+    function setAddonMsg(text, isErr) {
         if (!addonMsg) return;
-        addonMsg.innerText = txt;
-        addonMsg.className = 'text-center text-xs font-bold py-1 ' + (isErr ? 'text-rose-300' : 'text-amber-300');
+        addonMsg.innerText = text;
+        addonMsg.className = 'text-center text-xs font-bold py-1 ' + (isErr ? 'text-rose-300' : 'text-purple-300');
         addonMsg.classList.remove('hidden');
     }
 
-    if (payAddonBtn) {
-        payAddonBtn.addEventListener('click', async function() {
+    if (addonBtn) {
+        addonBtn.addEventListener('click', async function() {
             if (addonProcessing) return;
-            addonProcessing = true;
-            payAddonBtn.disabled = true;
-            payAddonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Initializing Gateway...';
-            setAddonMsg('Securing payment order...', false);
+            const p = window.calcHotelAddonPricing();
+            if (!p || p.extraTvs < 1) return;
 
-            const extraTvs = Math.max(1, parseInt(document.getElementById('hotelAddonTvInput').value) || 1);
+            addonProcessing = true;
+            addonBtn.disabled = true;
+            addonBtn.classList.add('opacity-70', 'cursor-wait');
+            addonBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1.5"></i> Initializing...';
+            setAddonMsg('', false);
 
             try {
                 const res = await fetch(hotelAddonOrderUrl, {
@@ -897,45 +958,32 @@ document.addEventListener('DOMContentLoaded', function() {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                         'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify({ additional_tvs: extraTvs })
+                    body: JSON.stringify({ additional_tvs: p.extraTvs })
                 });
 
                 const data = await res.json();
-                if (!res.ok || !data.success) throw new Error(data.message || 'Could not initiate add-on order.');
-
-                if (data.gateway === 'payu' || (data.payu_params && data.checkout_url)) {
-                    setAddonMsg('Redirecting to PayU...', false);
-                    const payuForm = document.createElement('form');
-                    payuForm.method = 'POST';
-                    payuForm.action = data.checkout_url;
-                    payuForm.style.display = 'none';
-
-                    const params = data.payu_params || {};
-                    Object.keys(params).forEach(function(k) {
-                        const inp = document.createElement('input');
-                        inp.type = 'hidden';
-                        inp.name = k;
-                        inp.value = params[k];
-                        payuForm.appendChild(inp);
-                    });
-
-                    document.body.appendChild(payuForm);
-                    payuForm.submit();
-                    return;
+                if (!res.ok || !data.success) {
+                    throw new Error(data.message || 'Could not initiate TV add-on payment.');
                 }
 
-                if (typeof Razorpay === 'undefined') throw new Error('Razorpay failed to load. Please refresh.');
+                if (typeof Razorpay === 'undefined') {
+                    throw new Error('Razorpay failed to load. Please refresh.');
+                }
+
                 const rzp = new Razorpay({
                     key: data.key_id,
                     order_id: data.order_id,
                     amount: Math.round(parseFloat(data.amount) * 100),
                     currency: data.currency || 'INR',
                     name: 'PaxTV Hospitality',
-                    description: 'TV Screen Add-On (+' + extraTvs + ' TVs)',
-                    prefill: { name: data.name || '', email: data.email || '', contact: data.phone || '' },
+                    description: 'TV Screen Add-On (+' + p.extraTvs + ' TVs)',
+                    prefill: {
+                        name: data.name || '',
+                        email: data.email || '',
+                        contact: data.phone || ''
+                    },
                     theme: { color: '#150A42' },
                     handler: function(resp) {
-                        setAddonMsg('Verifying payment and unlocking screens...', false);
                         fetch(hotelAddonPurchaseUrl, {
                             method: 'POST',
                             headers: {
@@ -945,7 +993,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 'X-Requested-With': 'XMLHttpRequest'
                             },
                             body: JSON.stringify({
-                                additional_tvs: extraTvs,
+                                additional_tvs: p.extraTvs,
                                 razorpay_order_id: resp.razorpay_order_id,
                                 razorpay_payment_id: resp.razorpay_payment_id,
                                 razorpay_signature: resp.razorpay_signature
@@ -954,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             if (pd.success) {
                                 window.location.reload();
                             } else {
-                                setAddonMsg(pd.message || 'Add-on activation failed.', true);
+                                setAddonMsg(pd.message || 'Activation failed.', true);
                                 resetAddon();
                             }
                         }).catch(function() {
@@ -962,24 +1010,33 @@ document.addEventListener('DOMContentLoaded', function() {
                             resetAddon();
                         });
                     },
-                    modal: { ondismiss: function() { resetAddon(); } }
+                    modal: {
+                        ondismiss: function() {
+                            resetAddon();
+                        }
+                    }
                 });
 
                 rzp.on('payment.failed', function(r) {
                     setAddonMsg('Payment failed: ' + (r.error?.description || 'Try again.'), true);
                     resetAddon();
                 });
+
                 rzp.open();
-            } catch (e) {
-                setAddonMsg(e.message, true);
+            } catch (err) {
+                setAddonMsg(err.message, true);
                 resetAddon();
             }
         });
+    }
 
-        function resetAddon() {
-            addonProcessing = false;
-            payAddonBtn.disabled = false;
-            payAddonBtn.innerHTML = '<i class="fa-solid fa-lock text-xs mr-1.5"></i> Pay & Add Extra TVs';
+    function resetAddon() {
+        addonProcessing = false;
+        if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
+        if (addonBtn) {
+            addonBtn.disabled = false;
+            addonBtn.classList.remove('opacity-70', 'cursor-wait');
+            addonBtn.innerHTML = '<i class="fa-solid fa-lock text-xs mr-1.5"></i><span id="payHotelAddonBtnText">Pay & Add Extra TVs</span>';
         }
     }
     @endif
