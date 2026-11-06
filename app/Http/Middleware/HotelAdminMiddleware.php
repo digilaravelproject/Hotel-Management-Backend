@@ -43,26 +43,27 @@ class HotelAdminMiddleware
             && ($hotelAdmin->expiry_date === null || $hotelAdmin->expiry_date->isFuture());
 
         if (!$hasActivePlan) {
-            // Only allow package/subscription page, payment submit, and sign out
+            // Only allow subscription checkout, payment submit, and sign out
             $allowedRoutes = [
-                'hotel.package',
                 'hotel.subscription',
                 'hotel.subscription.order',
                 'hotel.subscription.purchase',
-                'hotel.subscribe',
+                'hotel.subscription.addon-order',
+                'hotel.subscription.addon-purchase',
                 'hotel.logout',
             ];
 
             $currentRoute = $request->route()?->getName();
+            $isAllowedPath = $request->is('hotel/subscription*') || $request->is('hotel/logout');
 
-            if ($currentRoute && !in_array($currentRoute, $allowedRoutes)) {
+            if ((!$currentRoute || !in_array($currentRoute, $allowedRoutes)) && !$isAllowedPath) {
                 if ($request->wantsJson()) {
                     return response()->json([
                         'success' => false,
-                        'error' => 'Payment required. An active subscription is required to access hotel features.'
+                        'error' => 'Payment required. Please select a plan and complete payment to unlock hotel panel features.'
                     ], 403);
                 }
-                return redirect()->route('hotel.package')
+                return redirect()->route('hotel.subscription')
                                  ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
             }
         }

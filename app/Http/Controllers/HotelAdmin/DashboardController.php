@@ -13,7 +13,18 @@ class DashboardController extends Controller
     public function index()
     {
         $hotel = Auth::guard('hotel_admin')->user();
+        if (!$hotel) {
+            return redirect()->route('login');
+        }
+
         $hotel->loadMissing('plan');
+
+        $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        if (!$hasActivePlan) {
+            return redirect()->route('hotel.subscription')
+                ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
+        }
+
         $plan = $hotel->plan;
 
         $deviceCount = \App\Models\ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();

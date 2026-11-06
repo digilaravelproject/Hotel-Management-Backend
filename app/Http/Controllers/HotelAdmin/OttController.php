@@ -18,6 +18,12 @@ class OttController extends Controller
             return redirect()->route('hotel.login');
         }
 
+        $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        if (!$hasActivePlan) {
+            return redirect()->route('hotel.subscription')
+                ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
+        }
+
         $hotel->loadMissing('plan');
         $plan = $hotel->plan;
         $allPlatforms = Plan::getAvailableOttPlatforms();
@@ -41,6 +47,12 @@ class OttController extends Controller
         $hotel = auth()->guard('hotel_admin')->user();
         if (!$hotel) {
             return redirect()->route('hotel.login');
+        }
+
+        $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        if (!$hasActivePlan) {
+            return redirect()->route('hotel.subscription')
+                ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
         }
 
         $hotel->loadMissing('plan');
@@ -68,6 +80,12 @@ class OttController extends Controller
         $hotel = auth()->guard('hotel_admin')->user();
         if (!$hotel) {
             return redirect()->route('hotel.login');
+        }
+
+        $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        if (!$hasActivePlan) {
+            return redirect()->route('hotel.subscription')
+                ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
         }
 
         $hotel->loadMissing('plan');

@@ -20,24 +20,25 @@ class EnsurePlanActive
         $hasPaidPlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
 
         $allowedRoutes = [
-            'hotel.package',
             'hotel.subscription',
             'hotel.subscription.order',
             'hotel.subscription.purchase',
-            'hotel.subscribe',
+            'hotel.subscription.addon-order',
+            'hotel.subscription.addon-purchase',
             'hotel.logout',
         ];
 
         $currentRoute = $request->route()?->getName();
+        $isAllowedPath = $request->is('hotel/subscription*') || $request->is('hotel/logout');
 
-        if (!$hasPaidPlan && $currentRoute && !in_array($currentRoute, $allowedRoutes)) {
+        if (!$hasPaidPlan && (!$currentRoute || !in_array($currentRoute, $allowedRoutes)) && !$isAllowedPath) {
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => false,
-                    'error' => 'An active subscription plan is required to access this feature.'
+                    'error' => 'Payment required. Please select a plan and complete payment to unlock hotel panel features.'
                 ], 403);
             }
-            return redirect()->route('hotel.package')
+            return redirect()->route('hotel.subscription')
                              ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
         }
 

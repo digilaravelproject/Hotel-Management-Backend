@@ -26,14 +26,16 @@
                 </div>
                 <h3 class="text-base sm:text-lg font-extrabold text-[#111827] tracking-tight">Active Hotel Subscription</h3>
             </div>
-            @if($hotel->expiry_date && $hotel->expiry_date->isPast())
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-[#FEF2F2] text-[#B91C1C] border border-[#DC2626]/30">Expired</span>
+            @if($hotel->payment_status !== 'paid' || !$hotel->plan_id)
+                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">Payment Required (Unpaid)</span>
+            @elseif($hotel->expiry_date && $hotel->expiry_date->isPast())
+                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-rose-50 text-rose-700 border border-rose-200 shadow-2xs">Expired</span>
             @elseif($hotel->expiry_date && $hotel->expiry_date->diffInDays(now()) <= 7)
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-[#FFFBEB] text-[#B45309] border border-[#EA580C]/30">Expires Soon</span>
+                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-amber-50 text-amber-800 border border-amber-200 shadow-2xs">Expires Soon</span>
             @elseif($hotel->expiry_date)
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-[#F0FDF4] text-[#15803D] border border-[#16A34A]/30">Active</span>
+                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">Active</span>
             @else
-                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-[#F1F5F9] text-[#6B7280] border border-[#CBD5E1]">No Plan</span>
+                <span class="px-3 py-1 rounded-full text-xs font-black uppercase font-mono bg-slate-100 text-slate-700 border border-slate-200 shadow-2xs">No Plan</span>
             @endif
         </div>
 

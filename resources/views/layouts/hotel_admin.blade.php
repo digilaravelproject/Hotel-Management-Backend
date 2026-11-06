@@ -53,6 +53,10 @@
         $hotelDeviceLimit = $hotelUser ? $hotelUser->allowed_device_limit : 0;
         $hotelPlan = $hotelUser ? $hotelUser->plan : null;
         $subStatus = $hotelUser ? $hotelUser->subscription_status : 'unpaid';
+        $isPaidAndActive = $hotelUser 
+            && $hotelUser->plan_id 
+            && $hotelUser->payment_status === 'paid' 
+            && ($hotelUser->expiry_date === null || $hotelUser->expiry_date->isFuture());
     @endphp
 
     <div class="min-h-screen flex">
@@ -63,7 +67,7 @@
         <aside id="sidebar" class="w-64 bg-[#150A42] text-purple-200/80 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 border-r border-white/10 shadow-2xl">
             <!-- Sidebar Header & Logo -->
             <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-[#0B0424]/40 shrink-0">
-                <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 overflow-hidden bg-white/95 px-3 py-1.5 rounded-2xl shadow-xs transition-transform hover:scale-[1.02]">
+                <a href="{{ $isPaidAndActive ? route('hotel.dashboard') : route('hotel.subscription') }}" class="flex items-center space-x-3 overflow-hidden bg-white/95 px-3 py-1.5 rounded-2xl shadow-xs transition-transform hover:scale-[1.02]">
                     <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto max-w-[150px] object-contain">
                 </a>
                 <button type="button" onclick="toggleSidebar()" aria-label="Close Navigation Menu" class="md:hidden text-purple-200/80 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors">
@@ -96,100 +100,125 @@
             <!-- Grouped Menu Navigation Links -->
             <nav class="flex-1 px-3 space-y-1 overflow-y-auto sidebar-scroll pb-4">
                 
-                <!-- Group 1: Workspace -->
-                <div class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                    Workspace
-                </div>
-
-                <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.dashboard') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-house text-sm w-5 text-center {{ Request::routeIs('hotel.dashboard') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Dashboard</span>
-                </a>
-
-                <a href="{{ route('hotel.devices.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <div class="flex items-center space-x-3">
-                        <i class="fa-solid fa-tv text-sm w-5 text-center {{ Request::routeIs('hotel.devices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Connected TVs</span>
+                @if($isPaidAndActive)
+                    <!-- Group 1: Workspace -->
+                    <div class="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
+                        Workspace
                     </div>
-                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold {{ Request::routeIs('hotel.devices.*') ? 'bg-[#150A42] text-white' : 'bg-white/15 text-purple-200' }}">
-                        {{ $hotelDevicesCount }}/{{ $hotelDeviceLimit }}
-                    </span>
-                </a>
 
-                <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-users text-sm w-5 text-center {{ Request::routeIs('hotel.guests.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>In-House Guests</span>
-                </a>
+                    <a href="{{ route('hotel.dashboard') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.dashboard') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-house text-sm w-5 text-center {{ Request::routeIs('hotel.dashboard') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Dashboard</span>
+                    </a>
 
-                <!-- Group 2: TV Experience & Display -->
-                <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                    TV Experience
-                </div>
+                    <a href="{{ route('hotel.devices.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.devices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-tv text-sm w-5 text-center {{ Request::routeIs('hotel.devices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                            <span>Connected TVs</span>
+                        </div>
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold {{ Request::routeIs('hotel.devices.*') ? 'bg-[#150A42] text-white' : 'bg-white/15 text-purple-200' }}">
+                            {{ $hotelDevicesCount }}/{{ $hotelDeviceLimit }}
+                        </span>
+                    </a>
 
-                <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-brands fa-google-play text-sm w-5 text-center {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>OTT Apps Control</span>
-                </a>
+                    <a href="{{ route('hotel.guests.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.guests.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-users text-sm w-5 text-center {{ Request::routeIs('hotel.guests.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>In-House Guests</span>
+                    </a>
 
-                <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-list-check text-sm w-5 text-center {{ Request::routeIs('hotel.menus.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>TV Menus Visibility</span>
-                </a>
+                    <!-- Group 2: TV Experience & Display -->
+                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
+                        TV Experience
+                    </div>
 
-                <a href="{{ route('hotel.themes.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.themes.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-palette text-sm w-5 text-center {{ Request::routeIs('hotel.themes.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>TV Themes & Styling</span>
-                </a>
+                    <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-brands fa-google-play text-sm w-5 text-center {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>OTT Apps Control</span>
+                    </a>
 
-                <a href="{{ route('hotel.flights.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.flights.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-plane-departure text-sm w-5 text-center {{ Request::routeIs('hotel.flights.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Airport & Flights</span>
-                </a>
+                    <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-list-check text-sm w-5 text-center {{ Request::routeIs('hotel.menus.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>TV Menus Visibility</span>
+                    </a>
 
-                <!-- Group 3: Hotel CMS & Facilities -->
-                <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                    Hotel CMS
-                </div>
+                    <a href="{{ route('hotel.themes.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.themes.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-palette text-sm w-5 text-center {{ Request::routeIs('hotel.themes.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>TV Themes & Styling</span>
+                    </a>
 
-                <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-sliders text-sm w-5 text-center {{ Request::routeIs('hotel.hotel-info') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Profile & Media</span>
-                </a>
+                    <a href="{{ route('hotel.flights.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.flights.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-plane-departure text-sm w-5 text-center {{ Request::routeIs('hotel.flights.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Airport & Flights</span>
+                    </a>
 
-                <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-spa text-sm w-5 text-center {{ Request::routeIs('hotel.amenities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Hotel Amenities</span>
-                </a>
+                    <!-- Group 3: Hotel CMS & Facilities -->
+                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
+                        Hotel CMS
+                    </div>
 
-                <a href="{{ route('hotel.room-infos.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.room-infos.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-bed text-sm w-5 text-center {{ Request::routeIs('hotel.room-infos.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Room Information</span>
-                </a>
+                    <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-sliders text-sm w-5 text-center {{ Request::routeIs('hotel.hotel-info') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Profile & Media</span>
+                    </a>
 
-                <a href="{{ route('hotel.facilities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.facilities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-hotel text-sm w-5 text-center {{ Request::routeIs('hotel.facilities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Hotel Facilities</span>
-                </a>
+                    <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-spa text-sm w-5 text-center {{ Request::routeIs('hotel.amenities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Hotel Amenities</span>
+                    </a>
 
-                <a href="{{ route('hotel.our-city.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.our-city.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-city text-sm w-5 text-center {{ Request::routeIs('hotel.our-city.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Our City Guide</span>
-                </a>
+                    <a href="{{ route('hotel.room-infos.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.room-infos.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-bed text-sm w-5 text-center {{ Request::routeIs('hotel.room-infos.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Room Information</span>
+                    </a>
 
-                <!-- Group 4: Commercials & Billing -->
-                <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                    Billing & Plan
-                </div>
+                    <a href="{{ route('hotel.facilities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.facilities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-hotel text-sm w-5 text-center {{ Request::routeIs('hotel.facilities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Hotel Facilities</span>
+                    </a>
 
-                <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-credit-card text-sm w-5 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Plan & Renewal</span>
-                </a>
+                    <a href="{{ route('hotel.our-city.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.our-city.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-city text-sm w-5 text-center {{ Request::routeIs('hotel.our-city.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Our City Guide</span>
+                    </a>
 
-                <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-file-invoice-dollar text-sm w-5 text-center {{ Request::routeIs('hotel.invoices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                    <span>Tax Invoices</span>
-                </a>
+                    <!-- Group 4: Commercials & Billing -->
+                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
+                        Billing & Plan
+                    </div>
+
+                    <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-credit-card text-sm w-5 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Plan & Renewal</span>
+                    </a>
+
+                    <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-solid fa-file-invoice-dollar text-sm w-5 text-center {{ Request::routeIs('hotel.invoices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Tax Invoices</span>
+                    </a>
+                @else
+                    <!-- UNPAID / EXPIRED LOCKED STATE: All Menus Blanked Out Until Plan Purchased -->
+                    <div class="p-4 mx-1 my-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-rose-200 space-y-2">
+                        <div class="flex items-center space-x-2 text-rose-300 font-black text-xs uppercase tracking-wider">
+                            <i class="fa-solid fa-lock text-sm"></i>
+                            <span>{{ $subStatus === 'expired' ? 'Subscription Expired' : 'Features Locked' }}</span>
+                        </div>
+                        <p class="text-[11px] text-purple-200/80 font-medium leading-relaxed">
+                            {{ $subStatus === 'expired' 
+                                ? 'Your TV subscription has expired. In-room smart TVs and hotel features are locked until renewal.' 
+                                : 'Panel features and TV sync are locked. Select a plan below and complete payment to unlock full access.' }}
+                        </p>
+                    </div>
+
+                    <div class="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-amber-300/80 font-mono flex items-center justify-between">
+                        <span>Activation Required</span>
+                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    </div>
+
+                    <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs font-black transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 active:scale-95">
+                        <i class="fa-solid fa-credit-card text-sm w-5 text-center text-slate-950"></i>
+                        <span>Choose Plan & Pay Now</span>
+                    </a>
+                @endif
             </nav>
 
             <!-- Bottom Brand Info & Sign Out -->
@@ -225,21 +254,31 @@
 
                 <!-- Right: TV Limit Pill, Plan Pill & Profile Menu -->
                 <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
-                    <!-- Quick TV Hardware Slots Pill -->
-                    <a href="{{ route('hotel.devices.index') }}" 
-                       title="Connected TV Screens"
-                       class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-2xl bg-purple-50/80 hover:bg-purple-100 border border-purple-200/70 text-[#150A42] transition-all active:scale-95 shadow-2xs">
-                        <i class="fa-solid fa-tv text-purple-600 text-xs"></i>
-                        <span class="text-xs font-black font-mono">{{ $hotelDevicesCount }} / {{ $hotelDeviceLimit }} TVs</span>
-                    </a>
+                    @if($isPaidAndActive)
+                        <!-- Quick TV Hardware Slots Pill -->
+                        <a href="{{ route('hotel.devices.index') }}" 
+                           title="Connected TV Screens"
+                           class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-2xl bg-purple-50/80 hover:bg-purple-100 border border-purple-200/70 text-[#150A42] transition-all active:scale-95 shadow-2xs">
+                            <i class="fa-solid fa-tv text-purple-600 text-xs"></i>
+                            <span class="text-xs font-black font-mono">{{ $hotelDevicesCount }} / {{ $hotelDeviceLimit }} TVs</span>
+                        </a>
 
-                    <!-- Plan Status Pill -->
-                    @if($hotelPlan)
+                        <!-- Plan Status Pill -->
+                        @if($hotelPlan)
+                            <a href="{{ route('hotel.subscription') }}" 
+                               title="Subscription Status"
+                               class="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl {{ $subStatus === 'active' ? 'bg-emerald-50 text-emerald-800 border-emerald-200/70' : ($subStatus === 'expiring_soon' ? 'bg-amber-50 text-amber-800 border-amber-200/70' : 'bg-rose-50 text-rose-800 border-rose-200/70') }} border text-xs font-bold transition-all shadow-2xs">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $subStatus === 'active' ? 'bg-emerald-500 animate-pulse' : ($subStatus === 'expiring_soon' ? 'bg-amber-500 animate-pulse' : 'bg-rose-500') }}"></span>
+                                <span class="truncate max-w-[120px]">{{ $hotelPlan->name }}</span>
+                            </a>
+                        @endif
+                    @else
+                        <!-- Unpaid / Expired Status Pill -->
                         <a href="{{ route('hotel.subscription') }}" 
-                           title="Subscription Status"
-                           class="hidden md:flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl {{ $subStatus === 'active' ? 'bg-emerald-50 text-emerald-800 border-emerald-200/70' : ($subStatus === 'expiring_soon' ? 'bg-amber-50 text-amber-800 border-amber-200/70' : 'bg-rose-50 text-rose-800 border-rose-200/70') }} border text-xs font-bold transition-all shadow-2xs">
-                            <span class="w-1.5 h-1.5 rounded-full {{ $subStatus === 'active' ? 'bg-emerald-500 animate-pulse' : ($subStatus === 'expiring_soon' ? 'bg-amber-500 animate-pulse' : 'bg-rose-500') }}"></span>
-                            <span class="truncate max-w-[120px]">{{ $hotelPlan->name }}</span>
+                           title="Click to Choose Plan & Pay"
+                           class="flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 text-xs font-black transition-all shadow-2xs active:scale-95 animate-pulse">
+                            <i class="fa-solid fa-lock text-[10px] text-rose-600"></i>
+                            <span>{{ $subStatus === 'expired' ? 'Plan Expired — Renew' : 'Payment Required' }}</span>
                         </a>
                     @endif
 
@@ -272,14 +311,16 @@
                                 <p class="font-black text-slate-900 truncate">{{ $hotelUser->owner_name ?? 'Hotel Admin' }}</p>
                                 <p class="text-[10px] text-slate-400 font-medium truncate">{{ $hotelUser->email ?? '' }}</p>
                             </div>
-                            <a href="{{ route('hotel.profile') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
-                                <i class="fa-regular fa-user text-purple-600 w-4"></i>
-                                <span>Account Profile</span>
-                            </a>
-                            <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
-                                <i class="fa-solid fa-hotel text-purple-600 w-4"></i>
-                                <span>Hotel Info & Media</span>
-                            </a>
+                            @if($isPaidAndActive)
+                                <a href="{{ route('hotel.profile') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
+                                    <i class="fa-regular fa-user text-purple-600 w-4"></i>
+                                    <span>Account Profile</span>
+                                </a>
+                                <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
+                                    <i class="fa-solid fa-hotel text-purple-600 w-4"></i>
+                                    <span>Hotel Info & Media</span>
+                                </a>
+                            @endif
                             <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
                                 <i class="fa-solid fa-credit-card text-purple-600 w-4"></i>
                                 <span>Plan & Billing</span>
@@ -311,6 +352,31 @@
 
             <!-- Main Content Container with Centralized Alerts -->
             <main class="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1440px] w-full mx-auto pb-24 md:pb-8">
+                @if(!$isPaidAndActive)
+                    <div class="mb-6 p-5 rounded-[24px] bg-gradient-to-r from-rose-50 via-amber-50 to-purple-50 border-2 border-rose-200/90 text-rose-950 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm animate-in fade-in duration-200">
+                        <div class="flex items-center space-x-3.5">
+                            <div class="w-11 h-11 rounded-2xl bg-rose-500 text-white flex items-center justify-center font-black text-lg shrink-0 shadow-md">
+                                <i class="fa-solid fa-lock"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-black text-rose-950">
+                                    {{ $subStatus === 'expired' ? 'Subscription Expired — Renewal Required' : 'Payment Required — Hotel Panel Features Locked' }}
+                                </h4>
+                                <p class="text-xs text-rose-900/85 font-medium mt-0.5">
+                                    {{ $subStatus === 'expired' 
+                                        ? 'Your hotel subscription period has ended. In-room TV displays and features are suspended until renewed.' 
+                                        : 'Payment required. Please select a plan and complete payment to unlock hotel panel features and start pairing TV screens.' }}
+                                </p>
+                            </div>
+                        </div>
+                        @if(!Request::routeIs('hotel.subscription*'))
+                            <a href="{{ route('hotel.subscription') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center space-x-2 shrink-0 active:scale-95 cursor-pointer">
+                                <i class="fa-solid fa-credit-card text-amber-300 text-xs"></i>
+                                <span>Choose Plan & Pay</span>
+                            </a>
+                        @endif
+                    </div>
+                @endif
                 @if(session('success'))
                     <div class="mb-6 p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
                         <div class="flex items-center space-x-2.5">
