@@ -209,13 +209,13 @@
                         </p>
                     </div>
 
-                    <div class="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-amber-300/80 font-mono flex items-center justify-between">
+                    <div class="px-3 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/90 font-mono flex items-center justify-between">
                         <span>Activation Required</span>
-                        <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                        <span class="w-2 h-2 rounded-full bg-purple-400 animate-ping"></span>
                     </div>
 
-                    <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs font-black transition-all bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 active:scale-95">
-                        <i class="fa-solid fa-credit-card text-sm w-5 text-center text-slate-950"></i>
+                    <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs font-black transition-all bg-gradient-to-r from-purple-600 to-[#150A42] text-white border border-purple-400/40 shadow-lg shadow-purple-950/40 hover:brightness-110 active:scale-95">
+                        <i class="fa-solid fa-credit-card text-sm w-5 text-center text-purple-200"></i>
                         <span>Choose Plan & Pay Now</span>
                     </a>
                 @endif

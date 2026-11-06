@@ -57,7 +57,7 @@ class SubscriptionController extends Controller
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,id',
             'tv_count' => 'required|integer|min:1|max:1000',
-            'duration_months' => 'required|integer|in:1,3,6,12',
+            'duration_months' => 'required|integer|in:1,3,6,12,24,36',
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
@@ -67,7 +67,9 @@ class SubscriptionController extends Controller
 
         // Dynamic Per-TV Tax-compliant calculation
         $calc = $plan->calculatePricing($tvCount);
-        $amount = round($calc['total_amount'] * ($plan->billing_cycle === 'yearly' ? 1 : $durationMonths), 2);
+        $isYearly = ($plan->billing_cycle === 'yearly');
+        $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+        $amount = round($calc['total_amount'] * $multiplier, 2);
 
         try {
             $gateway = PaymentManager::active();
@@ -110,7 +112,7 @@ class SubscriptionController extends Controller
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,id',
             'tv_count' => 'nullable|integer|min:1',
-            'duration_months' => 'required|integer|in:1,3,6,12',
+            'duration_months' => 'required|integer|in:1,3,6,12,24,36',
             'razorpay_order_id' => 'required_without:txnid|nullable|string',
             'razorpay_payment_id' => 'nullable|string',
             'razorpay_signature' => 'nullable|string',
@@ -129,7 +131,9 @@ class SubscriptionController extends Controller
         $durationMonths = (int) $validated['duration_months'];
 
         $calc = $plan->calculatePricing($tvCount);
-        $computedAmount = round($calc['total_amount'] * ($plan->billing_cycle === 'yearly' ? 1 : $durationMonths), 2);
+        $isYearly = ($plan->billing_cycle === 'yearly');
+        $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
+        $computedAmount = round($calc['total_amount'] * $multiplier, 2);
 
         $gateway = PaymentManager::active();
         $gatewayCode = $gateway->getCode();
