@@ -104,19 +104,24 @@
             $gatewayCodes = ['icici', 'razorpay', 'payu'];
         @endphp
 
-        <div class="space-y-5">
+        <div class="space-y-6">
             @foreach($gatewayCodes as $code)
                 @php
                     $gateway = $gateways->firstWhere('code', $code);
                     $name = $gateway ? $gateway->name : ucwords($code);
                     $isEnabled = $gateway ? (bool) $gateway->is_enabled : false;
                     $mode = $gateway ? $gateway->mode : 'sandbox';
-                    $apiKey = $gateway ? $gateway->api_key : '';
-                    $apiSecret = $gateway ? $gateway->api_secret : '';
-                    $merchantId = $gateway ? $gateway->merchant_id : '';
+
+                    $sandboxKey = $gateway ? $gateway->getSandboxKey() : '';
+                    $sandboxSecret = $gateway ? $gateway->getSandboxSecret() : '';
+                    $sandboxMerchantId = $gateway ? $gateway->getSandboxMerchantId() : '';
+
+                    $liveKey = $gateway ? $gateway->getLiveKey() : '';
+                    $liveSecret = $gateway ? $gateway->getLiveSecret() : '';
+                    $liveMerchantId = $gateway ? $gateway->getLiveMerchantId() : '';
                 @endphp
 
-                <div class="bg-white border {{ $isEnabled ? 'border-emerald-300 ring-2 ring-emerald-500/10' : 'border-slate-200/80' }} rounded-[26px] p-5 sm:p-7 shadow-xs space-y-5 transition-all">
+                <div class="bg-white border {{ $isEnabled ? 'border-emerald-300 ring-2 ring-emerald-500/10' : 'border-slate-200/80' }} rounded-[26px] p-5 sm:p-7 shadow-xs space-y-6 transition-all" id="gateway-card-{{ $code }}">
                     
                     <!-- Gateway Header -->
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
@@ -162,52 +167,133 @@
                         </div>
                     </div>
 
-                    <!-- Configuration Fields Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Display Title & Mode Selector Bar -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/70 p-4 rounded-2xl border border-slate-200/70">
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-slate-700">Display Gateway Title <span class="text-rose-500">*</span></label>
                             <input type="text" 
                                    name="gateways[{{ $code }}][name]" 
                                    value="{{ $name }}" 
                                    required
-                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                                   class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
                         </div>
 
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-700">Environment Mode</label>
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-bold text-slate-700">Environment Mode</label>
+                                <span id="mode-badge-{{ $code }}" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full {{ $mode === 'live' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200' }}">
+                                    {{ $mode === 'live' ? '● Live Active' : '● Test Active' }}
+                                </span>
+                            </div>
                             <select name="gateways[{{ $code }}][mode]" 
-                                    class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                                    id="mode-select-{{ $code }}"
+                                    onchange="updateModeUI('{{ $code }}', this.value)"
+                                    class="w-full px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
                                 <option value="sandbox" {{ $mode === 'sandbox' ? 'selected' : '' }}>Sandbox (Test Mode)</option>
                                 <option value="live" {{ $mode === 'live' ? 'selected' : '' }}>Live (Production Mode)</option>
                             </select>
                         </div>
+                    </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-700">API Key / Merchant Key</label>
-                            <input type="text" 
-                                   name="gateways[{{ $code }}][api_key]" 
-                                   value="{{ $apiKey }}" 
-                                   placeholder="e.g. rzp_live_... or key_..." 
-                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                    <!-- Dual Credentials Container: Side-by-Side on Desktop -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+                        <!-- SECTION 1: SANDBOX CREDENTIALS -->
+                        <div id="sandbox-box-{{ $code }}" class="rounded-2xl p-4 sm:p-5 border {{ $mode === 'sandbox' ? 'border-amber-300 bg-amber-50/30 ring-2 ring-amber-400/10' : 'border-slate-200/90 bg-white' }} space-y-3.5 transition-all">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-6 h-6 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center text-xs font-bold">
+                                        <i class="fa-solid fa-flask"></i>
+                                    </span>
+                                    <h4 class="text-xs font-black text-slate-800">Sandbox (Test Mode) Keys</h4>
+                                </div>
+                                <span id="sandbox-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'sandbox' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500' }}">
+                                    {{ $mode === 'sandbox' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
+                                </span>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Sandbox Key / Merchant Key</label>
+                                <input type="text" 
+                                       name="gateways[{{ $code }}][sandbox_key]" 
+                                       value="{{ $sandboxKey }}" 
+                                       placeholder="{{ $code === 'razorpay' ? 'rzp_test_...' : 'Sandbox API Key' }}" 
+                                       class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Sandbox Secret / Salt</label>
+                                <div class="relative">
+                                    <input type="password" 
+                                           id="pwd-sandbox-{{ $code }}"
+                                           name="gateways[{{ $code }}][sandbox_secret]" 
+                                           value="{{ $sandboxSecret }}" 
+                                           placeholder="••••••••••••••••" 
+                                           class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+                                    <button type="button" onclick="toggleSecret('pwd-sandbox-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Sandbox Merchant ID (Optional)</label>
+                                <input type="text" 
+                                       name="gateways[{{ $code }}][sandbox_merchant_id]" 
+                                       value="{{ $sandboxMerchantId }}" 
+                                       placeholder="e.g. test_mid_123" 
+                                       class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
+                            </div>
                         </div>
 
-                        <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-slate-700">API Secret / Encryption Salt</label>
-                            <input type="password" 
-                                   name="gateways[{{ $code }}][api_secret]" 
-                                   value="{{ $apiSecret }}" 
-                                   placeholder="••••••••••••••••" 
-                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                        <!-- SECTION 2: LIVE CREDENTIALS -->
+                        <div id="live-box-{{ $code }}" class="rounded-2xl p-4 sm:p-5 border {{ $mode === 'live' ? 'border-emerald-300 bg-emerald-50/30 ring-2 ring-emerald-500/10' : 'border-slate-200/90 bg-white' }} space-y-3.5 transition-all">
+                            <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+                                <div class="flex items-center space-x-2">
+                                    <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center text-xs font-bold">
+                                        <i class="fa-solid fa-shield-halved"></i>
+                                    </span>
+                                    <h4 class="text-xs font-black text-slate-800">Live (Production Mode) Keys</h4>
+                                </div>
+                                <span id="live-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'live' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500' }}">
+                                    {{ $mode === 'live' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
+                                </span>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Live Key / Merchant Key</label>
+                                <input type="text" 
+                                       name="gateways[{{ $code }}][live_key]" 
+                                       value="{{ $liveKey }}" 
+                                       placeholder="{{ $code === 'razorpay' ? 'rzp_live_...' : 'Live API Key' }}" 
+                                       class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Live Secret / Encryption Salt</label>
+                                <div class="relative">
+                                    <input type="password" 
+                                           id="pwd-live-{{ $code }}"
+                                           name="gateways[{{ $code }}][live_secret]" 
+                                           value="{{ $liveSecret }}" 
+                                           placeholder="••••••••••••••••" 
+                                           class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                                    <button type="button" onclick="toggleSecret('pwd-live-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-bold text-slate-600">Live Merchant ID (Optional)</label>
+                                <input type="text" 
+                                       name="gateways[{{ $code }}][live_merchant_id]" 
+                                       value="{{ $liveMerchantId }}" 
+                                       placeholder="e.g. 10293847" 
+                                       class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
+                            </div>
                         </div>
 
-                        <div class="sm:col-span-2 space-y-1.5">
-                            <label class="text-xs font-bold text-slate-700">Merchant ID / Sub-Merchant Code (Optional)</label>
-                            <input type="text" 
-                                   name="gateways[{{ $code }}][merchant_id]" 
-                                   value="{{ $merchantId }}" 
-                                   placeholder="e.g. 10293847" 
-                                   class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
-                        </div>
                     </div>
                 </div>
             @endforeach
@@ -225,6 +311,77 @@
                 <span>Save Gateway Settings</span>
             </button>
         </div>
+    </form>
+</div>
+
+<script>
+    function updateModeUI(code, mode) {
+        const sandboxBox = document.getElementById(`sandbox-box-${code}`);
+        const liveBox = document.getElementById(`live-box-${code}`);
+        const sandboxStatus = document.getElementById(`sandbox-status-${code}`);
+        const liveStatus = document.getElementById(`live-status-${code}`);
+        const badge = document.getElementById(`mode-badge-${code}`);
+
+        if (mode === 'live') {
+            if (badge) {
+                badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200';
+                badge.innerText = '● Live Active';
+            }
+            if (liveBox) {
+                liveBox.className = 'rounded-2xl p-4 sm:p-5 border border-emerald-300 bg-emerald-50/30 ring-2 ring-emerald-500/10 space-y-3.5 transition-all';
+            }
+            if (sandboxBox) {
+                sandboxBox.className = 'rounded-2xl p-4 sm:p-5 border border-slate-200/90 bg-white space-y-3.5 transition-all';
+            }
+            if (liveStatus) {
+                liveStatus.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-600 text-white';
+                liveStatus.innerText = 'CURRENTLY ACTIVE';
+            }
+            if (sandboxStatus) {
+                sandboxStatus.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500';
+                sandboxStatus.innerText = 'STANDBY';
+            }
+        } else {
+            if (badge) {
+                badge.className = 'text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200';
+                badge.innerText = '● Test Active';
+            }
+            if (sandboxBox) {
+                sandboxBox.className = 'rounded-2xl p-4 sm:p-5 border border-amber-300 bg-amber-50/30 ring-2 ring-amber-400/10 space-y-3.5 transition-all';
+            }
+            if (liveBox) {
+                liveBox.className = 'rounded-2xl p-4 sm:p-5 border border-slate-200/90 bg-white space-y-3.5 transition-all';
+            }
+            if (sandboxStatus) {
+                sandboxStatus.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-500 text-white';
+                sandboxStatus.innerText = 'CURRENTLY ACTIVE';
+            }
+            if (liveStatus) {
+                liveStatus.className = 'text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 text-slate-500';
+                liveStatus.innerText = 'STANDBY';
+            }
+        }
+    }
+
+    function toggleSecret(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const icon = btn.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            if (icon) {
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            }
+        } else {
+            input.type = 'password';
+            if (icon) {
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    }
+</script>
     </form>
 </div>
 @endsection
