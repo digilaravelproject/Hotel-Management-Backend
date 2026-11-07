@@ -58,9 +58,9 @@ class DashboardController extends Controller
         }
 
         // Operational counts
-        $amenitiesCount = Amenity::where('hotel_id', $hotel->id)->count();
+        $amenitiesCount = Amenity::where('hotel_admin_id', $hotel->id)->count();
         $ottAppsCount = OttPlatform::where('status', 1)->count();
-        $roomsConfigured = RoomInfo::where('hotel_id', $hotel->id)->count();
+        $roomsConfigured = RoomInfo::where('hotel_admin_id', $hotel->id)->count();
 
         // Subscription countdown: strictly days remaining
         $daysRemaining = ($hotel->expiry_date && $hotel->expiry_date->isFuture())
