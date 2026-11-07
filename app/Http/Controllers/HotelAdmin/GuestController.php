@@ -22,8 +22,9 @@ class GuestController extends Controller
         }
 
         $guests = $query->orderBy('created_at', 'desc')->get();
+        $hotelRooms = $hotel ? $hotel->connectedDevices()->whereNotNull('room_no')->pluck('room_no')->unique()->sort()->values() : collect();
 
-        return view('hotel_admin.guests.index', compact('guests'));
+        return view('hotel_admin.guests.index', compact('hotel', 'guests', 'hotelRooms'));
     }
 
     /**
