@@ -129,75 +129,112 @@
                         <span>In-House Guests</span>
                     </a>
 
-                    <!-- Group 2: TV Experience & Display -->
-                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                        TV Experience
+                    <!-- Group 2: TV Experience & Display (Collapsible Dropdown) -->
+                    @php
+                        $isTvExpActive = Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') || Request::routeIs('hotel.menus.*') || Request::routeIs('hotel.themes.*') || Request::routeIs('hotel.flights.*');
+                    @endphp
+                    <div class="pt-2">
+                        <button type="button" 
+                                onclick="toggleNavDropdown('nav-tv-experience')" 
+                                class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer {{ $isTvExpActive ? 'bg-white/[0.08] text-white border border-white/10 shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/5' }}">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-display text-sm w-5 text-center {{ $isTvExpActive ? 'text-amber-400' : 'text-purple-300' }}"></i>
+                                <span>TV Experience</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-white/10 text-purple-200">4</span>
+                                <i id="chevron-nav-tv-experience" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 {{ $isTvExpActive ? 'rotate-180 text-white' : 'text-purple-300/60' }}"></i>
+                            </div>
+                        </button>
+                        <div id="nav-tv-experience" class="{{ $isTvExpActive ? '' : 'hidden' }} mt-1 space-y-1 pl-3 ml-4 border-l-2 border-white/10 transition-all">
+                            <a href="{{ route('hotel.ott-apps') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-brands fa-google-play text-xs w-4 text-center {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>OTT Apps Control</span>
+                            </a>
+                            <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-list-check text-xs w-4 text-center {{ Request::routeIs('hotel.menus.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>TV Menus Visibility</span>
+                            </a>
+                            <a href="{{ route('hotel.themes.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.themes.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-palette text-xs w-4 text-center {{ Request::routeIs('hotel.themes.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>TV Themes & Styling</span>
+                            </a>
+                            <a href="{{ route('hotel.flights.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.flights.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-plane-departure text-xs w-4 text-center {{ Request::routeIs('hotel.flights.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Airport & Flights</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <a href="{{ route('hotel.ott-apps') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-brands fa-google-play text-sm w-5 text-center {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>OTT Apps Control</span>
-                    </a>
-
-                    <a href="{{ route('hotel.menus.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.menus.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-list-check text-sm w-5 text-center {{ Request::routeIs('hotel.menus.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>TV Menus Visibility</span>
-                    </a>
-
-                    <a href="{{ route('hotel.themes.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.themes.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-palette text-sm w-5 text-center {{ Request::routeIs('hotel.themes.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>TV Themes & Styling</span>
-                    </a>
-
-                    <a href="{{ route('hotel.flights.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.flights.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-plane-departure text-sm w-5 text-center {{ Request::routeIs('hotel.flights.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Airport & Flights</span>
-                    </a>
-
-                    <!-- Group 3: Hotel CMS & Facilities -->
-                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                        Hotel CMS
+                    <!-- Group 3: Hotel CMS (Collapsible Dropdown) -->
+                    @php
+                        $isHotelCmsActive = Request::routeIs('hotel.hotel-info') || Request::routeIs('hotel.amenities.*') || Request::routeIs('hotel.room-infos.*') || Request::routeIs('hotel.facilities.*') || Request::routeIs('hotel.our-city.*');
+                    @endphp
+                    <div class="pt-2">
+                        <button type="button" 
+                                onclick="toggleNavDropdown('nav-hotel-cms')" 
+                                class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer {{ $isHotelCmsActive ? 'bg-white/[0.08] text-white border border-white/10 shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/5' }}">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-layer-group text-sm w-5 text-center {{ $isHotelCmsActive ? 'text-amber-400' : 'text-purple-300' }}"></i>
+                                <span>Hotel CMS</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-white/10 text-purple-200">5</span>
+                                <i id="chevron-nav-hotel-cms" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 {{ $isHotelCmsActive ? 'rotate-180 text-white' : 'text-purple-300/60' }}"></i>
+                            </div>
+                        </button>
+                        <div id="nav-hotel-cms" class="{{ $isHotelCmsActive ? '' : 'hidden' }} mt-1 space-y-1 pl-3 ml-4 border-l-2 border-white/10 transition-all">
+                            <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-sliders text-xs w-4 text-center {{ Request::routeIs('hotel.hotel-info') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Profile & Media</span>
+                            </a>
+                            <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-spa text-xs w-4 text-center {{ Request::routeIs('hotel.amenities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Hotel Amenities</span>
+                            </a>
+                            <a href="{{ route('hotel.room-infos.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.room-infos.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-bed text-xs w-4 text-center {{ Request::routeIs('hotel.room-infos.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Room Information</span>
+                            </a>
+                            <a href="{{ route('hotel.facilities.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.facilities.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-hotel text-xs w-4 text-center {{ Request::routeIs('hotel.facilities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Hotel Facilities</span>
+                            </a>
+                            <a href="{{ route('hotel.our-city.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.our-city.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-city text-xs w-4 text-center {{ Request::routeIs('hotel.our-city.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Our City Guide</span>
+                            </a>
+                        </div>
                     </div>
 
-                    <a href="{{ route('hotel.hotel-info') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.hotel-info') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-sliders text-sm w-5 text-center {{ Request::routeIs('hotel.hotel-info') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Profile & Media</span>
-                    </a>
-
-                    <a href="{{ route('hotel.amenities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.amenities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-spa text-sm w-5 text-center {{ Request::routeIs('hotel.amenities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Hotel Amenities</span>
-                    </a>
-
-                    <a href="{{ route('hotel.room-infos.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.room-infos.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-bed text-sm w-5 text-center {{ Request::routeIs('hotel.room-infos.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Room Information</span>
-                    </a>
-
-                    <a href="{{ route('hotel.facilities.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.facilities.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-hotel text-sm w-5 text-center {{ Request::routeIs('hotel.facilities.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Hotel Facilities</span>
-                    </a>
-
-                    <a href="{{ route('hotel.our-city.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.our-city.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-city text-sm w-5 text-center {{ Request::routeIs('hotel.our-city.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Our City Guide</span>
-                    </a>
-
-                    <!-- Group 4: Commercials & Billing -->
-                    <div class="px-3 pt-4 pb-1 text-[10px] font-bold uppercase tracking-wider text-purple-300/50 font-mono">
-                        Billing & Plan
+                    <!-- Group 4: Commercials & Billing (Collapsible Dropdown) -->
+                    @php
+                        $isBillingActive = Request::routeIs('hotel.subscription*') || Request::routeIs('hotel.invoices.*');
+                    @endphp
+                    <div class="pt-2">
+                        <button type="button" 
+                                onclick="toggleNavDropdown('nav-billing-plan')" 
+                                class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all cursor-pointer {{ $isBillingActive ? 'bg-white/[0.08] text-white border border-white/10 shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/5' }}">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-credit-card text-sm w-5 text-center {{ $isBillingActive ? 'text-amber-400' : 'text-purple-300' }}"></i>
+                                <span>Billing & Plan</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-white/10 text-purple-200">2</span>
+                                <i id="chevron-nav-billing-plan" class="fa-solid fa-chevron-down text-[10px] transition-transform duration-200 {{ $isBillingActive ? 'rotate-180 text-white' : 'text-purple-300/60' }}"></i>
+                            </div>
+                        </button>
+                        <div id="nav-billing-plan" class="{{ $isBillingActive ? '' : 'hidden' }} mt-1 space-y-1 pl-3 ml-4 border-l-2 border-white/10 transition-all">
+                            <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-arrows-rotate text-xs w-4 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Plan & Renewal</span>
+                            </a>
+                            <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
+                                <i class="fa-solid fa-file-invoice-dollar text-xs w-4 text-center {{ Request::routeIs('hotel.invoices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <span>Tax Invoices</span>
+                            </a>
+                        </div>
                     </div>
-
-                    <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-credit-card text-sm w-5 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Plan & Renewal</span>
-                    </a>
-
-                    <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-solid fa-file-invoice-dollar text-sm w-5 text-center {{ Request::routeIs('hotel.invoices.*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
-                        <span>Tax Invoices</span>
-                    </a>
                 @else
                     <!-- UNPAID / EXPIRED LOCKED STATE: All Menus Blanked Out Until Plan Purchased -->
                     <div class="p-4 mx-1 my-3 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-rose-200 space-y-2">
@@ -493,6 +530,26 @@
             const backdrop = document.getElementById('sidebarBackdrop');
             sidebar.classList.toggle('-translate-x-full');
             if (backdrop) backdrop.classList.toggle('hidden');
+        }
+
+        function toggleNavDropdown(id) {
+            const el = document.getElementById(id);
+            const chevron = document.getElementById('chevron-' + id);
+            if (!el) return;
+            const isHidden = el.classList.contains('hidden');
+            if (isHidden) {
+                el.classList.remove('hidden');
+                if (chevron) {
+                    chevron.classList.add('rotate-180', 'text-white');
+                    chevron.classList.remove('text-purple-300/60');
+                }
+            } else {
+                el.classList.add('hidden');
+                if (chevron) {
+                    chevron.classList.remove('rotate-180', 'text-white');
+                    chevron.classList.add('text-purple-300/60');
+                }
+            }
         }
 
         function toggleProfileDropdown() {
