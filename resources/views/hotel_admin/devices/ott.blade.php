@@ -110,8 +110,8 @@
             @csrf
 
             @if(count($availablePlatforms) > 0)
-                <!-- Grid of OTT Cards with Real Official Logos -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-4" id="ottPlatformsGrid">
+                <!-- Grid of OTT Cards with Real Official Logos (2 Columns on Mobile) -->
+                <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4" id="ottPlatformsGrid">
                     @foreach($availablePlatforms as $ott)
                         @php
                             $package = $ott['package'] ?? '';
@@ -119,7 +119,7 @@
                             $iconSrc = $ott['icon'] ?? null;
                             $isSelected = in_array($package, $currentDeviceSettings);
                         @endphp
-                        <div class="ott-card group relative p-3.5 sm:p-4 bg-white border-2 rounded-2xl flex items-center space-x-3.5 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'border-[#150A42] ring-2 ring-purple-600/15 bg-purple-50/20 is-selected' : 'border-slate-200/90' }}"
+                        <div class="ott-card group relative p-2.5 sm:p-4 bg-white border-2 rounded-xl sm:rounded-2xl flex items-center space-x-2.5 sm:space-x-3.5 cursor-pointer hover:border-purple-300 hover:shadow-xs transition-all select-none {{ $isSelected ? 'border-[#150A42] ring-2 ring-purple-600/15 bg-purple-50/20 is-selected' : 'border-slate-200/90' }}"
                              data-name="{{ strtolower($name) }}"
                              data-package="{{ strtolower($package) }}"
                              onclick="toggleOttCard(this)">
@@ -133,37 +133,37 @@
                                    onchange="handleOttCheckboxChange(this)">
 
                             <!-- Real Official Icon Image -->
-                            <div class="w-12 h-12 rounded-2xl border border-slate-200/80 bg-white p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
+                            <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl border border-slate-200/80 bg-white p-1 sm:p-1.5 shadow-2xs overflow-hidden shrink-0 flex items-center justify-center group-hover:scale-105 group-hover:border-purple-300 transition-all">
                                 @if(!empty($iconSrc))
                                     <img src="{{ $iconSrc }}" 
                                          alt="{{ $name }}" 
                                          class="w-full h-full object-contain"
                                          loading="lazy"
                                          onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-                                    <div class="hidden w-full h-full bg-[#150A42] rounded-xl flex items-center justify-center text-white text-xs">
+                                    <div class="hidden w-full h-full bg-[#150A42] rounded-lg sm:rounded-xl flex items-center justify-center text-white text-[10px] sm:text-xs">
                                         <i class="fa-solid fa-play"></i>
                                     </div>
                                 @else
-                                    <div class="w-full h-full bg-gradient-to-tr from-[#150A42] to-purple-600 rounded-xl flex items-center justify-center text-white text-sm">
+                                    <div class="w-full h-full bg-gradient-to-tr from-[#150A42] to-purple-600 rounded-lg sm:rounded-xl flex items-center justify-center text-white text-xs sm:text-sm">
                                         <i class="fa-solid fa-play text-amber-300"></i>
                                     </div>
                                 @endif
                             </div>
 
                             <!-- Platform Details -->
-                            <div class="min-w-0 flex-1 pr-6">
-                                <h4 class="text-xs sm:text-sm font-black text-slate-900 group-hover:text-[#150A42] transition-colors leading-snug truncate" title="{{ $name }}">
+                            <div class="min-w-0 flex-1 pr-4 sm:pr-6">
+                                <h4 class="text-[11px] sm:text-sm font-black text-slate-900 group-hover:text-[#150A42] transition-colors leading-tight truncate" title="{{ $name }}">
                                     {{ $name }}
                                 </h4>
-                                <span class="text-[10px] sm:text-[11px] font-mono text-slate-400 block mt-0.5 truncate" title="{{ $package }}">
+                                <span class="text-[9px] sm:text-[11px] font-mono text-slate-400 block mt-0.5 truncate" title="{{ $package }}">
                                     {{ $package }}
                                 </span>
                             </div>
 
                             <!-- Top-Right Checkbox Badge Indicator -->
-                            <div class="absolute top-3.5 right-3.5 shrink-0 pointer-events-none">
-                                <div class="ott-check-indicator w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all {{ $isSelected ? 'bg-[#150A42] border-[#150A42] text-white' : 'border-slate-300 bg-white group-hover:border-[#150A42]' }}">
-                                    <i class="fa-solid fa-check text-[9px] {{ $isSelected ? 'block' : 'hidden' }}"></i>
+                            <div class="absolute top-2.5 sm:top-3.5 right-2.5 sm:right-3.5 shrink-0 pointer-events-none">
+                                <div class="ott-check-indicator w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 flex items-center justify-center transition-all {{ $isSelected ? 'bg-[#150A42] border-[#150A42] text-white' : 'border-slate-300 bg-white group-hover:border-[#150A42]' }}">
+                                    <i class="fa-solid fa-check text-[8px] sm:text-[9px] {{ $isSelected ? 'block' : 'hidden' }}"></i>
                                 </div>
                             </div>
                         </div>

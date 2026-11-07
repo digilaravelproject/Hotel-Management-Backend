@@ -260,21 +260,21 @@
             <div class="flex flex-wrap items-center gap-2">
                 
                 <!-- Category Filters -->
-                <div class="flex items-center p-1 bg-slate-100 rounded-2xl">
-                    <button type="button" onclick="filterMenuCategory('all', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-black transition-all bg-white text-[#150A42] shadow-2xs">
+                <div class="flex items-center p-1 bg-slate-100 rounded-2xl overflow-x-auto max-w-full no-scrollbar">
+                    <button type="button" onclick="filterMenuCategory('all', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-black transition-all bg-white text-[#150A42] shadow-2xs whitespace-nowrap">
                         All ({{ $totalCount }})
                     </button>
-                    <button type="button" onclick="filterMenuCategory('services', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                    <button type="button" onclick="filterMenuCategory('services', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap">
                         Services
                     </button>
-                    <button type="button" onclick="filterMenuCategory('data', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all flex items-center space-x-1">
+                    <button type="button" onclick="filterMenuCategory('data', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap flex items-center space-x-1">
                         <span>Live Data</span>
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
                     </button>
-                    <button type="button" onclick="filterMenuCategory('entertainment', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                    <button type="button" onclick="filterMenuCategory('entertainment', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap">
                         Media & TV
                     </button>
-                    <button type="button" onclick="filterMenuCategory('system', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                    <button type="button" onclick="filterMenuCategory('system', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all whitespace-nowrap">
                         System
                     </button>
                 </div>
@@ -293,8 +293,8 @@
         <form id="deviceMenuForm" action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST" class="space-y-6" data-swal-bypass="true" data-ajax-form="true">
             @csrf
 
-            <!-- Grid of Interactive Menu Cards -->
-            <div id="menusGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Grid of Interactive Menu Cards (2 Columns on Mobile, 2 on Tablet, 3 on Desktop) -->
+            <div id="menusGrid" class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-2.5 sm:gap-4">
                 @foreach($catalog as $menuId => $menu)
                     @php
                         $isShown = !isset($currentSettings[$menuId]) || $currentSettings[$menuId] !== 'hide';
@@ -309,89 +309,92 @@
                         ];
                     @endphp
 
-                    <div class="menu-card group relative p-4 sm:p-5 rounded-[22px] border transition-all cursor-pointer select-none {{ $isShown ? 'border-[#150A42] ring-2 ring-purple-600/15 bg-purple-50/20 is-active' : 'border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-xs' }}"
+                    <div class="menu-card group relative p-3 sm:p-5 rounded-[18px] sm:rounded-[22px] border transition-all cursor-pointer select-none flex flex-col justify-between {{ $isShown ? 'border-[#150A42] ring-2 ring-purple-600/15 bg-purple-50/20 is-active' : 'border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-xs' }}"
                          data-id="{{ $menuId }}"
                          data-name="{{ strtolower($menu['name']) }}"
                          data-category="{{ $meta['category'] }}"
                          onclick="handleCardClick(this, event)">
 
-                        <!-- Top Header: Icon Badge + Internet Tooltip + Switch -->
-                        <div class="flex items-start justify-between gap-3 mb-3">
-                            
-                            <!-- Icon + Category Badge -->
-                            <div class="flex items-center space-x-3 min-w-0">
-                                <div class="w-11 h-11 rounded-2xl {{ $meta['bg'] }} border flex items-center justify-center text-lg shadow-2xs shrink-0 transition-transform group-hover:scale-105">
-                                    <i class="{{ $meta['icon'] }}"></i>
-                                </div>
-                                <div class="min-w-0">
-                                    <div class="flex items-center space-x-1.5 flex-wrap">
-                                        <h3 class="text-sm font-black text-slate-900 tracking-tight truncate">{{ $menu['name'] }}</h3>
-                                        @if(!empty($meta['internet']))
-                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-200/80">
-                                                <i class="fa-solid fa-wifi mr-1 text-[8px] text-amber-600"></i> Net Req
-                                            </span>
-                                        @endif
-                                    </div>
-                                    <span class="text-[10px] font-mono text-slate-400 block mt-0.5">id: {{ $menuId }}</span>
-                                </div>
-                            </div>
-
-                            <!-- Right Controls: (i) Tooltip Button + iOS Toggle Switch -->
-                            <div class="flex items-center space-x-2 shrink-0">
+                        <!-- Top Header: Icon + Titles + Controls -->
+                        <div>
+                            <div class="flex items-start justify-between gap-1.5 sm:gap-3 mb-2 sm:mb-2.5">
                                 
-                                <!-- Tooltip (i) Button for Internet-dependent menus -->
-                                @if(!empty($meta['internet']))
-                                    <div class="relative inline-block" onclick="event.stopPropagation();">
-                                        <button type="button" 
-                                                title="Click for Internet requirement info"
-                                                onclick="toggleTooltip('tip-{{ $menuId }}')"
-                                                class="w-7 h-7 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-800 flex items-center justify-center text-xs font-black shadow-2xs transition-all active:scale-95 cursor-pointer">
-                                            <i class="fa-solid fa-info text-[11px]"></i>
-                                        </button>
-
-                                        <!-- Popover Floating Tooltip Card -->
-                                        <div id="tip-{{ $menuId }}" class="menu-tooltip-popover hidden absolute right-0 top-9 w-64 p-3.5 bg-slate-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl z-40 text-xs leading-relaxed border border-slate-700 animate-in fade-in duration-150">
-                                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-700/80">
-                                                <div class="flex items-center space-x-1.5 text-amber-400 font-extrabold text-[11px]">
-                                                    <i class="fa-solid fa-wifi"></i>
-                                                    <span>Active Internet Required</span>
-                                                </div>
-                                                <button type="button" onclick="closeAllTooltips()" class="text-slate-400 hover:text-white text-xs p-0.5">
-                                                    <i class="fa-solid fa-xmark"></i>
-                                                </button>
-                                            </div>
-                                            <p class="text-[11px] text-slate-300 font-normal">
-                                                {{ $meta['tooltip'] ?? 'Is menu ko TV par real-time dikhane ke liye active Internet connection zaroori hai.' }}
-                                            </p>
-                                        </div>
+                                <!-- Icon + Name -->
+                                <div class="flex items-center space-x-2 sm:space-x-3 min-w-0">
+                                    <div class="w-8 h-8 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl {{ $meta['bg'] }} border flex items-center justify-center text-xs sm:text-lg shadow-2xs shrink-0 transition-transform group-hover:scale-105">
+                                        <i class="{{ $meta['icon'] }}"></i>
                                     </div>
-                                @endif
+                                    <div class="min-w-0">
+                                        <h3 class="text-xs sm:text-sm font-black text-slate-900 tracking-tight truncate leading-tight">{{ $menu['name'] }}</h3>
+                                        <span class="text-[9px] sm:text-[10px] font-mono text-slate-400 block truncate">id: {{ $menuId }}</span>
+                                    </div>
+                                </div>
 
-                                <!-- Custom iOS Toggle Switch -->
-                                <label class="relative inline-flex items-center cursor-pointer shrink-0" onclick="event.stopPropagation();">
-                                    <input type="checkbox" 
-                                           name="menus[{{ $menuId }}]" 
-                                           value="1" 
-                                           {{ $isShown ? 'checked' : '' }} 
-                                           class="sr-only peer menu-checkbox"
-                                           onchange="handleCheckboxChange(this)">
-                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
-                                </label>
+                                <!-- Right Controls: (i) Tooltip Button + iOS Toggle Switch -->
+                                <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
+                                    
+                                    <!-- Tooltip (i) Button for Internet-dependent menus -->
+                                    @if(!empty($meta['internet']))
+                                        <div class="relative inline-block" onclick="event.stopPropagation();">
+                                            <button type="button" 
+                                                    title="Internet requirement info"
+                                                    onclick="toggleTooltip('tip-{{ $menuId }}')"
+                                                    class="w-5 h-5 sm:w-7 sm:h-7 rounded-lg sm:rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-800 flex items-center justify-center text-[10px] sm:text-xs font-black shadow-2xs transition-all active:scale-95 cursor-pointer">
+                                                <i class="fa-solid fa-info text-[9px] sm:text-[11px]"></i>
+                                            </button>
+
+                                            <!-- Popover Floating Tooltip Card -->
+                                            <div id="tip-{{ $menuId }}" class="menu-tooltip-popover hidden fixed sm:absolute inset-x-4 sm:inset-x-auto sm:right-0 top-1/3 sm:top-9 sm:w-64 p-3.5 bg-slate-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl z-50 text-xs leading-relaxed border border-slate-700 animate-in fade-in duration-150">
+                                                <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-700/80">
+                                                    <div class="flex items-center space-x-1.5 text-amber-400 font-extrabold text-[11px]">
+                                                        <i class="fa-solid fa-wifi"></i>
+                                                        <span>Active Internet Required</span>
+                                                    </div>
+                                                    <button type="button" onclick="closeAllTooltips()" class="text-slate-400 hover:text-white text-xs p-0.5">
+                                                        <i class="fa-solid fa-xmark"></i>
+                                                    </button>
+                                                </div>
+                                                <p class="text-[11px] text-slate-300 font-normal">
+                                                    {{ $meta['tooltip'] ?? 'Is menu ko TV par real-time dikhane ke liye active Internet connection zaroori hai.' }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    <!-- Custom iOS Toggle Switch -->
+                                    <label class="relative inline-flex items-center cursor-pointer shrink-0" onclick="event.stopPropagation();">
+                                        <input type="checkbox" 
+                                               name="menus[{{ $menuId }}]" 
+                                               value="1" 
+                                               {{ $isShown ? 'checked' : '' }} 
+                                               class="sr-only peer menu-checkbox"
+                                               onchange="handleCheckboxChange(this)">
+                                        <div class="w-8 h-4.5 sm:w-11 sm:h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3.5 after:w-3.5 sm:after:h-5 sm:after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
+                                    </label>
+                                </div>
                             </div>
+
+                            <!-- Card Description -->
+                            <p class="text-[10px] sm:text-xs text-slate-500 font-medium leading-snug sm:leading-relaxed mb-2 sm:mb-3 line-clamp-2">
+                                {{ $meta['desc'] }}
+                            </p>
                         </div>
 
-                        <!-- Card Description & Category Badge Footer -->
-                        <p class="text-xs text-slate-500 font-medium leading-relaxed mb-3">
-                            {{ $meta['desc'] }}
-                        </p>
-
-                        <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
-                            <span class="category-pill text-[10px] font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600">
-                                {{ $meta['category_name'] }}
-                            </span>
-                            <span class="status-indicator font-black flex items-center space-x-1.5 {{ $isShown ? 'text-emerald-700' : 'text-slate-400' }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $isShown ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300' }}"></span>
-                                <span>{{ $isShown ? 'Visible on TV' : 'Hidden from TV' }}</span>
+                        <!-- Card Footer -->
+                        <div class="pt-2 sm:pt-2.5 border-t border-slate-100 flex items-center justify-between text-[10px] sm:text-[11px] gap-1">
+                            <div class="flex items-center space-x-1 truncate max-w-[55%]">
+                                <span class="category-pill text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-md sm:rounded-lg bg-slate-100 text-slate-600 truncate">
+                                    {{ $meta['category_name'] }}
+                                </span>
+                                @if(!empty($meta['internet']))
+                                    <span class="hidden sm:inline-flex items-center px-1 py-0.5 rounded text-[8px] font-black bg-amber-100 text-amber-800">
+                                        Net Req
+                                    </span>
+                                @endif
+                            </div>
+                            <span class="status-indicator font-black flex items-center space-x-1 sm:space-x-1.5 shrink-0 {{ $isShown ? 'text-emerald-700' : 'text-slate-400' }}">
+                                <span class="w-1.5 h-1.5 rounded-full shrink-0 {{ $isShown ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300' }}"></span>
+                                <span class="text-[10px] sm:text-[11px]">{{ $isShown ? 'Visible' : 'Hidden' }}<span class="hidden sm:inline"> on TV</span></span>
                             </span>
                         </div>
                     </div>
@@ -464,15 +467,15 @@
             cardElement.classList.add('border-[#150A42]', 'ring-2', 'ring-purple-600/15', 'bg-purple-50/20', 'is-active');
             cardElement.classList.remove('border-slate-200/90', 'bg-white');
             if (statusIndicator) {
-                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1.5 text-emerald-700';
-                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Visible on TV</span>';
+                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1 sm:space-x-1.5 shrink-0 text-emerald-700';
+                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full shrink-0 bg-emerald-500 animate-pulse"></span><span class="text-[10px] sm:text-[11px]">Visible<span class="hidden sm:inline"> on TV</span></span>';
             }
         } else {
             cardElement.classList.remove('border-[#150A42]', 'ring-2', 'ring-purple-600/15', 'bg-purple-50/20', 'is-active');
             cardElement.classList.add('border-slate-200/90', 'bg-white');
             if (statusIndicator) {
-                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1.5 text-slate-400';
-                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span><span>Hidden from TV</span>';
+                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1 sm:space-x-1.5 shrink-0 text-slate-400';
+                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full shrink-0 bg-slate-300"></span><span class="text-[10px] sm:text-[11px]">Hidden<span class="hidden sm:inline"> from TV</span></span>';
             }
         }
     }
