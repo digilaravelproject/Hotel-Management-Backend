@@ -131,11 +131,11 @@
             </div>
 
             <!-- Camera Scanner Box (Compact without scrollbars) -->
-            <div id="qrScannerBox" class="hidden space-y-1 text-center">
-                <div id="qrReader" class="w-full max-w-[210px] h-[160px] mx-auto overflow-hidden rounded-xl border-2 border-purple-300 bg-slate-900 flex items-center justify-center shadow-inner relative">
-                    <div id="qrLoading" class="hidden absolute inset-0 bg-slate-900 flex flex-col items-center justify-center text-white z-10">
+            <div id="qrScannerBox" class="hidden space-y-1.5 text-center">
+                <div id="qrReader" style="width: 100%; max-width: 240px; min-height: 200px; height: 200px; margin: 0 auto; position: relative; background-color: #0b0f19; border-radius: 14px; overflow: hidden; border: 2px solid #a855f7;">
+                    <div id="qrLoading" class="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center text-white z-10">
                         <i class="fa-solid fa-circle-notch fa-spin text-xl text-purple-400 mb-1.5"></i>
-                        <span class="text-[10px] text-slate-300 font-bold">Starting Camera...</span>
+                        <span class="text-[11px] text-slate-300 font-bold">Starting Camera...</span>
                     </div>
                 </div>
                 <p class="text-[10px] text-slate-400 font-medium">Point camera at TV QR code</p>
@@ -584,17 +584,32 @@
 @section('scripts')
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 <style>
+    #qrReader {
+        width: 100% !important;
+        max-width: 240px !important;
+        min-height: 200px !important;
+        height: 200px !important;
+        margin: 0 auto !important;
+        position: relative !important;
+        background-color: #0b0f19 !important;
+        border-radius: 14px !important;
+        overflow: hidden !important;
+        border: 2px solid #a855f7 !important;
+    }
     #qrReader video {
         width: 100% !important;
         height: 100% !important;
         object-fit: cover !important;
-        border-radius: 0.75rem;
+        border-radius: 12px !important;
     }
     #qrReader img {
         display: none !important;
     }
     #qrReader__scan_region {
-        min-height: auto !important;
+        min-height: 190px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 </style>
 <script>
@@ -648,14 +663,14 @@
         const codeInputWrapper = document.getElementById('pairCodeInputWrapper');
 
         if (tab === 'scan') {
-            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5';
-            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
             qrBox.classList.remove('hidden');
             codeInputWrapper.classList.add('hidden');
             startScanner();
         } else {
-            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5';
-            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5';
+            manualBtn.className = 'flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
+            scanBtn.className = 'flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5 cursor-pointer';
             qrBox.classList.add('hidden');
             codeInputWrapper.classList.remove('hidden');
             stopScanner();
@@ -663,9 +678,45 @@
         }
     }
 
+    function onQrCodeSuccess(decodedText) {
+        let text = (decodedText || '').trim();
+        let code = '';
+        if (text.includes('code=')) {
+            code = text.split('code=')[1].split('&')[0].split('#')[0];
+        } else if (text.includes('/')) {
+            const parts = text.split('/');
+            code = parts[parts.length - 1];
+        } else {
+            code = text;
+        }
+        code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        if (code.length > 4 && !code.includes('-')) {
+            code = code.substring(0, 4) + '-' + code.substring(4, 8);
+        }
+
+        document.getElementById('pairCodeInput').value = code;
+        switchPairSubTab('manual');
+        document.getElementById('roomNoInput')?.focus();
+
+        const alertBox = document.getElementById('pairFormAlert');
+        if (alertBox) {
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
+            alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Scanned Code: <b>' + code + '</b>. Now enter Room Number & connect.';
+            alertBox.classList.remove('hidden');
+        }
+    }
+
     function startScanner() {
         const loader = document.getElementById('qrLoading');
         if (loader) loader.classList.remove('hidden');
+
+        const alertBox = document.getElementById('pairFormAlert');
+        if (alertBox) alertBox.classList.add('hidden');
+
+        if (typeof Html5Qrcode === 'undefined') {
+            setTimeout(startScanner, 120);
+            return;
+        }
 
         if (html5QrCode && html5QrCode.isScanning) {
             if (loader) loader.classList.add('hidden');
@@ -676,52 +727,72 @@
             html5QrCode = new Html5Qrcode("qrReader");
         }
 
-        html5QrCode.start(
-            { facingMode: { ideal: "environment" } },
-            { fps: 15, qrbox: { width: 140, height: 140 } },
-            (decodedText) => {
-                let text = decodedText.trim();
-                let code = '';
-                if (text.includes('code=')) {
-                    code = text.split('code=')[1].split('&')[0].split('#')[0];
-                } else if (text.includes('/')) {
-                    const parts = text.split('/');
-                    code = parts[parts.length - 1];
+        const scanConfig = {
+            fps: 15,
+            qrbox: { width: 150, height: 150 }
+        };
+
+        const onScanError = (errorMessage) => {
+            // standard frame non-match, ignore
+        };
+
+        // Try getting cameras first (works on Desktop webcams, Laptop cameras, and Mobile devices)
+        Html5Qrcode.getCameras().then(devices => {
+            if (devices && devices.length > 0) {
+                // If mobile with back camera, choose rear camera; otherwise use default/webcam
+                let chosenCameraId = devices[0].id;
+                for (const dev of devices) {
+                    const label = (dev.label || '').toLowerCase();
+                    if (label.includes('back') || label.includes('rear') || label.includes('environment')) {
+                        chosenCameraId = dev.id;
+                        break;
+                    }
+                }
+                return html5QrCode.start(chosenCameraId, scanConfig, onQrCodeSuccess, onScanError);
+            } else {
+                // Fallback to facingMode
+                return html5QrCode.start({ facingMode: "environment" }, scanConfig, onQrCodeSuccess, onScanError)
+                    .catch(() => html5QrCode.start({ facingMode: "user" }, scanConfig, onQrCodeSuccess, onScanError));
+            }
+        }).then(() => {
+            if (loader) loader.classList.add('hidden');
+        }).catch(err => {
+            console.warn("Direct device lookup failed, falling back to facingMode:", err);
+            // Fallback for browsers that require user interaction before getCameras
+            return html5QrCode.start({ facingMode: "environment" }, scanConfig, onQrCodeSuccess, onScanError)
+                .catch(() => html5QrCode.start({ facingMode: "user" }, scanConfig, onQrCodeSuccess, onScanError))
+                .then(() => {
+                    if (loader) loader.classList.add('hidden');
+                });
+        }).catch(finalErr => {
+            console.error("Camera access failed:", finalErr);
+            if (loader) loader.classList.add('hidden');
+            if (alertBox) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
+                const errStr = (finalErr?.message || finalErr || '').toString();
+                if (errStr.includes('NotAllowed') || errStr.includes('Permission')) {
+                    alertBox.innerText = 'Camera permission was denied. Please allow camera access in browser address bar or enter code manually.';
                 } else {
-                    code = text;
+                    alertBox.innerText = 'Camera access unavailable on this device. Please enter code manually.';
                 }
-                code = code.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-                if (code.length > 4) {
-                    code = code.substring(0, 4) + '-' + code.substring(4, 8);
-                }
-                document.getElementById('pairCodeInput').value = code;
-                switchPairSubTab('manual');
-                document.getElementById('roomNoInput').focus();
-                
-                const alertBox = document.getElementById('pairFormAlert');
-                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-indigo-50 border border-indigo-200 text-indigo-800';
-                alertBox.innerText = 'QR Scanned Code: ' + code + '. Now assign room number to connect.';
                 alertBox.classList.remove('hidden');
-            },
-            (errorMessage) => {}
-        ).then(() => {
-            if (loader) loader.classList.add('hidden');
-        }).catch((err) => {
-            if (loader) loader.classList.add('hidden');
-            const alertBox = document.getElementById('pairFormAlert');
-            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-amber-50 border border-amber-200 text-amber-800';
-            alertBox.innerText = 'Camera access denied or unavailable. Please enter code manually.';
-            alertBox.classList.remove('hidden');
+            }
         });
     }
 
     function stopScanner() {
         const loader = document.getElementById('qrLoading');
         if (loader) loader.classList.add('hidden');
-        if (html5QrCode && html5QrCode.isScanning) {
-            html5QrCode.stop().then(() => {
-                html5QrCode.clear();
-            }).catch(err => console.error(err));
+        if (html5QrCode) {
+            try {
+                if (html5QrCode.isScanning) {
+                    html5QrCode.stop().then(() => {
+                        html5QrCode.clear();
+                    }).catch(err => console.log('Camera stop error:', err));
+                }
+            } catch (e) {
+                console.log('Stop error:', e);
+            }
         }
     }
 
