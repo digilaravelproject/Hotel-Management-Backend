@@ -37,13 +37,20 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
             throw new Exception("Razorpay gateway is disabled.");
         }
 
-        $keyId = trim((string) ($this->gatewayModel->effective_api_key ?: ($this->gatewayModel->api_key ?: env('RAZORPAY_KEY_ID', env('RAZORPAY_KEY')))));
-        $keySecret = trim((string) ($this->gatewayModel->effective_api_secret ?: ($this->gatewayModel->api_secret ?: env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET')))));
+        $keyId = trim((string) ($this->gatewayModel->effective_api_key ?? ''));
+        $keySecret = trim((string) ($this->gatewayModel->effective_api_secret ?? ''));
+
+        if (empty($keyId)) {
+            $keyId = trim((string) env('RAZORPAY_KEY_ID', env('RAZORPAY_KEY', '')));
+        }
+        if (empty($keySecret)) {
+            $keySecret = trim((string) env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET', '')));
+        }
 
         // Convert amount to paise for Razorpay
         $amountInPaise = (int) round($amount * 100);
 
-        if (empty($keyId) || empty($keySecret)) {
+        if (empty($keyId) && empty($keySecret)) {
             // Mock simulation for development
             return [
                 'success' => true,
@@ -54,6 +61,15 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
                 'checkout_url' => '#',
                 'key_id' => 'rzp_test_mock',
             ];
+        }
+
+        if (empty($keyId)) {
+            throw new Exception("Razorpay Key ID is missing. Please configure it in Super Admin Payment Settings.");
+        }
+
+        if (empty($keySecret)) {
+            $mode = str_starts_with($keyId, 'rzp_test_') ? 'Sandbox' : 'Live';
+            throw new Exception("Razorpay {$mode} Secret Key is missing. Please enter the Secret Key corresponding to Key ID (" . substr($keyId, 0, 12) . "...) in Super Admin Payment Settings.");
         }
 
         try {
@@ -80,7 +96,14 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
                 ];
             }
 
-            throw new Exception("Razorpay error: " . $response->body());
+            $resJson = $response->json();
+            $errorDesc = $resJson['error']['description'] ?? $response->body();
+            if (stripos($errorDesc, 'authentication failed') !== false) {
+                $modeLabel = str_starts_with($keyId, 'rzp_test_') ? 'Test Mode' : 'Live Mode';
+                throw new Exception("Razorpay Authentication Failed: The Key ID and Secret Key do not match. Please verify in your Razorpay Dashboard that this Secret belongs to your {$modeLabel} Key ({$keyId}).");
+            }
+
+            throw new Exception("Razorpay error: " . $errorDesc);
         } catch (Exception $e) {
             throw new Exception("Failed to connect to Razorpay: " . $e->getMessage(), 0, $e);
         }

@@ -226,6 +226,7 @@
                                 <input type="text" 
                                        name="gateways[{{ $code }}][sandbox_key]" 
                                        value="{{ $sandboxKey }}" 
+                                       autocomplete="off"
                                        placeholder="{{ $code === 'razorpay' ? 'rzp_test_...' : 'Sandbox API Key' }}" 
                                        class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                             </div>
@@ -237,7 +238,8 @@
                                            id="pwd-sandbox-{{ $code }}"
                                            name="gateways[{{ $code }}][sandbox_secret]" 
                                            value="{{ $sandboxSecret }}" 
-                                           placeholder="••••••••••••••••" 
+                                           autocomplete="new-password"
+                                           placeholder="Enter Sandbox Secret Key" 
                                            class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                                     <button type="button" onclick="toggleSecret('pwd-sandbox-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                         <i class="fa-solid fa-eye"></i>
@@ -250,6 +252,7 @@
                                 <input type="text" 
                                        name="gateways[{{ $code }}][sandbox_merchant_id]" 
                                        value="{{ $sandboxMerchantId }}" 
+                                       autocomplete="off"
                                        placeholder="e.g. test_mid_123" 
                                        class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                             </div>
@@ -283,6 +286,7 @@
                                 <input type="text" 
                                        name="gateways[{{ $code }}][live_key]" 
                                        value="{{ $liveKey }}" 
+                                       autocomplete="off"
                                        placeholder="{{ $code === 'razorpay' ? 'rzp_live_...' : 'Live API Key' }}" 
                                        class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                             </div>
@@ -294,7 +298,8 @@
                                            id="pwd-live-{{ $code }}"
                                            name="gateways[{{ $code }}][live_secret]" 
                                            value="{{ $liveSecret }}" 
-                                           placeholder="••••••••••••••••" 
+                                           autocomplete="new-password"
+                                           placeholder="Enter Live Secret Key" 
                                            class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                                     <button type="button" onclick="toggleSecret('pwd-live-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                         <i class="fa-solid fa-eye"></i>
@@ -307,6 +312,7 @@
                                 <input type="text" 
                                        name="gateways[{{ $code }}][live_merchant_id]" 
                                        value="{{ $liveMerchantId }}" 
+                                       autocomplete="off"
                                        placeholder="e.g. 10293847" 
                                        class="w-full px-3.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                             </div>
@@ -403,9 +409,18 @@
         const keyInput = document.querySelector(`input[name="gateways[${code}][${type}_key]"]`);
         const secretInput = document.querySelector(`input[name="gateways[${code}][${type}_secret]"]`);
         const midInput = document.querySelector(`input[name="gateways[${code}][${type}_merchant_id]"]`);
-        if (keyInput) keyInput.value = '';
-        if (secretInput) secretInput.value = '';
-        if (midInput) midInput.value = '';
+        if (keyInput) {
+            keyInput.value = '';
+            keyInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (secretInput) {
+            secretInput.value = '';
+            secretInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (midInput) {
+            midInput.value = '';
+            midInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
     }
 </script>
     </form>

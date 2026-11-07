@@ -85,26 +85,29 @@ class PaymentGateway extends Model
 
     public function getEffectiveApiKeyAttribute(): ?string
     {
+        $hasExtra = is_array($this->extra_config) && !empty($this->extra_config);
         if ($this->mode === 'live') {
-            return $this->getLiveKey() ?: $this->api_key;
+            return $hasExtra ? $this->getLiveKey() : $this->api_key;
         }
-        return $this->getSandboxKey() ?: $this->api_key;
+        return $hasExtra ? $this->getSandboxKey() : $this->api_key;
     }
 
     public function getEffectiveApiSecretAttribute(): ?string
     {
+        $hasExtra = is_array($this->extra_config) && !empty($this->extra_config);
         if ($this->mode === 'live') {
-            return $this->getLiveSecret() ?: $this->api_secret;
+            return $hasExtra ? $this->getLiveSecret() : $this->api_secret;
         }
-        return $this->getSandboxSecret() ?: $this->api_secret;
+        return $hasExtra ? $this->getSandboxSecret() : $this->api_secret;
     }
 
     public function getEffectiveMerchantIdAttribute(): ?string
     {
+        $hasExtra = is_array($this->extra_config) && !empty($this->extra_config);
         if ($this->mode === 'live') {
-            return $this->getLiveMerchantId() ?: $this->merchant_id;
+            return $hasExtra ? $this->getLiveMerchantId() : $this->merchant_id;
         }
-        return $this->getSandboxMerchantId() ?: $this->merchant_id;
+        return $hasExtra ? $this->getSandboxMerchantId() : $this->merchant_id;
     }
 
     /**
