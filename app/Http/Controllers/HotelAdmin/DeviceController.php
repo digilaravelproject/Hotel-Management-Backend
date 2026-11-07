@@ -256,12 +256,16 @@ class DeviceController extends Controller
         $allPlatforms = \App\Models\Plan::getAvailableOttPlatforms();
         $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
-        // Available OTTs strictly bound by Super Admin plan
-        $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
-            return in_array($ott['package'], $planPackageNames);
-        }));
+        // Available OTTs bound by plan; if plan has no restriction array, all active platforms are available
+        if (empty($planPackageNames)) {
+            $availablePlatforms = $allPlatforms;
+        } else {
+            $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
+                return in_array($ott['package'], $planPackageNames);
+            }));
+        }
 
-        $globalSettings = $hotel->global_ott_settings ?? $planPackageNames;
+        $globalSettings = $hotel->global_ott_settings ?? (!empty($planPackageNames) ? $planPackageNames : array_column($availablePlatforms, 'package'));
         $hasOverride = !is_null($device->ott_overrides);
         $currentDeviceSettings = $hasOverride ? $device->ott_overrides : $globalSettings;
 
@@ -289,7 +293,9 @@ class DeviceController extends Controller
         ]);
 
         $selected = $request->input('ott_platforms', []);
-        $validSelected = array_values(array_intersect($selected, $planPackageNames));
+        $validSelected = !empty($planPackageNames)
+            ? array_values(array_intersect($selected, $planPackageNames))
+            : array_values($selected);
 
         $device->update([
             'ott_overrides' => $validSelected,
