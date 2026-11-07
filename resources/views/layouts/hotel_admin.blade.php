@@ -66,9 +66,12 @@
         <!-- Sidebar Navigation (Signature Deep Midnight Cosmic Violet #150A42) -->
         <aside id="sidebar" class="w-64 bg-[#150A42] text-purple-200/80 flex flex-col fixed inset-y-0 left-0 z-50 transition-transform duration-300 ease-in-out -translate-x-full md:translate-x-0 border-r border-white/10 shadow-2xl">
             <!-- Sidebar Header & Logo -->
-            <div class="h-20 flex items-center justify-between px-6 border-b border-white/10 bg-[#0B0424]/40 shrink-0">
-                <a href="{{ $isPaidAndActive ? route('hotel.dashboard') : route('hotel.subscription') }}" class="flex items-center space-x-3 overflow-hidden bg-white/95 px-3 py-1.5 rounded-2xl shadow-xs transition-transform hover:scale-[1.02]">
-                    <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto max-w-[150px] object-contain">
+            <div class="h-24 flex items-center justify-between px-4 sm:px-5 border-b border-white/10 bg-[#0B0424]/40 shrink-0 relative">
+                <a href="{{ $isPaidAndActive ? route('hotel.dashboard') : route('hotel.subscription') }}" class="flex items-center justify-start group">
+                    <picture>
+                        <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                        <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-16 sm:h-20 w-auto max-w-[200px] object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-105">
+                    </picture>
                 </a>
                 <button type="button" onclick="toggleSidebar()" aria-label="Close Navigation Menu" class="md:hidden text-purple-200/80 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors">
                     <i class="fa-solid fa-xmark text-lg"></i>
