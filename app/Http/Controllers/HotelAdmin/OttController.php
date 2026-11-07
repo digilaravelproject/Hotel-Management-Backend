@@ -60,12 +60,16 @@ class OttController extends Controller
         $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
         // Filter platforms allowed by Super Admin plan
-        $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
-            return in_array($ott['package'], $planPackageNames);
-        }));
+        if (empty($planPackageNames)) {
+            $availablePlatforms = $allPlatforms;
+        } else {
+            $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
+                return in_array($ott['package'], $planPackageNames);
+            }));
+        }
 
         // If hotel global settings null, default to all plan platforms enabled
-        $currentGlobalSettings = $hotel->global_ott_settings ?? $planPackageNames;
+        $currentGlobalSettings = $hotel->global_ott_settings ?? (!empty($planPackageNames) ? $planPackageNames : array_column($availablePlatforms, 'package'));
 
         return view('hotel_admin.ott.global_settings', compact('hotel', 'plan', 'availablePlatforms', 'currentGlobalSettings'));
     }
@@ -87,6 +91,7 @@ class OttController extends Controller
 
         $hotel->loadMissing('plan');
         $plan = $hotel->plan;
+        $allPlatforms = Plan::getAvailableOttPlatforms();
         $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
         $request->validate([
@@ -97,7 +102,12 @@ class OttController extends Controller
         $selected = $request->input('ott_platforms', []);
 
         // Filter out any OTT not allowed by Super Admin plan
-        $validSelected = array_values(array_intersect($selected, $planPackageNames));
+        if (!empty($planPackageNames)) {
+            $validSelected = array_values(array_intersect($selected, $planPackageNames));
+        } else {
+            $allPlatformPackages = array_column($allPlatforms, 'package');
+            $validSelected = array_values(array_intersect($selected, $allPlatformPackages));
+        }
 
         $hotel->update([
             'global_ott_settings' => $validSelected,
@@ -107,7 +117,8 @@ class OttController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Global OTT Apps updated & synced to TVs in real-time!',
-                'data' => $validSelected
+                'data' => $validSelected,
+                'count' => count($validSelected)
             ]);
         }
 

@@ -134,8 +134,8 @@
                         TV Experience
                     </div>
 
-                    <a href="{{ route('hotel.package') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                        <i class="fa-brands fa-google-play text-sm w-5 text-center {{ Request::routeIs('hotel.package') || Request::routeIs('hotel.ott-settings') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                    <a href="{{ route('hotel.ott-apps') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                        <i class="fa-brands fa-google-play text-sm w-5 text-center {{ Request::routeIs('hotel.ott*') || Request::routeIs('hotel.package') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
                         <span>OTT Apps Control</span>
                     </a>
 

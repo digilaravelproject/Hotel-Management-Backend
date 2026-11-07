@@ -318,7 +318,7 @@
 
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <!-- OTT Apps -->
-            <a href="{{ route('hotel.package') }}" class="group bg-white rounded-[20px] sm:rounded-[26px] p-3.5 sm:p-6 border border-slate-100 shadow-sm hover:shadow-md hover:border-purple-200 transition-all flex flex-col justify-between">
+            <a href="{{ route('hotel.ott-apps') }}" class="group bg-white rounded-[20px] sm:rounded-[26px] p-3.5 sm:p-6 border border-slate-100 shadow-sm hover:shadow-md hover:border-purple-200 transition-all flex flex-col justify-between">
                 <div class="space-y-2 sm:space-y-3">
                     <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-purple-50 text-purple-700 flex items-center justify-center text-sm sm:text-xl group-hover:scale-105 transition-transform shadow-2xs">
                         <i class="fa-brands fa-google-play"></i>

@@ -84,9 +84,17 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::post('/hotel/devices/pair', [HotelDeviceController::class, 'pairDeviceByCode'])->name('hotel.devices.pair');
     Route::resource('/hotel/devices', HotelDeviceController::class)->only(['index', 'store', 'destroy'])->names('hotel.devices');
 
-    // OTT Package & Global Settings
-    Route::get('/hotel/package', [\App\Http\Controllers\HotelAdmin\OttController::class, 'myPackage'])->name('hotel.package');
-    Route::get('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'globalSettings'])->name('hotel.ott-settings');
+    // Global OTT Apps Control
+    Route::get('/hotel/ott-apps', [\App\Http\Controllers\HotelAdmin\OttController::class, 'globalSettings'])->name('hotel.ott-apps');
+    Route::post('/hotel/ott-apps', [\App\Http\Controllers\HotelAdmin\OttController::class, 'updateGlobalSettings']);
+
+    // Redirect legacy routes to /hotel/ott-apps
+    Route::get('/hotel/package', function () {
+        return redirect()->route('hotel.ott-apps');
+    })->name('hotel.package');
+    Route::get('/hotel/ott-settings', function () {
+        return redirect()->route('hotel.ott-apps');
+    })->name('hotel.ott-settings');
     Route::post('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'updateGlobalSettings']);
 
     // Global Manage Menus
