@@ -189,14 +189,6 @@
                     <a href="{{ route('distributor.dashboard') }}" class="md:hidden flex items-center shrink-0">
                         <img src="{{ app_logo_url() }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto max-w-[140px] object-contain">
                     </a>
-
-                    <!-- Page Title / Quick Breadcrumb for Desktop -->
-                    <div class="hidden sm:block">
-                        <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight leading-tight">
-                            @yield('page_title', 'Distributor Workspace')
-                        </h1>
-                        <p class="text-[11px] text-slate-400 font-semibold">Authorized Partner Network</p>
-                    </div>
                 </div>
 
                 <!-- Right: Quick Wallet Pill, Profile Info & Logout -->

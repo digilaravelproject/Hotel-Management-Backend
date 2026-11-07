@@ -240,7 +240,7 @@
         <div class="flex-1 md:pl-64 flex flex-col min-w-0">
             <!-- Topbar Header -->
             <header class="h-16 sm:h-20 bg-white border-b border-slate-200/80 sticky top-0 z-40 px-4 sm:px-6 lg:px-8 flex items-center justify-between shadow-2xs">
-                <!-- Left: Hamburger & Page Title -->
+                <!-- Left: Mobile Menu Toggle & Brand Logo -->
                 <div class="flex items-center space-x-3 sm:space-x-4 min-w-0">
                     <button type="button" 
                             onclick="toggleSidebar()" 
@@ -248,11 +248,13 @@
                             class="md:hidden w-11 h-11 min-w-[44px] min-h-[44px] rounded-2xl bg-slate-50 hover:bg-slate-100 text-slate-700 flex items-center justify-center border border-slate-200 transition-colors active:scale-95 cursor-pointer">
                         <i class="fa-solid fa-bars text-base"></i>
                     </button>
-                    <div class="truncate">
-                        <h1 class="text-base sm:text-xl font-black text-slate-900 tracking-tight truncate">
-                            @yield('page_title', 'Hotel Admin')
-                        </h1>
-                    </div>
+                    <!-- Mobile Brand Logo -->
+                    <a href="{{ route('hotel.dashboard') }}" class="md:hidden flex items-center shrink-0">
+                        <picture>
+                            <source srcset="{{ asset('images/logo/pax-tv-launcher.webp') }}" type="image/webp">
+                            <img src="{{ asset('images/logo/pax-tv-launcher.png') }}" alt="{{ app_name() }}" class="h-9 sm:h-10 w-auto max-w-[130px] object-contain">
+                        </picture>
+                    </a>
                 </div>
 
                 <!-- Right: TV Limit Pill, Plan Pill & Profile Menu -->
