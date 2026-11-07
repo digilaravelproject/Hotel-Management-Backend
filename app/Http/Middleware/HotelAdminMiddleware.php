@@ -63,8 +63,7 @@ class HotelAdminMiddleware
                         'error' => 'Payment required. Please select a plan and complete payment to unlock hotel panel features.'
                     ], 403);
                 }
-                return redirect()->route('hotel.subscription')
-                                 ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
+                return redirect()->route('hotel.subscription');
             }
         }
 

@@ -34,7 +34,11 @@ class CommonLoginController extends Controller
         }
 
         if (Auth::guard('hotel_admin')->check()) {
-            return redirect()->route('hotel.dashboard');
+            $user = Auth::guard('hotel_admin')->user();
+            $hasActivePlan = $user->plan_id 
+                && $user->payment_status === 'paid' 
+                && ($user->expiry_date === null || $user->expiry_date->isFuture());
+            return redirect()->route($hasActivePlan ? 'hotel.dashboard' : 'hotel.subscription');
         }
 
         return view('auth.login');
@@ -157,16 +161,21 @@ class CommonLoginController extends Controller
             session()->put('2fa_verified', true);
             $request->session()->regenerate();
 
+            $hasActivePlan = $hotelAdmin->plan_id 
+                && $hotelAdmin->payment_status === 'paid' 
+                && ($hotelAdmin->expiry_date === null || $hotelAdmin->expiry_date->isFuture());
+
+            $targetRoute = $hasActivePlan ? route('hotel.dashboard') : route('hotel.subscription');
+
             if ($request->wantsJson()) {
                 return response()->json([
                     'success' => true,
                     'role' => 'hotel_admin',
-                    'redirect' => route('hotel.dashboard'),
+                    'redirect' => $targetRoute,
                 ]);
             }
 
-            return redirect()->intended(route('hotel.dashboard'))
-                             ->with('success', 'Logged in successfully!');
+            return redirect()->intended($targetRoute);
         }
 
         // ---------------------------------------------------------------------

@@ -5,19 +5,6 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <div class="max-w-6xl mx-auto space-y-4">
-    @if (session('error'))
-        <div class="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-bold flex items-center space-x-2">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <span>{{ session('error') }}</span>
-        </div>
-    @endif
-    @if (session('success'))
-        <div class="p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold flex items-center space-x-2">
-            <i class="fa-solid fa-circle-check"></i>
-            <span>{{ session('success') }}</span>
-        </div>
-    @endif
-
     <!-- Compact Status Banner -->
     @if(!empty($hasActivePlan))
         <div class="bg-white border border-slate-200/90 rounded-2xl px-5 py-3 shadow-2xs flex flex-wrap items-center justify-between gap-3">

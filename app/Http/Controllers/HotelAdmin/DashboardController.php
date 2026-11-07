@@ -21,8 +21,7 @@ class DashboardController extends Controller
 
         $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
         if (!$hasActivePlan) {
-            return redirect()->route('hotel.subscription')
-                ->with('error', 'Payment required. Please select a plan and complete payment to unlock hotel panel features.');
+            return redirect()->route('hotel.subscription');
         }
 
         $plan = $hotel->plan;

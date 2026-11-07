@@ -390,7 +390,7 @@
                     </div>
                 @endif
 
-                @if(session('error'))
+                @if(session('error') && (!Request::routeIs('hotel.subscription*') || !str_contains(session('error'), 'Payment required. Please select a plan')))
                     <div class="mb-6 p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center justify-between shadow-xs animate-in fade-in duration-200">
                         <div class="flex items-center space-x-2.5">
                             <i class="fa-solid fa-circle-exclamation text-base text-rose-600 shrink-0"></i>
