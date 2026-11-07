@@ -97,7 +97,8 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     })->name('hotel.ott-settings');
     Route::post('/hotel/ott-settings', [\App\Http\Controllers\HotelAdmin\OttController::class, 'updateGlobalSettings']);
 
-    // Global Manage Menus
+    // Global Manage Menus & Live Theme Preview
+    Route::get('/hotel/menus/theme-preview', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'themePreview'])->name('hotel.menus.theme-preview');
     Route::get('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'index'])->name('hotel.menus.index');
     Route::post('/hotel/menus', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'update']);
     Route::post('/hotel/menus/reset', [\App\Http\Controllers\HotelAdmin\MenuController::class, 'reset'])->name('hotel.menus.reset');
