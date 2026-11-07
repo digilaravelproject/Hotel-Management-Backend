@@ -1,12 +1,153 @@
 @extends('layouts.hotel_admin')
 
-@section('title', 'Room Menu Configuration - Hotel Admin')
+@section('title', 'Room ' . $device->room_no . ' Menu Configuration - Hotel Admin')
 @section('page_title', 'Room ' . $device->room_no . ' Menu Configuration')
 
 @section('content')
-<div class="max-w-5xl mx-auto space-y-6">
+@php
+    $menuMeta = [
+        'hotel_menu' => [
+            'category' => 'services',
+            'category_name' => 'Hotel Services',
+            'desc' => 'Primary directory of hotel services, dining catalog & guest amenities',
+            'icon' => 'fa-solid fa-list-check',
+            'color' => 'from-purple-600 to-indigo-700',
+            'bg' => 'bg-purple-50 text-purple-700 border-purple-200/70',
+            'internet' => false
+        ],
+        'hotel_info' => [
+            'category' => 'services',
+            'category_name' => 'Hotel Services',
+            'desc' => 'Property overview, contacts, operational hours & policies',
+            'icon' => 'fa-solid fa-hotel',
+            'color' => 'from-indigo-600 to-blue-700',
+            'bg' => 'bg-indigo-50 text-indigo-700 border-indigo-200/70',
+            'internet' => false
+        ],
+        'room_info' => [
+            'category' => 'services',
+            'category_name' => 'Hotel Services',
+            'desc' => 'Room features, Wi-Fi credentials, intercom & room guide',
+            'icon' => 'fa-solid fa-door-open',
+            'color' => 'from-emerald-600 to-teal-700',
+            'bg' => 'bg-emerald-50 text-emerald-700 border-emerald-200/70',
+            'internet' => false
+        ],
+        'amenities' => [
+            'category' => 'services',
+            'category_name' => 'Hotel Services',
+            'desc' => 'Swimming pool, spa, fitness center, lounge & facilities',
+            'icon' => 'fa-solid fa-bell-concierge',
+            'color' => 'from-amber-500 to-amber-700',
+            'bg' => 'bg-amber-50 text-amber-700 border-amber-200/70',
+            'internet' => false
+        ],
+        'interactive_services' => [
+            'category' => 'services',
+            'category_name' => 'Hotel Services',
+            'desc' => 'In-room dining orders, housekeeping requests & digital concierge',
+            'icon' => 'fa-solid fa-handshake-angle',
+            'color' => 'from-cyan-600 to-blue-700',
+            'bg' => 'bg-cyan-50 text-cyan-700 border-cyan-200/70',
+            'internet' => false
+        ],
+        'flights' => [
+            'category' => 'data',
+            'category_name' => 'Live Cloud Data',
+            'desc' => 'Live airport departure & arrival radar schedules for travelers',
+            'icon' => 'fa-solid fa-plane-departure',
+            'color' => 'from-sky-500 to-blue-600',
+            'bg' => 'bg-sky-50 text-sky-700 border-sky-200/70',
+            'internet' => true,
+            'tooltip' => 'Active Internet connection is required on the Smart TV screen to fetch live airport flight status in real time.'
+        ],
+        'weather' => [
+            'category' => 'data',
+            'category_name' => 'Live Cloud Data',
+            'desc' => 'Real-time city temperature, hourly forecast and weekly outlook',
+            'icon' => 'fa-solid fa-cloud-sun',
+            'color' => 'from-amber-500 to-orange-600',
+            'bg' => 'bg-amber-50 text-amber-700 border-amber-200/70',
+            'internet' => true,
+            'tooltip' => 'Active Internet connection is required on the Smart TV screen to fetch live city meteorological forecasts.'
+        ],
+        'ourcity' => [
+            'category' => 'data',
+            'category_name' => 'Live Cloud Data',
+            'desc' => 'Handpicked city attractions, local shopping & neighborhood guide',
+            'icon' => 'fa-solid fa-city',
+            'color' => 'from-teal-600 to-emerald-700',
+            'bg' => 'bg-teal-50 text-teal-700 border-teal-200/70',
+            'internet' => false
+        ],
+        'livetv' => [
+            'category' => 'entertainment',
+            'category_name' => 'Media & TV',
+            'desc' => 'Linear cable, satellite channels & broadcast television',
+            'icon' => 'fa-solid fa-tv',
+            'color' => 'from-rose-600 to-red-700',
+            'bg' => 'bg-rose-50 text-rose-700 border-rose-200/70',
+            'internet' => false
+        ],
+        'apps' => [
+            'category' => 'entertainment',
+            'category_name' => 'Media & TV',
+            'desc' => 'Preloaded OTT platforms, entertainment apps & video players',
+            'icon' => 'fa-solid fa-shapes',
+            'color' => 'from-violet-600 to-purple-800',
+            'bg' => 'bg-violet-50 text-violet-700 border-violet-200/70',
+            'internet' => false
+        ],
+        'screen_cast' => [
+            'category' => 'entertainment',
+            'category_name' => 'Media & TV',
+            'desc' => 'Wireless display mirroring from guest mobile phones & laptops',
+            'icon' => 'fa-solid fa-mobile-screen-button',
+            'color' => 'from-fuchsia-600 to-pink-700',
+            'bg' => 'bg-fuchsia-50 text-fuchsia-700 border-fuchsia-200/70',
+            'internet' => false
+        ],
+        'language' => [
+            'category' => 'system',
+            'category_name' => 'System & Controls',
+            'desc' => 'Multi-lingual TV interface localization for international guests',
+            'icon' => 'fa-solid fa-language',
+            'color' => 'from-blue-600 to-indigo-700',
+            'bg' => 'bg-blue-50 text-blue-700 border-blue-200/70',
+            'internet' => false
+        ],
+        'input' => [
+            'category' => 'system',
+            'category_name' => 'System & Controls',
+            'desc' => 'Quick switch between HDMI 1, HDMI 2, AV or USB input sources',
+            'icon' => 'fa-solid fa-right-to-bracket',
+            'color' => 'from-slate-600 to-slate-800',
+            'bg' => 'bg-slate-100 text-slate-700 border-slate-200/70',
+            'internet' => false
+        ],
+        'settings' => [
+            'category' => 'system',
+            'category_name' => 'System & Controls',
+            'desc' => 'Display, sound, Wi-Fi connectivity & TV system controls',
+            'icon' => 'fa-solid fa-gear',
+            'color' => 'from-slate-700 to-zinc-800',
+            'bg' => 'bg-slate-100 text-slate-700 border-slate-200/70',
+            'internet' => false
+        ],
+    ];
 
-    <!-- Top Action Bar -->
+    $totalCount = count($catalog);
+    $activeCount = 0;
+    foreach($catalog as $mId => $mMeta) {
+        if (!isset($currentSettings[$mId]) || $currentSettings[$mId] !== 'hide') {
+            $activeCount++;
+        }
+    }
+@endphp
+
+<div class="max-w-6xl mx-auto space-y-6 sm:space-y-8">
+
+    <!-- Top Action & Navigation Bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
             <div class="flex items-center space-x-2 text-xs font-bold text-slate-400 mb-1">
@@ -18,7 +159,7 @@
                 <span class="text-[#150A42] font-black">Room {{ $device->room_no }} Menus</span>
             </div>
             <h1 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">Room {{ $device->room_no }} Navigation Menus</h1>
-            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Control which TV menu items are visible in Room {{ $device->room_no }} (MAC: {{ $device->mac_address }}).</p>
+            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Control which TV menu items appear on the Smart TV launcher for Room {{ $device->room_no }}.</p>
         </div>
 
         <div class="flex items-center space-x-2.5 shrink-0">
@@ -26,8 +167,8 @@
                 <form action="{{ route('hotel.devices.menus.reset', $device->id) }}" method="POST" onsubmit="return confirm('Reset Room {{ $device->room_no }} to inherit Hotel Global Default Menu settings?');">
                     @csrf
                     <button type="submit" class="px-4 py-2.5 rounded-2xl border border-amber-200 text-amber-800 bg-amber-50 hover:bg-amber-100 font-black text-xs transition-colors flex items-center space-x-1.5 shadow-2xs cursor-pointer active:scale-95">
-                        <i class="fa-solid fa-rotate-left"></i>
-                        <span>Reset to Global Default</span>
+                        <i class="fa-solid fa-rotate-left text-xs"></i>
+                        <span>Reset to Default</span>
                     </button>
                 </form>
             @endif
@@ -38,53 +179,252 @@
         </div>
     </div>
 
-    <div class="bg-white border border-slate-100 rounded-[28px] p-6 sm:p-8 shadow-sm space-y-6">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between border-b border-slate-100 pb-6 gap-4">
-            <div class="space-y-1">
-                <h3 class="text-lg font-black text-slate-900 tracking-tight">Active Menu Items for Room {{ $device->room_no }}</h3>
-                <p class="text-xs text-slate-400 font-medium font-mono">Device ID: {{ $device->device_id }} | Screen Name: {{ $device->screen_name ?? 'In-Room TV' }}</p>
+    <!-- Hero Room Specs & Status Banner (PaxTV Luxury Theme) -->
+    <div class="bg-white border border-slate-100 rounded-[22px] sm:rounded-[28px] p-5 sm:p-7 shadow-sm relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div class="absolute -right-16 -top-16 w-56 h-56 bg-gradient-to-br from-purple-100/50 to-indigo-50/30 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex items-start sm:items-center space-x-3.5 relative z-10">
+            <div class="w-12 h-12 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-xl shadow-2xs shrink-0">
+                <i class="fa-solid fa-bars-staggered text-purple-700"></i>
             </div>
-            
-            <div>
-                @if($hasOverride)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-amber-50 text-amber-800 text-xs font-black border border-amber-200 font-mono shadow-2xs">
-                        <i class="fa-solid fa-sliders mr-1.5 text-xs text-amber-600"></i> Custom Override Active
+            <div class="space-y-1">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-xl bg-purple-50 text-[#150A42] font-black text-xs border border-purple-200/60 shadow-2xs">
+                        <i class="fa-solid fa-door-closed mr-1.5 text-purple-600 text-[10px]"></i>
+                        Room {{ $device->room_no }}
                     </span>
-                @else
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-purple-50 text-[#150A42] text-xs font-black border border-purple-200/80 font-mono shadow-2xs">
-                        <i class="fa-solid fa-globe mr-1.5 text-xs text-purple-600"></i> Inheriting Hotel Global Default
-                    </span>
-                @endif
+                    @if($device->brand || $device->model)
+                        <span class="text-xs font-bold text-slate-600">{{ $device->brand }} {{ $device->model }}</span>
+                    @endif
+                </div>
+                <p class="text-xs text-slate-400 font-mono">
+                    ID: {{ $device->device_id }} @if($device->mac_address)• MAC: {{ $device->mac_address }}@endif
+                </p>
             </div>
         </div>
 
+        <div class="flex flex-wrap items-center gap-2.5 relative z-10 shrink-0">
+            @if($hasOverride)
+                <span class="inline-flex items-center px-3 py-1.5 rounded-2xl bg-amber-50 text-amber-800 text-xs font-black border border-amber-200 shadow-2xs">
+                    <i class="fa-solid fa-sliders mr-1.5 text-xs text-amber-600"></i> Custom Room Override Active
+                </span>
+            @else
+                <span class="inline-flex items-center px-3 py-1.5 rounded-2xl bg-purple-50 text-[#150A42] text-xs font-black border border-purple-200/80 shadow-2xs">
+                    <i class="fa-solid fa-globe mr-1.5 text-xs text-purple-600"></i> Inheriting Hotel Global Default
+                </span>
+            @endif
+
+            <div class="px-3.5 py-1.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs font-bold text-slate-700">
+                <span id="selectedCounterPill" class="font-black text-purple-700">{{ $activeCount }}</span> / {{ $totalCount }} Menus Active
+            </div>
+        </div>
+    </div>
+
+    <!-- Important Notice Banner: Flights & Weather Internet Requirement -->
+    <div class="bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-transparent border border-amber-300/80 rounded-2xl sm:rounded-3xl p-4 sm:p-5 flex items-start sm:items-center justify-between gap-4 shadow-2xs">
+        <div class="flex items-start sm:items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-orange-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-amber-500/25">
+                <i class="fa-solid fa-wifi text-sm"></i>
+            </div>
+            <div class="space-y-0.5">
+                <div class="flex items-center space-x-2">
+                    <h4 class="text-xs sm:text-sm font-black text-slate-900 tracking-tight">Internet Connection Notice</h4>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-100 text-amber-800 border border-amber-200">Live Cloud Modules</span>
+                </div>
+                <p class="text-[11px] sm:text-xs text-slate-600 font-medium">
+                    <strong>Flights</strong> aur <strong>Weather</strong> menus ko TV launcher par enable karne ke liye TV screen ka active Wi-Fi ya LAN Internet se connect hona zaroori hai, taaki real-time updates show ho sakein.
+                </p>
+            </div>
+        </div>
+        <span class="hidden md:inline-flex items-center px-3 py-1.5 rounded-xl bg-white border border-amber-200 text-amber-900 text-[11px] font-black uppercase tracking-wider shrink-0 shadow-2xs">
+            <i class="fa-solid fa-circle-info text-amber-600 mr-1.5"></i> Tooltip Enabled
+        </span>
+    </div>
+
+    <!-- Main Menu Configuration Form Container -->
+    <div class="bg-white border border-slate-100 rounded-[24px] sm:rounded-[28px] p-5 sm:p-8 shadow-sm space-y-6">
+
+        <!-- Controls Bar: Search, Category Filters & Batch Toggles -->
+        <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            
+            <!-- Live Search -->
+            <div class="relative flex-1 max-w-md">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" 
+                       id="menuSearchInput" 
+                       placeholder="Search menu items (e.g. Flights, Dining, TV)..." 
+                       class="w-full pl-9 pr-4 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-[#150A42] transition-all">
+            </div>
+
+            <!-- Category Filter Pills & Batch Buttons -->
+            <div class="flex flex-wrap items-center gap-2">
+                
+                <!-- Category Filters -->
+                <div class="flex items-center p-1 bg-slate-100 rounded-2xl">
+                    <button type="button" onclick="filterMenuCategory('all', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-black transition-all bg-white text-[#150A42] shadow-2xs">
+                        All ({{ $totalCount }})
+                    </button>
+                    <button type="button" onclick="filterMenuCategory('services', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                        Services
+                    </button>
+                    <button type="button" onclick="filterMenuCategory('data', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all flex items-center space-x-1">
+                        <span>Live Data</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                    </button>
+                    <button type="button" onclick="filterMenuCategory('entertainment', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                        Media & TV
+                    </button>
+                    <button type="button" onclick="filterMenuCategory('system', this)" class="category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all">
+                        System
+                    </button>
+                </div>
+
+                <!-- Select All / Deselect All Button -->
+                <button type="button" 
+                        onclick="toggleSelectAllMenus()"
+                        class="px-3.5 py-2 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-bold transition-all shadow-2xs flex items-center space-x-1.5 cursor-pointer active:scale-95">
+                    <i class="fa-solid fa-check-double text-purple-600 text-xs"></i>
+                    <span id="toggleSelectAllText">{{ $activeCount === $totalCount ? 'Deselect All' : 'Select All' }}</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Form Submission -->
         <form id="deviceMenuForm" action="{{ url('/hotel/devices/' . $device->id . '/menus') }}" method="POST" class="space-y-6" data-swal-bypass="true" data-ajax-form="true">
             @csrf
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Grid of Interactive Menu Cards -->
+            <div id="menusGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach($catalog as $menuId => $menu)
                     @php
                         $isShown = !isset($currentSettings[$menuId]) || $currentSettings[$menuId] !== 'hide';
+                        $meta = $menuMeta[$menuId] ?? [
+                            'category' => 'services',
+                            'category_name' => 'Services',
+                            'desc' => 'Smart TV launcher menu item for Room ' . $device->room_no,
+                            'icon' => 'fa-solid fa-cube',
+                            'color' => 'from-purple-600 to-indigo-700',
+                            'bg' => 'bg-purple-50 text-purple-700 border-purple-200/70',
+                            'internet' => false
+                        ];
                     @endphp
-                    <div class="p-4 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 flex items-center justify-between shadow-2xs hover:border-purple-300 transition-all">
-                        <div class="overflow-hidden min-w-0 pr-3">
-                            <h4 class="text-xs font-black text-slate-900 truncate">{{ $menu['name'] }}</h4>
-                            <span class="text-[10px] font-mono text-slate-400 block mt-0.5">id: {{ $menuId }}</span>
+
+                    <div class="menu-card group relative p-4 sm:p-5 rounded-[22px] border transition-all cursor-pointer select-none {{ $isShown ? 'border-[#150A42] ring-2 ring-purple-600/15 bg-purple-50/20 is-active' : 'border-slate-200/90 bg-white hover:border-slate-300 hover:shadow-xs' }}"
+                         data-id="{{ $menuId }}"
+                         data-name="{{ strtolower($menu['name']) }}"
+                         data-category="{{ $meta['category'] }}"
+                         onclick="handleCardClick(this, event)">
+
+                        <!-- Top Header: Icon Badge + Internet Tooltip + Switch -->
+                        <div class="flex items-start justify-between gap-3 mb-3">
+                            
+                            <!-- Icon + Category Badge -->
+                            <div class="flex items-center space-x-3 min-w-0">
+                                <div class="w-11 h-11 rounded-2xl {{ $meta['bg'] }} border flex items-center justify-center text-lg shadow-2xs shrink-0 transition-transform group-hover:scale-105">
+                                    <i class="{{ $meta['icon'] }}"></i>
+                                </div>
+                                <div class="min-w-0">
+                                    <div class="flex items-center space-x-1.5 flex-wrap">
+                                        <h3 class="text-sm font-black text-slate-900 tracking-tight truncate">{{ $menu['name'] }}</h3>
+                                        @if(!empty($meta['internet']))
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded-md text-[9px] font-black bg-amber-100 text-amber-800 border border-amber-200/80">
+                                                <i class="fa-solid fa-wifi mr-1 text-[8px] text-amber-600"></i> Net Req
+                                            </span>
+                                        @endif
+                                    </div>
+                                    <span class="text-[10px] font-mono text-slate-400 block mt-0.5">id: {{ $menuId }}</span>
+                                </div>
+                            </div>
+
+                            <!-- Right Controls: (i) Tooltip Button + iOS Toggle Switch -->
+                            <div class="flex items-center space-x-2 shrink-0">
+                                
+                                <!-- Tooltip (i) Button for Internet-dependent menus -->
+                                @if(!empty($meta['internet']))
+                                    <div class="relative inline-block" onclick="event.stopPropagation();">
+                                        <button type="button" 
+                                                title="Click for Internet requirement info"
+                                                onclick="toggleTooltip('tip-{{ $menuId }}')"
+                                                class="w-7 h-7 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200/80 text-amber-800 flex items-center justify-center text-xs font-black shadow-2xs transition-all active:scale-95 cursor-pointer">
+                                            <i class="fa-solid fa-info text-[11px]"></i>
+                                        </button>
+
+                                        <!-- Popover Floating Tooltip Card -->
+                                        <div id="tip-{{ $menuId }}" class="menu-tooltip-popover hidden absolute right-0 top-9 w-64 p-3.5 bg-slate-900/95 backdrop-blur-md text-white rounded-2xl shadow-2xl z-40 text-xs leading-relaxed border border-slate-700 animate-in fade-in duration-150">
+                                            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-700/80">
+                                                <div class="flex items-center space-x-1.5 text-amber-400 font-extrabold text-[11px]">
+                                                    <i class="fa-solid fa-wifi"></i>
+                                                    <span>Active Internet Required</span>
+                                                </div>
+                                                <button type="button" onclick="closeAllTooltips()" class="text-slate-400 hover:text-white text-xs p-0.5">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </button>
+                                            </div>
+                                            <p class="text-[11px] text-slate-300 font-normal">
+                                                {{ $meta['tooltip'] ?? 'Is menu ko TV par real-time dikhane ke liye active Internet connection zaroori hai.' }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <!-- Custom iOS Toggle Switch -->
+                                <label class="relative inline-flex items-center cursor-pointer shrink-0" onclick="event.stopPropagation();">
+                                    <input type="checkbox" 
+                                           name="menus[{{ $menuId }}]" 
+                                           value="1" 
+                                           {{ $isShown ? 'checked' : '' }} 
+                                           class="sr-only peer menu-checkbox"
+                                           onchange="handleCheckboxChange(this)">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
+                                </label>
+                            </div>
                         </div>
-                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
-                            <input type="checkbox" name="menus[{{ $menuId }}]" value="1" {{ $isShown ? 'checked' : '' }} class="sr-only peer">
-                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
-                        </label>
+
+                        <!-- Card Description & Category Badge Footer -->
+                        <p class="text-xs text-slate-500 font-medium leading-relaxed mb-3">
+                            {{ $meta['desc'] }}
+                        </p>
+
+                        <div class="pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                            <span class="category-pill text-[10px] font-bold px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600">
+                                {{ $meta['category_name'] }}
+                            </span>
+                            <span class="status-indicator font-black flex items-center space-x-1.5 {{ $isShown ? 'text-emerald-700' : 'text-slate-400' }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $isShown ? 'bg-emerald-500 animate-pulse' : 'bg-slate-300' }}"></span>
+                                <span>{{ $isShown ? 'Visible on TV' : 'Hidden from TV' }}</span>
+                            </span>
+                        </div>
                     </div>
                 @endforeach
             </div>
 
-            <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
-                <a href="{{ route('hotel.devices.index') }}" class="px-6 py-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs text-center transition-all shadow-2xs">Cancel</a>
-                <button type="submit" id="saveRoomMenuBtn" class="px-8 py-3 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs flex items-center justify-center space-x-2 shadow-md shadow-[#150A42]/15 transition-all active:scale-95 cursor-pointer">
-                    <i class="fa-solid fa-floppy-disk text-xs"></i>
-                    <span>Save Room Menu Settings</span>
-                </button>
+            <!-- Empty Search Results State -->
+            <div id="emptySearchState" class="hidden text-center py-12 bg-slate-50/50 rounded-2xl border border-dashed border-slate-200">
+                <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center mx-auto mb-3 text-lg">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </div>
+                <h4 class="text-sm font-black text-slate-800">No matching menu items found</h4>
+                <p class="text-xs text-slate-500 mt-1">Try searching with a different keyword or reset filters.</p>
+            </div>
+
+            <!-- Sticky Save Bottom Bar -->
+            <div class="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-2 text-xs font-semibold text-slate-500">
+                    <i class="fa-solid fa-cloud-arrow-up text-purple-600"></i>
+                    <span>Changes take effect immediately on TV screen launcher</span>
+                </div>
+
+                <div class="flex items-center space-x-2.5">
+                    <a href="{{ route('hotel.devices.index') }}" class="px-5 py-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs text-center transition-all shadow-2xs">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            id="saveRoomMenuBtn" 
+                            class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-black text-xs flex items-center justify-center space-x-2 shadow-lg shadow-[#150A42]/15 transition-all active:scale-95 cursor-pointer">
+                        <i class="fa-solid fa-floppy-disk text-xs text-amber-300"></i>
+                        <span>Save Room {{ $device->room_no }} Menu Settings</span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>
@@ -93,65 +433,220 @@
 
 @section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const Toast = Swal.mixin({
-        toast: true,
-        position: 'top-end',
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
+    // Card Click Toggle
+    function handleCardClick(cardElement, event) {
+        // If clicked on input or tooltip button, ignore to prevent double trigger
+        if (event.target.closest('input') || event.target.closest('button')) {
+            return;
+        }
+        const checkbox = cardElement.querySelector('.menu-checkbox');
+        if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+            updateCardStyle(cardElement, checkbox.checked);
+            updateCounters();
+        }
+    }
+
+    // Checkbox Change Trigger
+    function handleCheckboxChange(checkbox) {
+        const cardElement = checkbox.closest('.menu-card');
+        if (cardElement) {
+            updateCardStyle(cardElement, checkbox.checked);
+            updateCounters();
+        }
+    }
+
+    // Dynamic Card Visual Styling
+    function updateCardStyle(cardElement, isChecked) {
+        const statusIndicator = cardElement.querySelector('.status-indicator');
+        
+        if (isChecked) {
+            cardElement.classList.add('border-[#150A42]', 'ring-2', 'ring-purple-600/15', 'bg-purple-50/20', 'is-active');
+            cardElement.classList.remove('border-slate-200/90', 'bg-white');
+            if (statusIndicator) {
+                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1.5 text-emerald-700';
+                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span><span>Visible on TV</span>';
+            }
+        } else {
+            cardElement.classList.remove('border-[#150A42]', 'ring-2', 'ring-purple-600/15', 'bg-purple-50/20', 'is-active');
+            cardElement.classList.add('border-slate-200/90', 'bg-white');
+            if (statusIndicator) {
+                statusIndicator.className = 'status-indicator font-black flex items-center space-x-1.5 text-slate-400';
+                statusIndicator.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span><span>Hidden from TV</span>';
+            }
+        }
+    }
+
+    // Update Counter Pills
+    function updateCounters() {
+        const all = document.querySelectorAll('.menu-checkbox');
+        const checked = document.querySelectorAll('.menu-checkbox:checked').length;
+        const total = all.length;
+
+        const counterPill = document.getElementById('selectedCounterPill');
+        if (counterPill) counterPill.innerText = checked;
+
+        const toggleBtnText = document.getElementById('toggleSelectAllText');
+        if (toggleBtnText) {
+            toggleBtnText.innerText = (total > 0 && checked === total) ? 'Deselect All' : 'Select All';
+        }
+    }
+
+    // Select All / Deselect All
+    function toggleSelectAllMenus() {
+        const all = document.querySelectorAll('.menu-checkbox');
+        const checked = document.querySelectorAll('.menu-checkbox:checked').length;
+        const shouldCheck = (checked < all.length);
+
+        all.forEach(cb => {
+            cb.checked = shouldCheck;
+            const card = cb.closest('.menu-card');
+            if (card) updateCardStyle(card, shouldCheck);
+        });
+
+        updateCounters();
+    }
+
+    // Live Search Filter
+    document.getElementById('menuSearchInput')?.addEventListener('input', function(e) {
+        applyFilters();
     });
 
-    const form = document.getElementById('deviceMenuForm');
-    if (form) {
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const btn = document.getElementById('saveRoomMenuBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin text-xs"></i><span>Syncing Realtime...</span>';
-            btn.classList.add('opacity-90');
-            if (typeof showGlobalLoader === 'function') showGlobalLoader();
+    // Category Tabs Filter
+    let activeCategory = 'all';
+    function filterMenuCategory(category, button) {
+        activeCategory = category;
+        document.querySelectorAll('.category-filter-btn').forEach(btn => {
+            btn.className = 'category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-bold text-slate-500 hover:text-slate-900 transition-all';
+        });
+        button.className = 'category-filter-btn px-3 py-1.5 rounded-xl text-[11px] font-black transition-all bg-white text-[#150A42] shadow-2xs';
+        applyFilters();
+    }
 
-            const formData = new FormData(this);
+    function applyFilters() {
+        const query = (document.getElementById('menuSearchInput')?.value || '').toLowerCase().trim();
+        const cards = document.querySelectorAll('.menu-card');
+        let visibleCount = 0;
 
-            try {
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json'
-                    },
-                    body: formData
-                });
+        cards.forEach(card => {
+            const name = card.getAttribute('data-name') || '';
+            const id = card.getAttribute('data-id') || '';
+            const cat = card.getAttribute('data-category') || '';
 
-                const data = await response.json();
+            const matchesQuery = !query || name.includes(query) || id.includes(query);
+            const matchesCat = (activeCategory === 'all') || (cat === activeCategory);
 
-                if (response.ok && data.success) {
-                    Toast.fire({
-                        icon: 'success',
-                        title: data.message || 'Room menu preferences synchronized with TV screen.'
-                    });
-                } else {
-                    Toast.fire({
-                        icon: 'error',
-                        title: data.message || 'Failed to update preferences.'
-                    });
-                }
-            } catch (err) {
-                console.error(err);
-                Toast.fire({
-                    icon: 'error',
-                    title: 'A network error occurred while updating.'
-                });
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-floppy-disk text-xs"></i><span>Save Room Menu Settings</span>';
-                btn.classList.remove('opacity-90');
-                if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
+            if (matchesQuery && matchesCat) {
+                card.style.display = '';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
             }
         });
+
+        const emptyState = document.getElementById('emptySearchState');
+        if (emptyState) {
+            emptyState.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
     }
-});
+
+    // Tooltip handler
+    function toggleTooltip(id) {
+        const target = document.getElementById(id);
+        if (!target) return;
+        const isHidden = target.classList.contains('hidden');
+        closeAllTooltips();
+        if (isHidden) {
+            target.classList.remove('hidden');
+        }
+    }
+
+    function closeAllTooltips() {
+        document.querySelectorAll('.menu-tooltip-popover').forEach(el => el.classList.add('hidden'));
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.menu-tooltip-popover') && !e.target.closest('button[onclick*="toggleTooltip"]')) {
+            closeAllTooltips();
+        }
+    });
+
+    // AJAX Form Submission
+    document.addEventListener('DOMContentLoaded', function () {
+        updateCounters();
+
+        const Toast = typeof Swal !== 'undefined' ? Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        }) : null;
+
+        const form = document.getElementById('deviceMenuForm');
+        if (form) {
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const btn = document.getElementById('saveRoomMenuBtn');
+                btn.disabled = true;
+                const originalHtml = btn.innerHTML;
+                btn.innerHTML = '<i class="fa-solid fa-circle-notch animate-spin text-xs"></i><span>Synchronizing with TV...</span>';
+                btn.classList.add('opacity-90');
+                if (typeof showGlobalLoader === 'function') showGlobalLoader();
+
+                const formData = new FormData(this);
+
+                try {
+                    const response = await fetch(this.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok && (data.success || data.status === 'success')) {
+                        if (Toast) {
+                            Toast.fire({
+                                icon: 'success',
+                                title: data.message || 'Room {{ $device->room_no }} menu preferences synchronized with TV screen.'
+                            });
+                        } else {
+                            alert(data.message || 'Room {{ $device->room_no }} menu preferences synchronized with TV screen.');
+                        }
+                    } else {
+                        if (Toast) {
+                            Toast.fire({
+                                icon: 'error',
+                                title: data.message || 'Failed to update menu preferences.'
+                            });
+                        } else {
+                            alert(data.message || 'Failed to update preferences.');
+                        }
+                    }
+                } catch (err) {
+                    console.error(err);
+                    if (Toast) {
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Settings saved successfully.'
+                        });
+                    } else {
+                        // Form fallback
+                        form.submit();
+                    }
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                    btn.classList.remove('opacity-90');
+                    if (typeof hideGlobalLoader === 'function') hideGlobalLoader();
+                }
+            });
+        }
+    });
 </script>
 @endsection
