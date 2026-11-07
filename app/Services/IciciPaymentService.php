@@ -32,9 +32,9 @@ class IciciPaymentService
             throw new Exception("ICICI Payment Gateway is currently disabled or not configured.");
         }
 
-        $apiKey = $this->gateway->api_key;
-        $apiSecret = $this->gateway->api_secret;
-        $merchantId = $this->gateway->merchant_id;
+        $apiKey = trim((string) ($this->gateway->effective_api_key ?: $this->gateway->api_key));
+        $apiSecret = trim((string) ($this->gateway->effective_api_secret ?: $this->gateway->api_secret));
+        $merchantId = trim((string) ($this->gateway->effective_merchant_id ?: $this->gateway->merchant_id));
         $isLive = $this->gateway->mode === 'live';
 
         // ICICI Eazypay / Corporate API endpoints (sandbox vs live)

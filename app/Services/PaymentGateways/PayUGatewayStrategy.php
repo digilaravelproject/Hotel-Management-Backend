@@ -36,8 +36,8 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
             throw new Exception("PayU gateway is disabled.");
         }
 
-        $merchantKey = $this->gatewayModel->api_key;
-        $merchantSalt = $this->gatewayModel->api_secret;
+        $merchantKey = trim((string) ($this->gatewayModel->effective_api_key ?: $this->gatewayModel->api_key));
+        $merchantSalt = trim((string) ($this->gatewayModel->effective_api_secret ?: $this->gatewayModel->api_secret));
         $isLive = $this->gatewayModel->mode === 'live';
 
         $txnid = 'txnid_' . rand(100000, 999999);
