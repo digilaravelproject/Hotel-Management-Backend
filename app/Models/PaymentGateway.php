@@ -31,38 +31,56 @@ class PaymentGateway extends Model
      */
     public function getSandboxKey(): ?string
     {
-        return $this->extra_config['sandbox']['api_key'] 
-            ?? ($this->mode === 'sandbox' ? $this->api_key : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['sandbox']) && is_array($extra['sandbox']) && array_key_exists('api_key', $extra['sandbox'])) {
+            return $extra['sandbox']['api_key'];
+        }
+        return $this->mode === 'sandbox' ? $this->api_key : null;
     }
 
     public function getSandboxSecret(): ?string
     {
-        return $this->extra_config['sandbox']['api_secret'] 
-            ?? ($this->mode === 'sandbox' ? $this->api_secret : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['sandbox']) && is_array($extra['sandbox']) && array_key_exists('api_secret', $extra['sandbox'])) {
+            return $extra['sandbox']['api_secret'];
+        }
+        return $this->mode === 'sandbox' ? $this->api_secret : null;
     }
 
     public function getSandboxMerchantId(): ?string
     {
-        return $this->extra_config['sandbox']['merchant_id'] 
-            ?? ($this->mode === 'sandbox' ? $this->merchant_id : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['sandbox']) && is_array($extra['sandbox']) && array_key_exists('merchant_id', $extra['sandbox'])) {
+            return $extra['sandbox']['merchant_id'];
+        }
+        return $this->mode === 'sandbox' ? $this->merchant_id : null;
     }
 
     public function getLiveKey(): ?string
     {
-        return $this->extra_config['live']['api_key'] 
-            ?? ($this->mode === 'live' ? $this->api_key : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['live']) && is_array($extra['live']) && array_key_exists('api_key', $extra['live'])) {
+            return $extra['live']['api_key'];
+        }
+        return $this->mode === 'live' ? $this->api_key : null;
     }
 
     public function getLiveSecret(): ?string
     {
-        return $this->extra_config['live']['api_secret'] 
-            ?? ($this->mode === 'live' ? $this->api_secret : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['live']) && is_array($extra['live']) && array_key_exists('api_secret', $extra['live'])) {
+            return $extra['live']['api_secret'];
+        }
+        return $this->mode === 'live' ? $this->api_secret : null;
     }
 
     public function getLiveMerchantId(): ?string
     {
-        return $this->extra_config['live']['merchant_id'] 
-            ?? ($this->mode === 'live' ? $this->merchant_id : null);
+        $extra = (array) ($this->extra_config ?? []);
+        if (isset($extra['live']) && is_array($extra['live']) && array_key_exists('merchant_id', $extra['live'])) {
+            return $extra['live']['merchant_id'];
+        }
+        return $this->mode === 'live' ? $this->merchant_id : null;
     }
 
     public function getEffectiveApiKeyAttribute(): ?string

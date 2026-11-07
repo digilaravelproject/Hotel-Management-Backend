@@ -71,38 +71,27 @@ class PaymentSettingController extends Controller
                 $oldLiveSecret = $gateway->getLiveSecret();
                 $oldLiveMerchantId = $gateway->getLiveMerchantId();
 
-                // Resolve new Sandbox credentials (preserve previous if submitted blank or bullet placeholder)
-                $newSandboxKey = isset($data['sandbox_key']) && trim($data['sandbox_key']) !== '' ? trim($data['sandbox_key']) : ($oldSandboxKey ?: ($mode === 'sandbox' ? $gateway->api_key : null));
-                $newSandboxSecret = isset($data['sandbox_secret']) && trim($data['sandbox_secret']) !== '' ? trim($data['sandbox_secret']) : ($oldSandboxSecret ?: ($mode === 'sandbox' ? $gateway->api_secret : null));
-                $newSandboxMerchantId = isset($data['sandbox_merchant_id']) && trim($data['sandbox_merchant_id']) !== '' ? trim($data['sandbox_merchant_id']) : $oldSandboxMerchantId;
+                // Resolve new Sandbox credentials (empty string clears the value to null)
+                $newSandboxKey = isset($data['sandbox_key']) 
+                    ? (trim($data['sandbox_key']) !== '' ? trim($data['sandbox_key']) : null) 
+                    : $oldSandboxKey;
+                $newSandboxSecret = isset($data['sandbox_secret']) 
+                    ? (trim($data['sandbox_secret']) !== '' ? trim($data['sandbox_secret']) : null) 
+                    : $oldSandboxSecret;
+                $newSandboxMerchantId = isset($data['sandbox_merchant_id']) 
+                    ? (trim($data['sandbox_merchant_id']) !== '' ? trim($data['sandbox_merchant_id']) : null) 
+                    : $oldSandboxMerchantId;
 
-                // Resolve new Live credentials (preserve previous if submitted blank or bullet placeholder)
-                $newLiveKey = isset($data['live_key']) && trim($data['live_key']) !== '' ? trim($data['live_key']) : ($oldLiveKey ?: ($mode === 'live' ? $gateway->api_key : null));
-                $newLiveSecret = isset($data['live_secret']) && trim($data['live_secret']) !== '' ? trim($data['live_secret']) : ($oldLiveSecret ?: ($mode === 'live' ? $gateway->api_secret : null));
-                $newLiveMerchantId = isset($data['live_merchant_id']) && trim($data['live_merchant_id']) !== '' ? trim($data['live_merchant_id']) : $oldLiveMerchantId;
-
-                // Legacy fallback if single fields were passed
-                if (!empty($data['api_key'])) {
-                    if ($mode === 'live') {
-                        $newLiveKey = trim($data['api_key']);
-                    } else {
-                        $newSandboxKey = trim($data['api_key']);
-                    }
-                }
-                if (!empty($data['api_secret'])) {
-                    if ($mode === 'live') {
-                        $newLiveSecret = trim($data['api_secret']);
-                    } else {
-                        $newSandboxSecret = trim($data['api_secret']);
-                    }
-                }
-                if (isset($data['merchant_id']) && trim($data['merchant_id']) !== '') {
-                    if ($mode === 'live') {
-                        $newLiveMerchantId = trim($data['merchant_id']);
-                    } else {
-                        $newSandboxMerchantId = trim($data['merchant_id']);
-                    }
-                }
+                // Resolve new Live credentials (empty string clears the value to null)
+                $newLiveKey = isset($data['live_key']) 
+                    ? (trim($data['live_key']) !== '' ? trim($data['live_key']) : null) 
+                    : $oldLiveKey;
+                $newLiveSecret = isset($data['live_secret']) 
+                    ? (trim($data['live_secret']) !== '' ? trim($data['live_secret']) : null) 
+                    : $oldLiveSecret;
+                $newLiveMerchantId = isset($data['live_merchant_id']) 
+                    ? (trim($data['live_merchant_id']) !== '' ? trim($data['live_merchant_id']) : null) 
+                    : $oldLiveMerchantId;
 
                 // Update extra_config
                 $extra['sandbox'] = [
@@ -126,9 +115,9 @@ class PaymentSettingController extends Controller
                     'is_enabled' => $data['is_enabled'] ?? false,
                     'mode' => $mode,
                     'extra_config' => $extra,
-                    'api_key' => $activeKey ?: $gateway->api_key,
-                    'api_secret' => $activeSecret ?: $gateway->api_secret,
-                    'merchant_id' => $activeMerchantId ?: $gateway->merchant_id,
+                    'api_key' => $activeKey,
+                    'api_secret' => $activeSecret,
+                    'merchant_id' => $activeMerchantId,
                 ]);
             }
         }

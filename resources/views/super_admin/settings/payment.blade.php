@@ -207,9 +207,18 @@
                                     </span>
                                     <h4 class="text-xs font-black text-slate-800">Sandbox (Test Mode) Keys</h4>
                                 </div>
-                                <span id="sandbox-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'sandbox' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $mode === 'sandbox' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" 
+                                            onclick="clearKeys('sandbox', '{{ $code }}')" 
+                                            title="Clear Sandbox Keys"
+                                            class="text-[10px] font-bold text-rose-500 hover:text-rose-700 hover:bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200/60 transition-all flex items-center space-x-1 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can text-[9px]"></i>
+                                        <span>Clear</span>
+                                    </button>
+                                    <span id="sandbox-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'sandbox' ? 'bg-amber-500 text-white' : 'bg-slate-100 text-slate-500' }}">
+                                        {{ $mode === 'sandbox' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="space-y-1.5">
@@ -255,9 +264,18 @@
                                     </span>
                                     <h4 class="text-xs font-black text-slate-800">Live (Production Mode) Keys</h4>
                                 </div>
-                                <span id="live-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'live' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500' }}">
-                                    {{ $mode === 'live' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
-                                </span>
+                                <div class="flex items-center space-x-2">
+                                    <button type="button" 
+                                            onclick="clearKeys('live', '{{ $code }}')" 
+                                            title="Clear Live Keys"
+                                            class="text-[10px] font-bold text-rose-500 hover:text-rose-700 hover:bg-rose-50 px-2 py-0.5 rounded-md border border-rose-200/60 transition-all flex items-center space-x-1 cursor-pointer">
+                                        <i class="fa-solid fa-trash-can text-[9px]"></i>
+                                        <span>Clear</span>
+                                    </button>
+                                    <span id="live-status-{{ $code }}" class="text-[10px] font-black px-2 py-0.5 rounded-full {{ $mode === 'live' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-500' }}">
+                                        {{ $mode === 'live' ? 'CURRENTLY ACTIVE' : 'STANDBY' }}
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="space-y-1.5">
@@ -380,6 +398,14 @@
                 icon.classList.add('fa-eye');
             }
         }
+    }
+    function clearKeys(type, code) {
+        const keyInput = document.querySelector(`input[name="gateways[${code}][${type}_key]"]`);
+        const secretInput = document.querySelector(`input[name="gateways[${code}][${type}_secret]"]`);
+        const midInput = document.querySelector(`input[name="gateways[${code}][${type}_merchant_id]"]`);
+        if (keyInput) keyInput.value = '';
+        if (secretInput) secretInput.value = '';
+        if (midInput) midInput.value = '';
     }
 </script>
     </form>
