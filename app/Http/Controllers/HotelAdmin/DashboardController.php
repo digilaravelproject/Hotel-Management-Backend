@@ -4,6 +4,13 @@ namespace App\Http\Controllers\HotelAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
+use App\Models\ConnectedDevice;
+use App\Models\Guest;
+use App\Models\Plan;
+use App\Models\Amenity;
+use App\Models\OttPlatform;
+use App\Models\RoomInfo;
 
 class DashboardController extends Controller
 {
@@ -26,12 +33,43 @@ class DashboardController extends Controller
 
         $plan = $hotel->plan;
 
-        $deviceCount = \App\Models\ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();
-        $guestCount = \App\Models\Guest::where('hotel_id', $hotel->id)->whereNull('check_out_datetime')->count();
-        
+        // Device / TV Slot capacity metrics
+        $deviceCount = ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();
+        $allowedLimit = (int) ($hotel->allowed_device_limit ?: ($hotel->room_count ?: ($plan ? $plan->room_count : 0)));
+        $availableSlots = max(0, $allowedLimit - $deviceCount);
+        $usagePercent = $allowedLimit > 0 ? min(100, round(($deviceCount / $allowedLimit) * 100)) : 0;
+
+        // In-House & Monthly Guest metrics
+        $guestCount = Guest::where('hotel_id', $hotel->id)->whereNull('check_out_datetime')->count();
+        $totalCheckInsThisMonth = Guest::where('hotel_id', $hotel->id)
+            ->whereMonth('check_in_datetime', now()->month)
+            ->whereYear('check_in_datetime', now()->year)
+            ->count();
+
+        // 7-Day Guest Check-In Activity Trend
+        $checkInLabels = [];
+        $checkInCounts = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $day = Carbon::today()->subDays($i);
+            $checkInLabels[] = $day->format('D, M d');
+            $checkInCounts[] = Guest::where('hotel_id', $hotel->id)
+                ->whereDate('check_in_datetime', $day->toDateString())
+                ->count();
+        }
+
+        // Operational counts
+        $amenitiesCount = Amenity::where('hotel_id', $hotel->id)->count();
+        $ottAppsCount = OttPlatform::where('status', 1)->count();
+        $roomsConfigured = RoomInfo::where('hotel_id', $hotel->id)->count();
+
+        // Subscription countdown: strictly days remaining
+        $daysRemaining = ($hotel->expiry_date && $hotel->expiry_date->isFuture())
+            ? (int) ceil(now()->diffInHours($hotel->expiry_date) / 24)
+            : 0;
+
         $plans = [];
         if ($hotel->payment_status !== 'paid') {
-            $plans = \App\Models\Plan::where('status', true)
+            $plans = Plan::where('status', true)
                 ->where(function ($q) use ($hotel) {
                     $q->where('is_hidden', false);
                     if ($hotel && $hotel->plan_id) {
@@ -42,7 +80,23 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('hotel_admin.dashboard', compact('hotel', 'plan', 'plans', 'deviceCount', 'guestCount'));
+        return view('hotel_admin.dashboard', compact(
+            'hotel',
+            'plan',
+            'plans',
+            'deviceCount',
+            'allowedLimit',
+            'availableSlots',
+            'usagePercent',
+            'guestCount',
+            'totalCheckInsThisMonth',
+            'checkInLabels',
+            'checkInCounts',
+            'amenitiesCount',
+            'ottAppsCount',
+            'roomsConfigured',
+            'daysRemaining'
+        ));
     }
 
     /**

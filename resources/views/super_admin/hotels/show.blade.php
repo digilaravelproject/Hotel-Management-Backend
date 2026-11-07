@@ -245,8 +245,8 @@
                                 @if($hotel->expiry_date)
                                     @if($hotel->expiry_date->isPast())
                                         <span class="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-rose-100 text-rose-700 font-mono">Expired</span>
-                                    @elseif($hotel->expiry_date->diffInDays(now()) <= 7)
-                                        <span class="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 font-mono">Expires in {{ ceil(now()->diffInHours($hotel->expiry_date)/24) }} days</span>
+                                    @elseif(now()->diffInDays($hotel->expiry_date, false) <= 4 && now()->diffInDays($hotel->expiry_date, false) >= 0)
+                                        <span class="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-amber-100 text-amber-800 font-mono">Expires in {{ max(1, (int) ceil(now()->diffInHours($hotel->expiry_date)/24)) }} days</span>
                                     @else
                                         <span class="inline-block mt-1 px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-emerald-100 text-emerald-700 font-mono">Active Service</span>
                                     @endif

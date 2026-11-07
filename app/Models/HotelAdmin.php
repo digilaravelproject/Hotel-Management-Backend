@@ -170,7 +170,8 @@ class HotelAdmin extends Authenticatable
             if ($this->expiry_date->isPast()) {
                 return 'expired';
             }
-            if ($this->expiry_date->diffInDays(now()) <= 7) {
+            $daysLeft = (int) ceil(now()->diffInHours($this->expiry_date) / 24);
+            if ($daysLeft <= 4) {
                 return 'expiring_soon';
             }
         }
@@ -191,7 +192,7 @@ class HotelAdmin extends Authenticatable
     }
 
     /**
-     * Check if subscription is expiring soon (within 7 days).
+     * Check if subscription is expiring soon (within 3-4 days).
      */
     public function getIsExpiringSoonAttribute(): bool
     {
@@ -199,7 +200,12 @@ class HotelAdmin extends Authenticatable
             return false;
         }
 
-        return !$this->expiry_date->isPast() && $this->expiry_date->diffInDays(now()) <= 7;
+        if ($this->expiry_date->isPast()) {
+            return false;
+        }
+
+        $daysLeft = (int) ceil(now()->diffInHours($this->expiry_date) / 24);
+        return $daysLeft <= 4 && $daysLeft >= 0;
     }
 
     /**
