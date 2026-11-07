@@ -32,8 +32,9 @@ class SubscriptionController extends Controller
             ->get();
         $gateway = PaymentManager::active();
 
-        $hasActivePlan = $hotel->plan && $hotel->expiry_date && $hotel->expiry_date->isFuture();
-        $remainingDays = $hasActivePlan ? max(1, (int) now()->diffInDays($hotel->expiry_date, false)) : 0;
+        $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
+        $remainingDays = ($hasActivePlan && $hotel->expiry_date) ? max(1, (int) now()->diffInDays($hotel->expiry_date, false)) : 0;
+        $pairedDeviceCount = \App\Models\ConnectedDevice::where('hotel_admin_id', $hotel->id)->count();
         $addonPricing = null;
         if ($hasActivePlan) {
             try {
@@ -49,7 +50,7 @@ class SubscriptionController extends Controller
             ->take(5)
             ->get();
 
-        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway', 'hasActivePlan', 'remainingDays', 'addonPricing', 'recentInvoices'));
+        return view('hotel_admin.subscription', compact('hotel', 'plans', 'gateway', 'hasActivePlan', 'remainingDays', 'addonPricing', 'recentInvoices', 'pairedDeviceCount'));
     }
 
     public function createOrder(Request $request)
