@@ -409,7 +409,85 @@
         </div>
     </div>
 
+    <!-- Mobile Bottom App-Style Floating Navigation Bar (5 Core Quick Actions) -->
+    <nav class="md:hidden fixed bottom-0 inset-x-0 z-40 px-3 pb-3 pt-1 pointer-events-none">
+        <div class="pointer-events-auto bg-white/95 backdrop-blur-md rounded-[26px] border border-slate-200/90 shadow-[0_-6px_25px_rgba(21,10,66,0.12)] px-2 py-1.5 flex items-center justify-around relative">
+            
+            <!-- 1. Dashboard / Home -->
+            @php $isDash = Request::routeIs('hotel.dashboard'); @endphp
+            <a href="{{ route('hotel.dashboard') }}" class="relative flex flex-col items-center group transition-all {{ $isDash ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isDash)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-house text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Home</span>
+                @else
+                    <i class="fa-solid fa-house text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Home</span>
+                @endif
+            </a>
+
+            <!-- 2. Connected TVs -->
+            @php $isDevices = Request::routeIs('hotel.devices.index') || Request::routeIs('hotel.devices.ott') || Request::routeIs('hotel.devices.menus'); @endphp
+            <a href="{{ route('hotel.devices.index') }}" class="relative flex flex-col items-center group transition-all {{ $isDevices ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isDevices)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-tv text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">TVs</span>
+                @else
+                    <i class="fa-solid fa-tv text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">TVs</span>
+                @endif
+            </a>
+
+            <!-- 3. CENTER: Pair TV Screen (Elevated Hero Action) -->
+            <button type="button" onclick="handleBottomNavPair()" class="relative flex flex-col items-center group transition-all -mt-5 cursor-pointer">
+                <div class="w-13 h-13 rounded-full bg-gradient-to-tr from-[#150A42] to-purple-600 text-white flex items-center justify-center shadow-xl shadow-[#150A42]/40 border-4 border-white transition-transform group-hover:scale-105 active:scale-95">
+                    <i class="fa-solid fa-plus text-lg text-amber-300"></i>
+                </div>
+                <span class="text-[10px] font-black text-[#150A42] mt-0.5 tracking-tight font-sans">Pair TV</span>
+            </button>
+
+            <!-- 4. Guests -->
+            @php $isGuests = Request::routeIs('hotel.guests.*'); @endphp
+            <a href="{{ route('hotel.guests.index') }}" class="relative flex flex-col items-center group transition-all {{ $isGuests ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isGuests)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-users text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Guests</span>
+                @else
+                    <i class="fa-solid fa-users text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Guests</span>
+                @endif
+            </a>
+
+            <!-- 5. Plan & Billing -->
+            @php $isSub = Request::routeIs('hotel.subscription*'); @endphp
+            <a href="{{ route('hotel.subscription') }}" class="relative flex flex-col items-center group transition-all {{ $isSub ? '-mt-5' : 'py-1 px-2' }}">
+                @if($isSub)
+                    <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
+                        <i class="fa-solid fa-credit-card text-base"></i>
+                    </div>
+                    <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Plan</span>
+                @else
+                    <i class="fa-solid fa-credit-card text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Plan</span>
+                @endif
+            </a>
+
+        </div>
+    </nav>
+
     <script>
+        function handleBottomNavPair() {
+            if (typeof window.openPairModal === 'function') {
+                window.openPairModal();
+            } else {
+                window.location.href = "{{ route('hotel.devices.index') }}?pair=1";
+            }
+        }
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebarBackdrop');

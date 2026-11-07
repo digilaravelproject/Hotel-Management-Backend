@@ -101,61 +101,48 @@
 
     <!-- Pair TV Modal (8-Digit Code & Live QR Scanner) -->
     <div id="pairModal" class="fixed inset-0 z-50 bg-[#0B0424]/80 backdrop-blur-sm flex items-center justify-center hidden p-3 sm:p-4" onclick="closePairModalOnBackdrop(event)">
-        <div class="bg-white border border-slate-100 rounded-[24px] sm:rounded-[30px] p-5 sm:p-7 max-w-md w-full shadow-2xl space-y-5 max-h-[90vh] overflow-y-auto overscroll-contain animate-in fade-in zoom-in-95 duration-150" onclick="event.stopPropagation()">
+        <div class="bg-white border border-slate-100 rounded-[22px] sm:rounded-[26px] p-4 sm:p-5 max-w-sm sm:max-w-md w-full shadow-2xl space-y-3 animate-in fade-in zoom-in-95 duration-150 relative" onclick="event.stopPropagation()">
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-11 h-11 rounded-2xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-lg shadow-2xs shrink-0">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-sm shadow-2xs shrink-0">
                         <i class="fa-solid fa-tv text-purple-700"></i>
                     </div>
                     <div>
-                        <h3 class="text-base font-black text-slate-900 tracking-tight">Pair TV Screen</h3>
-                        <p class="text-xs text-slate-400 font-medium">Link Smart TV via 8-digit screen code or QR scan</p>
+                        <h3 class="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-tight">Pair TV Screen</h3>
+                        <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium">Link via 8-digit code or QR scan on TV screen</p>
                     </div>
                 </div>
-                <button onclick="closePairModal()" class="text-slate-400 hover:text-slate-700 w-9 h-9 rounded-xl hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer" title="Close">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <button onclick="closePairModal()" class="text-slate-400 hover:text-slate-700 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer" title="Close">
+                    <i class="fa-solid fa-xmark text-base"></i>
                 </button>
-            </div>
-
-            <!-- Quick Instructions Steps -->
-            <div class="p-3 sm:p-3.5 rounded-2xl bg-purple-50/70 border border-purple-100/70 text-[11px] text-purple-950 space-y-1.5">
-                <div class="font-extrabold flex items-center space-x-1.5 text-purple-900">
-                    <i class="fa-solid fa-circle-info text-purple-600"></i>
-                    <span>Quick Pairing Guide:</span>
-                </div>
-                <ol class="list-decimal list-inside text-[11px] text-slate-600 space-y-0.5 font-medium">
-                    <li>Launch the <strong class="text-slate-800">PaxTV Launcher</strong> app on the in-room TV.</li>
-                    <li>Note the 8-character pairing code or QR code on screen.</li>
-                    <li>Enter code below and assign the corresponding Room Number.</li>
-                </ol>
             </div>
 
             <!-- Sub Tab: Manual Code vs Camera Scanner -->
             <div class="flex items-center p-1 bg-slate-100 border border-slate-200/80 rounded-xl text-[11px]">
-                <button type="button" id="tabManualBtn" onclick="switchPairSubTab('manual')" class="flex-1 py-2 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
-                    <i class="fa-solid fa-keyboard text-[11px]"></i>
+                <button type="button" id="tabManualBtn" onclick="switchPairSubTab('manual')" class="flex-1 py-1.5 font-bold rounded-lg bg-white text-[#150A42] shadow-xs transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-keyboard text-[10px]"></i>
                     <span>Type 8-Digit Code</span>
                 </button>
-                <button type="button" id="tabScanBtn" onclick="switchPairSubTab('scan')" class="flex-1 py-2 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
-                    <i class="fa-solid fa-camera text-[11px]"></i>
+                <button type="button" id="tabScanBtn" onclick="switchPairSubTab('scan')" class="flex-1 py-1.5 font-bold rounded-lg text-slate-500 hover:text-slate-900 transition-all flex items-center justify-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-camera text-[10px]"></i>
                     <span>Scan TV QR</span>
                 </button>
             </div>
 
-            <!-- Camera Scanner Box -->
-            <div id="qrScannerBox" class="hidden space-y-2 text-center">
-                <div id="qrReader" class="w-full overflow-hidden rounded-2xl border-2 border-purple-300 bg-slate-900 aspect-square flex items-center justify-center shadow-inner"></div>
-                <p class="text-[11px] text-slate-400 font-medium">Point your camera at the QR code displayed on the TV screen</p>
+            <!-- Camera Scanner Box (Compact without scrollbars) -->
+            <div id="qrScannerBox" class="hidden space-y-1 text-center">
+                <div id="qrReader" class="w-full max-w-[210px] h-[160px] mx-auto overflow-hidden rounded-xl border-2 border-purple-300 bg-slate-900 flex items-center justify-center shadow-inner relative"></div>
+                <p class="text-[10px] text-slate-400 font-medium">Point camera at TV QR code</p>
             </div>
 
             <!-- Pair Form -->
-            <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-4">
+            <form id="pairForm" onsubmit="submitPairForm(event)" class="space-y-3">
                 @csrf
-                <div id="pairCodeInputWrapper" class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-900 flex items-center justify-between">
+                <div id="pairCodeInputWrapper" class="space-y-1">
+                    <label class="text-[11px] font-bold text-slate-900 flex items-center justify-between">
                         <span>8-Digit Pairing Code <span class="text-rose-600">*</span></span>
-                        <span class="text-[10px] text-purple-700 font-semibold uppercase tracking-wider">On TV Screen</span>
+                        <span class="text-[9px] text-purple-700 font-bold uppercase tracking-wider">From TV Launcher</span>
                     </label>
                     <div class="relative">
                         <input type="text" 
@@ -164,33 +151,33 @@
                                placeholder="e.g. 8F2A-9K3P" 
                                maxlength="10" 
                                autocomplete="off"
-                               class="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-center font-mono font-black text-2xl tracking-widest text-[#150A42] uppercase focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all placeholder:text-slate-300 shadow-inner">
+                               class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center font-mono font-black text-xl tracking-widest text-[#150A42] uppercase focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all placeholder:text-slate-300 shadow-inner">
                     </div>
                 </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-slate-900 flex items-center justify-between">
+                <div class="space-y-1">
+                    <label class="text-[11px] font-bold text-slate-900 flex items-center justify-between">
                         <span>Assign Room Number <span class="text-rose-600">*</span></span>
-                        <span class="text-[10px] text-slate-400">e.g. 101, 204, Suite-A</span>
+                        <span class="text-[9px] text-slate-400">e.g. 101, 204</span>
                     </label>
                     <div class="relative">
-                        <i class="fa-solid fa-door-closed absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <i class="fa-solid fa-door-closed absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
                         <input type="text" 
                                id="roomNoInput" 
                                required 
                                placeholder="Enter room number" 
-                               class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
+                               class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
                     </div>
                 </div>
 
-                <div id="pairFormAlert" class="hidden p-3.5 rounded-xl text-xs font-semibold"></div>
+                <div id="pairFormAlert" class="hidden p-2.5 rounded-xl text-xs font-semibold"></div>
 
-                <div class="pt-2 flex items-center justify-end space-x-3">
-                    <button type="button" onclick="closePairModal()" class="px-5 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer">
+                <div class="pt-1 flex items-center justify-end space-x-2">
+                    <button type="button" onclick="closePairModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer">
                         Cancel
                     </button>
-                    <button type="submit" id="pairSubmitBtn" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-bold text-xs shadow-md shadow-[#150A42]/15 flex items-center space-x-2 cursor-pointer active:scale-95 transition-all">
-                        <i class="fa-solid fa-link text-xs text-amber-300"></i>
+                    <button type="submit" id="pairSubmitBtn" class="px-5 py-2 rounded-xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-bold text-xs shadow-md shadow-[#150A42]/15 flex items-center space-x-1.5 cursor-pointer active:scale-95 transition-all">
+                        <i class="fa-solid fa-link text-[11px] text-amber-300"></i>
                         <span>Connect & Pair TV</span>
                     </button>
                 </div>
@@ -590,9 +577,34 @@
 @endsection
 
 @section('scripts')
+<style>
+    #qrReader video {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        border-radius: 0.75rem;
+    }
+    #qrReader img {
+        display: none !important;
+    }
+    #qrReader__scan_region {
+        min-height: auto !important;
+    }
+</style>
 <script>
     var html5QrCode = null;
     var qrScriptLoaded = false;
+
+    // Auto-open pair modal if ?pair=1 in URL
+    document.addEventListener('DOMContentLoaded', function() {
+        if (new URLSearchParams(window.location.search).get('pair') === '1') {
+            setTimeout(function() {
+                if (typeof window.openPairModal === 'function') {
+                    window.openPairModal();
+                }
+            }, 250);
+        }
+    });
 
     // Open pair modal
     window.openPairModal = function() {
@@ -682,7 +694,7 @@
             html5QrCode = new Html5Qrcode("qrReader");
             html5QrCode.start(
                 { facingMode: "environment" },
-                { fps: 10, qrbox: { width: 220, height: 220 } },
+                { fps: 10, qrbox: { width: 140, height: 140 } },
                 (decodedText) => {
                     let text = decodedText.trim();
                     let code = '';
