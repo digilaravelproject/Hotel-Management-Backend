@@ -132,6 +132,9 @@
                 <!-- Quick Preset Selector -->
                 <div class="flex items-center space-x-1.5 flex-wrap">
                     <span class="text-[11px] font-bold text-slate-400 mr-1">Presets:</span>
+                    <button type="button" onclick="applyPreset('hostinger')" class="px-2.5 py-1 rounded-xl bg-purple-100 hover:bg-purple-200 text-[#150A42] font-black text-[11px] transition-all cursor-pointer border border-purple-300">
+                        ⚡ Hostinger (Port 587 TLS)
+                    </button>
                     <button type="button" onclick="applyPreset('gmail')" class="px-2.5 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-[11px] transition-all cursor-pointer">
                         Gmail
                     </button>
@@ -183,8 +186,9 @@
                            name="mail_port" 
                            value="{{ old('mail_port', $setting->mail_port ?? 587) }}" 
                            placeholder="587" 
+                           oninput="syncEncryptionFromPort(this.value)"
                            class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
-                    <span class="text-[10px] text-slate-400 mt-1 block">Standard: 587 (TLS), 465 (SSL), 25</span>
+                    <span class="text-[10px] text-slate-400 mt-1 block">587 (TLS), 465 (SSL), 25 (None)</span>
                 </div>
 
                 <!-- Encryption -->
@@ -192,11 +196,12 @@
                     <label class="block text-xs font-black text-slate-700 uppercase tracking-wider mb-2">
                         Encryption Protocol
                     </label>
-                    <select id="mail_encryption" name="mail_encryption" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
-                        <option value="tls" {{ ($setting->mail_encryption ?? 'tls') === 'tls' ? 'selected' : '' }}>TLS (STARTTLS - Port 587)</option>
+                    <select id="mail_encryption" name="mail_encryption" onchange="syncPortFromEncryption(this.value)" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
+                        <option value="tls" {{ ($setting->mail_encryption ?? 'tls') === 'tls' ? 'selected' : '' }}>TLS (Port 587 - Recommended)</option>
                         <option value="ssl" {{ ($setting->mail_encryption ?? '') === 'ssl' ? 'selected' : '' }}>SSL (Port 465)</option>
-                        <option value="null" {{ empty($setting->mail_encryption) ? 'selected' : '' }}>None (Unencrypted - Port 25)</option>
+                        <option value="null" {{ empty($setting->mail_encryption) || $setting->mail_encryption === 'null' ? 'selected' : '' }}>None (Port 25)</option>
                     </select>
+                    <span class="text-[10px] text-purple-700 font-semibold mt-1 block">⚡ Changing this auto-updates Port</span>
                 </div>
 
                 <!-- Username -->
@@ -367,7 +372,7 @@
             </span>
         </div>
 
-        <form action="{{ route('super-admin.mail-settings.test') }}" method="POST" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+        <form id="testMailForm" action="{{ route('super-admin.mail-settings.test') }}" method="POST" onsubmit="attachCurrentFormValues(this)" class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             @csrf
             <div class="relative flex-1">
                 <i class="fa-solid fa-envelope absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
@@ -402,6 +407,32 @@
         }
     }
 
+    // Auto-update port based on selected encryption protocol
+    function syncPortFromEncryption(enc) {
+        const port = document.getElementById('mail_port');
+        if (enc === 'tls') {
+            port.value = '587';
+        } else if (enc === 'ssl') {
+            port.value = '465';
+        } else if (enc === 'null' || !enc) {
+            port.value = '25';
+        }
+    }
+
+    // Auto-update encryption based on typed port
+    function syncEncryptionFromPort(portVal) {
+        const enc = document.getElementById('mail_encryption');
+        const p = parseInt(portVal, 10);
+        if (p === 587) {
+            enc.value = 'tls';
+        } else if (p === 465) {
+            enc.value = 'ssl';
+        } else if (p === 25) {
+            enc.value = 'null';
+        }
+    }
+
+    // Preset helper
     function applyPreset(type) {
         const mailer = document.getElementById('mail_mailer');
         const host = document.getElementById('mail_host');
@@ -410,7 +441,11 @@
 
         mailer.value = 'smtp';
 
-        if (type === 'gmail') {
+        if (type === 'hostinger') {
+            host.value = 'smtp.hostinger.com';
+            port.value = '587';
+            enc.value = 'tls';
+        } else if (type === 'gmail') {
             host.value = 'smtp.gmail.com';
             port.value = '587';
             enc.value = 'tls';
@@ -427,6 +462,34 @@
             port.value = '587';
             enc.value = 'tls';
         }
+    }
+
+    // Automatically pass live form credentials to the test form
+    function attachCurrentFormValues(testForm) {
+        const fields = [
+            'mail_mailer',
+            'mail_host',
+            'mail_port',
+            'mail_encryption',
+            'mail_username',
+            'mail_password',
+            'mail_from_address',
+            'mail_from_name'
+        ];
+
+        fields.forEach(fieldId => {
+            const el = document.getElementById(fieldId);
+            if (el && el.value) {
+                let hidden = testForm.querySelector(`input[name="${fieldId}"]`);
+                if (!hidden) {
+                    hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = fieldId;
+                    testForm.appendChild(hidden);
+                }
+                hidden.value = el.value;
+            }
+        });
     }
 </script>
 @endsection

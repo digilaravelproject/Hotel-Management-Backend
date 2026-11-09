@@ -89,11 +89,17 @@ class MailSetting extends Model
         Config::set('mail.default', $mailer);
 
         if ($mailer === 'smtp') {
+            $encryption = $this->mail_encryption === 'null' || empty($this->mail_encryption) ? null : $this->mail_encryption;
+            $port = (int) ($this->mail_port ?: 587);
+            $scheme = ($encryption === 'ssl' || $port === 465) ? 'smtps' : 'smtp';
+
+            Config::set('mail.mailers.smtp.scheme', $scheme);
             Config::set('mail.mailers.smtp.host', $this->mail_host);
-            Config::set('mail.mailers.smtp.port', (int) ($this->mail_port ?: 587));
-            Config::set('mail.mailers.smtp.encryption', $this->mail_encryption ?: null);
+            Config::set('mail.mailers.smtp.port', $port);
+            Config::set('mail.mailers.smtp.encryption', $encryption);
             Config::set('mail.mailers.smtp.username', $this->mail_username);
             Config::set('mail.mailers.smtp.password', $this->mail_password);
+            Config::set('mail.mailers.smtp.timeout', 15);
         }
 
         if (!empty($this->mail_from_address)) {

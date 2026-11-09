@@ -86,27 +86,72 @@ class MailSettingController extends Controller
         ]);
 
         $setting = MailSetting::getSettings();
-        $setting->applyConfig();
+
+        // Support both saved settings and on-the-fly form testing
+        $mailer = $request->input('mail_mailer', $setting->mail_mailer ?: 'smtp');
+        $host = $request->input('mail_host', $setting->mail_host);
+        $port = $request->filled('mail_port') ? (int)$request->mail_port : ($setting->mail_port ?: 587);
+        
+        $encryption = $request->has('mail_encryption') ? $request->mail_encryption : $setting->mail_encryption;
+        if ($encryption === 'null' || $encryption === 'none' || empty($encryption)) {
+            $encryption = null;
+        }
+
+        $username = $request->filled('mail_username') ? $request->mail_username : $setting->mail_username;
+        $password = $request->filled('mail_password') ? $request->mail_password : $setting->mail_password;
+        $fromAddress = $request->input('mail_from_address', $setting->mail_from_address) ?? config('mail.from.address');
+        $fromName = $request->input('mail_from_name', $setting->mail_from_name) ?? config('mail.from.name');
+
+        // Dynamically configure Laravel's mailer
+        Config::set('mail.default', $mailer);
+        if ($mailer === 'smtp') {
+            $scheme = ($encryption === 'ssl' || $port === 465) ? 'smtps' : 'smtp';
+            Config::set('mail.mailers.smtp.scheme', $scheme);
+            Config::set('mail.mailers.smtp.host', $host);
+            Config::set('mail.mailers.smtp.port', $port);
+            Config::set('mail.mailers.smtp.encryption', $encryption);
+            Config::set('mail.mailers.smtp.username', $username);
+            Config::set('mail.mailers.smtp.password', $password);
+            Config::set('mail.mailers.smtp.timeout', 15);
+        }
+
+        if (!empty($fromAddress)) {
+            Config::set('mail.from.address', $fromAddress);
+        }
+        if (!empty($fromName)) {
+            Config::set('mail.from.name', $fromName);
+        }
+
+        try {
+            Mail::purge($mailer);
+        } catch (\Throwable $t) {
+            // Ignore if mail manager not initialized
+        }
 
         $details = [
-            'mailer' => $setting->mail_mailer,
-            'host' => $setting->mail_host,
-            'port' => $setting->mail_port,
-            'encryption' => $setting->mail_encryption,
-            'from_address' => $setting->mail_from_address ?? config('mail.from.address'),
-            'from_name' => $setting->mail_from_name ?? config('mail.from.name'),
+            'mailer' => $mailer,
+            'host' => $host,
+            'port' => $port,
+            'encryption' => $encryption ?: 'None',
+            'from_address' => $fromAddress,
+            'from_name' => $fromName,
         ];
 
         try {
             Mail::to($request->test_email)->send(new TestMail($request->test_email, $details));
 
             return redirect()->route('super-admin.mail-settings.index')
-                ->with('success', "✓ Test email delivered successfully to {$request->test_email}! Please check your inbox / spam folder.");
+                ->with('success', "✓ Test email delivered successfully to {$request->test_email} via {$host}:{$port} ({$details['encryption']})! Please check your inbox / spam folder.");
         } catch (\Throwable $e) {
             Log::error('SMTP Test Mail failed: ' . $e->getMessage(), ['exception' => $e]);
 
+            $suggestMsg = "";
+            if (str_contains($e->getMessage(), '465') || str_contains($e->getMessage(), 'timed out')) {
+                $suggestMsg = " Hint: Outbound port 465 is often blocked by server firewalls. Please try setting Port to 587 with Encryption to TLS.";
+            }
+
             return redirect()->route('super-admin.mail-settings.index')
-                ->with('error', 'SMTP Connection Error: ' . $e->getMessage())
+                ->with('error', 'SMTP Connection Error: ' . $e->getMessage() . $suggestMsg)
                 ->withInput();
         }
     }
