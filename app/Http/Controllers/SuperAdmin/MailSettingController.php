@@ -114,6 +114,14 @@ class MailSettingController extends Controller
             Config::set('mail.mailers.smtp.username', $username);
             Config::set('mail.mailers.smtp.password', $password);
             Config::set('mail.mailers.smtp.timeout', 15);
+            Config::set('mail.mailers.smtp.verify_peer', false);
+            Config::set('mail.mailers.smtp.verify_peer_name', false);
+
+            if (empty($encryption)) {
+                Config::set('mail.mailers.smtp.auto_tls', false);
+            } else {
+                Config::set('mail.mailers.smtp.auto_tls', true);
+            }
         }
 
         if (!empty($fromAddress)) {

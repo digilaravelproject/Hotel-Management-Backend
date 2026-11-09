@@ -445,7 +445,7 @@
         mailer.value = 'smtp';
 
         if (type === 'localhost') {
-            host.value = '127.0.0.1';
+            host.value = 'localhost';
             port.value = '25';
             enc.value = 'null';
             const user = document.getElementById('mail_username');
