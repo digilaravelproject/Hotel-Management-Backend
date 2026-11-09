@@ -269,6 +269,14 @@
                         <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
                         <span>Sign In</span>
                     </button>
+
+                    <!-- Hotel Registration Link -->
+                    <div class="pt-3 text-center text-xs text-slate-500 font-medium">
+                        New hotel property? 
+                        <a href="{{ route('hotel.register') }}" class="font-extrabold text-[#FF5722] hover:text-[#E64A19] hover:underline ml-1">
+                            Register Hotel
+                        </a>
+                    </div>
                 </form>
             </div>
 

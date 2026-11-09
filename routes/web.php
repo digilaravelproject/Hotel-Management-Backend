@@ -14,8 +14,10 @@ use App\Http\Controllers\LandingPageController;
 |
 */
 
-// Public landing and registration routes
-Route::get('/', [LandingPageController::class, 'index'])->name('landing');
+// Redirect root URL directly to login
+Route::get('/', function () {
+    return redirect()->route('login');
+})->name('landing');
 Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
 
 // Information & Support Pages

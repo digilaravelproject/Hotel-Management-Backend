@@ -17,6 +17,8 @@ use App\Http\Controllers\HotelAdmin\GuestController as HotelGuestController;
 */
 
 // Hotel Registration process routes
+Route::get('/hotel/register', [RegistrationController::class, 'showRegistrationForm'])->name('hotel.register');
+Route::post('/hotel/register', [RegistrationController::class, 'processQuickRegister'])->name('hotel.register.submit');
 Route::post('/register/create-order', [RegistrationController::class, 'createOrder'])->name('register.create-order');
 Route::post('/register/complete', [RegistrationController::class, 'completeRegistration'])->name('register.complete');
 Route::get('/register/success', [RegistrationController::class, 'showSuccess'])->name('register.success');

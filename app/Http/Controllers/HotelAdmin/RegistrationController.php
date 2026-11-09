@@ -18,6 +18,80 @@ use Illuminate\Support\Facades\Hash;
 class RegistrationController extends Controller
 {
     /**
+     * Show simple hotel registration form.
+     */
+    public function showRegistrationForm()
+    {
+        if (Auth::guard('hotel_admin')->check()) {
+            return redirect()->route('hotel.dashboard');
+        }
+
+        $plans = Plan::where('status', true)->where('is_hidden', false)->orderBy('room_count', 'asc')->get();
+        return view('auth.hotel_register', compact('plans'));
+    }
+
+    /**
+     * Handle quick hotel registration.
+     */
+    public function processQuickRegister(Request $request)
+    {
+        $validated = $request->validate([
+            'hotel_name' => 'required|string|max:255',
+            'owner_name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:hotel_admins,email',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|string|min:6|confirmed',
+            'city' => 'nullable|string|max:100',
+            'hotel_location' => 'nullable|string|max:255',
+            'room_count' => 'nullable|integer|min:1',
+            'plan_id' => 'nullable|exists:plans,id',
+        ]);
+
+        $licenseKey = sprintf(
+            "%s-%s-%s-%s",
+            strtoupper(Str::random(4)),
+            strtoupper(Str::random(4)),
+            strtoupper(Str::random(4)),
+            strtoupper(Str::random(4))
+        );
+
+        $city = $validated['city'] ?? ($validated['hotel_location'] ?? 'Mumbai');
+        $location = $validated['hotel_location'] ?? $city;
+        $roomCount = max(1, (int) ($validated['room_count'] ?? 10));
+
+        $defaultPlanId = $validated['plan_id'] 
+            ?? Plan::where('status', true)->where('is_hidden', false)->first()?->id;
+
+        $hotel = HotelAdmin::create([
+            'hotel_name' => $validated['hotel_name'],
+            'owner_name' => $validated['owner_name'],
+            'email' => strtolower(trim($validated['email'])),
+            'phone' => $validated['phone'],
+            'password' => Hash::make($validated['password']),
+            'city' => $city,
+            'hotel_location' => $location,
+            'room_count' => $roomCount,
+            'plan_id' => $defaultPlanId,
+            'payment_status' => 'pending',
+            'approval_status' => 'approved',
+            'status' => true,
+            'license_key' => $licenseKey,
+        ]);
+
+        // Send registration welcome email if configured
+        try {
+            Mail::to($hotel->email)->send(new HotelRegisteredMail($hotel, $validated['password']));
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::warning('Hotel registration email notice: ' . $e->getMessage());
+        }
+
+        // Auto-login newly registered hotel admin
+        Auth::guard('hotel_admin')->login($hotel);
+
+        return redirect()->route('hotel.dashboard')->with('success', 'Welcome to PaxTV! Your hotel account has been registered successfully.');
+    }
+
+    /**
      * Create order using active payment gateway strategy with idempotency support.
      */
     public function createOrder(Request $request)
