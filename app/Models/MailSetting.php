@@ -104,3 +104,4 @@ class MailSetting extends Model
         }
     }
 }
+

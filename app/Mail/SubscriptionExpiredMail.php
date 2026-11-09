@@ -51,3 +51,4 @@ class SubscriptionExpiredMail extends Mailable
         return [];
     }
 }
+

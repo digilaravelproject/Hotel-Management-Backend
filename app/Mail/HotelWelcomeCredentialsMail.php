@@ -55,3 +55,4 @@ class HotelWelcomeCredentialsMail extends Mailable
         return [];
     }
 }
+

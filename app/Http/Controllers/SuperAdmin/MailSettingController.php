@@ -111,3 +111,4 @@ class MailSettingController extends Controller
         }
     }
 }
+

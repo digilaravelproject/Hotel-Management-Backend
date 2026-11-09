@@ -57,3 +57,4 @@ class SubscriptionPurchasedMail extends Mailable
         return [];
     }
 }
+

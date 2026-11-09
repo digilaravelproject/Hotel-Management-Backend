@@ -54,3 +54,4 @@ class SubscriptionExpiringSoonMail extends Mailable
         return [];
     }
 }
+

@@ -118,3 +118,4 @@ class CheckSubscriptionExpiryCommand extends Command
         return 0;
     }
 }
+
