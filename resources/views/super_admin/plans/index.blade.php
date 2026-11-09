@@ -135,11 +135,12 @@
                         @endif
 
                         @php
-                            $menusCount = is_array($plan->allowed_menus) ? count($plan->allowed_menus) : 10;
+                            $totalMenusInSystem = \App\Models\Plan::totalMenusCount();
+                            $menusCount = is_array($plan->allowed_menus) ? count($plan->allowed_menus) : $totalMenusInSystem;
                         @endphp
                         <span class="inline-flex items-center px-2.5 py-1.5 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs font-mono shadow-2xs">
                             <i class="fa-solid fa-bars mr-1.5 text-xs text-slate-400"></i>
-                            <span>{{ $menusCount }}/10 Menus</span>
+                            <span>{{ $menusCount }}/{{ $totalMenusInSystem }} Menus</span>
                         </span>
                     </div>
                 </div>

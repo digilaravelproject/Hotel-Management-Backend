@@ -223,7 +223,8 @@ class PlanController extends Controller
 
     /**
      * Self-healing migration check for plans table.
-     * Automatically applies pending migrations if is_ott_enabled or allowed_menus is missing.
+     * Automatically applies pending migrations if is_ott_enabled or allowed_menus is missing,
+     * and automatically heals legacy plans to include input & settings.
      */
     protected function ensurePlanColumnsExist(): void
     {
@@ -231,8 +232,26 @@ class PlanController extends Controller
             if (!Schema::hasColumn('plans', 'is_ott_enabled') || !Schema::hasColumn('plans', 'allowed_menus')) {
                 Artisan::call('migrate', ['--force' => true]);
             }
+
+            // Auto-heal legacy plans if input and settings are missing from allowed_menus
+            if (Schema::hasColumn('plans', 'allowed_menus')) {
+                $plans = Plan::whereNotNull('allowed_menus')->get();
+                foreach ($plans as $p) {
+                    if (is_array($p->allowed_menus) && (!in_array('input', $p->allowed_menus, true) || !in_array('settings', $p->allowed_menus, true))) {
+                        $menus = $p->allowed_menus;
+                        if (!in_array('input', $menus, true)) {
+                            $menus[] = 'input';
+                        }
+                        if (!in_array('settings', $menus, true)) {
+                            $menus[] = 'settings';
+                        }
+                        $p->allowed_menus = $menus;
+                        $p->saveQuietly();
+                    }
+                }
+            }
         } catch (\Throwable $e) {
-            Log::warning('PlanController auto-migrate notice: ' . $e->getMessage());
+            Log::warning('PlanController auto-migrate/auto-heal notice: ' . $e->getMessage());
         }
     }
 }

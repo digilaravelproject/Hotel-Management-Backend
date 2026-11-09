@@ -407,17 +407,22 @@
                                 class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-colors shadow-2xs cursor-pointer">
                             Deselect All
                         </button>
+                        @php
+                            $isPostSubmit = old('_token') !== null;
+                            $totalCatalogCount = count($availableMenus ?? []);
+                            if ($isPostSubmit) {
+                                $initialCheckedCount = count(array_intersect(array_keys($availableMenus ?? []), old('allowed_menus', [])));
+                            } else {
+                                $initialCheckedCount = count(array_filter(array_keys($availableMenus ?? []), fn($k) => $plan->hasMenu($k)));
+                            }
+                        @endphp
                         <span id="selectedMenusBadge" class="px-3 py-2 rounded-xl text-xs font-bold font-mono bg-white text-slate-700 border border-slate-200 shadow-2xs">
-                            10 of 10 enabled
+                            {{ $initialCheckedCount }} of {{ $totalCatalogCount }} enabled
                         </span>
                     </div>
                 </div>
 
-                @php
-                    $isPostSubmit = old('_token') !== null;
-                @endphp
-
-                <!-- 10 Menus Grid -->
+                <!-- Launcher Menus Grid -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl">
                     @foreach(($availableMenus ?? []) as $menuKey => $menuInfo)
                         @php

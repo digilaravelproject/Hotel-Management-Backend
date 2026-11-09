@@ -104,6 +104,17 @@ class Plan extends Model
             return true;
         }
 
+        // Backwards compatibility: If plan was created prior to input & settings inclusion,
+        // and has other standard interactive/hotel menus enabled, automatically grant input & settings
+        if (in_array($menuId, ['input', 'settings'], true)) {
+            if (in_array($menuId, (array) $this->allowed_menus, true)) {
+                return true;
+            }
+            if (in_array('weather', (array) $this->allowed_menus, true) || in_array('hotel_info', (array) $this->allowed_menus, true)) {
+                return true;
+            }
+        }
+
         return in_array($menuId, (array) $this->allowed_menus, true);
     }
 
@@ -121,6 +132,14 @@ class Plan extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Total count of available TV launcher menus.
+     */
+    public static function totalMenusCount(): int
+    {
+        return count(self::getAvailableMenusCatalog());
     }
 
     /**
@@ -185,11 +204,23 @@ class Plan extends Model
                 'desc' => 'Local tourist spots, dining & nearby attractions',
                 'group' => 'Interactive Services',
             ],
+            'input' => [
+                'name' => 'TV Input / HDMI',
+                'icon' => 'fa-solid fa-right-to-bracket',
+                'desc' => 'Switch TV HDMI ports, AV sources & external inputs',
+                'group' => 'Interactive Services',
+            ],
+            'settings' => [
+                'name' => 'TV Settings',
+                'icon' => 'fa-solid fa-gear',
+                'desc' => 'Display, volume, network & TV system settings',
+                'group' => 'System & Controls',
+            ],
             'language' => [
                 'name' => 'Language Switcher',
                 'icon' => 'fa-solid fa-language',
                 'desc' => 'Multi-lingual TV interface localization',
-                'group' => 'System & Navigation',
+                'group' => 'System & Controls',
             ],
         ];
     }

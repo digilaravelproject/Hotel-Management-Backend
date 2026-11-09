@@ -152,25 +152,40 @@
                     @foreach($allPlans as $p)
                         @php
                             $isSelected = ($p->id == $hotel->plan_id);
-                            $effTax = $p->tax;
+                            $effTax = $p->tax ?: $defaultTax;
                             $tRate = $effTax ? (float) $effTax->rate : 0.0;
                             $tName = $effTax ? $effTax->name : 'GST';
                             $tType = $p->tax_type ?? 'exclusive';
                             $pCycle = strtolower($p->billing_cycle ?? 'monthly');
-                            $uRate = (float) $p->effective_price_per_tv;
+                            $monthlyRate = (float) $p->monthly_rate_per_tv;
+                            $annualTotal = (float) $p->annual_total_per_tv;
+                            $billedRate = (float) $p->billed_amount_per_tv;
                         @endphp
                         <label class="plan-card relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all {{ $isSelected ? 'border-[#150A42] bg-purple-50/30 shadow-xs' : 'border-slate-200/90 hover:border-slate-300 bg-white' }}">
                             <div>
                                 <div class="flex items-start justify-between">
-                                    <div class="w-8 h-8 rounded-xl bg-purple-100/70 text-[#150A42] flex items-center justify-center text-xs font-bold">
-                                        <i class="fa-solid fa-tv"></i>
+                                    <div class="flex items-center space-x-1.5 flex-wrap">
+                                        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ $pCycle === 'yearly' ? 'bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs' : 'bg-purple-100 text-[#150A42] border border-purple-200 shadow-2xs' }}">
+                                            @if($pCycle === 'yearly')
+                                                <i class="fa-solid fa-crown text-[9px] text-amber-600 mr-1"></i> YEARLY PLAN
+                                            @else
+                                                <i class="fa-solid fa-calendar-days text-[9px] text-purple-600 mr-1"></i> MONTHLY PLAN
+                                            @endif
+                                        </span>
+                                        @if($p->is_hidden)
+                                            <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
+                                                <i class="fa-solid fa-eye-slash text-[9px] mr-0.5"></i> Demo Plan
+                                            </span>
+                                        @endif
                                     </div>
                                     <input type="radio" 
                                            name="plan_id" 
                                            value="{{ $p->id }}" 
                                            {{ $isSelected ? 'checked' : '' }}
                                            data-name="{{ $p->name }}"
-                                           data-unit-rate="{{ $uRate }}"
+                                           data-unit-rate="{{ $monthlyRate }}"
+                                           data-annual-total="{{ $annualTotal }}"
+                                           data-billed-amount="{{ $billedRate }}"
                                            data-billing-cycle="{{ $pCycle }}"
                                            data-tax-name="{{ $tName }}"
                                            data-tax-rate="{{ $tRate }}"
@@ -179,34 +194,73 @@
                                            class="plan-radio w-4 h-4 text-[#150A42] border-slate-300 focus:ring-purple-500">
                                 </div>
 
-                                <div class="font-black text-slate-900 text-sm sm:text-base mt-2">{{ $p->name }}</div>
-                                <div class="text-xl font-black text-[#150A42] font-mono mt-1">
-                                    ₹{{ number_format($uRate, 2) }}
-                                    <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / {{ $pCycle === 'yearly' ? 'year' : 'month' }}</span>
-                                </div>
-
-                                <div class="mt-2 flex items-center space-x-1.5">
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100">
-                                        {{ $tName }} ({{ number_format($tRate, 0) }}% {{ ucfirst($tType) }})
-                                    </span>
-                                </div>
-
+                                <div class="font-black text-slate-900 text-base mt-2.5">{{ $p->name }}</div>
                                 @if($p->description)
-                                    <p class="text-[11px] text-slate-400 mt-2 font-medium line-clamp-2">
-                                        {{ $p->description }}
-                                    </p>
+                                    <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">{{ $p->description }}</p>
                                 @endif
+
+                                <!-- Rate container matching plans/index.blade.php -->
+                                <div class="mt-2.5 p-3 rounded-xl bg-slate-50/90 border border-slate-200/80 space-y-1.5">
+                                    <div class="flex items-baseline space-x-1 font-mono">
+                                        <span class="text-2xl font-black text-[#150A42]">₹{{ number_format($monthlyRate, 0) }}</span>
+                                        <span class="text-xs text-slate-500 font-sans font-bold">/ TV / month</span>
+                                    </div>
+
+                                    @if($pCycle === 'yearly')
+                                        <div class="text-[11px] font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 flex items-center space-x-1.5">
+                                            <i class="fa-solid fa-crown text-[10px] text-amber-600"></i>
+                                            <span>Billed annually at ₹{{ number_format($annualTotal, 0) }} / TV / year</span>
+                                        </div>
+                                    @else
+                                        <div class="text-[11px] font-semibold text-slate-500 flex items-center space-x-1.5">
+                                            <i class="fa-solid fa-calendar-days text-[10px] text-purple-600"></i>
+                                            <span>Billed monthly</span>
+                                        </div>
+                                    @endif
+
+                                    <div class="pt-0.5 flex items-center space-x-2 flex-wrap gap-1 text-[10px]">
+                                        @if($tRate > 0)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold font-mono {{ $tType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }}">
+                                                <i class="fa-solid fa-shield-halved mr-1 text-[9px]"></i>
+                                                {{ $tName }} ({{ number_format($tRate, 0) }}% {{ ucfirst($tType) }})
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                                                No Tax Applied
+                                            </span>
+                                        @endif
+
+                                        @if($p->room_count)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-purple-50 text-[#150A42] border border-purple-100">
+                                                Max {{ $p->room_count }} TVs
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-[10px] text-slate-600 font-semibold">
-                                <div class="flex items-center space-x-1.5">
-                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                    <span>Full In-Room TV Launcher & Themes</span>
-                                </div>
-                                <div class="flex items-center space-x-1.5">
-                                    <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                    <span>Cloud Remote Broadcast & Updates</span>
-                                </div>
+                            <!-- Badges row at bottom -->
+                            <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+                                @if($p->hasOtt())
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-purple-50 text-[#150A42] border border-purple-200/60 font-bold text-[11px] font-mono shadow-2xs">
+                                        <i class="fa-solid fa-play mr-1.5 text-[9px] text-purple-600"></i>
+                                        <span>OTT: {{ count($p->ott_platforms ?? []) }} Apps</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 font-bold text-[11px] font-mono">
+                                        <i class="fa-solid fa-ban mr-1.5 text-[9px] text-slate-400"></i>
+                                        <span>OTT Disabled</span>
+                                    </span>
+                                @endif
+
+                                @php
+                                    $totalMenusInSystem = \App\Models\Plan::totalMenusCount();
+                                    $menusCount = is_array($p->allowed_menus) ? count($p->allowed_menus) : $totalMenusInSystem;
+                                @endphp
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-[11px] font-mono shadow-2xs">
+                                    <i class="fa-solid fa-bars mr-1.5 text-[9px] text-slate-500"></i>
+                                    <span>{{ $menusCount }}/{{ $totalMenusInSystem }} Menus</span>
+                                </span>
                             </div>
                         </label>
                     @endforeach
@@ -691,6 +745,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const name = selectedPlan.dataset.name || 'Plan';
         const unitRate = parseFloat(selectedPlan.dataset.unitRate) || 0;
+        const annualTotal = parseFloat(selectedPlan.dataset.annualTotal) || (unitRate * 12);
         const cycle = (selectedPlan.dataset.billingCycle || 'monthly').toLowerCase();
         const isYearly = (cycle === 'yearly');
 
@@ -699,8 +754,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
         let months = parseInt(durationSelect.value) || (isYearly ? 12 : 1);
 
-        const multiplier = isYearly ? Math.max(1, Math.round((months / 12) * 100) / 100) : months;
-        let subtotal = Math.round((unitRate * tvCount * multiplier) * 100) / 100;
+        // Subtotal = Monthly Rate * TV Count * Duration Months
+        let subtotal = Math.round((unitRate * tvCount * months) * 100) / 100;
 
         const taxRate = parseFloat(selectedPlan.dataset.taxRate) || 0;
         const taxName = selectedPlan.dataset.taxName || 'GST';
@@ -734,7 +789,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (summaryPlanName) summaryPlanName.textContent = name;
         if (summaryTvCount) summaryTvCount.textContent = `${tvCount} Smart TVs`;
         if (summaryUnitRate) {
-            summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / ${isYearly ? 'year' : 'month'}`;
+            summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / mo` + (isYearly ? ` (Annual: ₹${annualTotal.toFixed(2)})` : '');
         }
         if (summaryDuration) {
             if (isYearly) {
@@ -746,10 +801,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (summaryFormula) {
-            const timeStr = isYearly 
-                ? (multiplier === 1 ? '1 yr' : `${multiplier} yrs`) 
-                : (months === 1 ? '1 mo' : `${months} mos`);
-            summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)} × ${timeStr}`;
+            summaryFormula.textContent = `${tvCount} TVs × ₹${unitRate.toFixed(2)}/mo × ${months} mo${months > 1 ? 's' : ''}`;
         }
 
         if (summarySubtotal) {

@@ -300,7 +300,7 @@
                                     @endif
                                     <div class="flex items-center space-x-1.5 truncate">
                                         <i class="fa-solid fa-bars text-purple-600 text-[9px] shrink-0"></i>
-                                        <span class="truncate">{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : '10' }} Launcher Menus</span>
+                                        <span class="truncate">{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : \App\Models\Plan::totalMenusCount() }} Launcher Menus</span>
                                     </div>
                                 </div>
                             </label>

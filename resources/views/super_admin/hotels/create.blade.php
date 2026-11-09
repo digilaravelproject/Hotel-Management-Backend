@@ -282,11 +282,18 @@
                                 $isCurrentPlan = (string)$plan->id === (string)$selectedPlanId;
                                 $taxRate = $plan->tax ? (float)$plan->tax->rate : 0.0;
                                 $taxType = $plan->tax_type ?? 'exclusive';
+                                $cycle = strtolower($plan->billing_cycle ?? 'monthly');
+                                $monthlyRate = (float) $plan->monthly_rate_per_tv;
+                                $annualTotal = (float) $plan->annual_total_per_tv;
+                                $billedRate = (float) $plan->billed_amount_per_tv;
                             @endphp
                             <label class="plan-card-label relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none {{ $isCurrentPlan ? 'border-[#150A42] bg-purple-50/30 shadow-md ring-2 ring-[#150A42]/10' : 'border-slate-200 bg-white hover:border-purple-300 hover:bg-slate-50/60' }}"
                                    data-plan-id="{{ $plan->id }}"
                                    data-price-per-tv="{{ $plan->effective_price_per_tv }}"
-                                   data-cycle="{{ $plan->billing_cycle ?? 'monthly' }}"
+                                   data-monthly-rate="{{ $monthlyRate }}"
+                                   data-annual-total="{{ $annualTotal }}"
+                                   data-billed-amount="{{ $billedRate }}"
+                                   data-cycle="{{ $cycle }}"
                                    data-tax-rate="{{ $taxRate }}"
                                    data-tax-type="{{ $taxType }}"
                                    data-tax-name="{{ $plan->tax ? $plan->tax->name : 'No Tax' }}">
@@ -300,11 +307,15 @@
                                 <div>
                                     <div class="flex items-center justify-between gap-2 mb-2 flex-wrap">
                                         <div class="flex items-center space-x-1.5 flex-wrap">
-                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'bg-amber-100 text-amber-800' : 'bg-purple-100 text-[#150A42]' }}">
-                                                {{ strtoupper($plan->billing_cycle ?? 'monthly') }} PLAN
+                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ $cycle === 'yearly' ? 'bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs' : 'bg-purple-100 text-[#150A42] border border-purple-200 shadow-2xs' }}">
+                                                @if($cycle === 'yearly')
+                                                    <i class="fa-solid fa-crown text-[9px] text-amber-600 mr-1"></i> YEARLY PLAN
+                                                @else
+                                                    <i class="fa-solid fa-calendar-days text-[9px] text-purple-600 mr-1"></i> MONTHLY PLAN
+                                                @endif
                                             </span>
                                             @if($plan->is_hidden)
-                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-200">
+                                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-rose-100 text-rose-700 border border-rose-200 shadow-2xs">
                                                     <i class="fa-solid fa-eye-slash text-[9px] mr-0.5"></i> Demo Hotel Plan
                                                 </span>
                                             @endif
@@ -313,22 +324,75 @@
                                             <i class="fa-solid fa-check text-[10px]"></i>
                                         </div>
                                     </div>
+
                                     <h3 class="text-base font-black text-slate-900 tracking-tight">{{ $plan->name }}</h3>
-                                    <div class="mt-2 flex items-baseline space-x-1 font-mono">
-                                        <span class="text-2xl font-black text-slate-900">₹{{ number_format($plan->effective_price_per_tv, 0) }}</span>
-                                        <span class="text-xs text-slate-500 font-sans">/ TV / {{ ($plan->billing_cycle ?? 'monthly') === 'yearly' ? 'yr' : 'mo' }}</span>
+                                    @if($plan->description)
+                                        <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">{{ $plan->description }}</p>
+                                    @endif
+
+                                    <!-- Price Container matching plans/index.blade.php -->
+                                    <div class="mt-2.5 p-3 rounded-xl bg-slate-50/90 border border-slate-200/80 space-y-1.5">
+                                        <div class="flex items-baseline space-x-1 font-mono">
+                                            <span class="text-2xl font-black text-[#150A42]">₹{{ number_format($monthlyRate, 0) }}</span>
+                                            <span class="text-xs text-slate-500 font-sans font-bold">/ TV / month</span>
+                                        </div>
+
+                                        @if($cycle === 'yearly')
+                                            <div class="text-[11px] font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 flex items-center space-x-1.5">
+                                                <i class="fa-solid fa-crown text-[10px] text-amber-600"></i>
+                                                <span>Billed annually at ₹{{ number_format($annualTotal, 0) }} / TV / year</span>
+                                            </div>
+                                        @else
+                                            <div class="text-[11px] font-semibold text-slate-500 flex items-center space-x-1.5">
+                                                <i class="fa-solid fa-calendar-days text-[10px] text-purple-600"></i>
+                                                <span>Billed monthly</span>
+                                            </div>
+                                        @endif
+
+                                        <!-- Tax & Limits -->
+                                        <div class="pt-0.5 flex items-center space-x-2 flex-wrap gap-1 text-[10px]">
+                                            @if($plan->tax && $taxRate > 0)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold font-mono {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }}">
+                                                    <i class="fa-solid fa-shield-halved mr-1 text-[9px]"></i>
+                                                    {{ $plan->tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                                                    No Tax Applied
+                                                </span>
+                                            @endif
+
+                                            @if($plan->room_count)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-purple-50 text-[#150A42] border border-purple-100">
+                                                    Max {{ $plan->room_count }} TVs
+                                                </span>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center justify-between">
-                                    <span>
-                                        @if($plan->tax)
-                                            <i class="fa-solid fa-shield-halved text-purple-600 mr-1"></i> {{ $plan->tax->name }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
-                                        @else
-                                            <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Tax Exempt (0%)
-                                        @endif
+                                <!-- OTT Status & Menu Badges -->
+                                <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+                                    @if($plan->hasOtt())
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-purple-50 text-[#150A42] border border-purple-200/60 font-bold text-[11px] font-mono shadow-2xs">
+                                            <i class="fa-solid fa-play mr-1.5 text-[9px] text-purple-600"></i>
+                                            <span>OTT: {{ count($plan->ott_platforms ?? []) }} Apps</span>
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-500 font-bold text-[11px] font-mono">
+                                            <i class="fa-solid fa-ban mr-1.5 text-[9px] text-slate-400"></i>
+                                            <span>OTT Disabled</span>
+                                        </span>
+                                    @endif
+
+                                    @php
+                                        $totalMenusInSystem = \App\Models\Plan::totalMenusCount();
+                                        $menusCount = is_array($plan->allowed_menus) ? count($plan->allowed_menus) : $totalMenusInSystem;
+                                    @endphp
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-[11px] font-mono shadow-2xs">
+                                        <i class="fa-solid fa-bars mr-1.5 text-[9px] text-slate-500"></i>
+                                        <span>{{ $menusCount }}/{{ $totalMenusInSystem }} Menus</span>
                                     </span>
-                                    <span class="font-bold text-slate-700 font-mono">{{ $plan->ott_count }} Apps</span>
                                 </div>
                             </label>
                         @endforeach
@@ -589,30 +653,38 @@ function recalculatePricing() {
     const tvInput = document.getElementById('hotel_tv_input');
     if (!selectedPlan || !tvInput) return;
 
-    const ratePerTv = parseFloat(selectedPlan.getAttribute('data-price-per-tv')) || 0;
+    const monthlyRate = parseFloat(selectedPlan.getAttribute('data-monthly-rate')) || parseFloat(selectedPlan.getAttribute('data-price-per-tv')) || 0;
+    const annualTotal = parseFloat(selectedPlan.getAttribute('data-annual-total')) || (monthlyRate * 12);
     const cycle = selectedPlan.getAttribute('data-cycle') || 'monthly';
+    const isYearly = (cycle === 'yearly');
     const taxRate = parseFloat(selectedPlan.getAttribute('data-tax-rate')) || 0;
     const taxType = selectedPlan.getAttribute('data-tax-type') || 'exclusive';
     const taxName = selectedPlan.getAttribute('data-tax-name') || 'No Tax';
     const tvCount = Math.max(1, parseInt(tvInput.value) || 1);
 
-    const subtotal = ratePerTv * tvCount;
+    // Unit rate for the billing cycle (Yearly = annualTotal, Monthly = monthlyRate)
+    const unitRate = isYearly ? annualTotal : monthlyRate;
+    const subtotal = Math.round((unitRate * tvCount) * 100) / 100;
     let taxAmount = 0;
     let total = subtotal;
 
     if (taxRate > 0) {
         if (taxType === 'inclusive') {
-            taxAmount = subtotal - (subtotal / (1 + (taxRate / 100)));
+            taxAmount = Math.round((subtotal - (subtotal / (1 + (taxRate / 100)))) * 100) / 100;
             total = subtotal;
         } else {
-            taxAmount = subtotal * (taxRate / 100);
-            total = subtotal + taxAmount;
+            taxAmount = Math.round((subtotal * (taxRate / 100)) * 100) / 100;
+            total = Math.round((subtotal + taxAmount) * 100) / 100;
         }
     }
 
     const rateEl = document.getElementById('liveCalcRate');
     if (rateEl) {
-        rateEl.textContent = '₹' + ratePerTv.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' / TV / ' + (cycle === 'yearly' ? 'yr' : 'mo');
+        if (isYearly) {
+            rateEl.innerHTML = '₹' + monthlyRate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' / TV / mo <span class="text-amber-800 text-[11px] font-semibold">(Annual: ₹' + annualTotal.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' / TV / yr)</span>';
+        } else {
+            rateEl.textContent = '₹' + monthlyRate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' / TV / mo';
+        }
     }
 
     const countEl = document.getElementById('liveCalcTvCount');

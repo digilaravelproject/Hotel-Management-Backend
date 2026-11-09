@@ -502,7 +502,7 @@
                                     @endif
                                     <div class="flex items-center space-x-1.5">
                                         <i class="fa-solid fa-bars text-emerald-600 text-[11px]"></i>
-                                        <span>{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : '10' }} Launcher Menus Enabled</span>
+                                        <span>{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : \App\Models\Plan::totalMenusCount() }} Launcher Menus Enabled</span>
                                     </div>
                                 </div>
                             </label>

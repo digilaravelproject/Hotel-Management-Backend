@@ -214,10 +214,8 @@ class HotelAdminController extends Controller
         $tvCount = max(1, (int) $validated['tv_count']);
         $durationMonths = (int) $validated['duration_months'];
 
-        $unitRate = (float) $plan->effective_price_per_tv;
-        $isYearly = ($plan->billing_cycle === 'yearly');
-        $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
-        $subtotal = round($unitRate * $tvCount * $multiplier, 2);
+        $monthlyRate = (float) $plan->monthly_rate_per_tv;
+        $subtotal = round($monthlyRate * $tvCount * $durationMonths, 2);
 
         $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
         $taxType = $plan->tax_type ?? 'exclusive';
@@ -300,10 +298,8 @@ class HotelAdminController extends Controller
         }
 
         // Calculate dynamic subtotal & taxes based on duration and TV count
-        $unitRate = (float) $plan->effective_price_per_tv;
-        $isYearly = ($plan->billing_cycle === 'yearly');
-        $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
-        $subtotal = round($unitRate * $tvCount * $multiplier, 2);
+        $monthlyRate = (float) $plan->monthly_rate_per_tv;
+        $subtotal = round($monthlyRate * $tvCount * $durationMonths, 2);
 
         $tax = $plan->tax;
         $taxType = $plan->tax_type ?? 'exclusive';
