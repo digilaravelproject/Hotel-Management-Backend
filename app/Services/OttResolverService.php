@@ -24,6 +24,11 @@ class OttResolverService
         $hotel->loadMissing('plan');
         $plan = $hotel->plan;
         
+        // Strict Plan OTT Boundary: If plan explicitly disables OTT or hides apps menu, return empty array immediately
+        if ($plan && (!$plan->hasOtt() || !$plan->hasMenu('apps'))) {
+            return [];
+        }
+
         $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
         // Hierarchy evaluation:

@@ -26,7 +26,8 @@ class PlanController extends Controller
     {
         $ottPlatforms = Plan::getAvailableOttPlatforms();
         $taxes = Tax::where('status', true)->orderBy('name')->get();
-        return view('super_admin.plans.create', compact('ottPlatforms', 'taxes'));
+        $availableMenus = Plan::getAvailableMenusCatalog();
+        return view('super_admin.plans.create', compact('ottPlatforms', 'taxes', 'availableMenus'));
     }
 
     /**
@@ -42,8 +43,11 @@ class PlanController extends Controller
             'tax_type' => 'required|in:inclusive,exclusive',
             'room_count' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
+            'is_ott_enabled' => 'nullable|boolean',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
+            'allowed_menus' => 'nullable|array',
+            'allowed_menus.*' => 'string',
             'is_hidden' => 'nullable|boolean',
         ]);
 
@@ -54,6 +58,12 @@ class PlanController extends Controller
             ? (int) min((float) $rawRoomCount, 2147483647)
             : 1;
 
+        $isOttEnabled = $request->boolean('is_ott_enabled');
+        $ottPlatforms = $isOttEnabled ? $request->input('ott_platforms', []) : [];
+        $allowedMenus = $request->has('menu_settings_present') 
+            ? $request->input('allowed_menus', []) 
+            : ($request->has('allowed_menus') ? $request->input('allowed_menus', []) : null);
+
         Plan::create([
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
@@ -63,7 +73,9 @@ class PlanController extends Controller
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,
-            'ott_platforms' => $request->input('ott_platforms', []),
+            'is_ott_enabled' => $isOttEnabled,
+            'ott_platforms' => $ottPlatforms,
+            'allowed_menus' => $allowedMenus,
             'status' => true,
             'is_hidden' => $request->boolean('is_hidden'),
         ]);
@@ -80,7 +92,8 @@ class PlanController extends Controller
         $plan = Plan::with('tax')->findOrFail($id);
         $ottPlatforms = Plan::getAvailableOttPlatforms();
         $taxes = Tax::where('status', true)->orderBy('name')->get();
-        return view('super_admin.plans.edit', compact('plan', 'ottPlatforms', 'taxes'));
+        $availableMenus = Plan::getAvailableMenusCatalog();
+        return view('super_admin.plans.edit', compact('plan', 'ottPlatforms', 'taxes', 'availableMenus'));
     }
 
     /**
@@ -98,8 +111,11 @@ class PlanController extends Controller
             'tax_type' => 'required|in:inclusive,exclusive',
             'room_count' => 'nullable|integer|min:1',
             'description' => 'nullable|string',
+            'is_ott_enabled' => 'nullable|boolean',
             'ott_platforms' => 'nullable|array',
             'ott_platforms.*' => 'string',
+            'allowed_menus' => 'nullable|array',
+            'allowed_menus.*' => 'string',
             'is_hidden' => 'nullable|boolean',
         ]);
 
@@ -110,6 +126,12 @@ class PlanController extends Controller
             ? (int) min((float) $rawRoomCount, 2147483647)
             : ($plan->room_count ?? 1);
 
+        $isOttEnabled = $request->boolean('is_ott_enabled');
+        $ottPlatforms = $isOttEnabled ? $request->input('ott_platforms', []) : [];
+        $allowedMenus = $request->has('menu_settings_present') 
+            ? $request->input('allowed_menus', []) 
+            : ($request->has('allowed_menus') ? $request->input('allowed_menus', []) : null);
+
         $plan->update([
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
@@ -119,7 +141,9 @@ class PlanController extends Controller
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,
-            'ott_platforms' => $request->input('ott_platforms', []),
+            'is_ott_enabled' => $isOttEnabled,
+            'ott_platforms' => $ottPlatforms,
+            'allowed_menus' => $allowedMenus,
             'is_hidden' => $request->boolean('is_hidden'),
         ]);
 

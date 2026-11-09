@@ -75,7 +75,7 @@ class SubscriptionService
         $invoice = null;
         try {
             $tvCount = (int) ($context['tv_count'] ?? $hotel->room_count ?? $roomCount ?? 1);
-            $unitRate = (float) $plan->effective_price_per_tv;
+            $unitRate = (float) $plan->billed_amount_per_tv;
             $isYearly = ($plan->billing_cycle === 'yearly');
             $multiplier = $isYearly ? max(1, round($durationMonths / 12, 2)) : $durationMonths;
             $baseSubtotal = round($unitRate * $tvCount * $multiplier, 2);

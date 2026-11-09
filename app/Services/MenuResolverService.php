@@ -145,15 +145,18 @@ class MenuResolverService
     public function getResolvedMenusForDevice(ConnectedDevice $device, HotelAdmin $hotel): array
     {
         try {
+            $hotel->loadMissing('plan');
+            $plan = $hotel->plan;
+
             if (!is_null($device->menu_overrides) && is_array($device->menu_overrides)) {
-                return $this->resolveTree($device->menu_overrides);
+                $rawTree = $this->resolveTree($device->menu_overrides);
+            } elseif (!is_null($hotel->global_menu_settings) && is_array($hotel->global_menu_settings)) {
+                $rawTree = $this->resolveTree($hotel->global_menu_settings);
+            } else {
+                $rawTree = self::getDefaultMenus();
             }
 
-            if (!is_null($hotel->global_menu_settings) && is_array($hotel->global_menu_settings)) {
-                return $this->resolveTree($hotel->global_menu_settings);
-            }
-
-            return self::getDefaultMenus();
+            return $this->applyPlanPermissions($rawTree, $plan);
         } catch (\Throwable $e) {
             Log::error('MenuResolverService@getResolvedMenusForDevice Error: ' . $e->getMessage(), [
                 'device_id' => $device->id ?? null,
@@ -162,6 +165,50 @@ class MenuResolverService
 
             return self::getDefaultMenus();
         }
+    }
+
+    /**
+     * Enforce Plan level permission boundaries on the menu tree.
+     * Any feature/menu disabled in the Hotel's active Plan has its status set to 'hide'.
+     */
+    public function applyPlanPermissions(array $tree, ?\App\Models\Plan $plan): array
+    {
+        if (!$plan) {
+            return $tree;
+        }
+
+        foreach ($tree as &$node) {
+            $nodeId = $node['id'] ?? '';
+
+            if (!empty($node['sub_menus']) && is_array($node['sub_menus'])) {
+                $hasVisibleChild = false;
+                foreach ($node['sub_menus'] as &$sub) {
+                    $subId = $sub['id'] ?? '';
+                    if (!$plan->hasMenu($subId)) {
+                        $sub['status'] = 'hide';
+                    }
+                    if (($sub['status'] ?? 'show') === 'show') {
+                        $hasVisibleChild = true;
+                    }
+                }
+                unset($sub);
+
+                // If all children are hidden, hide parent container as well
+                if (!$hasVisibleChild) {
+                    $node['status'] = 'hide';
+                }
+            } else {
+                // Leaf menu node
+                if ($nodeId === 'apps' && (!$plan->hasOtt() || !$plan->hasMenu('apps'))) {
+                    $node['status'] = 'hide';
+                } elseif (!$plan->hasMenu($nodeId)) {
+                    $node['status'] = 'hide';
+                }
+            }
+        }
+        unset($node);
+
+        return $tree;
     }
 
     /**

@@ -420,7 +420,9 @@
                                 $taxRate = $effectiveTax ? (float) $effectiveTax->rate : 18.0;
                                 $taxName = $effectiveTax ? $effectiveTax->name : 'GST';
                                 $taxType = $plan->tax_type ?? 'exclusive';
-                                $unitRate = (float) $plan->effective_price_per_tv;
+                                $monthlyRate = (float) $plan->monthly_rate_per_tv;
+                                $annualTotal = (float) $plan->annual_total_per_tv;
+                                $billedRate = (float) $plan->billed_amount_per_tv;
                             @endphp
                             <label class="relative flex flex-col justify-between p-5 rounded-[22px] border-2 cursor-pointer transition-all hover:border-slate-300 bg-white has-[:checked]:border-[#150A42] has-[:checked]:bg-purple-50/30 has-[:checked]:shadow-xs group">
                                 <div>
@@ -447,7 +449,9 @@
                                                    name="plan_id" 
                                                    value="{{ $plan->id }}" 
                                                    {{ (old('plan_id', $selectedHotel && $selectedHotel->plan_id ? $selectedHotel->plan_id : ($loop->first ? $plan->id : '')) == $plan->id) ? 'checked' : '' }} 
-                                                   data-unit-rate="{{ $unitRate }}"
+                                                   data-unit-rate="{{ $billedRate }}"
+                                                   data-monthly-rate="{{ $monthlyRate }}"
+                                                   data-annual-total="{{ $annualTotal }}"
                                                    data-name="{{ $plan->name }}" 
                                                    data-billing-cycle="{{ $cycle }}"
                                                    data-tax-id="{{ $effectiveTax ? $effectiveTax->id : '' }}"
@@ -461,9 +465,14 @@
 
                                     <div class="font-black text-slate-900 text-sm sm:text-base">{{ $plan->name }}</div>
                                     <div class="text-xl font-black text-[#150A42] font-mono mt-1">
-                                        ₹{{ number_format($unitRate, 2) }} 
-                                        <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
+                                        ₹{{ number_format($monthlyRate, 2) }} 
+                                        <span class="text-[11px] text-slate-400 font-sans font-medium">/ TV / month</span>
                                     </div>
+                                    @if($cycle === 'yearly')
+                                        <div class="text-[10px] text-amber-800 font-bold font-mono mt-0.5">
+                                            Billed annually: ₹{{ number_format($annualTotal, 2) }} / TV / year
+                                        </div>
+                                    @endif
 
                                     <div class="mt-2 flex items-center space-x-1.5">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-purple-50 text-purple-700 border border-purple-100">
@@ -479,13 +488,20 @@
                                 </div>
 
                                 <div class="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-[10px] text-slate-600 font-semibold">
+                                    @if($plan->hasOtt())
+                                        <div class="flex items-center space-x-1.5">
+                                            <i class="fa-solid fa-play text-purple-600 text-[11px]"></i>
+                                            <span>{{ count($plan->ott_platforms ?? []) }} Streaming OTT Apps</span>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center space-x-1.5 text-slate-400">
+                                            <i class="fa-solid fa-ban text-slate-400 text-[11px]"></i>
+                                            <span>OTT Streaming Disabled</span>
+                                        </div>
+                                    @endif
                                     <div class="flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                        <span>Full In-Room TV Launcher & Themes</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[11px]"></i>
-                                        <span>Live Weather, Flight & Hotel Facilities</span>
+                                        <i class="fa-solid fa-bars text-emerald-600 text-[11px]"></i>
+                                        <span>{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : '10' }} Launcher Menus Enabled</span>
                                     </div>
                                 </div>
                             </label>
@@ -1007,7 +1023,13 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (summaryUnitRate) {
-            summaryUnitRate.textContent = `₹${unitRate.toFixed(2)} / TV / ${isYearly ? 'year' : 'month'}`;
+            const monthlyRate = parseFloat(selectedPlanRadio?.dataset?.monthlyRate) || unitRate;
+            const annualTotal = parseFloat(selectedPlanRadio?.dataset?.annualTotal) || (monthlyRate * 12);
+            if (isYearly) {
+                summaryUnitRate.innerHTML = `<span class="text-slate-900 font-bold">₹${monthlyRate.toFixed(2)} / TV / mo</span> <span class="text-[10px] text-amber-800 font-medium block font-sans">(Billed annually: ₹${annualTotal.toFixed(2)} / TV / yr)</span>`;
+            } else {
+                summaryUnitRate.textContent = `₹${monthlyRate.toFixed(2)} / TV / month`;
+            }
         }
 
         if (summaryDuration) {

@@ -79,13 +79,25 @@
                     </div>
 
                     <!-- Per-TV Price in Space Mono -->
-                    <div class="p-4 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 space-y-1.5">
+                    <div class="p-4 rounded-2xl bg-[#F8FAFC] border border-slate-200/80 space-y-2">
                         <div class="flex items-baseline space-x-1.5 flex-wrap">
                             <span class="text-3xl sm:text-4xl font-black text-[#150A42] font-mono tracking-tight leading-none">
-                                ₹{{ number_format($rate, 0) }}
+                                ₹{{ number_format($plan->monthly_rate_per_tv, 0) }}
                             </span>
-                            <span class="text-xs text-slate-500 font-sans font-semibold">/ TV / {{ $cycle === 'yearly' ? 'year' : 'month' }}</span>
+                            <span class="text-xs text-slate-500 font-sans font-bold">/ TV / month</span>
                         </div>
+
+                        @if($cycle === 'yearly')
+                            <div class="text-[11px] font-bold text-amber-900 bg-amber-50 px-2.5 py-1 rounded-xl border border-amber-200/80 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-crown text-[10px] text-amber-600"></i>
+                                <span>Billed annually at ₹{{ number_format($plan->annual_total_per_tv, 0) }} / TV / year</span>
+                            </div>
+                        @else
+                            <div class="text-[11px] font-semibold text-slate-500 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-calendar-days text-[10px] text-purple-600"></i>
+                                <span>Billed monthly</span>
+                            </div>
+                        @endif
                         
                         <!-- Tax Badge -->
                         <div class="pt-1 flex items-center space-x-2 flex-wrap gap-1">
@@ -108,14 +120,28 @@
                         </div>
                     </div>
 
-                    <!-- OTT Platforms Pill -->
-                    @if(!empty($plan->ott_platforms))
-                        <div class="flex items-center space-x-2 pt-1">
-                            <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs font-mono">
-                                <i class="fa-solid fa-tv mr-2 text-xs text-purple-600"></i> {{ count($plan->ott_platforms) }} Apps Included
+                    <!-- Features & OTT Status Badges -->
+                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        @if($plan->hasOtt())
+                            <span class="inline-flex items-center px-2.5 py-1.5 rounded-xl bg-purple-50 text-[#150A42] border border-purple-200/60 font-bold text-xs font-mono shadow-2xs">
+                                <i class="fa-solid fa-play mr-1.5 text-xs text-purple-600"></i>
+                                <span>OTT: {{ count($plan->ott_platforms ?? []) }} Apps</span>
                             </span>
-                        </div>
-                    @endif
+                        @else
+                            <span class="inline-flex items-center px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-500 font-bold text-xs font-mono">
+                                <i class="fa-solid fa-ban mr-1.5 text-xs text-slate-400"></i>
+                                <span>OTT Disabled</span>
+                            </span>
+                        @endif
+
+                        @php
+                            $menusCount = is_array($plan->allowed_menus) ? count($plan->allowed_menus) : 10;
+                        @endphp
+                        <span class="inline-flex items-center px-2.5 py-1.5 rounded-xl bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs font-mono shadow-2xs">
+                            <i class="fa-solid fa-bars mr-1.5 text-xs text-slate-400"></i>
+                            <span>{{ $menusCount }}/10 Menus</span>
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Footer Interactive Controls -->

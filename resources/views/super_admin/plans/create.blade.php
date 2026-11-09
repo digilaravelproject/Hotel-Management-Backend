@@ -164,10 +164,13 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                    <!-- Price Per TV -->
+                    <!-- Price Per TV (Monthly Rate Per TV) -->
                     <div>
-                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5">
-                            Price Per Connected TV (₹ INR) <span class="text-rose-500 font-black">*</span>
+                        <label class="block text-xs sm:text-sm font-bold text-slate-700 mb-1.5 flex items-center justify-between">
+                            <span>Monthly Rate Per TV (₹ INR) <span class="text-rose-500 font-black">*</span></span>
+                            <span id="cycle_rate_hint_badge" class="text-[10px] px-2 py-0.5 rounded-full font-mono font-bold bg-purple-100 text-[#150A42]">
+                                ₹ / TV / month
+                            </span>
                         </label>
                         <div class="relative">
                             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 font-bold text-sm">₹</span>
@@ -179,10 +182,12 @@
                                    step="0.01" 
                                    value="{{ old('price_per_tv', 150) }}" 
                                    oninput="calculateFormPreview()"
-                                   placeholder="e.g. 150" 
+                                   placeholder="e.g. 99" 
                                    class="w-full pl-10 pr-4 py-2.5 sm:py-3 text-sm rounded-2xl border border-slate-200 focus:outline-none focus:ring-4 focus:ring-[#150A42]/10 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-900 transition-all font-mono font-bold placeholder:text-slate-400">
                         </div>
-                        <p class="text-[11px] text-slate-500 mt-1 font-medium">Hotel selects TV count during subscription (e.g. 30 TVs × ₹150 = ₹4,500 base).</p>
+                        <p id="cycle_rate_explanation" class="text-[11px] text-slate-500 mt-1.5 font-medium leading-relaxed">
+                            Rate is entered per TV per month. If <strong>Yearly</strong> is selected, annual billing (12 × monthly rate) is auto-calculated.
+                        </p>
                     </div>
 
                     <!-- Max Room / TV Limit (Optional ceiling) -->
@@ -269,27 +274,42 @@
                     </div>
 
                     <!-- Real-Time Live Preview Calculation Table -->
-                    <div class="mt-3 p-3.5 rounded-xl bg-white border border-slate-200/80 space-y-2">
-                        <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex flex-wrap items-center justify-between gap-1">
-                            <span><i class="fa-solid fa-calculator mr-1"></i> Live TV Pricing Matrix</span>
-                            <span id="preview_tax_badge" class="text-[10px] px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200">18% GST (Exclusive)</span>
+                    <div class="mt-3 p-3.5 sm:p-4 rounded-xl bg-white border border-slate-200/80 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
+                            <div>
+                                <div class="text-[11px] font-extrabold uppercase font-mono tracking-wider text-purple-900 flex items-center space-x-1.5">
+                                    <i class="fa-solid fa-calculator text-purple-600"></i>
+                                    <span>Live Per-TV Pricing Matrix</span>
+                                </div>
+                                <div id="preview_headline_text" class="text-xs font-bold text-slate-700 mt-0.5">
+                                    Headline: <span class="text-[#150A42] font-black font-mono">₹150 / TV / month</span> (Billed monthly)
+                                </div>
+                            </div>
+                            <span id="preview_tax_badge" class="text-[10px] px-2.5 py-1 rounded-md bg-purple-50 text-purple-700 font-bold border border-purple-200 self-start sm:self-auto font-mono">
+                                18% GST (Exclusive)
+                            </span>
                         </div>
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-center font-mono">
-                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5 text-center font-mono">
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                                 <div class="text-[10px] text-slate-500 font-sans truncate">10 Connected TVs</div>
-                                <div id="preview_10" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹1,770</div>
+                                <div id="preview_10" class="text-xs sm:text-sm font-extrabold text-[#150A42] mt-0.5 truncate">₹1,770</div>
+                                <div id="preview_cycle_10" class="text-[9px] text-slate-400 font-sans font-medium mt-0.5">per month</div>
                             </div>
-                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                                 <div class="text-[10px] text-slate-500 font-sans truncate">25 Connected TVs</div>
-                                <div id="preview_25" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹4,425</div>
+                                <div id="preview_25" class="text-xs sm:text-sm font-extrabold text-[#150A42] mt-0.5 truncate">₹4,425</div>
+                                <div id="preview_cycle_25" class="text-[9px] text-slate-400 font-sans font-medium mt-0.5">per month</div>
                             </div>
-                            <div class="p-2 rounded-lg bg-purple-50 border border-purple-100">
+                            <div class="p-2.5 rounded-xl bg-purple-50 border border-purple-100">
                                 <div class="text-[10px] text-purple-700 font-sans font-bold truncate">50 Connected TVs</div>
-                                <div id="preview_50" class="text-xs font-black text-[#150A42] mt-0.5 truncate">₹8,850</div>
+                                <div id="preview_50" class="text-xs sm:text-sm font-black text-[#150A42] mt-0.5 truncate">₹8,850</div>
+                                <div id="preview_cycle_50" class="text-[9px] text-purple-600 font-sans font-bold mt-0.5">per month</div>
                             </div>
-                            <div class="p-2 rounded-lg bg-slate-50 border border-slate-100">
+                            <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-100">
                                 <div class="text-[10px] text-slate-500 font-sans truncate">100 Connected TVs</div>
-                                <div id="preview_100" class="text-xs font-extrabold text-[#150A42] mt-0.5 truncate">₹17,700</div>
+                                <div id="preview_100" class="text-xs sm:text-sm font-extrabold text-[#150A42] mt-0.5 truncate">₹17,700</div>
+                                <div id="preview_cycle_100" class="text-[9px] text-slate-400 font-sans font-medium mt-0.5">per month</div>
                             </div>
                         </div>
                     </div>
@@ -341,7 +361,96 @@
                 </div>
             </div>
 
-            <!-- Section 2: Included OTT Platforms (With Real Official Icons & Live Edit/Add/Delete) -->
+            <!-- Section 2: Launcher Menus & Navigation Features -->
+            <input type="hidden" name="menu_settings_present" value="1">
+            <div class="space-y-5 pt-6 border-t border-slate-100">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                    <div class="flex items-center space-x-3.5">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 2</span>
+                                <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Launcher Menus & Features Control</h2>
+                            </div>
+                            <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Control which navigation buttons appear on the TV launcher. Unchecked screens will be hidden (<code class="text-rose-600 bg-rose-50 px-1 py-0.5 rounded font-mono text-[11px]">status: "hide"</code>).</p>
+                        </div>
+                    </div>
+
+                    <!-- Right Controls: Select/Deselect All & Active Counter -->
+                    <div class="flex items-center gap-2 sm:gap-2.5">
+                        <button type="button" 
+                                onclick="toggleAllMenus(true)" 
+                                class="px-3 py-2 rounded-xl bg-purple-50/80 border border-purple-200/80 text-xs font-bold text-[#150A42] hover:bg-purple-100/70 transition-colors shadow-2xs cursor-pointer">
+                            Select All
+                        </button>
+                        <button type="button" 
+                                onclick="toggleAllMenus(false)" 
+                                class="px-3 py-2 rounded-xl bg-slate-100 border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-200 transition-colors shadow-2xs cursor-pointer">
+                            Deselect All
+                        </button>
+                        <span id="selectedMenusBadge" class="px-3 py-2 rounded-xl text-xs font-bold font-mono bg-white text-slate-700 border border-slate-200 shadow-2xs">
+                            10 of 10 enabled
+                        </span>
+                    </div>
+                </div>
+
+                @php
+                    $oldAllowedMenus = old('allowed_menus', array_keys($availableMenus ?? []));
+                    if (!is_array($oldAllowedMenus)) {
+                        $oldAllowedMenus = array_keys($availableMenus ?? []);
+                    }
+                @endphp
+
+                <!-- 10 Menus Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl">
+                    @foreach(($availableMenus ?? []) as $menuKey => $menuInfo)
+                        @php
+                            $isMenuChecked = in_array($menuKey, $oldAllowedMenus, true);
+                        @endphp
+                        <label class="menu-card relative p-3.5 sm:p-4 bg-white border-2 rounded-2xl flex items-start space-x-3.5 cursor-pointer transition-all select-none hover:shadow-xs {{ $isMenuChecked ? 'border-[#150A42] bg-purple-50/40 ring-1 ring-[#150A42]/10' : 'border-slate-200/90 bg-white opacity-60 hover:opacity-100' }}"
+                               onclick="handleMenuCardClick(event, this)">
+                            <input type="checkbox" 
+                                   name="allowed_menus[]" 
+                                   value="{{ $menuKey }}" 
+                                   id="menu_cb_{{ $menuKey }}"
+                                   class="menu-checkbox sr-only" 
+                                   {{ $isMenuChecked ? 'checked' : '' }}
+                                   onchange="handleMenuCheckboxChange(this)">
+
+                            <!-- Menu Icon -->
+                            <div class="w-10 h-10 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm font-extrabold shrink-0 shadow-2xs mt-0.5">
+                                <i class="fa-solid {{ $menuInfo['icon'] ?? 'fa-circle' }}"></i>
+                            </div>
+
+                            <!-- Menu Details -->
+                            <div class="min-w-0 flex-1 pr-6">
+                                <div class="flex items-center space-x-1.5">
+                                    <h4 class="text-xs sm:text-sm font-extrabold text-slate-900 leading-snug">
+                                        {{ $menuInfo['name'] }}
+                                    </h4>
+                                    @if($menuKey === 'apps')
+                                        <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase font-mono bg-purple-100 text-[#150A42]">OTT Host</span>
+                                    @endif
+                                </div>
+                                <p class="text-[11px] text-slate-500 font-medium mt-0.5 line-clamp-2 leading-relaxed">
+                                    {{ $menuInfo['desc'] }}
+                                </p>
+                            </div>
+
+                            <!-- Checkbox Indicator Badge -->
+                            <div class="absolute top-3.5 right-3.5 shrink-0 pointer-events-none">
+                                <div class="menu-check-indicator w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all {{ $isMenuChecked ? 'bg-[#150A42] border-[#150A42] text-white shadow-xs' : 'border-slate-300 bg-white text-transparent' }}">
+                                    <i class="fa-solid fa-check text-[9px]"></i>
+                                </div>
+                            </div>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <!-- Section 3: Included OTT Platforms (Master Switch + OTT Apps Selection) -->
             <div class="space-y-5 pt-6 border-t border-slate-100">
                 <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
@@ -350,7 +459,7 @@
                         </div>
                         <div>
                             <div class="flex items-center space-x-2">
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 2</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider bg-purple-50 text-[#150A42] font-mono border border-purple-100">Step 3</span>
                                 <h2 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Included OTT Platforms</h2>
                             </div>
                             <p class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">Streaming entertainment applications unlocked and pre-installed for this tier.</p>
@@ -358,7 +467,7 @@
                     </div>
 
                     <!-- Right Controls: Sleek Single-Line Toolbar -->
-                    <div class="flex flex-wrap items-center gap-2 sm:gap-2.5">
+                    <div class="flex flex-wrap items-center gap-2 sm:gap-2.5" id="ottHeaderControls">
                         <label class="inline-flex items-center space-x-2 px-3 py-2 rounded-xl bg-purple-50/80 border border-purple-200/80 text-xs font-bold text-[#150A42] hover:bg-purple-100/70 cursor-pointer select-none transition-colors shadow-2xs">
                             <input type="checkbox" id="selectAllOtt" class="w-4 h-4 rounded border-slate-300 text-[#150A42] focus:ring-[#150A42]/20 cursor-pointer">
                             <span>Select All</span>
@@ -385,6 +494,46 @@
                 </div>
 
                 @php
+                    $isOttEnabled = (bool) old('is_ott_enabled', 1);
+                @endphp
+
+                <!-- Master Toggle Banner for OTT -->
+                <div class="p-4 sm:p-5 rounded-2xl border-2 transition-all {{ $isOttEnabled ? 'border-purple-200 bg-purple-50/40' : 'border-slate-200 bg-slate-50' }}" id="ottMasterCard">
+                    <div class="flex items-center justify-between gap-4">
+                        <div class="flex items-center space-x-3.5 min-w-0">
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sm shrink-0 shadow-2xs {{ $isOttEnabled ? 'bg-[#150A42] text-white' : 'bg-slate-200 text-slate-500' }}" id="ottMasterIcon">
+                                <i class="fa-solid fa-film"></i>
+                            </div>
+                            <div class="min-w-0">
+                                <div class="flex items-center space-x-2 flex-wrap">
+                                    <label for="toggle_is_ott_enabled" class="text-xs sm:text-sm font-extrabold text-slate-900 cursor-pointer">
+                                        Enable Streaming OTT Applications for this Plan
+                                    </label>
+                                    <span id="ottMasterBadge" class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase font-mono tracking-wider {{ $isOttEnabled ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-slate-200 text-slate-600 border border-slate-300' }}">
+                                        {{ $isOttEnabled ? 'Enabled' : 'Disabled / Hidden' }}
+                                    </span>
+                                </div>
+                                <p class="text-xs text-slate-500 font-medium mt-0.5" id="ottMasterHint">
+                                    {{ $isOttEnabled ? 'OTT streaming apps are enabled. Devices will load the active applications selected below.' : 'OTT is completely disabled. TV JSON will pass empty active_ott: [] and hide OTT screens.' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Master Switch Toggle -->
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" 
+                                   name="is_ott_enabled" 
+                                   id="toggle_is_ott_enabled" 
+                                   value="1" 
+                                   {{ $isOttEnabled ? 'checked' : '' }} 
+                                   onchange="onToggleOttMaster(this)"
+                                   class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
+                        </label>
+                    </div>
+                </div>
+
+                @php
                     $oldPlatforms = old('ott_platforms', []);
                     if (!is_array($oldPlatforms)) {
                         $oldPlatforms = [];
@@ -392,7 +541,8 @@
                 @endphp
 
                 <!-- Real Image Icon Grid with Generous Title Room & Top-Right Checkmarks -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
+                <div id="ottGridContainer" class="{{ $isOttEnabled ? '' : 'hidden opacity-50 pointer-events-none' }}">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 p-3.5 sm:p-5 bg-[#F8F9FD] border border-slate-200/80 rounded-2xl" id="ottCardsGrid">
                     @foreach($ottPlatforms as $ott)
                         @php
                             $ottId = $ott['id'] ?? 0;
@@ -449,6 +599,7 @@
                             </div>
                         </div>
                     @endforeach
+                    </div>
                 </div>
             </div>
 
@@ -592,7 +743,11 @@ const taxNamesMap = @json($taxNamesMap);
 
 function calculateFormPreview() {
     const pricePerTvInput = document.getElementById('input_price_per_tv');
-    const rate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
+    const monthlyRate = parseFloat(pricePerTvInput ? pricePerTvInput.value : 0) || 0;
+
+    const cycleRadio = document.querySelector('input[name="billing_cycle"]:checked');
+    const cycle = cycleRadio ? cycleRadio.value : 'monthly';
+    const isYearly = (cycle === 'yearly');
 
     const selectTax = document.getElementById('select_tax_id');
     const selectedTaxId = selectTax ? String(selectTax.value || '') : '';
@@ -602,30 +757,64 @@ function calculateFormPreview() {
     const taxTypeEl = document.querySelector('input[name="tax_type"]:checked');
     const taxType = taxTypeEl ? taxTypeEl.value : 'exclusive';
 
+    const annualTotalPerTv = Math.round((monthlyRate * 12) * 100) / 100;
+
+    // Update dynamic headline preview
+    const headlineEl = document.getElementById('preview_headline_text');
+    if (headlineEl) {
+        if (isYearly) {
+            headlineEl.innerHTML = `Headline: <span class="text-[#150A42] font-black font-mono">₹${monthlyRate.toLocaleString('en-IN')} / TV / month</span> <span class="text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-[10px] ml-1">Billed annually at ₹${annualTotalPerTv.toLocaleString('en-IN')} / TV / year (₹${monthlyRate} × 12)</span>`;
+        } else {
+            headlineEl.innerHTML = `Headline: <span class="text-[#150A42] font-black font-mono">₹${monthlyRate.toLocaleString('en-IN')} / TV / month</span> <span class="text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 text-[10px] ml-1">Billed monthly</span>`;
+        }
+    }
+
     const badge = document.getElementById('preview_tax_badge');
     if (badge) {
         if (taxRate > 0) {
             badge.textContent = `${taxRate}% ${taxName} (${taxType.charAt(0).toUpperCase() + taxType.slice(1)})`;
-            badge.className = `text-[10px] px-2 py-0.5 rounded-md font-bold ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}`;
+            badge.className = `text-[10px] px-2.5 py-1 rounded-md font-bold font-mono ${taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-purple-50 text-purple-700 border border-purple-200'}`;
         } else {
             badge.textContent = 'No Tax (0%)';
-            badge.className = 'text-[10px] px-2 py-0.5 rounded-md font-semibold bg-slate-100 text-slate-600 border border-slate-200';
+            badge.className = 'text-[10px] px-2.5 py-1 rounded-md font-semibold font-mono bg-slate-100 text-slate-600 border border-slate-200';
         }
     }
+
+    // Rate applied for total calculation: if yearly, price is multiplied by 12
+    const effectiveBilledRate = isYearly ? annualTotalPerTv : monthlyRate;
 
     const tiers = [10, 25, 50, 100];
     tiers.forEach(tvCount => {
         let total = 0;
         if (taxType === 'inclusive') {
-            total = Math.round(tvCount * rate * 100) / 100;
+            total = Math.round(tvCount * effectiveBilledRate * 100) / 100;
         } else {
-            const subtotal = Math.round(tvCount * rate * 100) / 100;
+            const subtotal = Math.round(tvCount * effectiveBilledRate * 100) / 100;
             const taxAmount = Math.round(subtotal * (taxRate / 100) * 100) / 100;
             total = subtotal + taxAmount;
         }
         const el = document.getElementById(`preview_${tvCount}`);
         if (el) el.textContent = '₹' + total.toLocaleString('en-IN');
+
+        const cycleEl = document.getElementById(`preview_cycle_${tvCount}`);
+        if (cycleEl) {
+            cycleEl.textContent = isYearly ? 'per year (12 mos)' : 'per month';
+            cycleEl.className = isYearly ? 'text-[9px] text-amber-700 font-sans font-bold mt-0.5' : 'text-[9px] text-slate-400 font-sans font-medium mt-0.5';
+        }
     });
+
+    // Update explanation under input
+    const explEl = document.getElementById('cycle_rate_explanation');
+    const hintBadge = document.getElementById('cycle_rate_hint_badge');
+    if (explEl && hintBadge) {
+        if (isYearly) {
+            hintBadge.textContent = '₹ / TV / month (Billed Yearly)';
+            explEl.innerHTML = `Hotel sees <strong>₹${monthlyRate.toLocaleString('en-IN')} / TV / month</strong>, billed annually at <strong>₹${annualTotalPerTv.toLocaleString('en-IN')} / TV / year</strong> (₹${monthlyRate} × 12).`;
+        } else {
+            hintBadge.textContent = '₹ / TV / month (Billed Monthly)';
+            explEl.innerHTML = `Hotel sees and pays <strong>₹${monthlyRate.toLocaleString('en-IN')} / TV / month</strong> every 30 days.`;
+        }
+    }
 }
 
 // 1. High-Contrast Interactive Billing Cycle Selector
@@ -674,20 +863,6 @@ function updateBillingCycleUI(cycle) {
     }
 }
 
-// 3. Toggle Hide Plan Badge Live Sync
-function onToggleHidePlan(cb) {
-    const badge = document.getElementById('hide_plan_badge');
-    if (badge) {
-        if (cb.checked) {
-            badge.classList.remove('hidden');
-            badge.classList.add('inline-flex');
-        } else {
-            badge.classList.add('hidden');
-            badge.classList.remove('inline-flex');
-        }
-    }
-}
-
 // 2. High-Contrast Interactive Tax Calculation Mode Selector
 function updateTaxTypeUI(type) {
     const cardEx = document.getElementById('card_tax_exclusive');
@@ -725,6 +900,99 @@ function onToggleHidePlan(cb) {
         }
     }
 }
+
+// 4. Menus & Features Control Handlers
+function syncMenuCardState(cb) {
+    const card = cb.closest('.menu-card');
+    const indicator = card ? card.querySelector('.menu-check-indicator') : null;
+    if (card && indicator) {
+        if (cb.checked) {
+            card.classList.remove('opacity-60', 'bg-white');
+            card.classList.add('border-[#150A42]', 'bg-purple-50/40', 'ring-1', 'ring-[#150A42]/10');
+            indicator.className = 'menu-check-indicator w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all bg-[#150A42] border-[#150A42] text-white shadow-xs';
+        } else {
+            card.classList.remove('border-[#150A42]', 'bg-purple-50/40', 'ring-1', 'ring-[#150A42]/10');
+            card.classList.add('border-slate-200/90', 'bg-white', 'opacity-60');
+            indicator.className = 'menu-check-indicator w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all border-slate-300 bg-white text-transparent';
+        }
+    }
+}
+
+function updateMenusCounter() {
+    const allMenuCbs = document.querySelectorAll('.menu-checkbox');
+    const checkedCount = document.querySelectorAll('.menu-checkbox:checked').length;
+    const badge = document.getElementById('selectedMenusBadge');
+    if (badge) {
+        badge.textContent = `${checkedCount} of ${allMenuCbs.length} enabled`;
+    }
+}
+
+window.handleMenuCardClick = function(event, card) {
+    if (event.target.closest('input')) return;
+    const cb = card.querySelector('.menu-checkbox');
+    if (cb) {
+        cb.checked = !cb.checked;
+        syncMenuCardState(cb);
+        updateMenusCounter();
+    }
+};
+
+window.handleMenuCheckboxChange = function(cb) {
+    syncMenuCardState(cb);
+    updateMenusCounter();
+};
+
+window.toggleAllMenus = function(selectAll) {
+    document.querySelectorAll('.menu-checkbox').forEach(cb => {
+        cb.checked = selectAll;
+        syncMenuCardState(cb);
+    });
+    updateMenusCounter();
+};
+
+// 5. OTT Master Toggle Handler
+window.onToggleOttMaster = function(cb) {
+    const gridContainer = document.getElementById('ottGridContainer');
+    const headerControls = document.getElementById('ottHeaderControls');
+    const masterCard = document.getElementById('ottMasterCard');
+    const masterBadge = document.getElementById('ottMasterBadge');
+    const masterIcon = document.getElementById('ottMasterIcon');
+    const masterHint = document.getElementById('ottMasterHint');
+
+    if (cb.checked) {
+        if (gridContainer) gridContainer.classList.remove('hidden', 'opacity-50', 'pointer-events-none');
+        if (headerControls) headerControls.classList.remove('opacity-40', 'pointer-events-none');
+        if (masterCard) {
+            masterCard.className = 'p-4 sm:p-5 rounded-2xl border-2 transition-all border-purple-200 bg-purple-50/40';
+        }
+        if (masterBadge) {
+            masterBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black uppercase font-mono tracking-wider bg-emerald-100 text-emerald-800 border border-emerald-200';
+            masterBadge.textContent = 'Enabled';
+        }
+        if (masterIcon) {
+            masterIcon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-sm shrink-0 shadow-2xs bg-[#150A42] text-white';
+        }
+        if (masterHint) {
+            masterHint.textContent = 'OTT streaming apps are enabled. Devices will load the active applications selected below.';
+        }
+    } else {
+        if (gridContainer) gridContainer.classList.add('hidden', 'opacity-50', 'pointer-events-none');
+        if (headerControls) headerControls.classList.add('opacity-40', 'pointer-events-none');
+        if (masterCard) {
+            masterCard.className = 'p-4 sm:p-5 rounded-2xl border-2 transition-all border-slate-200 bg-slate-50';
+        }
+        if (masterBadge) {
+            masterBadge.className = 'px-2 py-0.5 rounded-full text-[10px] font-black uppercase font-mono tracking-wider bg-slate-200 text-slate-600 border border-slate-300';
+            masterBadge.textContent = 'Disabled / Hidden';
+        }
+        if (masterIcon) {
+            masterIcon.className = 'w-10 h-10 rounded-xl flex items-center justify-center text-sm shrink-0 shadow-2xs bg-slate-200 text-slate-500';
+        }
+        if (masterHint) {
+            masterHint.textContent = 'OTT is completely disabled. TV JSON will pass empty active_ott: [] and hide OTT screens.';
+        }
+    }
+};
 
 document.addEventListener('DOMContentLoaded', function () {
     const selectAllCheckbox = document.getElementById('selectAllOtt');
@@ -803,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     updateCounterAndSelectAll();
+    updateMenusCounter();
     calculateFormPreview();
 });
 

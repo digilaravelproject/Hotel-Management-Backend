@@ -84,8 +84,11 @@
             
             <div class="text-left sm:text-right">
                 <div class="text-3xl font-black font-mono text-[#150A42]">
-                    ₹{{ $plan ? number_format($plan->price, 0) : '0' }}<span class="text-xs text-slate-400 font-bold font-sans"> /month</span>
+                    ₹{{ $plan ? number_format($plan->monthly_rate_per_tv, 0) : '0' }}<span class="text-xs text-slate-400 font-bold font-sans"> / TV / month</span>
                 </div>
+                @if($plan && $plan->billing_cycle === 'yearly')
+                    <p class="text-[11px] font-bold text-amber-800 font-mono mt-0.5">Billed annually: ₹{{ number_format($plan->annual_total_per_tv, 0) }} / TV / year</p>
+                @endif
                 <p class="text-xs text-slate-500 font-medium mt-1">Allowed Devices Limit: <strong class="text-purple-700 font-black font-mono">{{ $hotel->allowed_device_limit }} TVs</strong></p>
             </div>
         </div>

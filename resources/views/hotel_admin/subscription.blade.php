@@ -214,7 +214,9 @@
                     <div class="grid grid-cols-2 gap-2.5 sm:gap-3.5">
                         @foreach($plans as $plan)
                             @php
-                                $rate = (float) $plan->effective_price_per_tv;
+                                $monthlyRate = (float) $plan->monthly_rate_per_tv;
+                                $annualTotal = (float) $plan->annual_total_per_tv;
+                                $billedRate = (float) $plan->billed_amount_per_tv;
                                 $tax = $plan->tax;
                                 $taxRate = $tax ? $tax->rate : 0;
                                 $taxType = $plan->tax_type ?? 'exclusive';
@@ -238,7 +240,9 @@
                                         <input type="radio" 
                                                name="plan_id" 
                                                value="{{ $plan->id }}" 
-                                               data-rate="{{ $rate }}" 
+                                               data-rate="{{ $billedRate }}" 
+                                               data-monthly-rate="{{ $monthlyRate }}"
+                                               data-annual-total="{{ $annualTotal }}"
                                                data-cycle="{{ $cycle }}"
                                                data-tax-rate="{{ $taxRate }}"
                                                data-tax-name="{{ $tax ? $tax->name : 'GST' }}"
@@ -252,9 +256,14 @@
                                     <div>
                                         <div class="font-black text-slate-900 text-xs sm:text-sm truncate">{{ $plan->name }}</div>
                                         <div class="text-base sm:text-xl font-black text-[#150A42] mt-0.5 font-mono">
-                                            ₹{{ number_format($rate, 0) }} 
-                                            <span class="text-[9px] sm:text-[10px] text-slate-400 font-sans font-medium block sm:inline">/ TV / {{ $cycle === 'yearly' ? 'yr' : 'mo' }}</span>
+                                            ₹{{ number_format($monthlyRate, 0) }} 
+                                            <span class="text-[9px] sm:text-[10px] text-slate-400 font-sans font-medium block sm:inline">/ TV / month</span>
                                         </div>
+                                        @if($cycle === 'yearly')
+                                            <div class="text-[9px] text-amber-800 font-bold font-mono mt-0.5">
+                                                Billed annually: ₹{{ number_format($annualTotal, 0) }} / TV / yr
+                                            </div>
+                                        @endif
 
                                         <!-- Tax Pill -->
                                         <div class="mt-1.5">
@@ -278,13 +287,20 @@
                                 </div>
 
                                 <div class="mt-2.5 pt-2 border-t border-slate-100 space-y-1 text-[9px] sm:text-[10px] text-slate-600 font-medium">
+                                    @if($plan->hasOtt())
+                                        <div class="flex items-center space-x-1.5 truncate">
+                                            <i class="fa-solid fa-play text-purple-600 text-[9px] shrink-0"></i>
+                                            <span class="truncate">{{ count($plan->ott_platforms ?? []) }} Streaming Apps</span>
+                                        </div>
+                                    @else
+                                        <div class="flex items-center space-x-1.5 truncate text-slate-400">
+                                            <i class="fa-solid fa-ban text-slate-400 text-[9px] shrink-0"></i>
+                                            <span class="truncate">OTT Excluded</span>
+                                        </div>
+                                    @endif
                                     <div class="flex items-center space-x-1.5 truncate">
-                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[9px] shrink-0"></i>
-                                        <span class="truncate">TV Launcher & Themes</span>
-                                    </div>
-                                    <div class="flex items-center space-x-1.5 truncate">
-                                        <i class="fa-solid fa-circle-check text-emerald-600 text-[9px] shrink-0"></i>
-                                        <span class="truncate">Cloud CMS & Controls</span>
+                                        <i class="fa-solid fa-bars text-purple-600 text-[9px] shrink-0"></i>
+                                        <span class="truncate">{{ is_array($plan->allowed_menus) ? count($plan->allowed_menus) : '10' }} Launcher Menus</span>
                                     </div>
                                 </div>
                             </label>
@@ -780,9 +796,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const summaryTvCount = document.getElementById('summaryTvCount');
         if (summaryTvCount) summaryTvCount.textContent = `${tvCount} Smart TVs`;
 
+        const monthlyRate = parseFloat(sel.dataset.monthlyRate) || rate;
+        const annualTotal = parseFloat(sel.dataset.annualTotal) || (monthlyRate * 12);
         const summaryRateDisplay = document.getElementById('summaryRateDisplay');
         if (summaryRateDisplay) {
-            summaryRateDisplay.textContent = `₹${rate.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} / TV / ${isYearly ? 'year' : 'month'}`;
+            if (isYearly) {
+                summaryRateDisplay.innerHTML = `<span class="text-slate-900 font-bold">₹${monthlyRate.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} / TV / mo</span> <span class="text-[10px] text-amber-800 font-medium block">(Billed annually: ₹${annualTotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} / TV / yr)</span>`;
+            } else {
+                summaryRateDisplay.textContent = `₹${monthlyRate.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})} / TV / month`;
+            }
         }
 
         const summaryDurationText = document.getElementById('summaryDurationText');
