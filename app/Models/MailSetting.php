@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class MailSetting extends Model
 {
@@ -101,6 +102,13 @@ class MailSetting extends Model
 
         if (!empty($this->mail_from_name)) {
             Config::set('mail.from.name', $this->mail_from_name);
+        }
+
+        // Purge cached mail transport to force Laravel to use refreshed credentials
+        try {
+            Mail::purge($mailer);
+        } catch (\Throwable $t) {
+            // ignore if MailManager not booted
         }
     }
 }
