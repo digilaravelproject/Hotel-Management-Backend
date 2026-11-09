@@ -98,7 +98,7 @@ class MailSettingController extends Controller
         ];
 
         try {
-            Mail::to($request->test_email)->send(new TestMail($details));
+            Mail::to($request->test_email)->send(new TestMail($request->test_email, $details));
 
             return redirect()->route('super-admin.mail-settings.index')
                 ->with('success', "✓ Test email delivered successfully to {$request->test_email}! Please check your inbox / spam folder.");

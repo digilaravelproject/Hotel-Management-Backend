@@ -13,15 +13,20 @@ class TestMail extends Mailable
     use Queueable, SerializesModels;
 
     public $recipientEmail;
-    public $smtpDetails;
+    public $details;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(string $recipientEmail, array $smtpDetails = [])
+    public function __construct(array|string $recipientOrDetails, array $smtpDetails = [])
     {
-        $this->recipientEmail = $recipientEmail;
-        $this->smtpDetails = $smtpDetails;
+        if (is_array($recipientOrDetails)) {
+            $this->details = $recipientOrDetails;
+            $this->recipientEmail = $recipientOrDetails['recipient'] ?? $recipientOrDetails['to'] ?? '';
+        } else {
+            $this->recipientEmail = $recipientOrDetails;
+            $this->details = $smtpDetails;
+        }
     }
 
     /**
@@ -41,6 +46,10 @@ class TestMail extends Mailable
     {
         return new Content(
             view: 'emails.test_mail',
+            with: [
+                'details' => $this->details,
+                'recipientEmail' => $this->recipientEmail,
+            ],
         );
     }
 
