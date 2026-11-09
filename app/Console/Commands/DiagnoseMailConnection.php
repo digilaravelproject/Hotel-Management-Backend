@@ -90,3 +90,4 @@ class DiagnoseMailConnection extends Command
         return 0;
     }
 }
+
