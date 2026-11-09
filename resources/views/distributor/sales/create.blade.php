@@ -148,7 +148,8 @@
                                         data-plan-cycle="{{ $hotel->plan ? ($hotel->plan->billing_cycle ?? 'monthly') : 'monthly' }}"
                                         data-has-active="{{ $hotelHasActive ? '1' : '0' }}"
                                         data-remaining-days="{{ $hotelDaysLeft }}"
-                                        data-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('M d, Y') : 'Not Set' }}">
+                                        data-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('M d, Y') : 'Not Set' }}"
+                                        data-raw-expiry="{{ $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date)->format('Y-m-d\\TH:i:s') : '' }}">
                                     {{ $hotel->hotel_name }} ({{ $hotel->existing_tv_count }} TVs • {{ $hotel->city ?? $hotel->hotel_location }})
                                 </option>
                             @endforeach
@@ -654,6 +655,13 @@
                             <span id="summaryDuration" class="font-black text-slate-900">1 Month</span>
                         </div>
 
+                        <div class="flex justify-between items-center py-2 px-3 rounded-xl bg-purple-50/80 border border-purple-200/70 text-xs">
+                            <span class="text-purple-900 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-plus text-purple-600"></i> New Expiry:
+                            </span>
+                            <span id="summaryNewExpiry" class="font-black font-mono text-[#150A42]">—</span>
+                        </div>
+
                         <div class="flex justify-between py-1.5 border-b border-slate-100 bg-slate-50/70 p-2.5 rounded-xl">
                             <div>
                                 <span class="text-slate-600 font-bold block">Base Subtotal:</span>
@@ -1076,6 +1084,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (summaryTotal) summaryTotal.textContent = `₹${totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         if (btnPayAmount) btnPayAmount.textContent = totalAmount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        const summaryNewExpiry = document.getElementById('summaryNewExpiry');
+        if (summaryNewExpiry) {
+            if (currentSaleMode === 'addon') {
+                summaryNewExpiry.textContent = 'Unchanged (' + (selectedOpt ? selectedOpt.dataset.expiry : 'Active') + ')';
+            } else if (hotelSelect && hotelSelect.value) {
+                const rawExp = selectedOpt ? selectedOpt.dataset.rawExpiry : null;
+                const hasAct = selectedOpt ? (selectedOpt.dataset.hasActive === '1') : false;
+                const remDays = selectedOpt ? (parseInt(selectedOpt.dataset.remainingDays) || 0) : 0;
+                
+                let baseDate = (hasAct && rawExp) ? new Date(rawExp) : new Date();
+                let newDate = new Date(baseDate.getTime());
+                let curDay = newDate.getDate();
+                newDate.setMonth(newDate.getMonth() + months);
+                if (newDate.getDate() !== curDay) {
+                    newDate.setDate(0);
+                }
+                const dateStr = newDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+                if (hasAct && remDays > 0) {
+                    summaryNewExpiry.innerHTML = `<span>${dateStr}</span> <span class="text-[10px] text-emerald-700 font-semibold block sm:inline">(+${remDays}d preserved)</span>`;
+                } else {
+                    summaryNewExpiry.textContent = dateStr;
+                }
+            } else {
+                summaryNewExpiry.textContent = '—';
+            }
+        }
     }
 
     window.adjustTvCount = function(delta) {

@@ -19,7 +19,7 @@ class SubscriptionService
         $hasActivePlan = $hotel->expiry_date && $hotel->expiry_date->gt($now);
 
         $baseDate = $hasActivePlan ? $hotel->expiry_date : $now;
-        $newExpiry = $baseDate->copy()->addDays($durationDays);
+        $newExpiry = $baseDate->copy()->addMonthsNoOverflow($durationMonths);
 
         if ($isFirstPurchase) {
             $action = 'purchase';

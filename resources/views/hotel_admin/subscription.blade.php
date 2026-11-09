@@ -383,6 +383,13 @@
                             <span id="summaryDurationText" class="font-mono font-bold text-purple-900">1 Month</span>
                         </div>
 
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-xl bg-purple-50/80 border border-purple-200/70 text-[11px]">
+                            <span class="text-purple-900 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-calendar-plus text-purple-600"></i> New Expiry:
+                            </span>
+                            <span id="summaryNewExpiryDate" class="font-mono font-black text-[#150A42]">Calculating...</span>
+                        </div>
+
                         <div class="flex items-center justify-between pt-1 border-t border-slate-200/60">
                             <div>
                                 <span class="block text-slate-700 font-bold">Base Subtotal:</span>
@@ -590,6 +597,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const orderUrl = "{{ route('hotel.subscription.order') }}";
     const purchaseUrl = "{{ route('hotel.subscription.purchase') }}";
     let processing = false;
+
+    const currentHotelExpiry = @json($hotel->expiry_date ? $hotel->expiry_date->format('Y-m-d\TH:i:s') : null);
+    const currentHotelHasActive = @json($hasActivePlan && $hotel->expiry_date && $hotel->expiry_date->isFuture());
+    const currentHotelRemainingDays = @json($remainingDays);
 
     window.adjustHotelTvs = function(delta) {
         let cur = parseInt(tvCountInput.value) || 1;
@@ -865,6 +876,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalFormatted = '₹' + total.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         const totalBox = document.getElementById('totalBox');
         if (totalBox) totalBox.textContent = totalFormatted;
+
+        const summaryNewExpiryDate = document.getElementById('summaryNewExpiryDate');
+        if (summaryNewExpiryDate) {
+            let baseDate = (currentHotelHasActive && currentHotelExpiry) ? new Date(currentHotelExpiry) : new Date();
+            let newDate = new Date(baseDate.getTime());
+            let curDay = newDate.getDate();
+            newDate.setMonth(newDate.getMonth() + months);
+            if (newDate.getDate() !== curDay) {
+                newDate.setDate(0);
+            }
+            const dateStr = newDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+            if (currentHotelHasActive && currentHotelRemainingDays > 0) {
+                summaryNewExpiryDate.innerHTML = `<span>${dateStr}</span> <span class="text-[10px] text-emerald-700 font-semibold block sm:inline">(+${currentHotelRemainingDays}d preserved)</span>`;
+            } else {
+                summaryNewExpiryDate.textContent = dateStr;
+            }
+        }
 
         const payBtnAmount = document.getElementById('payBtnAmount');
         if (payBtnAmount) payBtnAmount.textContent = totalFormatted;
