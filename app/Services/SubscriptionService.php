@@ -153,6 +153,25 @@ class SubscriptionService
             ]);
         }
 
+        // Automated Subscription Purchase / Renewal / Upgrade Notification Email
+        try {
+            $mailSetting = \App\Models\MailSetting::getSettings();
+            if ($mailSetting->notify_subscription_purchased && !empty($hotel->email)) {
+                $mailSetting->applyConfig();
+                $details = [
+                    'action' => $action,
+                    'amount' => $context['amount'] ?? ($invoice ? $invoice->total_amount : $plan->price),
+                    'payment_method' => $context['payment_method'] ?? 'Online / Gateway',
+                    'transaction_id' => $context['transaction_id'] ?? null,
+                    'duration_months' => $durationMonths,
+                ];
+                \Illuminate\Support\Facades\Mail::to($hotel->email)
+                    ->send(new \App\Mail\SubscriptionPurchasedMail($hotel->fresh(['plan']), $plan, $details));
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to send Subscription confirmation email to {$hotel->email}: " . $e->getMessage());
+        }
+
         return [
             'hotel' => $hotel->fresh(['plan']),
             'sale' => $sale,

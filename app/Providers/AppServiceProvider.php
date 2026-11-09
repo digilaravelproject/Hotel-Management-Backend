@@ -47,5 +47,14 @@ class AppServiceProvider extends ServiceProvider
                 // Graceful fallback if database/table not ready
             }
         });
+
+        // Dynamically apply Super Admin SMTP / Mail settings
+        try {
+            if (\Illuminate\Support\Facades\Schema::hasTable('mail_settings')) {
+                \App\Models\MailSetting::getSettings()->applyConfig();
+            }
+        } catch (\Throwable $e) {
+            // Graceful fallback during migration or boot
+        }
     }
 }

@@ -254,7 +254,7 @@
 
                 <!-- 7. Platform Settings (Branding, Profile & Security) -->
                 @php
-                    $isSettingsActive = Request::routeIs('super-admin.settings.*') || Request::routeIs('super-admin.profile');
+                    $isSettingsActive = Request::routeIs('super-admin.settings.*') || Request::routeIs('super-admin.mail-settings.*') || Request::routeIs('super-admin.profile');
                 @endphp
                 <div>
                     <button type="button" onclick="toggleSubmenu('submenu-settings')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isSettingsActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
@@ -268,6 +268,10 @@
                         <a href="{{ route('super-admin.settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
                             <span class="truncate">System Branding</span>
+                        </a>
+                        <a href="{{ route('super-admin.mail-settings.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.mail-settings.*') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
+                            <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.mail-settings.*') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>
+                            <span class="truncate">Email & SMTP Settings</span>
                         </a>
                         <a href="{{ route('super-admin.profile') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs transition-all {{ Request::routeIs('super-admin.profile') ? 'bg-white text-[#150A42] font-bold shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/5 font-semibold' }}">
                             <span class="w-1.5 h-1.5 rounded-full {{ Request::routeIs('super-admin.profile') ? 'bg-[#150A42]' : 'bg-purple-400/50' }}"></span>

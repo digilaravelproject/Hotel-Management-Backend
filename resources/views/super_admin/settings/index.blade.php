@@ -15,6 +15,12 @@
         
         <!-- Action Buttons: Strict 1 Line (flex-nowrap) -->
         <div class="flex items-center gap-2 sm:gap-2.5 shrink-0 flex-nowrap overflow-x-auto no-scrollbar py-0.5 w-full sm:w-auto">
+            <a href="{{ route('super-admin.mail-settings.index') }}" 
+               class="flex-1 sm:flex-none inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
+                <i class="fa-solid fa-envelope-open-text text-purple-600 text-xs"></i>
+                <span>Email & SMTP</span>
+            </a>
+
             <a href="{{ route('super-admin.payment-settings.index') }}" 
                class="flex-1 sm:flex-none inline-flex items-center justify-center px-3.5 py-2.5 rounded-2xl bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-200/90 shadow-2xs transition-all hover:border-slate-300 space-x-1.5 cursor-pointer whitespace-nowrap shrink-0">
                 <i class="fa-solid fa-credit-card text-emerald-600 text-xs"></i>
@@ -383,6 +389,26 @@
                    class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-extrabold text-xs shadow-2xs transition-all space-x-1.5 cursor-pointer">
                     <i class="fa-solid fa-sliders text-xs text-slate-400"></i>
                     <span>Configure Gateways</span>
+                </a>
+            </div>
+
+            <!-- Email & SMTP Notifications Card -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-2xl bg-[#F8F9FD] border border-slate-200/80 gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-purple-700 font-black text-xs font-mono shadow-2xs">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <div>
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider block font-mono">Outbound Email & SMTP</span>
+                        <div class="text-sm font-extrabold text-slate-900">
+                            Automated Event Notifications & SMTP Relay
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ route('super-admin.mail-settings.index') }}" 
+                   class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-extrabold text-xs shadow-2xs transition-all space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-sliders text-xs text-slate-400"></i>
+                    <span>Configure Mail & SMTP</span>
                 </a>
             </div>
         </div>

@@ -15,6 +15,7 @@ use App\Http\Controllers\SuperAdmin\UserController as SuperUserController;
 use App\Http\Controllers\SuperAdmin\FirebaseSettingsController as SuperFirebaseSettingsController;
 
 use App\Http\Controllers\SuperAdmin\PaymentSettingController;
+use App\Http\Controllers\SuperAdmin\MailSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,6 +120,11 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     // Payment Gateway Settings & Multi-Gateway Architecture
     Route::get('payment-settings', [PaymentSettingController::class, 'index'])->name('payment-settings.index');
     Route::post('payment-settings', [PaymentSettingController::class, 'update'])->name('payment-settings.update');
+
+    // Email & SMTP Server Settings
+    Route::get('mail-settings', [MailSettingController::class, 'index'])->name('mail-settings.index');
+    Route::post('mail-settings', [MailSettingController::class, 'update'])->name('mail-settings.update');
+    Route::post('mail-settings/test', [MailSettingController::class, 'sendTestMail'])->name('mail-settings.test');
 
     // Commission Settings (Global)
     Route::get('commissions/settings', [\App\Http\Controllers\SuperAdmin\CommissionController::class, 'settings'])->name('commissions.settings');

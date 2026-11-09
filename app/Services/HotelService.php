@@ -109,6 +109,18 @@ class HotelService
             ]);
         }
 
+        // Automated Hotel Welcome Credentials Email
+        try {
+            $mailSetting = \App\Models\MailSetting::getSettings();
+            if ($mailSetting->notify_hotel_welcome && !empty($hotel->email) && !empty($data['password'])) {
+                $mailSetting->applyConfig();
+                \Illuminate\Support\Facades\Mail::to($hotel->email)
+                    ->send(new \App\Mail\HotelWelcomeCredentialsMail($hotel, $data['password']));
+            }
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("Failed to send Hotel Welcome email: " . $e->getMessage());
+        }
+
         return $hotel;
     }
 
