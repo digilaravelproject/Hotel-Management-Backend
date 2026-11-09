@@ -394,6 +394,10 @@ $logSize = $logExists ? round(@filesize($laravelLogFile) / 1024 / 1024, 2) . ' M
                 <div class="shortcut-group">
                     <div class="group-title">🛠️ Workers & Server Info</div>
                     <div class="chips">
+                        <div class="chip chip-log" onclick="setCmd('php -r \'$hosts = [\'\'smtp.hostinger.com:587\'\', \'\'smtp.hostinger.com:465\'\', \'\'smtp.gmail.com:587\'\', \'\'relay-hosting.secureserver.net:25\'\', \'\'localhost:25\'\']; foreach($hosts as $h) { list($host, $port) = explode(\'\':\'\', $h); $s = @fsockopen($host, (int)$port, $err, $errstr, 3); echo $h . \'\' => \'\' . ($s ? \'\'OPEN (Allowed)\'\' : \'\'BLOCKED (Timeout)\'\') . PHP_EOL; if ($s) fclose($s); }\'')">
+                            <span>🔍 Test Outbound Mail Ports</span>
+                            <span class="chip-desc">firewall check</span>
+                        </div>
                         <div class="chip" onclick="setCmd('php artisan queue:restart')">
                             <span>queue:restart</span>
                             <span class="chip-desc">workers</span>
