@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\TestMail;
 use App\Models\MailSetting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
