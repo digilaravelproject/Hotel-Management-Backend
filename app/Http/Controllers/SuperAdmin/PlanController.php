@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Plan;
 use App\Models\Tax;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 
 class PlanController extends Controller
 {
@@ -64,7 +67,9 @@ class PlanController extends Controller
             ? $request->input('allowed_menus', []) 
             : ($request->has('allowed_menus') ? $request->input('allowed_menus', []) : null);
 
-        Plan::create([
+        $this->ensurePlanColumnsExist();
+
+        $createData = [
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
             'price_per_tv' => $pricePerTv,
@@ -73,12 +78,19 @@ class PlanController extends Controller
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,
-            'is_ott_enabled' => $isOttEnabled,
             'ott_platforms' => $ottPlatforms,
-            'allowed_menus' => $allowedMenus,
             'status' => true,
             'is_hidden' => $request->boolean('is_hidden'),
-        ]);
+        ];
+
+        if (Schema::hasColumn('plans', 'is_ott_enabled')) {
+            $createData['is_ott_enabled'] = $isOttEnabled;
+        }
+        if (Schema::hasColumn('plans', 'allowed_menus')) {
+            $createData['allowed_menus'] = $allowedMenus;
+        }
+
+        Plan::create($createData);
 
         return redirect()->route('super-admin.plans.index')
                          ->with('success', 'Per-TV Plan created successfully!');
@@ -132,7 +144,9 @@ class PlanController extends Controller
             ? $request->input('allowed_menus', []) 
             : ($request->has('allowed_menus') ? $request->input('allowed_menus', []) : null);
 
-        $plan->update([
+        $this->ensurePlanColumnsExist();
+
+        $updateData = [
             'name' => $request->name,
             'billing_cycle' => $request->billing_cycle,
             'price_per_tv' => $pricePerTv,
@@ -141,11 +155,18 @@ class PlanController extends Controller
             'tax_id' => $request->tax_id,
             'tax_type' => $request->tax_type,
             'description' => $request->description,
-            'is_ott_enabled' => $isOttEnabled,
             'ott_platforms' => $ottPlatforms,
-            'allowed_menus' => $allowedMenus,
             'is_hidden' => $request->boolean('is_hidden'),
-        ]);
+        ];
+
+        if (Schema::hasColumn('plans', 'is_ott_enabled')) {
+            $updateData['is_ott_enabled'] = $isOttEnabled;
+        }
+        if (Schema::hasColumn('plans', 'allowed_menus')) {
+            $updateData['allowed_menus'] = $allowedMenus;
+        }
+
+        $plan->update($updateData);
 
         return redirect()->route('super-admin.plans.index')
                          ->with('success', 'Per-TV Plan updated successfully!');
@@ -198,5 +219,20 @@ class PlanController extends Controller
 
         return redirect()->route('super-admin.plans.index')
                          ->with('success', 'Plan deleted successfully!');
+    }
+
+    /**
+     * Self-healing migration check for plans table.
+     * Automatically applies pending migrations if is_ott_enabled or allowed_menus is missing.
+     */
+    protected function ensurePlanColumnsExist(): void
+    {
+        try {
+            if (!Schema::hasColumn('plans', 'is_ott_enabled') || !Schema::hasColumn('plans', 'allowed_menus')) {
+                Artisan::call('migrate', ['--force' => true]);
+            }
+        } catch (\Throwable $e) {
+            Log::warning('PlanController auto-migrate notice: ' . $e->getMessage());
+        }
     }
 }
