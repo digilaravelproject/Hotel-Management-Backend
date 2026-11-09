@@ -32,6 +32,131 @@
         </div>
     </div>
 
+    <!-- Financial Overview Summary: 6 Cards in Single Row on Desktop (xl:grid-cols-6) & Strictly 2 per Row on Mobile (grid-cols-2) -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-2.5 sm:gap-3.5">
+        
+        <!-- 1. Month Invoices Count -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Month Invoices
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-file-invoice"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black text-slate-900 tracking-tight font-mono">
+                    {{ number_format($metrics['month_invoices_count'] ?? 0) }}
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold truncate mt-0.5">
+                    {{ $metrics['month_name'] ?? 'This Month' }} Count
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. This Month Revenue -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Month Revenue
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black text-emerald-700 tracking-tight font-mono truncate">
+                    ₹{{ number_format($metrics['month_revenue'] ?? 0, 0) }}
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold truncate mt-0.5">
+                    {{ $metrics['month_name'] ?? 'This Month' }} Paid
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. This Quarter Revenue -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Quarter Revenue
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black text-indigo-700 tracking-tight font-mono truncate">
+                    ₹{{ number_format($metrics['quarter_revenue'] ?? 0, 0) }}
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold truncate mt-0.5">
+                    {{ $metrics['quarter_name'] ?? 'Quarter' }} Total
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Overall Total Revenue -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Overall Revenue
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-[#150A42] text-amber-300 flex items-center justify-center text-xs shrink-0 shadow-2xs">
+                    <i class="fa-solid fa-coins"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black text-[#150A42] tracking-tight font-mono truncate">
+                    ₹{{ number_format($metrics['overall_revenue'] ?? 0, 0) }}
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold truncate mt-0.5">
+                    Lifetime Collections
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Tax Ledger -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Tax Ledger
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-purple-700 border border-purple-100 flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black text-purple-700 tracking-tight font-mono truncate">
+                    ₹{{ number_format($metrics['total_tax_collected'] ?? 0, 0) }}
+                </div>
+                <div class="text-[10px] text-slate-400 font-bold truncate mt-0.5">
+                    GST / Tax Realized
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Pending Dues -->
+        <div class="bg-white border border-slate-200/80 rounded-2xl p-3 sm:p-4 shadow-2xs hover:shadow-md transition-all flex flex-col justify-between {{ ($metrics['pending_count'] ?? 0) > 0 ? 'bg-amber-50/30 border-amber-200/80' : '' }}">
+            <div class="flex items-center justify-between gap-1.5 mb-2">
+                <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-slate-400 font-mono truncate">
+                    Pending Dues
+                </span>
+                <div class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl {{ ($metrics['pending_count'] ?? 0) > 0 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-500' }} flex items-center justify-center text-xs shrink-0">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+            </div>
+            <div>
+                <div class="text-lg sm:text-xl font-black {{ ($metrics['pending_count'] ?? 0) > 0 ? 'text-amber-700' : 'text-slate-800' }} tracking-tight font-mono truncate">
+                    ₹{{ number_format($metrics['pending_amount'] ?? 0, 0) }}
+                </div>
+                <div class="text-[10px] {{ ($metrics['pending_count'] ?? 0) > 0 ? 'text-amber-600 font-black' : 'text-slate-400 font-bold' }} truncate mt-0.5">
+                    {{ $metrics['pending_count'] ?? 0 }} Invoices Pending
+                </div>
+            </div>
+        </div>
+
+    </div>
+
     <!-- Filter & Search Bar -->
     <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-3">
         <form action="{{ route('super-admin.invoices.index') }}" method="GET" class="flex flex-1 items-center space-x-3 w-full">
