@@ -79,7 +79,7 @@
                 <div class="flex items-start justify-between pb-4 border-b border-slate-100">
                     <div class="flex items-center space-x-3.5">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-purple-50 text-[#150A42] border border-purple-100 flex items-center justify-center text-base font-extrabold shrink-0 shadow-xs">
-                            <i class="fa-solid fa-layer-group"></i>
+                            <i class="fa-solid fa-indian-rupee-sign"></i>
                         </div>
                         <div>
                             <div class="flex items-center space-x-2">

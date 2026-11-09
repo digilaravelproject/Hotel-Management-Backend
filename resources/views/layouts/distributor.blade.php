@@ -118,7 +118,7 @@
                 </a>
 
                 <a href="{{ route('distributor.sales.create') }}" class="flex items-center space-x-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ Request::routeIs('distributor.sales.create') ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
-                    <i class="fa-solid fa-box-open text-sm w-5 text-center {{ Request::routeIs('distributor.sales.create') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                    <i class="fa-solid fa-indian-rupee-sign text-sm w-5 text-center {{ Request::routeIs('distributor.sales.create') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
                     <span>Sell Package</span>
                 </a>
 
@@ -320,7 +320,7 @@
             @php $isSell = Request::routeIs('distributor.sales.create'); @endphp
             <a href="{{ route('distributor.sales.create') }}" class="relative flex flex-col items-center group transition-all -mt-5">
                 <div class="w-13 h-13 rounded-full bg-gradient-to-tr from-[#150A42] to-purple-600 text-white flex items-center justify-center shadow-xl shadow-[#150A42]/40 border-4 border-white transition-transform group-hover:scale-105 active:scale-95">
-                    <i class="fa-solid fa-box-open text-lg text-amber-300"></i>
+                    <i class="fa-solid fa-indian-rupee-sign text-lg text-amber-300"></i>
                 </div>
                 <span class="text-[10px] font-black text-[#150A42] mt-0.5 tracking-tight font-sans">Sell</span>
             </a>

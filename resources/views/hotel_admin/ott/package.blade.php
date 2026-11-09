@@ -23,7 +23,7 @@
 
         <div class="flex items-center space-x-2.5 shrink-0">
             <a href="{{ route('hotel.subscription') }}" class="px-4 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center space-x-2 active:scale-95 cursor-pointer">
-                <i class="fa-solid fa-credit-card text-xs text-amber-300"></i>
+                <i class="fa-solid fa-indian-rupee-sign text-xs text-amber-300"></i>
                 <span>Upgrade / Renew</span>
             </a>
             <a href="{{ route('hotel.ott-settings') }}" class="px-4 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 text-xs font-bold transition-all shadow-2xs flex items-center space-x-2 active:scale-95">

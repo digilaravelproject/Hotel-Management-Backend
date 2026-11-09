@@ -34,7 +34,7 @@
             </a>
             <a href="{{ route('hotel.subscription') }}" 
                class="flex-1 sm:flex-initial px-3.5 py-2.5 sm:px-4 sm:py-3.5 rounded-xl sm:rounded-2xl bg-purple-50 hover:bg-purple-100/90 text-[#150A42] border border-purple-200/80 font-black text-[11px] sm:text-xs transition-all flex items-center justify-center space-x-1.5 sm:space-x-2 active:scale-95 cursor-pointer shadow-2xs">
-                <i class="fa-solid fa-credit-card text-[11px] sm:text-xs text-purple-600"></i>
+                <i class="fa-solid fa-indian-rupee-sign text-[11px] sm:text-xs text-purple-600"></i>
                 <span>Plan & Billing</span>
             </a>
             <a href="{{ route('hotel.hotel-info') }}" 
@@ -260,7 +260,7 @@
             <div class="flex items-center space-x-3 shrink-0 w-full sm:w-auto">
                 <a href="{{ route('hotel.subscription') }}" 
                    class="w-full sm:w-auto text-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-[11px] sm:text-xs transition-all active:scale-95 shadow-md shadow-[#150A42]/15">
-                    <i class="fa-solid fa-arrows-rotate mr-1.5 text-amber-300"></i>
+                    <i class="fa-solid fa-indian-rupee-sign mr-1.5 text-amber-300"></i>
                     <span>Renew / Add TV Slots</span>
                 </a>
             </div>

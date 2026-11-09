@@ -226,7 +226,7 @@
                         </button>
                         <div id="nav-billing-plan" class="{{ $isBillingActive ? '' : 'hidden' }} mt-1 space-y-1 pl-3 ml-4 border-l-2 border-white/10 transition-all">
                             <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.subscription*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
-                                <i class="fa-solid fa-arrows-rotate text-xs w-4 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                                <i class="fa-solid fa-indian-rupee-sign text-xs w-4 text-center {{ Request::routeIs('hotel.subscription*') ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
                                 <span>Plan & Renewal</span>
                             </a>
                             <a href="{{ route('hotel.invoices.index') }}" class="flex items-center space-x-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-all {{ Request::routeIs('hotel.invoices.*') ? 'bg-white text-[#150A42] shadow-md shadow-black/20' : 'text-purple-200/70 hover:text-white hover:bg-white/10' }}">
@@ -255,7 +255,7 @@
                     </div>
 
                     <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-3 px-3.5 py-3 rounded-2xl text-xs font-black transition-all bg-gradient-to-r from-purple-600 to-[#150A42] text-white border border-purple-400/40 shadow-lg shadow-purple-950/40 hover:brightness-110 active:scale-95">
-                        <i class="fa-solid fa-credit-card text-sm w-5 text-center text-purple-200"></i>
+                        <i class="fa-solid fa-indian-rupee-sign text-sm w-5 text-center text-purple-200"></i>
                         <span>Choose Plan & Pay Now</span>
                     </a>
                 @endif
@@ -364,7 +364,7 @@
                                 </a>
                             @endif
                             <a href="{{ route('hotel.subscription') }}" class="flex items-center space-x-2 px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-purple-50 hover:text-purple-900 transition-colors">
-                                <i class="fa-solid fa-credit-card text-purple-600 w-4"></i>
+                                <i class="fa-solid fa-indian-rupee-sign text-purple-600 w-4 text-center"></i>
                                 <span>Plan & Billing</span>
                             </a>
                             <div class="border-t border-slate-100 my-1"></div>
@@ -412,7 +412,7 @@
                             </div>
                         </div>
                         <a href="{{ route('hotel.subscription') }}" class="px-5 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#1f105e] text-white font-black text-xs shadow-md shadow-[#150A42]/15 transition-all flex items-center space-x-2 shrink-0 active:scale-95 cursor-pointer">
-                            <i class="fa-solid fa-credit-card text-purple-200 text-xs"></i>
+                            <i class="fa-solid fa-indian-rupee-sign text-purple-200 text-xs"></i>
                             <span>Choose Plan & Pay</span>
                         </a>
                     </div>
@@ -505,11 +505,11 @@
             <a href="{{ route('hotel.subscription') }}" class="relative flex flex-col items-center group transition-all {{ $isSub ? '-mt-5' : 'py-1 px-2' }}">
                 @if($isSub)
                     <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
-                        <i class="fa-solid fa-credit-card text-base"></i>
+                        <i class="fa-solid fa-indian-rupee-sign text-base"></i>
                     </div>
                     <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Plan</span>
                 @else
-                    <i class="fa-solid fa-credit-card text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <i class="fa-solid fa-indian-rupee-sign text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
                     <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Plan</span>
                 @endif
             </a>

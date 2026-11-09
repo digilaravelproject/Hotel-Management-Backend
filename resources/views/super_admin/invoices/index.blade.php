@@ -26,7 +26,7 @@
                 <span>Tax Settings</span>
             </a>
             <a href="{{ route('super-admin.plans.index') }}" class="inline-flex items-center space-x-2 px-4 py-2.5 rounded-2xl bg-[#150A42] hover:bg-[#201063] text-white text-xs font-extrabold transition-all shadow-md">
-                <i class="fa-solid fa-tags text-xs"></i>
+                <i class="fa-solid fa-indian-rupee-sign text-xs"></i>
                 <span>Per-TV Plans</span>
             </a>
         </div>

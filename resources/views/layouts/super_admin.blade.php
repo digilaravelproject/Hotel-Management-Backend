@@ -136,7 +136,7 @@
                 <div>
                     <button type="button" onclick="toggleSubmenu('submenu-plans')" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isPlansActive ? 'bg-white/10 text-white shadow-xs' : 'text-purple-200/75 hover:text-white hover:bg-white/[0.06]' }}">
                         <div class="flex items-center space-x-3">
-                            <i class="fa-solid fa-layer-group text-sm w-5 text-center {{ $isPlansActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
+                            <i class="fa-solid fa-indian-rupee-sign text-sm w-5 text-center {{ $isPlansActive ? 'text-amber-300' : 'text-purple-300' }}"></i>
                             <span>Subscription Plans</span>
                         </div>
                         <i id="chevron-submenu-plans" class="fa-solid fa-chevron-down text-[10px] text-purple-300/70 transition-transform duration-200 {{ $isPlansActive ? 'rotate-180' : '' }}"></i>
@@ -470,11 +470,11 @@
             <a href="{{ route('super-admin.plans.index') }}" class="relative flex flex-col items-center group transition-all {{ $isPlans ? '-mt-5' : 'py-1 px-2' }}">
                 @if($isPlans)
                     <div class="w-12 h-12 rounded-full bg-[#150A42] text-white flex items-center justify-center shadow-lg shadow-[#150A42]/35 border-4 border-white transition-transform group-hover:scale-105">
-                        <i class="fa-solid fa-layer-group text-base"></i>
+                        <i class="fa-solid fa-indian-rupee-sign text-base"></i>
                     </div>
                     <span class="text-[10px] font-extrabold text-[#150A42] mt-0.5 tracking-tight font-sans">Plans</span>
                 @else
-                    <i class="fa-solid fa-layer-group text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
+                    <i class="fa-solid fa-indian-rupee-sign text-base text-slate-400 group-hover:text-slate-600 transition-colors"></i>
                     <span class="text-[10px] font-semibold text-slate-500 font-sans mt-0.5">Plans</span>
                 @endif
             </a>
