@@ -514,7 +514,7 @@
                     </div>
                 </div>
 
-                <!-- 6. Existing License Key & Expiry Date Editor (If paid) -->
+                <!-- 6. Existing License Key & Expiry Date Editor -->
                 @php
                     $purchaseFormatted = '';
                     if (old('purchase_date')) {
@@ -533,37 +533,115 @@
                             ? $hotel->expiry_date->format('Y-m-d\TH:i') 
                             : \Carbon\Carbon::parse($hotel->expiry_date)->format('Y-m-d\TH:i');
                     }
+
+                    $origCarbon = $hotel->expiry_date ? \Carbon\Carbon::parse($hotel->expiry_date) : null;
+                    $isFuture = $origCarbon && $origCarbon->isFuture();
+                    $diffDays = $origCarbon ? (int) ceil(now()->diffInHours($origCarbon, false) / 24) : 0;
                 @endphp
-                @if($hotel->license_key || $hotel->payment_status === 'paid')
-                    <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/90 space-y-4">
-                        <div class="flex items-center justify-between pb-3 border-b border-slate-200/70">
-                            <div>
-                                <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Current Pairing Key</span>
-                                <div class="font-mono font-black text-slate-900 text-sm tracking-wider select-all">{{ $hotel->license_key ?? 'N/A' }}</div>
-                            </div>
+                <div class="p-4 sm:p-5 rounded-2xl bg-[#F8F9FD] border border-slate-200/90 space-y-4" 
+                     id="subscriptionDatesContainer"
+                     data-original-expiry="{{ $expiryFormatted }}"
+                     data-original-purchase="{{ $purchaseFormatted }}"
+                     data-is-future="{{ $isFuture ? '1' : '0' }}"
+                     data-diff-days="{{ $diffDays }}">
+                    
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200/70 flex-wrap gap-2">
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-slate-400 font-mono tracking-wider">Current Pairing Key</span>
+                            <div class="font-mono font-black text-slate-900 text-sm tracking-wider select-all">{{ $hotel->license_key ?? 'N/A' }}</div>
+                        </div>
+                        <div class="flex items-center space-x-2">
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold font-mono uppercase {{ $hotel->is_expired ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-800' }}">
                                 {{ $hotel->subscription_badge['label'] }}
                             </span>
-                        </div>
-
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Purchase Date</label>
-                                <input type="datetime-local" 
-                                       name="purchase_date" 
-                                       value="{{ $purchaseFormatted }}" 
-                                       class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-700 mb-1">Expiry Date (Extend Access)</label>
-                                <input type="datetime-local" 
-                                       name="expiry_date" 
-                                       value="{{ $expiryFormatted }}" 
-                                       class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono">
-                            </div>
+                            @if($isFuture)
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-100 text-blue-800 font-mono">
+                                    <i class="fa-solid fa-clock text-[9px] mr-0.5"></i> {{ $diffDays }} Days Remaining
+                                </span>
+                            @elseif($origCarbon)
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-800 font-mono">
+                                    Expired
+                                </span>
+                            @endif
                         </div>
                     </div>
-                @endif
+
+                    <!-- Auto-Extension Options & Quick Chips -->
+                    <div class="bg-white p-3 sm:p-3.5 rounded-xl border border-slate-200/80 space-y-2.5">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <label class="inline-flex items-center space-x-2 cursor-pointer select-none">
+                                <input type="checkbox" id="autoExtendOnPlanCheck" checked 
+                                       class="rounded border-slate-300 text-[#150A42] focus:ring-[#150A42] h-4 w-4">
+                                <span class="text-xs font-bold text-slate-800">
+                                    Auto-extend expiry when selecting/changing a Plan
+                                </span>
+                            </label>
+                            <span class="text-[11px] text-slate-500 font-medium">
+                                {{ $isFuture ? "Extends from active expiry ({$diffDays}d left)" : "Starts from today (expired)" }}
+                            </span>
+                        </div>
+
+                        <!-- Quick Extend Chips -->
+                        <div class="flex items-center gap-1.5 flex-wrap pt-1">
+                            <span class="text-[10px] font-bold uppercase text-slate-400 font-mono mr-1">Quick Extend:</span>
+                            <button type="button" onclick="extendExpiryMonths(1)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 transition-all cursor-pointer">
+                                +1 Month (30d)
+                            </button>
+                            <button type="button" onclick="extendExpiryMonths(3)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 transition-all cursor-pointer">
+                                +3 Months
+                            </button>
+                            <button type="button" onclick="extendExpiryMonths(6)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-50 text-[#150A42] hover:bg-purple-100 border border-purple-200 transition-all cursor-pointer">
+                                +6 Months
+                            </button>
+                            <button type="button" onclick="extendExpiryMonths(12)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200 transition-all cursor-pointer">
+                                +1 Year (365d)
+                            </button>
+                            <button type="button" onclick="resetExpiryDate()" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 transition-all ml-auto cursor-pointer">
+                                <i class="fa-solid fa-rotate-left text-[10px] mr-1"></i> Reset to Saved
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Date Inputs -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-bold text-slate-700">Purchase / Renewal Date</label>
+                                <button type="button" onclick="setPurchaseDateNow()" class="text-[10px] font-bold text-purple-700 hover:underline cursor-pointer">
+                                    Set to Today
+                                </button>
+                            </div>
+                            <input type="datetime-local" 
+                                   id="hotel_purchase_date"
+                                   name="purchase_date" 
+                                   value="{{ $purchaseFormatted }}" 
+                                   class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono">
+                        </div>
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="block text-xs font-bold text-slate-700">Expiry Date (Extend Access)</label>
+                                <span id="expiryDaysBadge" class="text-[10px] font-mono font-bold text-purple-700"></span>
+                            </div>
+                            <input type="datetime-local" 
+                                   id="hotel_expiry_date"
+                                   name="expiry_date" 
+                                   value="{{ $expiryFormatted }}" 
+                                   class="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 bg-white font-mono"
+                                   onchange="onExpiryDateManualChange()">
+                        </div>
+                    </div>
+
+                    <!-- Live Expiry Calculation Alert -->
+                    <div id="expiryCalcAlert" class="hidden px-3.5 py-2.5 rounded-xl bg-purple-50/80 border border-purple-200/90 text-[11.5px] text-[#150A42] flex items-center justify-between gap-2">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-purple-600 shrink-0"></i>
+                            <span id="expiryCalcText">Auto-calculated</span>
+                        </div>
+                        <button type="button" onclick="resetExpiryDate()" class="text-[10px] font-bold uppercase text-slate-500 hover:text-rose-600 underline shrink-0 cursor-pointer">
+                            Undo
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Sticky-Friendly Bottom Action Bar -->
@@ -627,9 +705,139 @@ function onPlanSelected(radio) {
             checkIcon.classList.remove('bg-slate-100', 'text-transparent');
             checkIcon.classList.add('bg-[#150A42]', 'text-white');
         }
+
+        const cycle = activeLabel.getAttribute('data-cycle') || 'monthly';
+        autoExtendExpiryFromPlan(cycle);
     }
 
     recalculatePricing();
+}
+
+// Date manipulation helpers
+function padZero(n) {
+    return String(n).padStart(2, '0');
+}
+
+function formatDateTimeLocal(d) {
+    return d.getFullYear() + '-' + 
+           padZero(d.getMonth() + 1) + '-' + 
+           padZero(d.getDate()) + 'T' + 
+           padZero(d.getHours()) + ':' + 
+           padZero(d.getMinutes());
+}
+
+function addMonthsSafe(date, months) {
+    const d = new Date(date.getTime());
+    const currentDay = d.getDate();
+    d.setMonth(d.getMonth() + months);
+    if (d.getDate() !== currentDay) {
+        d.setDate(0);
+    }
+    return d;
+}
+
+function autoExtendExpiryFromPlan(cycle) {
+    const toggle = document.getElementById('autoExtendOnPlanCheck');
+    if (toggle && !toggle.checked) {
+        return;
+    }
+    const months = (cycle === 'yearly') ? 12 : 1;
+    extendExpiryMonths(months, true, cycle);
+}
+
+function extendExpiryMonths(months, isFromPlanCycle = false, cycle = null) {
+    const container = document.getElementById('subscriptionDatesContainer');
+    const expiryInput = document.getElementById('hotel_expiry_date');
+    if (!container || !expiryInput) return;
+
+    const originalExpiryStr = container.getAttribute('data-original-expiry');
+    const isFuture = container.getAttribute('data-is-future') === '1';
+    const diffDays = parseInt(container.getAttribute('data-diff-days')) || 0;
+
+    let baseDate;
+    let baseDescription = '';
+
+    if (isFuture && originalExpiryStr) {
+        baseDate = new Date(originalExpiryStr);
+        baseDescription = `active expiry (${diffDays} days remaining: ${baseDate.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})})`;
+    } else {
+        baseDate = new Date();
+        baseDescription = `today (${baseDate.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})})`;
+    }
+
+    const newExpiry = addMonthsSafe(baseDate, months);
+    expiryInput.value = formatDateTimeLocal(newExpiry);
+
+    const alertEl = document.getElementById('expiryCalcAlert');
+    const alertText = document.getElementById('expiryCalcText');
+    if (alertEl && alertText) {
+        alertEl.classList.remove('hidden');
+        const durationLabel = months === 12 ? '1 Year (12 months)' : `${months} Month${months > 1 ? 's' : ''}`;
+        const sourceLabel = isFromPlanCycle ? `Selected ${cycle ? cycle.toUpperCase() : ''} Plan` : `Quick Extension (+${durationLabel})`;
+        
+        alertText.innerHTML = `✨ <strong>${sourceLabel}:</strong> Added +${durationLabel} from ${baseDescription} ➔ New Expiry: <strong class="underline">${newExpiry.toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'})} ${newExpiry.toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'})}</strong>`;
+    }
+
+    updateExpiryDaysBadge();
+}
+
+function resetExpiryDate() {
+    const container = document.getElementById('subscriptionDatesContainer');
+    const expiryInput = document.getElementById('hotel_expiry_date');
+    if (!container || !expiryInput) return;
+
+    const originalExpiryStr = container.getAttribute('data-original-expiry') || '';
+    expiryInput.value = originalExpiryStr;
+
+    const alertEl = document.getElementById('expiryCalcAlert');
+    const alertText = document.getElementById('expiryCalcText');
+    if (alertEl && alertText) {
+        alertEl.classList.remove('hidden');
+        alertText.innerHTML = `↺ <strong>Reset:</strong> Restored to original saved expiry date.`;
+    }
+
+    updateExpiryDaysBadge();
+}
+
+function setPurchaseDateNow() {
+    const purchaseInput = document.getElementById('hotel_purchase_date');
+    if (purchaseInput) {
+        purchaseInput.value = formatDateTimeLocal(new Date());
+    }
+}
+
+function onExpiryDateManualChange() {
+    const alertEl = document.getElementById('expiryCalcAlert');
+    const alertText = document.getElementById('expiryCalcText');
+    if (alertEl && alertText) {
+        alertEl.classList.remove('hidden');
+        alertText.innerHTML = `✏️ <strong>Manual Override:</strong> Custom expiry date set.`;
+    }
+    updateExpiryDaysBadge();
+}
+
+function updateExpiryDaysBadge() {
+    const expiryInput = document.getElementById('hotel_expiry_date');
+    const badge = document.getElementById('expiryDaysBadge');
+    if (!expiryInput || !badge) return;
+
+    if (!expiryInput.value) {
+        badge.textContent = '';
+        return;
+    }
+
+    const expDate = new Date(expiryInput.value);
+    const now = new Date();
+    const diffMs = expDate.getTime() - now.getTime();
+    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0) {
+        badge.textContent = `(${diffDays} days access)`;
+        badge.className = 'text-[10px] font-mono font-bold text-emerald-700';
+    } else {
+        badge.textContent = `(Expired ${Math.abs(diffDays)} days ago)`;
+        badge.className = 'text-[10px] font-mono font-bold text-rose-600';
+    }
 }
 
 // TV counter stepper
@@ -735,6 +943,7 @@ function onPaymentActionChange(radio) {
 
 document.addEventListener('DOMContentLoaded', function () {
     recalculatePricing();
+    updateExpiryDaysBadge();
 });
 </script>
 @endsection

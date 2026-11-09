@@ -190,11 +190,17 @@ class HotelService
         }
 
         if (array_key_exists('purchase_date', $data) && $data['purchase_date']) {
-            $updateData['purchase_date'] = $data['purchase_date'];
+            $updateData['purchase_date'] = \Carbon\Carbon::parse($data['purchase_date'])->format('Y-m-d H:i:s');
         }
 
         if (array_key_exists('expiry_date', $data) && $data['expiry_date']) {
-            $updateData['expiry_date'] = $data['expiry_date'];
+            $parsedExpiry = \Carbon\Carbon::parse($data['expiry_date']);
+            $updateData['expiry_date'] = $parsedExpiry->format('Y-m-d H:i:s');
+
+            // If an expired or unpaid hotel is extended into future, reactivate to paid
+            if ($parsedExpiry->isFuture() && in_array($hotel->payment_status, ['expired', 'waiting_for_payment'], true)) {
+                $updateData['payment_status'] = 'paid';
+            }
         }
 
         if (array_key_exists('auto_renew', $data)) {
