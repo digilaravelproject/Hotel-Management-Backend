@@ -132,8 +132,11 @@
                 <!-- Quick Preset Selector -->
                 <div class="flex items-center space-x-1.5 flex-wrap">
                     <span class="text-[11px] font-bold text-slate-400 mr-1">Presets:</span>
+                    <button type="button" onclick="applyPreset('localhost')" class="px-2.5 py-1 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-black text-[11px] transition-all cursor-pointer border border-emerald-300">
+                        ⚡ cPanel Localhost (Port 25 - Instant)
+                    </button>
                     <button type="button" onclick="applyPreset('hostinger')" class="px-2.5 py-1 rounded-xl bg-purple-100 hover:bg-purple-200 text-[#150A42] font-black text-[11px] transition-all cursor-pointer border border-purple-300">
-                        ⚡ Hostinger (Port 587 TLS)
+                        Hostinger (Port 587)
                     </button>
                     <button type="button" onclick="applyPreset('gmail')" class="px-2.5 py-1 rounded-xl bg-purple-50 hover:bg-purple-100 text-[#150A42] font-black text-[11px] transition-all cursor-pointer">
                         Gmail
@@ -441,7 +444,15 @@
 
         mailer.value = 'smtp';
 
-        if (type === 'hostinger') {
+        if (type === 'localhost') {
+            host.value = '127.0.0.1';
+            port.value = '25';
+            enc.value = 'null';
+            const user = document.getElementById('mail_username');
+            const pass = document.getElementById('mail_password');
+            if (user) user.value = '';
+            if (pass) pass.value = '';
+        } else if (type === 'hostinger') {
             host.value = 'smtp.hostinger.com';
             port.value = '587';
             enc.value = 'tls';
