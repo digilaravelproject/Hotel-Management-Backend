@@ -1491,6 +1491,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    @if(request()->has('autostart') && $selectedHotel)
+        setTimeout(function() {
+            const btn = document.getElementById('saleSubmitBtn');
+            if (btn && !btn.disabled) {
+                btn.click();
+            }
+        }, 500);
+    @endif
 });
 </script>
 @endsection

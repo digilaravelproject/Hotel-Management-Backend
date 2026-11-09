@@ -173,7 +173,8 @@ class DistributorController extends Controller
             return redirect()->route('distributor.sales.create', [
                 'hotel_id' => $hotel->id,
                 'plan_id' => $hotel->plan_id,
-            ])->with('info', "Hotel '{$hotel->hotel_name}' registered! Proceed to complete payment for {$hotel->room_count} TVs.");
+                'autostart' => 1,
+            ])->with('info', "Hotel '{$hotel->hotel_name}' registered! Proceeding to payment checkout...");
         }
 
         return redirect()->route('distributor.hotels.index')
