@@ -946,6 +946,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    @if(request()->has('autostart'))
+        setTimeout(function() {
+            const submitBtn = document.getElementById('submitBtn');
+            if (submitBtn && !submitBtn.disabled) {
+                submitBtn.click();
+            }
+        }, 400);
+    @endif
 });
 </script>
 @endsection

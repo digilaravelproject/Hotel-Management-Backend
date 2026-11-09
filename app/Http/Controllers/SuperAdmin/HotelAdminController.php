@@ -133,8 +133,8 @@ class HotelAdminController extends Controller
             $request->file('slider_images', [])
         );
 
-        if ($request->input('payment_action') === 'pay_now' && $updatedHotel->plan_id && ($updatedHotel->payment_status !== 'paid' || $updatedHotel->is_expired)) {
-            return redirect()->route('super-admin.hotels.pay', $updatedHotel->id);
+        if ($request->input('payment_action') === 'pay_now' && $updatedHotel->plan_id) {
+            return redirect()->route('super-admin.hotels.pay', ['id' => $updatedHotel->id, 'autostart' => 1]);
         }
 
         return redirect()->route('super-admin.hotels.index')

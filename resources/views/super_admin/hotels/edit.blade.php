@@ -464,8 +464,13 @@
                                        onchange="onPaymentActionChange(this)">
                             </div>
                             <p class="text-xs text-slate-500 mt-3 leading-relaxed">
-                                Account is updated/saved and immediately redirects to the official Checkout page to record settlement. TV pairing license key is activated and streaming devices unlocked immediately.
+                                Account is updated/saved and immediately opens the official Checkout page & payment gateway. TV pairing license key is activated and streaming devices unlocked immediately.
                             </p>
+                            <div class="pt-2">
+                                <a href="{{ route('super-admin.hotels.pay', ['id' => $hotel->id, 'autostart' => 1]) }}" class="inline-flex items-center text-[11px] font-bold text-emerald-700 hover:text-emerald-900 hover:underline">
+                                    <i class="fa-solid fa-bolt text-amber-500 text-[10px] mr-1"></i> Open Online Gateway Checkout Directly →
+                                </a>
+                            </div>
                         </label>
                     </div>
                 </div>
