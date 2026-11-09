@@ -22,6 +22,8 @@ class OttPlatform extends Model
 
     protected $appends = [
         'icon_url',
+        'icon_name',
+        'icon_slug',
     ];
 
     /**
@@ -73,5 +75,40 @@ class OttPlatform extends Model
         }
 
         return '';
+    }
+
+    /**
+     * Resolve only the icon filename / name without directory path.
+     * Useful for TV themes and launchers that load local bundled asset icons by name first.
+     */
+    public function getIconNameAttribute(): string
+    {
+        if (!empty($this->icon)) {
+            $parsedPath = parse_url($this->icon, PHP_URL_PATH) ?? $this->icon;
+            $basename = basename($parsedPath);
+            if (!empty($basename)) {
+                return $basename;
+            }
+        }
+
+        if (!empty($this->package_name) && isset(self::$packageIconMap[$this->package_name])) {
+            return basename(self::$packageIconMap[$this->package_name]);
+        }
+
+        $slug = Str::slug($this->name);
+        return $slug ? ($slug . '.svg') : '';
+    }
+
+    /**
+     * Resolve icon identifier slug (without file extension) for Android drawables (R.drawable.name).
+     */
+    public function getIconSlugAttribute(): string
+    {
+        $iconName = $this->icon_name;
+        if (!empty($iconName)) {
+            return pathinfo($iconName, PATHINFO_FILENAME);
+        }
+
+        return Str::slug($this->name);
     }
 }

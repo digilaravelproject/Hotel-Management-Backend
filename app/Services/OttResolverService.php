@@ -59,10 +59,18 @@ class OttResolverService
                     $id = 'prime';
                 }
 
+                $iconUrl = $ott['icon_url'] ?? $ott['icon'] ?? '';
+                $iconName = $ott['icon_name'] ?? ($iconUrl ? basename(parse_url($iconUrl, PHP_URL_PATH)) : ($id . '.svg'));
+                $iconSlug = $ott['icon_slug'] ?? pathinfo($iconName, PATHINFO_FILENAME);
+
                 $activeOttList[] = [
                     'id' => $id,
                     'name' => $ott['name'],
                     'package_name' => $ott['package'],
+                    'icon_name' => $iconName,
+                    'icon_slug' => $iconSlug,
+                    'icon_url' => $iconUrl,
+                    'icon' => $iconUrl,
                 ];
             }
         }

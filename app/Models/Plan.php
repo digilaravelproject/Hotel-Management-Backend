@@ -129,7 +129,11 @@ class Plan extends Model
                         'id' => $platform->id,
                         'name' => $platform->name,
                         'package' => $platform->package_name,
+                        'package_name' => $platform->package_name,
                         'icon' => $platform->icon_url,
+                        'icon_url' => $platform->icon_url,
+                        'icon_name' => $platform->icon_name,
+                        'icon_slug' => $platform->icon_slug,
                     ];
                 })
                 ->toArray();
