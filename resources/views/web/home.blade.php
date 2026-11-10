@@ -4,64 +4,64 @@
 
 @section('content')
 
-<!-- 1. HERO SECTION (Exact 1:1 Match to Reference Design) -->
+<!-- 1. HERO SECTION (100% Exact Match to Original Elementor Specifications) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#050B18]"
-         style="min-height: 800px;">
-    <!-- Background Image with Natural Scaling and Left-to-Right Contrast Gradient -->
+         class="relative w-full overflow-hidden bg-[#0E2556]"
+         style="min-height: 700px;">
+    
+    <!-- Background Image (Exact Elementor: center right / cover) -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
              alt="PaxTV Hotel Suite Smart Display" 
              class="w-full h-full object-cover object-[center_right]" />
         
-        <!-- Base Ambient Tint -->
-        <div class="absolute inset-0 bg-black/20"></div>
+        <!-- Elementor Exact Overlay: #000000 at 0.37 opacity -->
+        <div class="absolute inset-0 bg-black" style="opacity: 0.37;"></div>
 
-        <!-- Left-to-Right Dark Gradient for Text Contrast (Crisp typography without darkening the Smart TV) -->
+        <!-- Subtle Left Gradient for crisp text readability over window backdrop -->
         <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, rgba(5, 11, 24, 0.72) 0%, rgba(5, 11, 24, 0.58) 32%, rgba(5, 11, 24, 0.30) 52%, rgba(5, 11, 24, 0.05) 72%, rgba(5, 11, 24, 0) 100%);"></div>
-
-        <!-- Top Gradient for Header Logo & Navigation Contrast -->
-        <div class="absolute inset-0"
-             style="background: linear-gradient(180deg, rgba(5, 11, 24, 0.60) 0%, rgba(5, 11, 24, 0) 22%);"></div>
+             style="background: linear-gradient(90deg, rgba(14, 37, 86, 0.40) 0%, rgba(14, 37, 86, 0.20) 35%, transparent 65%);"></div>
     </div>
 
-    <!-- Hero Content Container (Exact Alignment & Typography matching Reference) -->
-    <div class="relative z-10 max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8 w-full"
-         style="padding-top: 200px; padding-bottom: 130px;">
-        <div class="max-w-[580px] space-y-4 sm:space-y-5">
+    <!-- Hero Content Container (Exact Elementor: max-w 1300px, pt: 240px, pb: 130px) -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[150px] md:pt-[180px] lg:pt-[240px] pb-[60px] md:pb-[90px] lg:pb-[130px]">
+        
+        <!-- Inner 60% Width Container (Exact Elementor: width 60%, gap 22px, p 20px, rounded 10px) -->
+        <div class="w-full lg:w-[60%] flex flex-col items-start gap-[22px] p-2 sm:p-5 rounded-[10px]">
             
-            <!-- Category Eyebrow in Teal -->
-            <div class="text-[#5EC9CB] font-semibold text-xs sm:text-[13px] tracking-[2px] uppercase font-mono mb-3">
-                PREMIUM HOTEL TV SOLUTION
-            </div>
+            <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #5EC9CB -->
+            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#5EC9CB] uppercase tracking-[2px] m-0">
+                Premium Hotel TV Solution
+            </h6>
 
-            <!-- Main Exact Headline with Large Scaled Typography -->
-            <h1 class="text-4xl sm:text-5xl lg:text-[58px] xl:text-[62px] font-bold text-white font-heading leading-[1.12] tracking-tight">
-                Transform Every Guest<br>
-                Stay with Smarter TV<br>
-                Experiences
+            <!-- Exact Main Headline: h1, 59px (tablet: 52px, mobile: 35px) Alexandria 700, line-height 1.2em, letter-spacing -0.5px, #FFFFFF -->
+            <h1 class="font-heading text-[35px] sm:text-[52px] lg:text-[59px] font-bold text-white leading-[1.2] tracking-[-0.5px] m-0">
+                Transform Every Guest Stay with Smarter TV Experiences
             </h1>
 
-            <!-- Exact Descriptive Subtitle -->
-            <p class="text-[15px] sm:text-base lg:text-[16.5px] text-slate-200 font-normal leading-[1.65] max-w-[510px]">
+            <!-- Exact Subtitle: p, 17px (mobile: 14px) Alexandria 400, line-height 1.7em, #CBD5E1 -->
+            <p class="font-heading text-[14px] sm:text-[17px] font-normal text-[#CBD5E1] leading-[1.7] m-0 max-w-[560px]">
                 An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
-            <!-- Dual Exact Action Buttons (Request Demo & Watch Video) -->
-            <div class="pt-3 flex flex-wrap items-center gap-3.5">
+            <!-- Exact Action Buttons Container: row, gap 14px, wrap -->
+            <div class="flex items-center gap-[14px] flex-wrap pt-1">
+                
+                <!-- Exact Request Demo Button: 15px Alexandria 600, bg #FFFFFF, text #0E2556, padding 15px 30px, rounded 10px -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3.5 rounded-[10px] text-sm sm:text-base font-bold text-[#0E2556] bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
+                        class="inline-flex items-center justify-center px-[30px] py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer">
                     <span>Request Demo</span>
                 </button>
 
+                <!-- Exact Watch Video Button: 15px Alexandria 600, bg rgba(255,255,255,0.04), border rgba(255,255,255,0.45), text #FFFFFF, padding 15px 30px, rounded 10px -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3.5 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-black/30 hover:bg-white/10 backdrop-blur-md border border-white/35 transition-all duration-200 cursor-pointer">
-                    <i class="fa-solid fa-play text-xs mr-2 text-white"></i>
+                        class="inline-flex items-center justify-center px-[30px] py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-white bg-white/[0.04] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
+                    <span class="mr-2">▶</span>
                     <span>Watch Video</span>
                 </button>
+
             </div>
 
         </div>

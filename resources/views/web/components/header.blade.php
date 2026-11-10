@@ -1,49 +1,49 @@
 <header id="mainHeader" class="absolute top-0 left-0 right-0 z-50 w-full transition-all duration-300 bg-transparent">
-    <div class="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center justify-between h-24 sm:h-28">
+    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between py-[18px]">
             
-            <!-- Brand Logo (Prominent High-Definition Size matching Reference Exactly) -->
+            <!-- Brand Logo (Exact Elementor Proportion: ~10-12% Container Width) -->
             <div class="shrink-0 flex items-center">
                 <a href="#home" class="flex items-center group">
                     <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
                          alt="Pax TV Launcher" 
-                         class="h-14 sm:h-16 lg:h-[68px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                         class="h-12 sm:h-14 lg:h-[58px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
             </div>
 
-            <!-- Desktop Navigation Links (Exact Match to Reference Design) -->
-            <div class="hidden md:flex items-center space-x-5 lg:space-x-7">
-                <nav class="flex items-center text-[15px]">
-                    <a href="#home" class="font-semibold text-[#14B8A6] hover:text-[#22D3EE] transition-colors duration-200">
+            <!-- Desktop Navigation Links (Exact Match to Elementor: 14px Alexandria 500) -->
+            <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+                <nav class="flex items-center font-heading text-[14px] font-medium">
+                    <a href="#home" class="text-[#5EC9CB] transition-colors duration-200">
                         Home
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#about" class="font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#about" class="text-white hover:text-[#5EC9CB] transition-colors duration-200">
                         About
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#solutions" class="font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#solutions" class="text-white hover:text-[#5EC9CB] transition-colors duration-200">
                         Solution
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#solutions" class="font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#solutions" class="text-white hover:text-[#5EC9CB] transition-colors duration-200">
                         Gallery
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#contactus" data-open-popup="popup-demo" class="font-medium text-white hover:text-[#14B8A6] transition-colors duration-200 cursor-pointer">
+                    <a href="#contactus" data-open-popup="popup-demo" class="text-white hover:text-[#5EC9CB] transition-colors duration-200 cursor-pointer">
                         Contact Us
                     </a>
                 </nav>
 
-                <!-- Request Demo Action Button (Exact Match to Reference Design) -->
+                <!-- Request Demo Action Button (Exact Elementor: 13px Alexandria 600, #1A9C9E, padding 15px 18px) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        style="background-color: rgb(26, 156, 158);"
-                        class="inline-flex items-center justify-center px-6 py-2.5 rounded-[10px] text-sm font-semibold text-[#0E2556] hover:bg-[#22B5B7] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer shrink-0">
+                        style="background-color: #1A9C9E;"
+                        class="inline-flex items-center justify-center px-[18px] py-[13px] rounded-[10px] text-[13px] font-semibold text-[#0E2556] font-heading hover:bg-[#22B5B7] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer shrink-0">
                     <span>Request Demo</span>
                     <i class="fas fa-chevron-right ml-2 text-xs"></i>
                 </button>
