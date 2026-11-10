@@ -8,8 +8,8 @@
 <style>
     @media (max-width: 767px) {
         .mobile-hero-content {
-            padding-top: 135px !important;
-            padding-bottom: 24px !important;
+            padding-top: 110px !important;
+            padding-bottom: 20px !important;
         }
     }
 </style>
@@ -36,7 +36,7 @@
 
     <!-- Hero Content Container (Centered within section, positioned safely below header on mobile) -->
     <div id="homeHeroContent" 
-         class="mobile-hero-content relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-6 sm:pb-10 lg:pb-8 flex items-center">
+         class="mobile-hero-content relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[110px] xs:pt-[115px] sm:pt-[120px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-6 sm:pb-10 lg:pb-8 flex items-center">
         
         <!-- Content Column (Mobile: Centered with equal left-right spacing below header; Desktop: Strictly 48% width) -->
         <div class="w-full max-w-[480px] mx-auto md:mx-0 md:max-w-none md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-center text-center md:items-start md:text-left gap-2 xs:gap-2.5 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
