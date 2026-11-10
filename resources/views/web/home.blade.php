@@ -1012,15 +1012,18 @@
 <section id="contactus" class="relative overflow-hidden border-b-2 border-[#15888A]" 
          style="padding-top: 85px; padding-bottom: 85px;">
     
-    <!-- Background Luxury Resort Image with Left-to-Right Dark Navy Gradient Overlay -->
+    <!-- Background Luxury Resort Image with Rich Multi-Layer Dark Navy Overlay (Exact Match to Reference) -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.png') }}" 
              alt="Twilight Luxury Resort" 
-             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.85] contrast-[1.05]" />
+             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.75] contrast-[1.1]" />
         
-        <!-- Multi-Stop Left-to-Right Navy Gradient (Solid on text side, transparent over the pool/resort) -->
+        <!-- Base Blue Night Ambiance Tint -->
+        <div class="absolute inset-0 bg-[#071A36]/50"></div>
+
+        <!-- Multi-Stop Left-to-Right Navy Gradient (Solid Midnight Navy on Left, Rich Ocean Blue Filter on Right) -->
         <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, #0A1931 0%, #0D234A 32%, rgba(13, 35, 74, 0.90) 52%, rgba(13, 35, 74, 0.50) 78%, rgba(13, 35, 74, 0.20) 100%);"></div>
+             style="background: linear-gradient(90deg, #06152B 0%, #071B38 30%, rgba(7, 27, 56, 0.94) 52%, rgba(8, 33, 68, 0.72) 75%, rgba(9, 38, 78, 0.50) 100%);"></div>
     </div>
 
     <!-- Left-Aligned Content Container -->
