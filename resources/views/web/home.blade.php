@@ -454,79 +454,96 @@
 </section>
 
 
-<!-- 6. MULTI LANGUAGE SUPPORT SECTION (Light Theme) -->
-<section class="relative w-full" 
-         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 60px; padding-bottom: 60px;">
+<!-- 6. MULTI LANGUAGE SUPPORT SECTION (Exact Match to Reference Design) -->
+<section class="relative w-full overflow-hidden" 
+         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding-top: 60px; padding-bottom: 60px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
-            <!-- Left Text Content & Language Badges -->
-            <div class="lg:col-span-6 space-y-5">
-                <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
+            <!-- Left Text Content & Language Badges (58% width on desktop) -->
+            <div class="lg:col-span-7 space-y-5">
+                <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     GLOBAL GUEST EXPERIENCE
                 </div>
 
-                <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-3xl sm:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
                     Multi-Language Support
                 </h2>
 
-                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                <p class="text-[15px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
                     Cater to international guests with multiple language options and easy navigation.
                 </p>
 
-                <!-- Language Pill Badges Grid -->
-                <div class="pt-2 flex flex-wrap gap-2 sm:gap-2.5">
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                <!-- Language Pill Buttons Grid -->
+                <div class="pt-2 flex flex-wrap gap-2.5">
+                    <!-- Active Language: English -->
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white text-[#0E2556] shadow-sm transition-all duration-200">
                         English
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    
+                    <!-- Other Languages -->
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         हिंदी
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         मराठी
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         ગુજરાતી
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         தமிழ்
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         ಕನ್ನಡ
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         తెలుగు
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         বাংলা
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Français
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Deutsch
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Español
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Português
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         中文
-                    </span>
-                    <span class="px-4 py-2 rounded-full text-xs font-semibold bg-white text-[#0E2556] border border-slate-200/80 shadow-sm hover:border-[#1A9C9E] transition-colors cursor-default">
+                    </button>
+                    <button type="button" 
+                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         عربى
-                    </span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Right Mockup Image -->
-            <div class="lg:col-span-6">
-                <div class="relative rounded-[12px] overflow-hidden shadow-xl border border-slate-200/60">
+            <!-- Right Mockup Image (42% width on desktop) -->
+            <div class="lg:col-span-5">
+                <div class="relative rounded-[10px] overflow-hidden shadow-2xl">
                     <img src="{{ asset('uploads/2026/11/Sunset-Resort-Language-Selection-UI-1-1-1.png') }}" 
                          alt="PaxTV Language Switcher Interface" 
-                         class="w-full h-auto object-cover rounded-[12px]" />
+                         class="w-full h-auto object-cover rounded-[10px]" />
                 </div>
             </div>
 
