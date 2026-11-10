@@ -5,27 +5,30 @@
 @section('content')
 
 <!-- 1. HERO SECTION (Matching Reference Image 2 Exactly) -->
-<section id="home" class="relative min-h-[700px] lg:min-h-[780px] flex items-center overflow-hidden bg-[#050B18]">
+<section id="home" 
+         class="relative w-full overflow-hidden bg-[#050B18]"
+         style="min-height: 740px;">
     <!-- Background Image -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
              alt="PaxTV Hotel Suite Smart Display" 
              class="w-full h-full object-cover object-center lg:object-[center_right]" />
         
-        <!-- Base Dark Overlay (30%) -->
-        <div class="absolute inset-0 bg-black/30"></div>
+        <!-- Base Dark Overlay (25%) -->
+        <div class="absolute inset-0 bg-black/25"></div>
 
         <!-- Multi-Stop Left-to-Right Dark Gradient for Text Contrast (Crisp typography without darkening the Smart TV) -->
         <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, rgba(5, 11, 24, 0.88) 0%, rgba(5, 11, 24, 0.74) 30%, rgba(5, 11, 24, 0.38) 55%, rgba(5, 11, 24, 0) 78%);"></div>
+             style="background: linear-gradient(90deg, rgba(5, 11, 24, 0.90) 0%, rgba(5, 11, 24, 0.78) 32%, rgba(5, 11, 24, 0.40) 55%, rgba(5, 11, 24, 0.05) 75%, rgba(5, 11, 24, 0) 100%);"></div>
 
         <!-- Top Gradient for Header Contrast -->
         <div class="absolute inset-0"
-             style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 20%, rgba(0, 0, 0, 0) 35%);"></div>
+             style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.60) 0%, rgba(0, 0, 0, 0.20) 20%, rgba(0, 0, 0, 0) 35%);"></div>
     </div>
 
-    <!-- Hero Content Container (pt-44 lg:pt-52 provides 160px+ clear vertical clearance below the header logo) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 pt-44 sm:pt-48 lg:pt-52 pb-20 sm:pb-24 w-full">
+    <!-- Hero Content Container (Explicit 190px top padding guarantees zero collision with header logo) -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full"
+         style="padding-top: 190px; padding-bottom: 120px;">
         <div class="max-w-[560px] space-y-4 sm:space-y-5">
             
             <!-- Category Eyebrow in Teal -->
@@ -41,8 +44,8 @@
             </h1>
 
             <!-- Exact Descriptive Subtitle -->
-            <p class="text-sm sm:text-base text-slate-300 font-normal leading-[1.7] max-w-[500px]">
-                An all-in-one Android TV & Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
+            <p class="text-sm sm:text-base text-slate-200 font-normal leading-[1.7] max-w-[500px]">
+                An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
             <!-- Dual Exact Action Buttons -->
@@ -55,7 +58,7 @@
 
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 transition-all duration-200 cursor-pointer">
+                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-black/25 hover:bg-white/10 backdrop-blur-md border border-white/30 transition-all duration-200 cursor-pointer">
                     <i class="fa-solid fa-play text-xs mr-2 text-white"></i>
                     <span>Watch Video</span>
                 </button>
