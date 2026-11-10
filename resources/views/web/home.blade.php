@@ -68,70 +68,70 @@
 
 
 <!-- 2. VALUE PROPOSITION FEATURE BAR (Exact Match to Reference Design) -->
-<section class="relative z-20 w-full py-8 sm:py-10 lg:py-[50px]" 
+<section class="relative z-20 w-full py-6 sm:py-10 lg:py-[50px]" 
          style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%);">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8 items-center">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-y-6 gap-x-3.5 sm:gap-6 lg:gap-8 items-start sm:items-center">
             
             <!-- Feature 1: Customizable UI -->
-            <div class="flex items-center space-x-3.5 group">
-                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5 group">
+                <div class="w-11 h-11 sm:w-[54px] sm:h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
                      style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
-                    <i class="fas fa-sliders-h text-xl text-white"></i>
+                    <i class="fas fa-sliders-h text-lg sm:text-xl text-white"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                    <h3 class="font-heading font-semibold text-[14px] sm:text-[16px] text-[#0E2556] leading-snug">
                         Customizable UI
                     </h3>
-                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                    <p class="font-sans text-[12px] sm:text-[13px] text-[#475569] leading-snug sm:leading-relaxed mt-0.5 sm:mt-1">
                         Branded experience for your hotel
                     </p>
                 </div>
             </div>
 
             <!-- Feature 2: Multi-Language -->
-            <div class="flex items-center space-x-3.5 group">
-                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5 group">
+                <div class="w-11 h-11 sm:w-[54px] sm:h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
                      style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
-                    <i class="far fa-comments text-xl text-white"></i>
+                    <i class="far fa-comments text-lg sm:text-xl text-white"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                    <h3 class="font-heading font-semibold text-[14px] sm:text-[16px] text-[#0E2556] leading-snug">
                         Multi-Language
                     </h3>
-                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                    <p class="font-sans text-[12px] sm:text-[13px] text-[#475569] leading-snug sm:leading-relaxed mt-0.5 sm:mt-1">
                         Global guest support
                     </p>
                 </div>
             </div>
 
             <!-- Feature 3: Hotel Information -->
-            <div class="flex items-center space-x-3.5 group">
-                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5 group">
+                <div class="w-11 h-11 sm:w-[54px] sm:h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
                      style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
-                    <i class="far fa-building text-xl text-white"></i>
+                    <i class="far fa-building text-lg sm:text-xl text-white"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                    <h3 class="font-heading font-semibold text-[14px] sm:text-[16px] text-[#0E2556] leading-snug">
                         Hotel Information
                     </h3>
-                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                    <p class="font-sans text-[12px] sm:text-[13px] text-[#475569] leading-snug sm:leading-relaxed mt-0.5 sm:mt-1">
                         Showcase amenities and services
                     </p>
                 </div>
             </div>
 
             <!-- Feature 4: Secure & Reliable -->
-            <div class="flex items-center space-x-3.5 group">
-                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3.5 group">
+                <div class="w-11 h-11 sm:w-[54px] sm:h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
                      style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
-                    <i class="fas fa-shield-alt text-xl text-white"></i>
+                    <i class="fas fa-shield-alt text-lg sm:text-xl text-white"></i>
                 </div>
                 <div>
-                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                    <h3 class="font-heading font-semibold text-[14px] sm:text-[16px] text-[#0E2556] leading-snug">
                         Secure &amp; Reliable
                     </h3>
-                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                    <p class="font-sans text-[12px] sm:text-[13px] text-[#475569] leading-snug sm:leading-relaxed mt-0.5 sm:mt-1">
                         Built for performance and guest privacy
                     </p>
                 </div>
