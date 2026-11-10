@@ -1,5 +1,5 @@
 <footer class="bg-[#030712] border-t border-white/10 text-slate-400 py-16 lg:py-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-8">
             
             <!-- Brand Column -->

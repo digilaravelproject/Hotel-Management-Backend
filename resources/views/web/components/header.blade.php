@@ -1,5 +1,5 @@
 <header id="mainHeader" class="absolute top-0 left-0 right-0 z-50 w-full transition-all duration-300 bg-transparent">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="flex items-center justify-between h-20 sm:h-24">
             
             <!-- Brand Logo -->
@@ -39,10 +39,11 @@
                     </a>
                 </nav>
 
-                <!-- Request Demo Action Button (Teal with dark text) -->
+                <!-- Request Demo Action Button (Exact color rgb(26, 156, 158)) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-[#052229] bg-[#10A4A6] hover:bg-[#14B8A6] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer">
+                        style="background-color: rgb(26, 156, 158);"
+                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-[#052229] hover:brightness-110 transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer">
                     <span>Request Demo</span>
                     <i class="fas fa-chevron-right ml-2 text-xs text-[#052229]"></i>
                 </button>
@@ -62,7 +63,7 @@
     </div>
 
     <!-- Mobile Dropdown Navigation Menu -->
-    <div id="mobileMenuDropdown" class="hidden md:hidden border-t border-white/10 bg-[#050B18]/95 backdrop-blur-2xl px-5 pt-3 pb-6 space-y-2.5">
+    <div id="mobileMenuDropdown" class="hidden md:hidden border-t border-white/10 bg-[#050B18]/95 backdrop-blur-2xl px-[2rem] pt-3 pb-6 space-y-2.5">
         <a href="#home" class="block px-3 py-2 rounded-lg text-base font-bold text-[#14B8A6]">
             Home
         </a>
@@ -82,12 +83,13 @@
             <a href="{{ route('hotel.register') }}" class="block px-3 py-2.5 rounded-lg text-base font-bold text-teal-300 bg-teal-500/10">
                 <i class="fa-solid fa-hotel mr-2"></i> Register Hotel
             </a>
-            <a href="{{ route('login') }}" class="block px-3 py-2 rounded-lg text-base font-medium text-slate-300">
+            <a href="{{ route('login') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300">
                 Sign In
             </a>
             <button type="button" 
                     data-open-popup="popup-demo"
-                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-xl text-base font-bold text-[#052229] bg-[#10A4A6] hover:bg-[#14B8A6] transition-all">
+                    style="background-color: rgb(26, 156, 158);"
+                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-xl text-base font-bold text-[#052229] hover:brightness-110 transition-all">
                 <span>Request Demo</span>
                 <i class="fas fa-chevron-right ml-2 text-xs"></i>
             </button>

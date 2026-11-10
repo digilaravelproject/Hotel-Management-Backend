@@ -6,18 +6,20 @@
 
 <!-- 1. HERO SECTION (Matching Reference Image Exactly) -->
 <section id="home" class="relative min-h-[90vh] lg:min-h-[96vh] flex items-center overflow-hidden bg-[#050B18]">
-    <!-- Background Image with Subtle Shading -->
+    <!-- Background Image with Slightly Dark Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
              alt="PaxTV Hotel Suite Smart Display" 
              class="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.04]" />
-        <!-- Soft Gradient Shading for Text Legibility while preserving the Smart TV sharpness on the right -->
-        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#050B18] via-transparent to-black/30"></div>
+        <!-- Slightly dark color overlay across the entire image -->
+        <div class="absolute inset-0 bg-black/45"></div>
+        <!-- Soft gradient shading for text legibility while preserving the Smart TV sharpness on the right -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050B18] via-transparent to-black/20"></div>
     </div>
 
     <!-- Hero Content Container -->
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 lg:pt-44 pb-20 sm:pb-28 w-full">
+    <div class="relative z-10 max-w-[1500px] mx-auto px-[2rem] pt-32 sm:pt-40 lg:pt-44 pb-20 sm:pb-28 w-full">
         <div class="max-w-xl lg:max-w-2xl space-y-5">
             
             <!-- Category Eyebrow in Teal -->
@@ -59,7 +61,7 @@
 
 
 <!-- 2. STATS RIBBON SECTION -->
-<section class="relative z-20 -mt-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<section class="relative z-20 -mt-10 max-w-[1500px] mx-auto px-[2rem]">
     <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/50 border border-white/10 bg-[#0B1E38]/90">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 divide-y md:divide-y-0 md:divide-x divide-white/10">
             
@@ -110,7 +112,7 @@
 
 <!-- 3. ABOUT US: PAXTV LAUNCHER SECTION -->
 <section id="about" class="py-20 lg:py-28 bg-[#050B18]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             <!-- Left Image Showcase -->
@@ -185,7 +187,7 @@
 
 <!-- 4. OUR SOLUTIONS SECTION -->
 <section id="solutions" class="py-20 lg:py-28 bg-[#08152B] relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         
         <!-- Section Header -->
         <div class="max-w-3xl space-y-4 mb-14">
@@ -289,7 +291,7 @@
 
 <!-- 5. FEATURE COMPARISON MATRIX ("GO BEYOND ENTERTAINMENT") -->
 <section class="py-20 lg:py-28 bg-[#050B18]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         
         <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400 font-mono uppercase tracking-wider">
@@ -439,7 +441,7 @@
 
 <!-- 6. MULTI LANGUAGE SUPPORT SECTION -->
 <section class="py-20 lg:py-28 bg-[#08152B] relative overflow-hidden">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <!-- Left Text Content & Language Badges -->
@@ -517,7 +519,7 @@
 
 <!-- 7. HOTEL INFORMATION & SERVICES SECTION -->
 <section id="features" class="py-20 lg:py-28 bg-[#050B18]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             <!-- Left Mockup Image -->
@@ -607,7 +609,7 @@
 
 <!-- 8. LIVE TV & ENTERTAINMENT SECTION -->
 <section class="py-20 lg:py-28 bg-[#08152B] relative">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
             <!-- Left Text Content & Feature Pills -->
@@ -685,7 +687,7 @@
 
 <!-- 9. GALLERY SECTION -->
 <section id="gallery" class="py-20 lg:py-28 bg-[#050B18]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         
         <div class="text-center max-w-3xl mx-auto space-y-4 mb-14">
             <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400 font-mono uppercase tracking-wider">
@@ -764,7 +766,7 @@
 
 <!-- 10. TRUSTED BY HOTELS (TESTIMONIALS) -->
 <section class="py-20 lg:py-28 bg-[#08152B]">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="max-w-[1500px] mx-auto px-[2rem]">
         
         <div class="text-center max-w-3xl mx-auto space-y-4 mb-16">
             <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400 font-mono uppercase tracking-wider">
