@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingPageController;
 use App\Http\Controllers\Auth\CommonLoginController;
 use App\Http\Controllers\PaymentCallbackController;
+use App\Http\Controllers\ApkDownloadController;
 
 $mainDomain = env('MAIN_DOMAIN', 'paxtvlauncher.com');
 $appDomain  = env('APP_DOMAIN', 'app.paxtvlauncher.com');
@@ -31,6 +32,9 @@ Route::domain($mainDomain)->group(function () {
     // Contact & Lead Generation Form Submission
     Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
     Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
+
+    // Secure 7-Day Signed APK Package Download
+    Route::get('/download/app', [ApkDownloadController::class, 'download'])->name('app.apk.download');
 
     // Information & Support Pages
     Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
@@ -79,4 +83,5 @@ if (app()->environment('local')) {
     Route::get('/', [LandingPageController::class, 'web']);
     Route::get('/web', [LandingPageController::class, 'web']);
     Route::get('/thank-you', [LandingPageController::class, 'thankYou']);
+    Route::get('/download/app', [ApkDownloadController::class, 'download']);
 }

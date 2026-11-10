@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -192,6 +192,24 @@
                     * Valid for exactly {{ $hotelAdmin->room_count }} connected TV screens.
                 </p>
             </div>
+
+            @if(!empty($downloadUrl))
+            <div class="card" style="border: 2px solid #6366f1; background: linear-gradient(135deg, #0e2556 0%, #1e1b4b 100%); color: #ffffff; text-align: center; border-radius: 12px; padding: 22px; margin-bottom: 30px;">
+                <h3 style="color: #00fbff; margin: 0 0 10px 0; font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">
+                    📲 Smart TV Application Package (APK)
+                </h3>
+                <p style="margin: 0 0 16px 0; font-size: 13.5px; color: #e2e8f0; line-height: 1.5;">
+                    Download and install the official <strong>PAX TV Hospitality</strong> app on your hotel smart TVs, then activate using the license key above.
+                </p>
+                <a href="{{ $downloadUrl }}" 
+                   style="display: inline-block; background: #00fbff; color: #0E2556 !important; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-weight: 800; font-size: 14px; box-shadow: 0 4px 14px rgba(0,251,255,0.35);">
+                    ⬇ Download PAX TV APK
+                </a>
+                <p style="margin: 12px 0 0 0; font-size: 11.5px; color: #94a3b8;">
+                    🔒 <em>This secure download link is cryptographically signed and valid for <strong>7 days</strong>.</em>
+                </p>
+            </div>
+            @endif
 
             <div class="warning-text">
                 <strong>Please Note:</strong> Your account is currently pending review and approval by the Super Admin. You will be able to log in to the Hotel Dashboard once the review is completed.

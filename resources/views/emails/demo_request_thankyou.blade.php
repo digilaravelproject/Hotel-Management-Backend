@@ -50,6 +50,28 @@
                     </div>
                 </div>
 
+                <!-- APK Download Section with 7-Day Signed Link -->
+                @if(!empty($downloadUrl))
+                <div style="background: linear-gradient(135deg, #0E2556 0%, #15386C 100%); border: 2px solid #00fbff; border-radius: 14px; padding: 22px; margin-bottom: 24px; text-align: center; color: #ffffff;">
+                    <div style="font-size: 12px; font-weight: 800; color: #00fbff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;">
+                        📲 Instant Android App Access
+                    </div>
+                    <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 800; color: #ffffff;">
+                        Download PAX TV Hospitality APK
+                    </h3>
+                    <p style="margin: 0 0 16px 0; font-size: 13px; color: #E2E8F0; line-height: 1.5;">
+                        You can download and test our official Android TV hospitality application package directly on your smart TV or Android device.
+                    </p>
+                    <a href="{{ $downloadUrl }}" 
+                       style="background: #00fbff; color: #0E2556 !important; padding: 13px 28px; font-size: 14px; font-weight: 800; border-radius: 10px; text-decoration: none; display: inline-block; box-shadow: 0 4px 16px rgba(0, 251, 255, 0.45);">
+                        ⬇ Download PAX TV APK
+                    </a>
+                    <p style="margin: 14px 0 0 0; font-size: 11.5px; color: #94A3B8;">
+                        🔒 <em>Note: This secure download link is cryptographically signed and valid for <strong>7 days</strong>.</em>
+                    </p>
+                </div>
+                @endif
+
                 <!-- Inquiry Summary -->
                 <div class="summary-card">
                     <div style="font-weight: 800; color: #1e293b; font-size: 13px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">

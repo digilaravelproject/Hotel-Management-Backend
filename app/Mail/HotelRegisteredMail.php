@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use App\Models\HotelAdmin;
+use Illuminate\Support\Facades\URL;
 
 class HotelRegisteredMail extends Mailable
 {
@@ -15,6 +16,7 @@ class HotelRegisteredMail extends Mailable
 
     public $hotelAdmin;
     public $plainPassword;
+    public string $downloadUrl;
 
     /**
      * Create a new message instance.
@@ -23,6 +25,13 @@ class HotelRegisteredMail extends Mailable
     {
         $this->hotelAdmin = $hotelAdmin;
         $this->plainPassword = $plainPassword;
+
+        // Generate authentic, tamper-proof signed URL valid for exactly 7 days
+        $this->downloadUrl = URL::temporarySignedRoute(
+            'app.apk.download',
+            now()->addDays(7),
+            ['ref' => 'hotel', 'hotel' => $hotelAdmin->id]
+        );
     }
 
     /**
@@ -42,6 +51,9 @@ class HotelRegisteredMail extends Mailable
     {
         return new Content(
             view: 'emails.hotel_registered',
+            with: [
+                'downloadUrl' => $this->downloadUrl,
+            ],
         );
     }
 

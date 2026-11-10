@@ -7,6 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\URL;
 use App\Models\ContactInquiry;
 
 class DemoRequestThankYouMail extends Mailable
@@ -14,6 +15,7 @@ class DemoRequestThankYouMail extends Mailable
     use Queueable, SerializesModels;
 
     public ContactInquiry $inquiry;
+    public string $downloadUrl;
 
     /**
      * Create a new message instance.
@@ -21,6 +23,13 @@ class DemoRequestThankYouMail extends Mailable
     public function __construct(ContactInquiry $inquiry)
     {
         $this->inquiry = $inquiry;
+
+        // Generate authentic, tamper-proof signed URL valid for exactly 7 days
+        $this->downloadUrl = URL::temporarySignedRoute(
+            'app.apk.download',
+            now()->addDays(7),
+            ['ref' => 'lead', 'inquiry' => $inquiry->id]
+        );
     }
 
     /**
@@ -29,7 +38,7 @@ class DemoRequestThankYouMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Thank You for Requesting a Demo | Pax TV Launcher Hospitality Network',
+            subject: 'Thank You for Requesting a Demo | Pax TV Launcher & App Access',
         );
     }
 
@@ -40,6 +49,9 @@ class DemoRequestThankYouMail extends Mailable
     {
         return new Content(
             view: 'emails.demo_request_thankyou',
+            with: [
+                'downloadUrl' => $this->downloadUrl,
+            ],
         );
     }
 
