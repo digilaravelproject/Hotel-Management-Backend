@@ -6,9 +6,9 @@
 
 <!-- 1. HERO SECTION (100% Fit & Proportionate Layout) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0A162D] min-h-[640px] xs:min-h-[680px] sm:min-h-[720px] md:min-h-[560px] lg:min-h-0 lg:aspect-[2111/745] flex items-end md:items-center">
+         class="relative w-full overflow-hidden bg-[#0A162D] aspect-[1086/1448] md:aspect-auto md:min-h-[560px] lg:aspect-[2111/745] flex items-start md:items-center">
     
-    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape -->
+    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape (100% Full Uncropped Fit) -->
     <div class="absolute inset-0 z-0">
         <picture class="w-full h-full block">
             <!-- Mobile (< 768px): Dedicated 4:5 composition (1086x1448) -->
@@ -16,35 +16,34 @@
             <!-- Desktop / Tablet (>= 768px): Panoramic Landscape (2111x745) -->
             <img src="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.png') }}" 
                  alt="Luxury Hotel Room with PAXTV Interface" 
-                 class="w-full h-full object-cover object-center md:object-cover lg:object-fill 2xl:object-contain object-right" />
+                 class="w-full h-full object-fill md:object-cover lg:object-fill 2xl:object-contain object-right" />
         </picture>
 
-        <!-- Mobile Soft Light Black Overlay (Light tint on top, gentle fade at bottom for text legibility) -->
-        <div class="block md:hidden absolute inset-0 bg-black/20 pointer-events-none"></div>
-        <div class="block md:hidden absolute inset-x-0 bottom-0 h-[65%] bg-gradient-to-t from-[#0A162D]/95 via-[#0A162D]/60 to-transparent pointer-events-none"></div>
+        <!-- Mobile Soft Light Black Overlay (Light uniform ~25% black tint across the whole banner) -->
+        <div class="block md:hidden absolute inset-0 bg-black/25 pointer-events-none"></div>
 
         <!-- Subtle Left Gradient on Tablet/Desktop for crystal clear headline legibility over window/bed -->
         <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-[#050B18]/75 via-[#050B18]/35 to-transparent pointer-events-none w-[52%]"></div>
     </div>
 
-    <!-- Hero Content Container (Mobile: Aligned to Bottom; Desktop: Centered vertically within section) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-20 md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-7 xs:pb-9 sm:pb-12 lg:pb-8 flex flex-col justify-end md:justify-center items-center md:items-start">
+    <!-- Hero Content Container (Centered within section) -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[95px] xs:pt-[105px] sm:pt-[115px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-6 sm:pb-10 lg:pb-8 flex items-center">
         
-        <!-- Content Column (Mobile: Centered with equal left-right spacing; Desktop: Strictly 48% width so TV screen on right is 100% unobstructed) -->
-        <div class="w-full max-w-[500px] mx-auto md:mx-0 md:max-w-none md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-center text-center md:items-start md:text-left gap-3 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
+        <!-- Content Column (Mobile: Centered with equal left-right spacing below header; Desktop: Strictly 48% width) -->
+        <div class="w-full max-w-[480px] mx-auto md:mx-0 md:max-w-none md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-center text-center md:items-start md:text-left gap-2 xs:gap-2.5 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
             
             <!-- Eyebrow: 11px/12px uppercase #00fbff -->
-            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#00fbff] uppercase tracking-[2px] m-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]">
+            <h6 class="font-heading text-[10.5px] xs:text-[11px] sm:text-[12px] font-semibold text-[#00fbff] uppercase tracking-[2px] m-0 drop-shadow-[0_2px_4px_rgba(0,0,0,0.85)]">
                 Premium Hotel TV Solution
             </h6>
 
             <!-- Main Headline (Scaled proportionately so it never overflows) -->
-            <h1 class="font-heading text-[22px] xs:text-[25px] sm:text-[30px] md:text-[34px] lg:text-[32px] xl:text-[40px] 2xl:text-[46px] font-bold text-white leading-[1.22] tracking-tight m-0 break-words drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
+            <h1 class="font-heading text-[20px] xs:text-[23px] sm:text-[28px] md:text-[34px] lg:text-[32px] xl:text-[40px] 2xl:text-[46px] font-bold text-white leading-[1.2] tracking-tight m-0 break-words drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)]">
                 Transform Every Guest Stay with Smarter TV Experiences
             </h1>
 
             <!-- Subtitle -->
-            <p class="font-heading text-[12.5px] xs:text-[13.5px] sm:text-[14.5px] lg:text-[13.5px] xl:text-[15px] font-normal text-[#E2E8F0] leading-[1.5] m-0 max-w-[420px] md:max-w-[460px] mx-auto md:mx-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+            <p class="font-heading text-[12px] xs:text-[13px] sm:text-[14px] lg:text-[13.5px] xl:text-[15px] font-normal text-[#E2E8F0] leading-[1.45] m-0 max-w-[390px] md:max-w-[460px] mx-auto md:mx-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                 An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
@@ -54,14 +53,14 @@
                 <!-- Request Demo Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-5 xs:px-6 sm:px-7 py-2.5 sm:py-3 rounded-[10px] text-[12.5px] xs:text-[13px] sm:text-[14px] font-bold text-[#0E2556] bg-[#00fbff] font-heading hover:bg-[#33fcff] transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_18px_rgba(0,251,255,0.45)] cursor-pointer text-center shrink-0">
+                        class="inline-flex items-center justify-center px-4.5 xs:px-5 sm:px-7 py-2 xs:py-2.5 sm:py-3 rounded-[9px] text-[12px] xs:text-[12.5px] sm:text-[14px] font-bold text-[#0E2556] bg-[#00fbff] font-heading hover:bg-[#33fcff] transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_18px_rgba(0,251,255,0.45)] cursor-pointer text-center shrink-0">
                     <span>Request Demo</span>
                 </button>
 
                 <!-- Watch Video Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-4 xs:px-5 sm:px-6 py-2.5 sm:py-3 rounded-[10px] text-[12.5px] xs:text-[13px] sm:text-[14px] font-semibold text-white bg-black/40 hover:bg-black/55 border border-white/40 backdrop-blur-sm font-heading transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-center shrink-0">
+                        class="inline-flex items-center justify-center px-4 xs:px-4.5 sm:px-6 py-2 xs:py-2.5 sm:py-3 rounded-[9px] text-[12px] xs:text-[12.5px] sm:text-[14px] font-semibold text-white bg-black/40 hover:bg-black/55 border border-white/40 backdrop-blur-sm font-heading transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-center shrink-0">
                     <span class="mr-2 text-xs">▶</span>
                     <span>Watch Video</span>
                 </button>
