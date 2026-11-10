@@ -1042,7 +1042,8 @@
             const orderData = await orderResponse.json();
 
             if (!orderResponse.ok || !orderData.success) {
-                throw new Error(orderData.message || 'Payment Order generation failed. Please try again.');
+                const errMsg = orderData.message || (orderData.errors ? Object.values(orderData.errors).flat()[0] : null);
+                throw new Error(errMsg || 'Payment Order generation failed. Please try again.');
             }
 
             // Step B: Launch Razorpay or active gateway
@@ -1147,7 +1148,8 @@
             const completeData = await completeResponse.json();
 
             if (!completeResponse.ok || !completeData.success) {
-                throw new Error(completeData.message || 'Hotel account creation could not be completed.');
+                const errMsg = completeData.message || (completeData.errors ? Object.values(completeData.errors).flat()[0] : null);
+                throw new Error(errMsg || 'Hotel account creation could not be completed.');
             }
 
             // Success: Redirect smoothly to dashboard or success screen
