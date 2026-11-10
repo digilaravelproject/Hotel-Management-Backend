@@ -19,8 +19,7 @@
         <div class="absolute inset-0 bg-black" style="opacity: 0.37;"></div>
 
         <!-- Subtle Left Gradient for crisp text readability over window backdrop -->
-        <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, rgba(14, 37, 86, 0.40) 0%, rgba(14, 37, 86, 0.20) 35%, transparent 65%);"></div>
+        <div class="absolute inset-0"></div>
     </div>
 
     <!-- Hero Content Container (Exact Elementor: max-w 1300px, pt: 240px, pb: 130px) -->
