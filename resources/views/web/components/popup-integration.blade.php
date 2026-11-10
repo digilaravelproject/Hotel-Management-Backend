@@ -19,7 +19,7 @@
             <div class="w-full md:w-[42%] md:min-w-[42%] md:max-w-[42%] shrink-0 flex flex-col justify-center text-left p-5 sm:p-7 md:p-[44px_38px]"
                  style="background-image: linear-gradient(150deg, #0E2556 0%, #15888A 100%);">
                 
-                <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#5EC9CB] mb-1.5 sm:mb-2">
+                <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#00fbff] mb-1.5 sm:mb-2">
                     Pax TV Hospitality
                 </span>
                 
@@ -38,7 +38,7 @@
                 <div class="pt-1">
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            class="w-full sm:w-auto text-center inline-block px-7 py-2.5 sm:py-3.5 rounded-[10px] font-heading text-[13.5px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
+                            class="w-full sm:w-auto text-center inline-block px-7 py-2.5 sm:py-3.5 rounded-[10px] font-heading text-[13.5px] sm:text-[15px] font-bold text-[#0E2556] bg-[#00fbff] hover:bg-[#33fcff] transition-all duration-300 shadow-[0_4px_16px_rgba(0,251,255,0.4)] hover:-translate-y-0.5 cursor-pointer">
                         Request Demo
                     </button>
                 </div>
@@ -61,7 +61,7 @@
                     
                     <!-- 1. PMS Integration -->
                     <div class="group flex items-center gap-3 p-3.5 sm:p-4 md:p-[20px_18px] rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">
-                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#1A9C9E] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
+                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#00fbff] group-hover:text-[#0E2556] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
                             <svg class="w-4 h-4 fill-white" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M640 264v-16c0-8.84-7.16-16-16-16H344v-40h72c17.67 0 32-14.33 32-32V32c0-17.67-14.33-32-32-32H224c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h72v40H16c-8.84 0-16 7.16-16 16v16c0 8.84 7.16 16 16 16h104v40H64c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h304v40h-56c-17.67 0-32 14.33-32 32v128c0 17.67 14.33 32 32 32h160c17.67 0 32-14.33 32-32V352c0-17.67-14.33-32-32-32h-56v-40h104c8.84 0 16-7.16 16-16zM256 128V64h128v64H256zm-64 320H96v-64h96v64zm352 0h-96v-64h96v64z"></path>
                             </svg>
@@ -73,7 +73,7 @@
 
                     <!-- 2. Guest Check-in & Check-out -->
                     <div class="group flex items-center gap-3 p-3.5 sm:p-4 md:p-[20px_18px] rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">
-                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#1A9C9E] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
+                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#00fbff] group-hover:text-[#0E2556] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
                             <svg class="w-4 h-4 fill-white" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M624 448h-80V113.45C544 86.19 522.47 64 496 64H384v64h96v384h144c8.84 0 16-7.16 16-16v-32c0-8.84-7.16-16-16-16zM312.24 1.01l-192 49.74C105.99 54.44 96 67.7 96 82.92V448H16c-8.84 0-16 7.16-16 16v32c0 8.84 7.16 16 16 16h336V33.18c0-21.58-19.56-37.41-39.76-32.17zM264 288c-13.25 0-24-14.33-24-32s10.75-32 24-32 24 14.33 24 32-10.75 32-24 32z"></path>
                             </svg>
@@ -85,7 +85,7 @@
 
                     <!-- 3. Third-Party App Connectivity -->
                     <div class="group flex items-center gap-3 p-3.5 sm:p-4 md:p-[20px_18px] rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">
-                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#1A9C9E] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
+                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#00fbff] group-hover:text-[#0E2556] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
                             <svg class="w-4 h-4 fill-white" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M320,32a32,32,0,0,0-64,0v96h64Zm48,128H16A16,16,0,0,0,0,176v32a16,16,0,0,0,16,16H32v32A160.07,160.07,0,0,0,160,412.8V512h64V412.8A160.07,160.07,0,0,0,352,256V224h16a16,16,0,0,0,16-16V176A16,16,0,0,0,368,160ZM128,32a32,32,0,0,0-64,0v96h64Z"></path>
                             </svg>
@@ -97,7 +97,7 @@
 
                     <!-- 4. Centralised System Management -->
                     <div class="group flex items-center gap-3 p-3.5 sm:p-4 md:p-[20px_18px] rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">
-                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#1A9C9E] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
+                        <div class="w-10 h-10 sm:w-[42px] sm:h-[42px] rounded-[10px] bg-[#0E2556] group-hover:bg-[#00fbff] group-hover:text-[#0E2556] text-white flex items-center justify-center shrink-0 transition-colors duration-250">
                             <svg class="w-4 h-4 fill-white" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M496 384H160v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h80v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h336c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160h-80v-16c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h336v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h80c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm0-160H288V48c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v16H16C7.2 64 0 71.2 0 80v32c0 8.8 7.2 16 16 16h208v16c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-16h208c8.8 0 16-7.2 16-16V80c0-8.8-7.2-16-16-16z"></path>
                             </svg>

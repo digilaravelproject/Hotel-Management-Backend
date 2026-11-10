@@ -14,16 +14,16 @@
                 </p>
                 <!-- Social Links (Square rounded buttons matching reference exactly) -->
                 <div class="flex items-center space-x-2.5 pt-2">
-                    <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#1A9C9E] flex items-center justify-center text-white/90 hover:text-white transition-colors">
+                    <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#00fbff] hover:text-[#0E2556] flex items-center justify-center text-white/90 transition-colors">
                         <i class="fab fa-facebook-f text-sm"></i>
                     </a>
-                    <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#1A9C9E] flex items-center justify-center text-white/90 hover:text-white transition-colors">
+                    <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#00fbff] hover:text-[#0E2556] flex items-center justify-center text-white/90 transition-colors">
                         <i class="fab fa-instagram text-sm"></i>
                     </a>
-                    <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#1A9C9E] flex items-center justify-center text-white/90 hover:text-white transition-colors">
+                    <a href="#" aria-label="LinkedIn" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#00fbff] hover:text-[#0E2556] flex items-center justify-center text-white/90 transition-colors">
                         <i class="fab fa-linkedin-in text-sm"></i>
                     </a>
-                    <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#1A9C9E] flex items-center justify-center text-white/90 hover:text-white transition-colors">
+                    <a href="#" aria-label="YouTube" class="w-9 h-9 rounded-[6px] bg-[#16366E] hover:bg-[#00fbff] hover:text-[#0E2556] flex items-center justify-center text-white/90 transition-colors">
                         <i class="fab fa-youtube text-sm"></i>
                     </a>
                 </div>
@@ -37,25 +37,25 @@
                 <ul class="space-y-2.5 text-[14px]">
                     <li>
                         <a href="#about" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>About Us</span>
                         </a>
                     </li>
                     <li>
                         <a href="#solutions" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Our Solutions</span>
                         </a>
                     </li>
                     <li>
                         <a href="#solutions" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Gallery</span>
                         </a>
                     </li>
                     <li>
                         <a href="#contactus" data-open-popup="popup-demo" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center cursor-pointer">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Contact Us</span>
                         </a>
                     </li>
@@ -70,25 +70,25 @@
                 <ul class="space-y-2.5 text-[14px]">
                     <li>
                         <a href="#solutions" data-open-popup="popup-hotel-tv" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center cursor-pointer">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Hotel TV Application</span>
                         </a>
                     </li>
                     <li>
                         <a href="#solutions" data-open-popup="popup-integration" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center cursor-pointer">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>System Integration</span>
                         </a>
                     </li>
                     <li>
                         <a href="#solutions" data-open-popup="popup-support" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center cursor-pointer">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Ongoing Support</span>
                         </a>
                     </li>
                     <li>
                         <a href="#solutions" class="text-[#CBD5E1] hover:text-white transition-colors flex items-center">
-                            <span class="text-[#14B8A6] mr-2.5 text-xs font-bold">&gt;</span>
+                            <span class="text-[#00fbff] mr-2.5 text-xs font-bold">&gt;</span>
                             <span>Multi-Language Support</span>
                         </a>
                     </li>
@@ -101,14 +101,14 @@
                     Get in Touch
                 </h4>
                 <div class="flex items-center space-x-2 text-[14px] text-[#CBD5E1]">
-                    <i class="fas fa-map-marker-alt text-[#14B8A6] text-sm"></i>
+                    <i class="fas fa-map-marker-alt text-[#00fbff] text-sm"></i>
                     <span>Mumbai, India</span>
                 </div>
                 <div class="pt-2">
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            style="background-color: rgb(26, 156, 158);"
-                            class="inline-flex items-center justify-center px-6 py-2.5 rounded-[8px] text-[14px] font-semibold text-[#0E2556] hover:bg-[#22B5B7] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer">
+                            style="background-color: #00fbff;"
+                            class="inline-flex items-center justify-center px-6 py-2.5 rounded-[8px] text-[14px] font-bold text-[#0E2556] hover:bg-[#33fcff] transition-all duration-200 shadow-[0_4px_16px_rgba(0,251,255,0.35)] hover:scale-[1.02] cursor-pointer">
                         <span>Request Demo</span>
                     </button>
                 </div>

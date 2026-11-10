@@ -8,9 +8,9 @@
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0b1329; margin: 0; padding: 0; color: #1e293b; }
         .wrapper { width: 100%; table-layout: fixed; background-color: #0b1329; padding: 40px 0; }
         .main { background-color: #ffffff; margin: 0 auto; width: 100%; max-width: 600px; border-radius: 16px; overflow: hidden; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35); border: 1px solid #1e293b; }
-        .header { background: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding: 36px 30px; text-align: center; color: #ffffff; border-bottom: 3px solid #1A9C9E; }
+        .header { background: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding: 36px 30px; text-align: center; color: #ffffff; border-bottom: 3px solid #00fbff; }
         .header h1 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff; }
-        .header p { margin: 8px 0 0; font-size: 13px; color: #5EC9CB; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+        .header p { margin: 8px 0 0; font-size: 13px; color: #00fbff; font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
         .content { padding: 32px 30px; }
         .lead-text { font-size: 15px; line-height: 1.6; color: #334155; margin-bottom: 24px; }
         .highlight-box { background: #F0FDFA; border: 1px solid #99F6E4; border-radius: 12px; padding: 18px; margin-bottom: 24px; }
@@ -20,9 +20,9 @@
         .summary-label { color: #64748b; font-weight: 600; }
         .summary-value { color: #0f172a; font-weight: 700; text-align: right; }
         .btn-container { text-align: center; margin: 30px 0 10px; }
-        .btn { background: #0E2556; color: #ffffff !important; padding: 14px 32px; font-size: 14px; font-weight: 800; border-radius: 10px; text-decoration: none; display: inline-block; box-shadow: 0 4px 14px rgba(14, 37, 86, 0.3); border: 1px solid #1A9C9E; }
+        .btn { background: #00fbff; color: #0E2556 !important; padding: 14px 32px; font-size: 14px; font-weight: 800; border-radius: 10px; text-decoration: none; display: inline-block; box-shadow: 0 4px 18px rgba(0, 251, 255, 0.4); border: 1px solid #00fbff; }
         .footer { background: #071126; padding: 24px 30px; text-align: center; font-size: 12px; color: #94a3b8; border-top: 1px solid #1e293b; }
-        .footer a { color: #5EC9CB; text-decoration: none; }
+        .footer a { color: #00fbff; text-decoration: none; }
     </style>
 </head>
 <body>

@@ -25,8 +25,8 @@
         <!-- Inner Container -->
         <div class="w-full lg:w-[60%] flex flex-col items-start gap-3.5 sm:gap-[22px] p-0 sm:p-5 rounded-[10px]">
             
-            <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #5EC9CB -->
-            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#5EC9CB] uppercase tracking-[2px] m-0 drop-shadow-sm">
+            <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #00fbff -->
+            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#00fbff] uppercase tracking-[2px] m-0 drop-shadow-sm">
                 Premium Hotel TV Solution
             </h6>
 
@@ -46,7 +46,7 @@
                 <!-- Request Demo Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer w-full sm:w-auto text-center">
+                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-bold text-[#0E2556] bg-[#00fbff] font-heading hover:bg-[#33fcff] transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(0,251,255,0.4)] cursor-pointer w-full sm:w-auto text-center">
                     <span>Request Demo</span>
                 </button>
 
@@ -179,7 +179,7 @@
                 <!-- Action Button -->
                 <div class="pt-2">
                     <a href="#solutions" 
-                       class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-[10px] text-[15px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 cursor-pointer text-center">
+                       class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-[10px] text-[15px] font-semibold text-white bg-[#0E2556] hover:bg-[#00fbff] hover:text-[#0E2556] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 cursor-pointer text-center">
                         <span>Read More &rarr;</span>
                     </a>
                 </div>
@@ -201,7 +201,7 @@
             
             <!-- Section Header -->
             <div class="space-y-3">
-                <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                <div class="text-[#00fbff] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     TAILORED FOR YOUR HOTEL
                 </div>
                 <h2 class="text-2xl sm:text-3xl lg:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
@@ -233,7 +233,7 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-hotel-tv"
-                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#00fbff] hover:text-[#0E2556] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
@@ -257,7 +257,7 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-integration"
-                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#00fbff] hover:text-[#0E2556] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
@@ -281,7 +281,7 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-support"
-                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#00fbff] hover:text-[#0E2556] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
@@ -343,7 +343,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Interactive, personalised viewing experience</span>
                                 </div>
                             </td>
@@ -359,7 +359,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Custom-branded TV interface</span>
                                 </div>
                             </td>
@@ -375,7 +375,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Property details and guest information on screen</span>
                                 </div>
                             </td>
@@ -391,7 +391,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Centralised content control</span>
                                 </div>
                             </td>
@@ -407,7 +407,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Hospitality-focused launcher interface</span>
                                 </div>
                             </td>
@@ -423,7 +423,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Convenient on-screen service discovery</span>
                                 </div>
                             </td>
@@ -439,7 +439,7 @@
                             </td>
                             <td class="py-4 px-6 text-[#0E2556] font-medium bg-[#F0F8FA]/70">
                                 <div class="flex items-center space-x-2.5">
-                                    <i class="fa-solid fa-circle-check text-[#1A9C9E] text-base shrink-0"></i>
+                                    <i class="fa-solid fa-circle-check text-[#00fbff] text-base shrink-0"></i>
                                     <span>Designed for streamlined deployment across rooms</span>
                                 </div>
                             </td>
@@ -464,7 +464,7 @@
             
             <!-- Left Text Content & Language Badges (58% width on desktop) -->
             <div class="lg:col-span-7 space-y-4 sm:space-y-5">
-                <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                <div class="text-[#00fbff] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     GLOBAL GUEST EXPERIENCE
                 </div>
 
@@ -675,7 +675,7 @@
             <div class="lg:col-span-6 space-y-5 sm:space-y-6">
                 
                 <!-- Eyebrow -->
-                <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                <div class="text-[#00fbff] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     NON-STOP ENTERTAINMENT
                 </div>
 
@@ -1046,10 +1046,10 @@
             <!-- Dual Action Buttons (Request Demo & Contact Us) -->
             <div class="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                 
-                <!-- Request Demo Button (Solid White with Navy Text) -->
+                <!-- Request Demo Button (Vibrant #00fbff with Navy Text) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="w-full sm:w-auto text-center inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-[#0E2556] bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
+                        class="w-full sm:w-auto text-center inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-bold text-[#0E2556] bg-[#00fbff] hover:bg-[#33fcff] transition-all duration-200 shadow-[0_4px_20px_rgba(0,251,255,0.4)] hover:scale-[1.02] cursor-pointer">
                     <span>Request Demo</span>
                 </button>
 

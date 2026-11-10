@@ -14,22 +14,22 @@
             <!-- Desktop Navigation Links (Gallery Removed, Exact Styling) -->
             <div class="hidden md:flex items-center space-x-6 lg:space-x-7">
                 <nav class="flex items-center font-heading text-[14px] font-medium">
-                    <a href="#home" class="text-[#5EC9CB] transition-colors duration-200">
+                    <a href="#home" class="text-[#00fbff] transition-colors duration-200">
                         Home
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#about" class="text-white hover:text-[#5EC9CB] transition-colors duration-200">
+                    <a href="#about" class="text-white hover:text-[#00fbff] transition-colors duration-200">
                         About
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#solutions" class="text-white hover:text-[#5EC9CB] transition-colors duration-200">
+                    <a href="#solutions" class="text-white hover:text-[#00fbff] transition-colors duration-200">
                         Solution
                     </a>
                     <span class="text-white/40 px-3.5 select-none font-light text-xs">|</span>
 
-                    <a href="#contactus" data-open-popup="popup-demo" class="text-white hover:text-[#5EC9CB] transition-colors duration-200 cursor-pointer">
+                    <a href="#contactus" data-open-popup="popup-demo" class="text-white hover:text-[#00fbff] transition-colors duration-200 cursor-pointer">
                         Contact Us
                     </a>
                 </nav>
@@ -40,15 +40,15 @@
                     <!-- Login Button -->
                     <a href="{{ route('login') }}" 
                        class="inline-flex items-center justify-center px-4 py-[11px] rounded-[10px] text-[13px] font-semibold text-white/95 hover:text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-all duration-200 font-heading">
-                        <i class="fa-solid fa-user mr-1.5 text-xs text-[#5EC9CB]"></i>
+                        <i class="fa-solid fa-user mr-1.5 text-xs text-[#00fbff]"></i>
                         <span>Login</span>
                     </a>
 
                     <!-- Request Demo Button -->
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            style="background-color: #1A9C9E;"
-                            class="inline-flex items-center justify-center px-[18px] py-[12px] rounded-[10px] text-[13px] font-semibold text-[#0E2556] font-heading hover:bg-[#22B5B7] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer">
+                            style="background-color: #00fbff;"
+                            class="inline-flex items-center justify-center px-[18px] py-[12px] rounded-[10px] text-[13px] font-bold text-[#0E2556] font-heading hover:bg-[#33fcff] transition-all duration-200 shadow-[0_4px_18px_rgba(0,251,255,0.35)] hover:scale-[1.02] cursor-pointer">
                         <span>Request Demo</span>
                         <i class="fas fa-chevron-right ml-2 text-xs"></i>
                     </button>
@@ -62,15 +62,15 @@
                 <!-- Mobile Login Button -->
                 <a href="{{ route('login') }}" 
                    class="inline-flex items-center justify-center px-2 sm:px-2.5 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-semibold text-white/95 hover:text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-all font-heading">
-                    <i class="fa-solid fa-user mr-1 text-[10px] text-[#5EC9CB]"></i>
+                    <i class="fa-solid fa-user mr-1 text-[10px] text-[#00fbff]"></i>
                     <span>Login</span>
                 </a>
 
                 <!-- Mobile Request Demo Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        style="background-color: #1A9C9E;"
-                        class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-semibold text-[#0E2556] font-heading hover:bg-[#22B5B7] transition-all shadow-sm cursor-pointer whitespace-nowrap">
+                        style="background-color: #00fbff;"
+                        class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-bold text-[#0E2556] font-heading hover:bg-[#33fcff] transition-all shadow-[0_2px_12px_rgba(0,251,255,0.35)] cursor-pointer whitespace-nowrap">
                     <span>Request Demo</span>
                 </button>
 
@@ -88,7 +88,7 @@
 
     <!-- Mobile Dropdown Navigation Menu -->
     <div id="mobileMenuDropdown" class="hidden md:hidden bg-[#0E2556]/98 backdrop-blur-2xl px-6 pt-3 pb-6 space-y-2.5 shadow-2xl">
-        <a href="#home" class="block px-3 py-2 rounded-lg text-base font-bold text-[#14B8A6]">
+        <a href="#home" class="block px-3 py-2 rounded-lg text-base font-bold text-[#00fbff]">
             Home
         </a>
         <a href="#about" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
@@ -101,16 +101,16 @@
             Contact Us
         </a>
         <div class="pt-3 border-t border-white/10 space-y-2.5">
-            <a href="{{ route('hotel.register') }}" class="block px-3 py-2.5 rounded-lg text-base font-bold text-teal-300 bg-teal-500/10">
+            <a href="{{ route('hotel.register') }}" class="block px-3 py-2.5 rounded-lg text-base font-bold text-[#00fbff] bg-[#00fbff]/10">
                 <i class="fa-solid fa-hotel mr-2"></i> Register Hotel
             </a>
             <a href="{{ route('login') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-white bg-white/10 hover:bg-white/20 text-center">
-                <i class="fa-solid fa-user mr-1.5 text-xs text-[#5EC9CB]"></i> Login
+                <i class="fa-solid fa-user mr-1.5 text-xs text-[#00fbff]"></i> Login
             </a>
             <button type="button" 
                     data-open-popup="popup-demo"
-                    style="background-color: rgb(26, 156, 158);"
-                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-[10px] text-base font-semibold text-[#0E2556] hover:bg-[#22B5B7] transition-all">
+                    style="background-color: #00fbff;"
+                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-[10px] text-base font-bold text-[#0E2556] hover:bg-[#33fcff] transition-all shadow-[0_4px_18px_rgba(0,251,255,0.35)]">
                 <span>Request Demo</span>
                 <i class="fas fa-chevron-right ml-2 text-xs"></i>
             </button>

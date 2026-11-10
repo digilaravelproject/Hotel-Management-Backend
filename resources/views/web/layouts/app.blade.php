@@ -25,14 +25,14 @@
     <!-- Core Luxury Hospitality Stylesheet -->
     <style>
         :root {
-            --pax-teal: #1A9C9E;
-            --pax-teal-hover: #22B5B7;
-            --pax-teal-glow: rgba(26, 156, 158, 0.4);
+            --pax-teal: #00fbff;
+            --pax-teal-hover: #33fcff;
+            --pax-teal-glow: rgba(0, 251, 255, 0.4);
             --pax-navy-dark: #050B18;
             --pax-navy-card: rgba(13, 27, 54, 0.7);
             --pax-navy-surface: #0B1E38;
             --pax-card-border: rgba(255, 255, 255, 0.08);
-            --pax-cyan-accent: #38bdf8;
+            --pax-cyan-accent: #00fbff;
         }
 
         body {
@@ -154,11 +154,11 @@
                 background: #050B18;
             }
             ::-webkit-scrollbar-thumb {
-                background: #1A9C9E;
+                background: #00fbff;
                 border-radius: 4px;
             }
             ::-webkit-scrollbar-thumb:hover {
-                background: #22B5B7;
+                background: #33fcff;
             }
         }
 
@@ -178,7 +178,7 @@
 
     @stack('styles')
 </head>
-<body class="bg-[#050B18] text-slate-100 antialiased selection:bg-[#1A9C9E] selection:text-white">
+<body class="bg-[#050B18] text-slate-100 antialiased selection:bg-[#00fbff] selection:text-[#0E2556]">
 
     <!-- Sticky Glassmorphic Header -->
     @include('web.components.header')
