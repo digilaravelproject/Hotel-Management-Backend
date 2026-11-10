@@ -69,48 +69,74 @@
 </section>
 
 
-<!-- 2. STATS RIBBON SECTION -->
-<section class="relative z-20 -mt-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-    <div class="glass-panel rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/50 border border-white/10 bg-[#0B1E38]/90">
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8 divide-y md:divide-y-0 md:divide-x divide-white/10">
+<!-- 2. VALUE PROPOSITION FEATURE BAR (Exact Match to Reference Design) -->
+<section class="relative z-20 w-full" 
+         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%);">
+    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8"
+         style="padding-top: 50px; padding-bottom: 50px;">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-center">
             
-            <!-- Metric 1 -->
-            <div class="pt-4 md:pt-0 md:px-4 text-center">
-                <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-cyan-400 font-heading">
-                    500+
+            <!-- Feature 1: Customizable UI -->
+            <div class="flex items-center space-x-3.5 group">
+                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+                     style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
+                    <i class="fas fa-sliders-h text-xl text-white"></i>
                 </div>
-                <div class="text-xs sm:text-sm font-medium text-slate-300 mt-1">
-                    Hotels Worldwide
-                </div>
-            </div>
-
-            <!-- Metric 2 -->
-            <div class="pt-4 md:pt-0 md:px-4 text-center">
-                <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-cyan-400 font-heading">
-                    50,000+
-                </div>
-                <div class="text-xs sm:text-sm font-medium text-slate-300 mt-1">
-                    Active Smart TVs
+                <div>
+                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                        Customizable UI
+                    </h3>
+                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                        Branded experience for your hotel
+                    </p>
                 </div>
             </div>
 
-            <!-- Metric 3 -->
-            <div class="pt-4 md:pt-0 md:px-4 text-center">
-                <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-cyan-400 font-heading">
-                    1.2M+
+            <!-- Feature 2: Multi-Language -->
+            <div class="flex items-center space-x-3.5 group">
+                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+                     style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
+                    <i class="far fa-comments text-xl text-white"></i>
                 </div>
-                <div class="text-xs sm:text-sm font-medium text-slate-300 mt-1">
-                    Guests Entertained
+                <div>
+                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                        Multi-Language
+                    </h3>
+                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                        Global guest support
+                    </p>
                 </div>
             </div>
 
-            <!-- Metric 4 -->
-            <div class="pt-4 md:pt-0 md:px-4 text-center">
-                <div class="text-3xl sm:text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-teal-300 to-cyan-400 font-heading">
-                    99.8%
+            <!-- Feature 3: Hotel Information -->
+            <div class="flex items-center space-x-3.5 group">
+                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+                     style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
+                    <i class="far fa-building text-xl text-white"></i>
                 </div>
-                <div class="text-xs sm:text-sm font-medium text-slate-300 mt-1">
-                    Cloud System Uptime
+                <div>
+                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                        Hotel Information
+                    </h3>
+                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                        Showcase amenities and services
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 4: Secure & Reliable -->
+            <div class="flex items-center space-x-3.5 group">
+                <div class="w-[54px] h-[54px] rounded-full flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-105"
+                     style="background-color: #0E2556; box-shadow: 0 8px 18px -6px rgba(14, 37, 86, 0.45);">
+                    <i class="fas fa-shield-alt text-xl text-white"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading font-semibold text-[15px] sm:text-[16px] text-[#0E2556] leading-snug">
+                        Secure &amp; Reliable
+                    </h3>
+                    <p class="font-sans text-[13px] text-[#475569] leading-relaxed mt-0.5">
+                        Built for performance and guest privacy
+                    </p>
                 </div>
             </div>
 
