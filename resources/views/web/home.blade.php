@@ -194,106 +194,106 @@
 </section>
 
 
-<!-- 4. OUR SOLUTIONS SECTION -->
-<section id="solutions" class="py-20 lg:py-28 bg-[#08152B] relative">
+<!-- 4. OUR SOLUTIONS SECTION (Exact Match to Reference Design) -->
+<section id="solutions" 
+         class="relative w-full overflow-hidden" 
+         style="background-image: url('{{ asset('uploads/2026/11/our-solution.png') }}'); background-position: top center; background-size: cover; padding-top: 70px; padding-bottom: 70px;">
+    
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <!-- Section Header -->
-        <div class="max-w-3xl space-y-4 mb-14">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400 font-mono uppercase tracking-wider">
-                <i class="fa-solid fa-shapes text-[10px]"></i>
-                <span>Customized Hospitality Suite</span>
-            </div>
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-heading tracking-tight">
-                Our Solutions
-            </h2>
-            <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-                Custom-tailored solutions designed to meet the distinct entertainment and service needs of luxury hotels, boutique stays, and hospitality chains.
-            </p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <!-- 68% width on desktop so the smart TV on the right of the background image remains clearly visible -->
+        <div class="w-full lg:w-[68%] space-y-6">
             
-            <!-- Left 3 Solution Cards -->
-            <div class="lg:col-span-5 space-y-4">
+            <!-- Section Header -->
+            <div class="space-y-3">
+                <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                    TAILORED FOR YOUR HOTEL
+                </div>
+                <h2 class="text-3xl sm:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+                    Our Solutions
+                </h2>
+                <p class="text-[15px] sm:text-[16px] text-[#B0B1B1] font-normal leading-[1.7] max-w-2xl font-sans">
+                    A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.
+                </p>
+            </div>
+
+            <!-- 3 Floating White Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-3">
                 
-                <!-- Card 1: Hotel TV Launcher -->
-                <div class="glass-card rounded-2xl p-5 sm:p-6 bg-[#0E2556]/60 border border-white/10 hover:border-[#1A9C9E]/60 transition-all">
-                    <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-tv"></i>
+                <!-- Card 1: Hotel TV Application -->
+                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                     style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
+                    <div class="space-y-4">
+                        <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
+                             style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-desktop text-lg text-white"></i>
+                        </div>
+                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                            Hotel TV Application
+                        </h4>
+                        <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
+                            Custom branded interface with all essential features.
+                        </p>
                     </div>
-                    <h3 class="text-lg font-bold text-white font-heading">
-                        Hotel TV Launcher
-                    </h3>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
-                        Custom-branded launcher interfaces with personalized guest welcome, express checkout, room directory, and fast app switching.
-                    </p>
-                    <div class="mt-4 pt-3 border-t border-white/10">
+                    <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-hotel-tv"
-                                class="inline-flex items-center text-xs font-bold text-[#22B5B7] hover:text-white transition-colors cursor-pointer">
-                            <span>Learn More</span>
-                            <i class="fas fa-arrow-right ml-1.5 text-[10px]"></i>
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                            <span>Learn More &rarr;</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Card 2: Live Streaming & OTT Hub -->
-                <div class="glass-card rounded-2xl p-5 sm:p-6 bg-[#0E2556]/60 border border-white/10 hover:border-[#1A9C9E]/60 transition-all">
-                    <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-play"></i>
+                <!-- Card 2: System Integration -->
+                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                     style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
+                    <div class="space-y-4">
+                        <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
+                             style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-cogs text-lg text-white"></i>
+                        </div>
+                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                            System Integration
+                        </h4>
+                        <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
+                            Integrate with hotel PMS, services and third-party apps.
+                        </p>
                     </div>
-                    <h3 class="text-lg font-bold text-white font-heading">
-                        Live Streaming & OTT Hub
-                    </h3>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
-                        Secure guest casting, pre-loaded streaming apps with auto-credential wipe upon checkout for 100% privacy and security.
-                    </p>
-                    <div class="mt-4 pt-3 border-t border-white/10">
+                    <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-demo"
-                                class="inline-flex items-center text-xs font-bold text-[#22B5B7] hover:text-white transition-colors cursor-pointer">
-                            <span>Learn More</span>
-                            <i class="fas fa-arrow-right ml-1.5 text-[10px]"></i>
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                            <span>Learn More &rarr;</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Card 3: Ongoing Support & Maintenance -->
-                <div class="glass-card rounded-2xl p-5 sm:p-6 bg-[#0E2556]/60 border border-white/10 hover:border-[#1A9C9E]/60 transition-all">
-                    <div class="w-10 h-10 rounded-xl bg-teal-500/20 text-teal-300 flex items-center justify-center text-lg mb-3">
-                        <i class="fa-solid fa-headset"></i>
+                <!-- Card 3: Ongoing Support -->
+                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                     style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
+                    <div class="space-y-4">
+                        <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
+                             style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-headset text-lg text-white"></i>
+                        </div>
+                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                            Ongoing Support
+                        </h4>
+                        <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
+                            Dedicated support and regular updates for seamless operation.
+                        </p>
                     </div>
-                    <h3 class="text-lg font-bold text-white font-heading">
-                        Ongoing Support & Maintenance
-                    </h3>
-                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
-                        24/7 dedicated hospitality engineering support, remote cloud management, hardware health monitoring, and instant over-the-air updates.
-                    </p>
-                    <div class="mt-4 pt-3 border-t border-white/10">
+                    <div class="pt-6">
                         <button type="button" 
-                                data-open-popup="popup-support"
-                                class="inline-flex items-center text-xs font-bold text-[#22B5B7] hover:text-white transition-colors cursor-pointer">
-                            <span>Learn More</span>
-                            <i class="fas fa-arrow-right ml-1.5 text-[10px]"></i>
+                                data-open-popup="popup-demo"
+                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                            <span>Learn More &rarr;</span>
                         </button>
                     </div>
                 </div>
 
-            </div>
-
-            <!-- Right Showcase TV Mockup -->
-            <div class="lg:col-span-7">
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 group">
-                    <img src="{{ asset('uploads/2026/11/Luxury-Teal-Smart-Hotel-Suite-1-1.png') }}" 
-                         alt="PaxTV Luxury Suite Display" 
-                         class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050B18]/50 via-transparent to-transparent"></div>
-                </div>
             </div>
 
         </div>
-
     </div>
 </section>
 
