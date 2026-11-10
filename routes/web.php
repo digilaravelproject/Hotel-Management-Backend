@@ -18,6 +18,9 @@ use App\Http\Controllers\LandingPageController;
 Route::get('/', function () {
     return redirect()->route('login');
 })->name('landing');
+
+// Official Pax TV Launcher Website
+Route::get('/web', [LandingPageController::class, 'web'])->name('web.home');
 Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
 
 // Information & Support Pages

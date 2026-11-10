@@ -8,6 +8,14 @@ use App\Models\Plan;
 class LandingPageController extends Controller
 {
     /**
+     * Display the official Pax TV Launcher website.
+     */
+    public function web()
+    {
+        return view('web.home');
+    }
+
+    /**
      * Display the landing page with active plans.
      */
     public function index()
@@ -65,7 +73,7 @@ class LandingPageController extends Controller
     }
 
     /**
-     * Handle Contact Us form submission.
+     * Handle Contact Us / Demo Request form submission.
      */
     public function submitContact(Request $request)
     {
@@ -74,12 +82,27 @@ class LandingPageController extends Controller
             'email' => 'required|email|max:150',
             'phone' => 'nullable|string|max:30',
             'hotel_name' => 'nullable|string|max:150',
-            'subject' => 'required|string|max:200',
-            'message' => 'required|string|min:10|max:3000',
+            'property' => 'nullable|string|max:150',
+            'rooms' => 'nullable|integer|min:1',
+            'subject' => 'nullable|string|max:200',
+            'message' => 'nullable|string|max:3000',
         ]);
 
-        \Illuminate\Support\Facades\Log::info('Public Contact Us Submission:', $validated);
+        $hotelName = $validated['hotel_name'] ?? ($validated['property'] ?? 'Not specified');
+        $subject = $validated['subject'] ?? 'Pax TV Launcher Demo Request';
 
-        return back()->with('success', 'Thank you for reaching out! Your message has been received and our team will get back to you within 24 hours.');
+        \Illuminate\Support\Facades\Log::info('Public Website / Demo Form Submission:', array_merge($validated, [
+            'hotel_name' => $hotelName,
+            'subject' => $subject,
+        ]));
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you! Your request has been received. Our team will contact you shortly.',
+            ]);
+        }
+
+        return back()->with('success', 'Thank you! Your request has been received. Our team will get back to you within 24 hours.');
     }
 }
