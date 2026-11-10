@@ -1,6 +1,6 @@
 <div id="popup-demo" class="paxtv-modal-overlay" aria-hidden="true" style="display:none; background-color: rgba(15, 23, 42, 0.78); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-    <div class="paxtv-modal-dialog relative w-full max-w-[580px] overflow-hidden" 
-         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important; padding: 40px 36px 36px 36px;">
+    <div class="paxtv-modal-dialog relative w-full overflow-hidden" 
+         style="max-width: 580px !important; width: 100% !important; background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important; padding: 40px 36px 36px 36px;">
         
         <!-- Close Button -->
         <button type="button" class="paxtv-modal-close hover:text-white transition-colors duration-200 focus:outline-none cursor-pointer z-10" 

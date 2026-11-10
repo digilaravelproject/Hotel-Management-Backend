@@ -106,7 +106,7 @@
             background: #0B1E38;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 1.5rem;
-            max-width: 36rem;
+            max-width: 980px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;

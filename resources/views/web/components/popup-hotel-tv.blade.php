@@ -1,10 +1,10 @@
 <div id="popup-hotel-tv" class="paxtv-modal-overlay" aria-hidden="true" style="display:none; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
-    <div class="paxtv-modal-dialog relative w-full max-w-[980px] rounded-[16px] overflow-hidden p-0" 
-         style="box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 92vh; overflow-y: auto;">
+    <div class="paxtv-modal-dialog relative w-full rounded-[16px] overflow-hidden p-0" 
+         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 92vh; overflow-y: auto;">
         
         <div class="flex flex-col md:flex-row w-full min-h-[520px]">
             <!-- Left Column: Navy-Cyan Gradient Brand Section -->
-            <div class="w-full md:w-[42%] flex flex-col justify-center text-left p-6 sm:p-8 md:p-[44px_38px]"
+            <div class="w-full md:w-[42%] md:min-w-[42%] md:max-w-[42%] shrink-0 flex flex-col justify-center text-left p-6 sm:p-8 md:p-[44px_38px]"
                  style="background-image: linear-gradient(150deg, #0E2556 0%, #15888A 100%);">
                 
                 <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#5EC9CB] mb-2">
