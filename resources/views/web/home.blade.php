@@ -552,83 +552,106 @@
 </section>
 
 
-<!-- 7. HOTEL INFORMATION & SERVICES SECTION (Light Theme: White Background) -->
-<section id="features" class="w-full bg-white" style="padding-top: 60px; padding-bottom: 60px;">
+<!-- 7. HOTEL INFORMATION & SERVICES SECTION (Light Ice-Blue Gradient matching Reference Image 1:1) -->
+<section id="features" class="relative w-full" 
+         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 70px; padding-bottom: 70px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
-            <!-- Left Mockup Image -->
+            <!-- Left Image Showcase -->
             <div class="lg:col-span-6 order-2 lg:order-1">
-                <div class="relative rounded-[12px] overflow-hidden shadow-xl border border-slate-200/60">
+                <div class="relative rounded-2xl overflow-hidden shadow-xl">
                     <img src="{{ asset('uploads/2026/11/hotel-information-service.png') }}" 
-                         alt="PaxTV Hotel Services UI" 
-                         class="w-full h-auto object-cover rounded-[12px]" />
+                         alt="PaxTV Hotel Information & Services UI" 
+                         class="w-full h-auto object-cover rounded-2xl" />
                 </div>
             </div>
 
-            <!-- Right Content & Circular Feature Badges -->
-            <div class="lg:col-span-6 order-1 lg:order-2 space-y-5">
+            <!-- Right Content & 6 Feature Icons (Stacked Icon on Top, Label Below) -->
+            <div class="lg:col-span-6 order-1 lg:order-2 space-y-6">
+                
+                <!-- Eyebrow -->
                 <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     EVERYTHING YOUR GUESTS NEED
                 </div>
 
+                <!-- Section Heading -->
                 <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                     Hotel Information &amp; Services
                 </h2>
 
+                <!-- Subtitle -->
                 <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                     Showcase hotel amenities, dining options, facilities and local attractions directly on the TV.
                 </p>
 
-                <!-- 6 Features Grid (2 columns on mobile, 3 on tablet/desktop) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-3">
+                <!-- 6 Features Grid (3 Columns x 2 Rows: Icon on top, Label below, Centered) -->
+                <div class="grid grid-cols-3 gap-y-7 gap-x-4 pt-3">
                     
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="far fa-building text-sm text-white"></i>
+                    <!-- 1. Hotel Information -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="far fa-building text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Hotel Information</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            Hotel Information
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="far fa-map text-sm text-white"></i>
+                    <!-- 2. City Guide -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="far fa-map text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">City Guide</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            City Guide
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-utensils text-sm text-white"></i>
+                    <!-- 3. Dining & Restaurants -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-utensils text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Dining &amp; Food</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            Dining &amp; Restaurants
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-landmark text-sm text-white"></i>
+                    <!-- 4. Local Attractions -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-landmark text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Local Attractions</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            Local Attractions
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-concierge-bell text-sm text-white"></i>
+                    <!-- 5. In-Room Services -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-concierge-bell text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">In-Room Services</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            In-Room Services
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2]">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-plane text-sm text-white"></i>
+                    <!-- 6. Flight Information -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                             style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
+                            <i class="fas fa-plane text-xl text-white"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Flight Information</span>
+                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                            Flight Information
+                        </span>
                     </div>
 
                 </div>
@@ -640,87 +663,103 @@
 </section>
 
 
-<!-- 8. LIVE TV & ENTERTAINMENT SECTION (Light Theme Gradient) -->
+<!-- 8. LIVE TV & ENTERTAINMENT SECTION (Deep Navy to Cyan Gradient matching Reference Image 1:1) -->
 <section class="relative w-full" 
-         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 60px; padding-bottom: 60px;">
+         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding-top: 70px; padding-bottom: 70px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             
-            <!-- Left Text Content & Feature Pills -->
-            <div class="lg:col-span-6 space-y-5">
-                <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
+            <!-- Left Text Content & 6 Feature Icons (White Circles on Dark Gradient) -->
+            <div class="lg:col-span-6 space-y-6">
+                
+                <!-- Eyebrow -->
+                <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     NON-STOP ENTERTAINMENT
                 </div>
 
-                <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+                <!-- Section Heading -->
+                <h2 class="text-3xl sm:text-[38px] font-bold text-white font-heading leading-[1.2] tracking-tight">
                     Live TV &amp; Entertainment
                 </h2>
 
-                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                <!-- Subtitle -->
+                <p class="text-[15px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
                     Deliver seamless live TV, movies and guest entertainment with an intuitive interface.
                 </p>
 
-                <!-- 6 Features Grid (2 columns on mobile, 3 on tablet/desktop) -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-3">
+                <!-- 6 Features Grid (3 Columns x 2 Rows: White circle on top, White label below, Centered) -->
+                <div class="grid grid-cols-3 gap-y-7 gap-x-4 pt-3">
                     
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-tv text-sm text-white"></i>
+                    <!-- 1. Live TV Channels -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fas fa-tv text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Live TV Channels</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            Live TV Channels
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-film text-sm text-white"></i>
+                    <!-- 2. On-Demand Movies -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fas fa-film text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">On-Demand Movies</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            On-Demand Movies
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-globe text-sm text-white"></i>
+                    <!-- 3. Web Applications -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fas fa-globe text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Web Applications</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            Web Applications
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fab fa-chromecast text-sm text-white"></i>
+                    <!-- 4. Screen Cast -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fab fa-chromecast text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Screen Cast</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            Screen Cast
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-heart text-sm text-white"></i>
+                    <!-- 5. Personalised Recommendations -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fas fa-heart text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">Recommendations</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            Personalised Recommendations
+                        </span>
                     </div>
 
-                    <div class="flex items-center space-x-3 p-3 rounded-[12px] bg-white border border-slate-200/70 shadow-sm">
-                        <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-                             style="background-color: #0E2556; box-shadow: 0 4px 12px -3px rgba(14, 37, 86, 0.4);">
-                            <i class="fas fa-play text-sm text-white"></i>
+                    <!-- 6. On-Demand Movies (or OTT) -->
+                    <div class="flex flex-col items-center text-center group">
+                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
+                            <i class="fas fa-film text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[13.5px] font-semibold text-[#0E2556]">OTT &amp; Streaming</span>
+                        <span class="text-[14px] font-semibold text-white leading-snug">
+                            On-Demand Movies
+                        </span>
                     </div>
 
                 </div>
 
             </div>
 
-            <!-- Right Mockup Image -->
+            <!-- Right Image Showcase -->
             <div class="lg:col-span-6">
-                <div class="relative rounded-[12px] overflow-hidden shadow-xl border border-slate-200/60">
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl">
                     <img src="{{ asset('uploads/2026/11/Live-TV-ent.png') }}" 
                          alt="PaxTV Live Entertainment UI" 
-                         class="w-full h-auto object-cover rounded-[12px]" />
+                         class="w-full h-auto object-cover rounded-2xl" />
                 </div>
             </div>
 
