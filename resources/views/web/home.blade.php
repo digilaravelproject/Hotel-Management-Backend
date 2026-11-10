@@ -6,9 +6,9 @@
 
 <!-- 1. HERO SECTION (100% Fit & Proportionate Layout) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0A162D] min-h-[580px] xs:min-h-[620px] sm:min-h-[680px] md:min-h-[560px] lg:min-h-0 lg:aspect-[2111/745] flex items-start md:items-center">
+         class="relative w-full overflow-hidden bg-[#0A162D] min-h-[620px] xs:min-h-[660px] sm:min-h-[700px] md:min-h-[560px] lg:min-h-0 lg:aspect-[2111/745] flex items-start md:items-center">
     
-    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape (Overlay removed on mobile & desktop) -->
+    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape -->
     <div class="absolute inset-0 z-0">
         <picture class="w-full h-full block">
             <!-- Mobile (< 768px): Dedicated 4:5 composition (1086x1448) -->
@@ -19,12 +19,15 @@
                  class="w-full h-full object-cover object-center md:object-cover lg:object-fill 2xl:object-contain object-right" />
         </picture>
 
+        <!-- Mobile Soft Light Black Overlay (Zyada dark nahi, light ~30% for crystal clear text readability) -->
+        <div class="block md:hidden absolute inset-0 bg-black/30 pointer-events-none"></div>
+
         <!-- Subtle Left Gradient on Tablet/Desktop for crystal clear headline legibility over window/bed -->
         <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-[#050B18]/75 via-[#050B18]/35 to-transparent pointer-events-none w-[52%]"></div>
     </div>
 
     <!-- Hero Content Container (Centered within section) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[125px] xs:pt-[135px] sm:pt-[145px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-10 sm:pb-12 lg:pb-8 flex items-center">
+    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[175px] xs:pt-[190px] sm:pt-[205px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-12 sm:pb-14 lg:pb-8 flex items-center">
         
         <!-- Content Column (Mobile: Centered with equal left-right spacing; Desktop: Strictly 48% width so TV screen on right is 100% unobstructed) -->
         <div class="w-full max-w-[500px] mx-auto md:mx-0 md:max-w-none md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-center text-center md:items-start md:text-left gap-3 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
