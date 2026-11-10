@@ -6,56 +6,57 @@
 
 <!-- 1. HERO SECTION (100% Exact Match to Original Elementor Specifications) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0E2556] min-h-[560px] sm:min-h-[640px] lg:min-h-[700px]">
+         class="relative w-full overflow-hidden bg-[#0E2556] min-h-[540px] sm:min-h-[640px] lg:min-h-[700px]">
     
-    <!-- Background Image (Exact Elementor: center right / cover) -->
+    <!-- Background Image: object-[20%_center] on mobile so the image's embedded TV text doesn't clash behind headline; center_right on desktop -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
              alt="PaxTV Hotel Suite Smart Display" 
-             class="w-full h-full object-cover object-[center_right]" />
+             class="w-full h-full object-cover object-[20%_center] md:object-[center_right]" />
         
-        <!-- Elementor Exact Overlay: #000000 at 0.37 opacity -->
-        <div class="absolute inset-0 bg-black" style="opacity: 0.37;"></div>
+        <!-- Contrast Overlay: rich navy on mobile for crystal clear legibility, exact 0.37 black on desktop -->
+        <div class="absolute inset-0 bg-[#0E2556]/80 sm:bg-black" style="opacity: 0.37;" class="hidden sm:block"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0E2556]/90 via-[#0E2556]/75 to-[#0E2556]/95 sm:hidden"></div>
 
-        <!-- Subtle Left Gradient for crisp text readability over window backdrop -->
-        <div class="absolute inset-0"></div>
+        <!-- Subtle Left Gradient for desktop -->
+        <div class="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#0E2556]/70 via-[#0E2556]/30 to-transparent"></div>
     </div>
 
-    <!-- Hero Content Container (Exact Elementor: max-w 1300px, pt: 240px, pb: 130px) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[130px] sm:pt-[170px] md:pt-[190px] lg:pt-[240px] pb-[50px] sm:pb-[70px] md:pb-[90px] lg:pb-[130px]">
+    <!-- Hero Content Container -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[115px] sm:pt-[170px] md:pt-[190px] lg:pt-[240px] pb-[45px] sm:pb-[70px] md:pb-[90px] lg:pb-[130px]">
         
-        <!-- Inner 60% Width Container (Exact Elementor: width 60%, gap 22px, p 20px, rounded 10px) -->
-        <div class="w-full lg:w-[60%] flex flex-col items-start gap-4 sm:gap-[22px] p-1 sm:p-5 rounded-[10px]">
+        <!-- Inner Container -->
+        <div class="w-full lg:w-[60%] flex flex-col items-start gap-3.5 sm:gap-[22px] p-0 sm:p-5 rounded-[10px]">
             
             <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #5EC9CB -->
-            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#5EC9CB] uppercase tracking-[2px] m-0">
+            <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#5EC9CB] uppercase tracking-[2px] m-0 drop-shadow-sm">
                 Premium Hotel TV Solution
             </h6>
 
-            <!-- Exact Main Headline: h1, 59px (tablet: 52px, mobile: 35px) Alexandria 700, line-height 1.2em, letter-spacing -0.5px, #FFFFFF -->
-            <h1 class="font-heading text-[28px] sm:text-[42px] md:text-[52px] lg:text-[59px] font-bold text-white leading-[1.18] sm:leading-[1.2] tracking-[-0.5px] m-0 break-words">
+            <!-- Exact Main Headline -->
+            <h1 class="font-heading text-[25px] sm:text-[38px] md:text-[52px] lg:text-[59px] font-bold text-white leading-[1.2] tracking-[-0.5px] m-0 break-words drop-shadow-md">
                 Transform Every Guest Stay with Smarter TV Experiences
             </h1>
 
-            <!-- Exact Subtitle: p, 17px (mobile: 14px) Alexandria 400, line-height 1.7em, #CBD5E1 -->
-            <p class="font-heading text-[14px] sm:text-[16px] lg:text-[17px] font-normal text-[#CBD5E1] leading-[1.65] sm:leading-[1.7] m-0 max-w-[560px]">
+            <!-- Exact Subtitle -->
+            <p class="font-heading text-[13.5px] sm:text-[16px] lg:text-[17px] font-normal text-[#E2E8F0] leading-[1.6] sm:leading-[1.7] m-0 max-w-[560px] drop-shadow-sm">
                 An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
-            <!-- Exact Action Buttons Container: row, gap 14px, wrap -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[14px] w-full sm:w-auto pt-1">
+            <!-- Exact Action Buttons Container -->
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[14px] w-full sm:w-auto pt-2">
                 
-                <!-- Exact Request Demo Button: 15px Alexandria 600, bg #FFFFFF, text #0E2556, padding 15px 30px, rounded 10px -->
+                <!-- Request Demo Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[14px] sm:py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer w-full sm:w-auto text-center">
+                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer w-full sm:w-auto text-center">
                     <span>Request Demo</span>
                 </button>
 
-                <!-- Exact Watch Video Button: 15px Alexandria 600, bg rgba(255,255,255,0.04), border rgba(255,255,255,0.45), text #FFFFFF, padding 15px 30px, rounded 10px -->
+                <!-- Watch Video Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[14px] sm:py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-white bg-white/[0.04] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto text-center">
+                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-semibold text-white bg-white/[0.06] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto text-center">
                     <span class="mr-2">▶</span>
                     <span>Watch Video</span>
                 </button>
