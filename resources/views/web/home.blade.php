@@ -1008,43 +1008,59 @@
 </section>
 
 
-<!-- 10. CTA BANNER ("REQUEST A DEMO TODAY") -->
-<section class="relative py-24 lg:py-32 overflow-hidden">
-    <!-- Background Image with Gradient Overlay -->
+<!-- 10. CTA BANNER ("REQUEST A DEMO TODAY" - Exact Match to Reference Image 1:1) -->
+<section id="contactus" class="relative overflow-hidden border-b-2 border-[#15888A]" 
+         style="padding-top: 85px; padding-bottom: 85px;">
+    
+    <!-- Background Luxury Resort Image with Left-to-Right Dark Navy Gradient Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.png') }}" 
              alt="Twilight Luxury Resort" 
-             class="w-full h-full object-cover object-center filter brightness-[0.6] contrast-[1.1]" />
-        <div class="absolute inset-0 bg-gradient-to-r from-[#050B18]/95 via-[#050B18]/85 to-[#050B18]/70"></div>
+             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.85] contrast-[1.05]" />
+        
+        <!-- Multi-Stop Left-to-Right Navy Gradient (Solid on text side, transparent over the pool/resort) -->
+        <div class="absolute inset-0" 
+             style="background: linear-gradient(90deg, #0A1931 0%, #0D234A 32%, rgba(13, 35, 74, 0.90) 52%, rgba(13, 35, 74, 0.50) 78%, rgba(13, 35, 74, 0.20) 100%);"></div>
     </div>
 
-    <div class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
-        <div class="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full bg-teal-500/15 border border-teal-500/25 text-xs font-bold text-teal-300 font-mono uppercase tracking-wider">
-            <i class="fa-solid fa-sparkles text-[10px]"></i>
-            <span>Get Started Today</span>
-        </div>
+    <!-- Left-Aligned Content Container -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-[580px] space-y-4 sm:space-y-5">
+            
+            <!-- Category Eyebrow in Teal -->
+            <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                READY TO TRANSFORM YOUR GUEST EXPERIENCE?
+            </div>
 
-        <h2 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white font-heading tracking-tight leading-tight">
-            Request a Demo Today
-        </h2>
+            <!-- Exact Headline -->
+            <h2 class="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+                Request a Demo Today
+            </h2>
 
-        <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto leading-relaxed">
-            Discover how PaxTV transforms your hotel TVs into an interactive, revenue-generating guest channel with zero hardware lock-in.
-        </p>
+            <!-- Exact Descriptive Subtitle -->
+            <p class="text-sm sm:text-base text-[#CBD5E1] font-normal leading-[1.7] max-w-[520px]">
+                Discover how our Hotel TV solution can add value to your property and delight your guests.
+            </p>
 
-        <div class="pt-4 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <button type="button" 
-                    data-open-popup="popup-demo"
-                    class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all duration-200 shadow-xl shadow-[#1A9C9E]/35 hover:scale-[1.02] cursor-pointer">
-                <span>Request a Demo</span>
-                <i class="fas fa-chevron-right ml-2.5 text-xs"></i>
-            </button>
+            <!-- Dual Action Buttons (Request Demo & Contact Us) -->
+            <div class="pt-3 flex flex-wrap items-center gap-3.5">
+                
+                <!-- Request Demo Button (Solid White with Navy Text) -->
+                <button type="button" 
+                        data-open-popup="popup-demo"
+                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-[#0E2556] bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
+                    <span>Request Demo</span>
+                </button>
 
-            <a href="{{ route('hotel.register') }}" 
-               class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold text-teal-300 hover:text-white bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/20 transition-all duration-200">
-                <i class="fa-solid fa-hotel mr-2 text-sm"></i>
-                <span>Register Hotel Property</span>
-            </a>
+                <!-- Contact Us Button (Navy Outline / Dark Semi-Transparent) -->
+                <button type="button" 
+                        data-open-popup="popup-demo"
+                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-[#0A1931]/60 hover:bg-white/10 backdrop-blur-md border border-white/35 transition-all duration-200 cursor-pointer">
+                    <span>Contact Us</span>
+                </button>
+
+            </div>
+
         </div>
     </div>
 </section>
