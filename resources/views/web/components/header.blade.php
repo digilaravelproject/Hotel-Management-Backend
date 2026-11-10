@@ -57,11 +57,11 @@
 
             </div>
 
-            <!-- Mobile Actions (Login & Request Demo) + Hamburger Toggle -->
+            <!-- Mobile Actions (Login & Request Demo) + Hamburger Toggle (Unified Height & Styling) -->
             <div class="flex md:hidden items-center gap-1.5 sm:gap-2">
                 <!-- Mobile Login Button -->
                 <a href="{{ route('login') }}" 
-                   class="inline-flex items-center justify-center px-2 sm:px-2.5 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-semibold text-white/95 hover:text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-all font-heading">
+                   class="h-9 sm:h-[38px] px-2.5 sm:px-3 inline-flex items-center justify-center rounded-[9px] text-[11.5px] sm:text-[12px] font-semibold text-white/95 hover:text-white bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-xs transition-all font-heading active:scale-95">
                     <i class="fa-solid fa-user mr-1 text-[10px] text-[#00fbff]"></i>
                     <span>Login</span>
                 </a>
@@ -70,16 +70,24 @@
                 <button type="button" 
                         data-open-popup="popup-demo"
                         style="background-color: #00fbff;"
-                        class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-bold text-[#0E2556] font-heading hover:bg-[#33fcff] transition-all shadow-[0_2px_12px_rgba(0,251,255,0.35)] cursor-pointer whitespace-nowrap">
+                        class="h-9 sm:h-[38px] px-3 sm:px-3.5 inline-flex items-center justify-center rounded-[9px] text-[11.5px] sm:text-[12px] font-bold text-[#0E2556] font-heading hover:bg-[#33fcff] transition-all shadow-[0_2px_12px_rgba(0,251,255,0.35)] cursor-pointer whitespace-nowrap active:scale-95">
                     <span>Request Demo</span>
                 </button>
 
-                <!-- Mobile Hamburger Toggle -->
+                <!-- Mobile Hamburger Toggle (Matches Login/Demo Height, Rounded & Glassmorphic Style) -->
                 <button type="button" 
                         id="mobileMenuToggle" 
                         aria-label="Toggle mobile menu"
-                        class="p-2 rounded-lg bg-black/40 border border-white/20 text-white hover:bg-black/60 transition-colors">
-                    <i class="fas fa-bars text-sm sm:text-base" id="mobileMenuIcon"></i>
+                        class="h-9 w-9 sm:h-[38px] sm:w-[38px] inline-flex items-center justify-center rounded-[9px] bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-xs transition-all duration-200 cursor-pointer active:scale-95 shrink-0 focus:outline-none">
+                    <svg id="hamburgerIconOpen" class="w-[18px] h-[18px] text-white transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                    <svg id="hamburgerIconClose" class="w-[18px] h-[18px] text-[#00fbff] hidden transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
                 </button>
             </div>
 
@@ -87,30 +95,30 @@
     </div>
 
     <!-- Mobile Dropdown Navigation Menu -->
-    <div id="mobileMenuDropdown" class="hidden md:hidden bg-[#0E2556]/98 backdrop-blur-2xl px-6 pt-3 pb-6 space-y-2.5 shadow-2xl">
-        <a href="#home" class="block px-3 py-2 rounded-lg text-base font-bold text-[#00fbff]">
+    <div id="mobileMenuDropdown" class="hidden md:hidden bg-[#0A162D]/98 backdrop-blur-2xl px-5 pt-3 pb-6 space-y-2 border-b border-white/10 shadow-2xl transition-all duration-300">
+        <a href="#home" class="block px-3.5 py-2.5 rounded-lg text-[15px] font-semibold text-[#00fbff] bg-[#00fbff]/10">
             Home
         </a>
-        <a href="#about" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
+        <a href="#about" class="block px-3.5 py-2.5 rounded-lg text-[15px] font-medium text-white/90 hover:text-white hover:bg-white/5 transition-colors">
             About
         </a>
-        <a href="#solutions" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
+        <a href="#solutions" class="block px-3.5 py-2.5 rounded-lg text-[15px] font-medium text-white/90 hover:text-white hover:bg-white/5 transition-colors">
             Solution
         </a>
-        <a href="#contactus" data-open-popup="popup-demo" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
+        <a href="#contactus" data-open-popup="popup-demo" class="block px-3.5 py-2.5 rounded-lg text-[15px] font-medium text-white/90 hover:text-white hover:bg-white/5 transition-colors cursor-pointer">
             Contact Us
         </a>
         <div class="pt-3 border-t border-white/10 space-y-2.5">
-            <a href="{{ route('hotel.register') }}" class="block px-3 py-2.5 rounded-lg text-base font-bold text-[#00fbff] bg-[#00fbff]/10">
+            <a href="{{ route('hotel.register') }}" class="block px-3.5 py-2.5 rounded-lg text-[14px] font-semibold text-[#00fbff] bg-[#00fbff]/10">
                 <i class="fa-solid fa-hotel mr-2"></i> Register Hotel
             </a>
-            <a href="{{ route('login') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-white bg-white/10 hover:bg-white/20 text-center">
+            <a href="{{ route('login') }}" class="block px-3.5 py-2.5 rounded-lg text-[14px] font-semibold text-white bg-white/10 hover:bg-white/20 text-center">
                 <i class="fa-solid fa-user mr-1.5 text-xs text-[#00fbff]"></i> Login
             </a>
             <button type="button" 
                     data-open-popup="popup-demo"
                     style="background-color: #00fbff;"
-                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-[10px] text-base font-bold text-[#0E2556] hover:bg-[#33fcff] transition-all shadow-[0_4px_18px_rgba(0,251,255,0.35)]">
+                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-[10px] text-[14px] font-bold text-[#0E2556] hover:bg-[#33fcff] transition-all shadow-[0_4px_18px_rgba(0,251,255,0.35)] cursor-pointer">
                 <span>Request Demo</span>
                 <i class="fas fa-chevron-right ml-2 text-xs"></i>
             </button>
@@ -125,7 +133,8 @@
         const headerInner = document.getElementById('headerInner');
         const toggleBtn = document.getElementById('mobileMenuToggle');
         const menuDropdown = document.getElementById('mobileMenuDropdown');
-        const menuIcon = document.getElementById('mobileMenuIcon');
+        const iconOpen = document.getElementById('hamburgerIconOpen');
+        const iconClose = document.getElementById('hamburgerIconClose');
 
         function onScroll() {
             if (window.scrollY > 30) {
@@ -150,25 +159,27 @@
         window.addEventListener('scroll', onScroll, { passive: true });
         onScroll();
 
+        function setMenuState(isOpen) {
+            if (isOpen) {
+                menuDropdown.classList.remove('hidden');
+                if (iconOpen) iconOpen.classList.add('hidden');
+                if (iconClose) iconClose.classList.remove('hidden');
+            } else {
+                menuDropdown.classList.add('hidden');
+                if (iconOpen) iconOpen.classList.remove('hidden');
+                if (iconClose) iconClose.classList.add('hidden');
+            }
+        }
+
         if (toggleBtn && menuDropdown) {
             toggleBtn.addEventListener('click', function () {
                 const isHidden = menuDropdown.classList.contains('hidden');
-                if (isHidden) {
-                    menuDropdown.classList.remove('hidden');
-                    menuIcon.classList.remove('fa-bars');
-                    menuIcon.classList.add('fa-times');
-                } else {
-                    menuDropdown.classList.add('hidden');
-                    menuIcon.classList.remove('fa-times');
-                    menuIcon.classList.add('fa-bars');
-                }
+                setMenuState(isHidden);
             });
 
             menuDropdown.querySelectorAll('a, button').forEach(item => {
                 item.addEventListener('click', () => {
-                    menuDropdown.classList.add('hidden');
-                    menuIcon.classList.remove('fa-times');
-                    menuIcon.classList.add('fa-bars');
+                    setMenuState(false);
                 });
             });
         }
