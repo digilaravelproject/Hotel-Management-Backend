@@ -2,37 +2,81 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingPageController;
+use App\Http\Controllers\Auth\CommonLoginController;
+use App\Http\Controllers\PaymentCallbackController;
+
+$mainDomain = env('MAIN_DOMAIN', 'paxtvlauncher.com');
+$appDomain  = env('APP_DOMAIN', 'app.paxtvlauncher.com');
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+| 1. Main Landing Domain (https://paxtvlauncher.com)
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider or bootstrap/app.php
-| within a group which contains the "web" middleware group. Now create something great!
-|
+| Serves the official Pax TV Launcher marketing website, lead generation form,
+| thank-you page, and public informational links.
 */
+Route::domain($mainDomain)->group(function () {
 
-// Redirect root URL directly to login
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('landing');
+    // Root URL serves the official landing page (previously served at /web)
+    Route::get('/', [LandingPageController::class, 'web'])->name('web.home');
 
-// Official Pax TV Launcher Website
-Route::get('/web', [LandingPageController::class, 'web'])->name('web.home');
-Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
+    // 301 Permanent Redirect for any legacy /web visits to the new root /
+    Route::get('/web', function () {
+        return redirect()->route('web.home', [], 301);
+    });
 
-// Information & Support Pages
-Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
-Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
-Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
+    // Dedicated Thank-You Page after demo request submission
+    Route::get('/thank-you', [LandingPageController::class, 'thankYou'])->name('thank-you');
 
-// Payment Gateway Callbacks (PayU, etc.)
-Route::match(['get', 'post'], '/payment/success', [\App\Http\Controllers\PaymentCallbackController::class, 'success'])->name('payment.success');
-Route::match(['get', 'post'], '/payment/failure', [\App\Http\Controllers\PaymentCallbackController::class, 'failure'])->name('payment.failure');
+    // Contact & Lead Generation Form Submission
+    Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
+    Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
 
-// Unified Common Authentication Routes
-Route::get('/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
-Route::post('/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('logout');
+    // Information & Support Pages
+    Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
+    Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
+});
+
+// Canonical 301 SEO Redirect: www.paxtvlauncher.com -> paxtvlauncher.com
+if (!empty($mainDomain) && !str_starts_with($mainDomain, 'www.')) {
+    Route::domain('www.' . $mainDomain)->group(function () use ($mainDomain) {
+        Route::any('{any}', function ($any = '') use ($mainDomain) {
+            return redirect()->to('https://' . $mainDomain . '/' . ltrim($any, '/'), 301);
+        })->where('any', '.*');
+    });
+}
+
+/*
+|--------------------------------------------------------------------------
+| 2. Application Subdomain (https://app.paxtvlauncher.com)
+|--------------------------------------------------------------------------
+| Serves authentication, login redirects, admin portals, and application logic.
+*/
+Route::domain($appDomain)->group(function () {
+
+    // Root URL on app subdomain redirects straight to login
+    Route::get('/', function () {
+        return redirect()->route('login');
+    })->name('landing');
+
+    // Common Authentication Routes
+    Route::get('/login', [CommonLoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [CommonLoginController::class, 'login']);
+    Route::post('/logout', [CommonLoginController::class, 'logout'])->name('logout');
+
+    // Payment Gateway Callbacks (PayU, etc.)
+    Route::match(['get', 'post'], '/payment/success', [PaymentCallbackController::class, 'success'])->name('payment.success');
+    Route::match(['get', 'post'], '/payment/failure', [PaymentCallbackController::class, 'failure'])->name('payment.failure');
+});
+
+/*
+|--------------------------------------------------------------------------
+| 3. Local Development Fallback
+|--------------------------------------------------------------------------
+| Allows local testing (e.g. 127.0.0.1, localhost) without custom domain configs.
+*/
+if (app()->environment('local')) {
+    Route::get('/', [LandingPageController::class, 'web']);
+    Route::get('/web', [LandingPageController::class, 'web']);
+    Route::get('/thank-you', [LandingPageController::class, 'thankYou']);
+}

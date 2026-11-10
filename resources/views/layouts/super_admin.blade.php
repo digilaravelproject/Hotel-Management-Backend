@@ -90,6 +90,23 @@
                     <span>Dashboard</span>
                 </a>
 
+                <!-- Website Leads & Demo Inquiries -->
+                @php
+                    $isInquiriesActive = Request::routeIs('super-admin.inquiries.*');
+                    $newInquiriesCount = \App\Models\ContactInquiry::where('status', 'new')->count();
+                @endphp
+                <a href="{{ route('super-admin.inquiries.index') }}" class="flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all {{ $isInquiriesActive ? 'bg-white text-[#150A42] shadow-lg shadow-black/40' : 'text-purple-200/75 hover:text-white hover:bg-white/10' }}">
+                    <div class="flex items-center space-x-3">
+                        <i class="fa-solid fa-envelope-open-text text-sm w-5 text-center {{ $isInquiriesActive ? 'text-[#150A42]' : 'text-purple-300' }}"></i>
+                        <span>Website Leads</span>
+                    </div>
+                    @if($newInquiriesCount > 0)
+                        <span class="px-1.5 py-0.5 rounded-full bg-emerald-400 text-slate-900 font-extrabold text-[9px] font-mono shadow-xs animate-pulse">
+                            {{ $newInquiriesCount }} New
+                        </span>
+                    @endif
+                </a>
+
                 <!-- 2. Hotels & Hospitality (Hotels Directory, Flights & Airports) -->
                 @php
                     $isHotelsActive = Request::routeIs('super-admin.hotels.*') || Request::routeIs('super-admin.flights.*') || Request::routeIs('super-admin.amenities.*');

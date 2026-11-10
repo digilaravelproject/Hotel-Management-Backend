@@ -12,14 +12,21 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
         then: function () {
-            Route::middleware('web')
-                ->group(base_path('routes/admin.php'));
+            $appDomain = env('APP_DOMAIN', 'app.paxtvlauncher.com');
 
-            Route::middleware('web')
-                ->group(base_path('routes/hotel.php'));
+            $adminRoutes = Route::middleware('web');
+            $hotelRoutes = Route::middleware('web');
+            $distributorRoutes = Route::middleware('web');
 
-            Route::middleware('web')
-                ->group(base_path('routes/distributor.php'));
+            if (!app()->environment('local') && !empty($appDomain)) {
+                $adminRoutes->domain($appDomain);
+                $hotelRoutes->domain($appDomain);
+                $distributorRoutes->domain($appDomain);
+            }
+
+            $adminRoutes->group(base_path('routes/admin.php'));
+            $hotelRoutes->group(base_path('routes/hotel.php'));
+            $distributorRoutes->group(base_path('routes/distributor.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware) {

@@ -147,19 +147,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const data = await response.json();
             if (response.ok && data.success) {
-                statusDiv.className = 'font-heading text-[14px] text-center pt-2 text-[#5EC9CB]';
-                statusDiv.textContent = data.message || 'Thank you! Your request has been sent.';
+                statusDiv.className = 'font-heading text-[14px] text-center pt-2 text-[#5EC9CB] font-semibold';
+                statusDiv.textContent = data.message || 'Thank you! Redirecting...';
                 statusDiv.classList.remove('hidden');
                 form.reset();
-                setTimeout(() => {
-                    const modal = document.getElementById('popup-demo');
-                    if (modal && typeof closeModal === 'function') {
-                        closeModal(modal);
-                    } else if (modal) {
-                        modal.classList.remove('active');
-                        modal.style.display = 'none';
-                    }
-                }, 2500);
+                if (data.redirect_url) {
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url;
+                    }, 600);
+                } else {
+                    setTimeout(() => {
+                        const modal = document.getElementById('popup-demo');
+                        if (modal && typeof closeModal === 'function') {
+                            closeModal(modal);
+                        } else if (modal) {
+                            modal.classList.remove('active');
+                            modal.style.display = 'none';
+                        }
+                    }, 2500);
+                }
             } else {
                 statusDiv.className = 'font-heading text-[14px] text-center pt-2 text-[#FCA5A5]';
                 statusDiv.textContent = data.message || 'Something went wrong. Please check your fields and try again.';

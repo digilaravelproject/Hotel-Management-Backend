@@ -134,5 +134,10 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('withdrawals', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'index'])->name('withdrawals.index');
     Route::post('withdrawals/{id}/approve', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'approve'])->name('withdrawals.approve');
     Route::post('withdrawals/{id}/reject', [\App\Http\Controllers\SuperAdmin\WithdrawalController::class, 'reject'])->name('withdrawals.reject');
+
+    // Website Demo Requests & Inquiries
+    Route::get('inquiries', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'index'])->name('inquiries.index');
+    Route::put('inquiries/{id}/status', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'updateStatus'])->name('inquiries.status');
+    Route::delete('inquiries/{id}', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'destroy'])->name('inquiries.destroy');
 });
 
