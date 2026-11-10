@@ -1,117 +1,53 @@
-
 <div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" style="display:none;">
-    <div class="paxtv-modal-dialog">
+    <div class="paxtv-modal-dialog p-6 sm:p-8 max-w-2xl">
         <button type="button" class="paxtv-modal-close" aria-label="Close modal">&times;</button>
-        <div class="elementor elementor-274">
-            <div class="elementor-element elementor-element-2613c1ee e-con-full e-con e-parent">
-<div class="elementor-element elementor-element-163cbcad e-con-inner e-con e-child">
-<div class="elementor-element elementor-element-7ccff777 elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<h6 class="elementor-heading-title elementor-size-default">Ongoing Support</h6>
-</div>
-</div>
-<div class="elementor-element elementor-element-663de6f elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<h2 class="elementor-heading-title elementor-size-default">Reliable Support. Continuous Improvement. Seamless Performance.</h2>
-</div>
-</div>
-<div class="elementor-element elementor-element-281cef06 elementor-widget elementor-widget-text-editor">
-<div class="elementor-widget-container">
-<div class="elementor-text-editor elementor-clearfix"><p>Keep your hospitality entertainment system running smoothly with Pax TV Hospitality. Our dedicated technical support and regular software updates help maintain system stability, enhance performance, and ensure a consistent guest experience.</p></div>
-</div>
-</div>
-<div class="elementor-element elementor-element-24838172 elementor-widget elementor-widget-text-editor">
-<div class="elementor-widget-container">
-<div class="elementor-text-editor elementor-clearfix"><p>From troubleshooting and system maintenance to feature enhancements, security improvements, and technical assistance, Pax TV provides ongoing support to help hotels operate confidently, minimise disruptions, and deliver uninterrupted in-room entertainment.</p></div>
-</div>
-</div>
-<div class="elementor-element elementor-element-5b2bed0f elementor-widget elementor-widget-button">
-<div class="elementor-widget-container">
-<div class="elementor-button-wrapper"><a href="#request-demo" class="elementor-button elementor-button-link elementor-size-sm" role="button" data-open-popup="popup-demo"><span class="elementor-button-content-wrapper"><span class="elementor-button-text">Request Demo</span></span></a></div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-2a2d46f8 e-con-inner e-con e-child">
-<div class="elementor-element elementor-element-68ae9159 elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<h6 class="elementor-heading-title elementor-size-default">What's Included</h6>
-</div>
-</div>
-<div class="elementor-element elementor-element-352df1b5 elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<h3 class="elementor-heading-title elementor-size-default">Support that keeps you running</h3>
-</div>
-</div>
-<div class="elementor-element elementor-element-514ad588 e-con-inner e-con e-child">
-<div class="elementor-element elementor-element-34d9993c elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-headset"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>Dedicated Technical Support</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-767f39ad elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-sync-alt"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>Regular Software Updates</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-389533a8 elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-tools"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>Troubleshooting</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-6a4fc677 elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-wrench"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>System Maintenance</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-4a532bfd elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-rocket"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>Feature Enhancements</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-7103c302 elementor-widget elementor-widget-icon-box">
-<div class="elementor-widget-container">
-<div class="elementor-icon-box-wrapper" >
-<div class="elementor-icon-box-icon"><span class="elementor-icon elementor-animation-"><i class="fas fa-shield-alt"></i></span></div>
-<div class="elementor-icon-box-content">
-<h3 class="elementor-icon-box-title"><span>Security Improvements</span></h3>
-<p class="elementor-icon-box-description"></p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+        
+        <div class="space-y-3 mb-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-400 border border-teal-500/20 font-mono">
+                <i class="fa-solid fa-headset mr-1.5 text-[10px]"></i> 24/7 Enterprise SLA
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+                Ongoing Hospitality Engineering Support
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Hospitality never sleeps, and neither do our systems. PaxTV provides dedicated, round-the-clock technical monitoring and cloud support so your hotel operations remain uninterrupted.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10">
+                <div class="text-[#22B5B7] text-xl mb-2"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">Over-The-Air (OTA) Updates</h4>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Push firmware, app updates, and new promotional content across all hotel screens simultaneously with one click.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10">
+                <div class="text-[#22B5B7] text-xl mb-2"><i class="fa-solid fa-heart-pulse"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">Live Device Telemetry</h4>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Centralized dashboard monitors online status, Wi-Fi signal health, app crash logs, and hardware performance in every room.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10">
+                <div class="text-[#22B5B7] text-xl mb-2"><i class="fa-solid fa-clock"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">99.8% Uptime SLA</h4>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Enterprise-grade cloud infrastructure powered by distributed edge CDNs for lightning-fast content delivery.</p>
+            </div>
+
+            <div class="p-4 rounded-xl bg-slate-900/60 border border-white/10">
+                <div class="text-[#22B5B7] text-xl mb-2"><i class="fa-solid fa-user-shield"></i></div>
+                <h4 class="text-xs font-bold text-white mb-1">Dedicated Account Manager</h4>
+                <p class="text-[11px] text-slate-400 leading-relaxed">Direct hotline and dedicated hospitality account director assigned to your property for fast escalation.</p>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between pt-3 border-t border-white/10 flex-wrap gap-3">
+            <span class="text-xs text-slate-400">Questions about our SLA and rollout timeline?</span>
+            <button type="button" 
+                    data-open-popup="popup-demo"
+                    class="py-2.5 px-5 rounded-xl text-xs font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all flex items-center space-x-2">
+                <span>Contact Support Team</span>
+                <i class="fas fa-chevron-right text-[10px]"></i>
+            </button>
         </div>
     </div>
 </div>

@@ -1,65 +1,90 @@
-
 <div id="popup-demo" class="paxtv-modal-overlay" aria-hidden="true" style="display:none;">
-    <div class="paxtv-modal-dialog">
+    <div class="paxtv-modal-dialog p-6 sm:p-8">
         <button type="button" class="paxtv-modal-close" aria-label="Close modal">&times;</button>
-        <div class="elementor elementor-33">
-            <div class="elementor-element elementor-element-6c45adf2 e-con-full e-con e-parent">
-<div class="elementor-element elementor-element-5f969ab elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<span class="elementor-heading-title elementor-size-default">GET IN TOUCH</span>
-</div>
-</div>
-<div class="elementor-element elementor-element-3429d21f elementor-widget elementor-widget-heading">
-<div class="elementor-widget-container">
-<h2 class="elementor-heading-title elementor-size-default">Request a Demo</h2>
-</div>
-</div>
-<div class="elementor-element elementor-element-23385367 elementor-widget elementor-widget-text-editor">
-<div class="elementor-widget-container">
-<div class="elementor-text-editor elementor-clearfix"><p>See how PAX TV Hospitality can transform your guests' in-room experience. Fill in the form and our team will get back to you shortly.</p></div>
-</div>
-</div>
-<div class="elementor-element elementor-element-44ff68b0 elementor-widget elementor-widget-form">
-<div class="elementor-widget-container">
+        
+        <div class="space-y-2 mb-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/10 text-teal-400 border border-teal-500/20 font-mono">
+                <i class="fa-solid fa-sparkles mr-1.5 text-[10px]"></i> Get In Touch
+            </span>
+            <h2 class="text-2xl sm:text-3xl font-black text-white font-heading tracking-tight">
+                Request a Demo
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+                See how Pax TV Hospitality can transform your guests' in-room experience. Fill in your details below and our team will get back to you shortly.
+            </p>
+        </div>
 
-        <form class="elementor-form" method="POST" action="{{ route('contact.submit') }}">
+        <form method="POST" action="{{ route('contact.submit') }}" class="space-y-4">
             @csrf
-            <div class="elementor-form-fields-wrapper elementor-labels-above">
-                <div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-50 elementor-field-required">
-                    <label for="form-field-name" class="elementor-field-label">Full Name</label>
-                    <input size="1" type="text" name="name" id="form-field-name" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="Enter your full name" required="required">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label for="demo_name" class="block text-xs font-semibold text-slate-300">
+                        Full Name <span class="text-rose-400">*</span>
+                    </label>
+                    <input type="text" name="name" id="demo_name" required
+                           placeholder="Enter your full name"
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]">
                 </div>
-                <div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone elementor-col-50 elementor-field-required">
-                    <label for="form-field-phone" class="elementor-field-label">Phone Number</label>
-                    <input size="1" type="tel" name="phone" id="form-field-phone" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="+91 00000 00000" required="required">
-                </div>
-                <div class="elementor-field-type-email elementor-field-group elementor-column elementor-field-group-email elementor-col-100 elementor-field-required">
-                    <label for="form-field-email" class="elementor-field-label">Email Address</label>
-                    <input size="1" type="email" name="email" id="form-field-email" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="you@company.com" required="required">
-                </div>
-                <div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-property elementor-col-50">
-                    <label for="form-field-property" class="elementor-field-label">Hotel / Property Name</label>
-                    <input size="1" type="text" name="property" id="form-field-property" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="Name of your hotel">
-                </div>
-                <div class="elementor-field-type-number elementor-field-group elementor-column elementor-field-group-rooms elementor-col-50">
-                    <label for="form-field-rooms" class="elementor-field-label">Number of Rooms</label>
-                    <input size="1" type="number" name="rooms" id="form-field-rooms" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="e.g. 120">
-                </div>
-                <div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-message elementor-col-100">
-                    <label for="form-field-message" class="elementor-field-label">Message</label>
-                    <textarea class="elementor-field-textual elementor-field elementor-size-sm" name="message" id="form-field-message" rows="4" placeholder="Tell us about your requirements"></textarea>
-                </div>
-                <div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
-                    <button type="submit" class="elementor-button elementor-size-sm">
-                        <span><span class="elementor-button-text">Request Demo</span></span>
-                    </button>
+
+                <div class="space-y-1.5">
+                    <label for="demo_phone" class="block text-xs font-semibold text-slate-300">
+                        Phone Number <span class="text-rose-400">*</span>
+                    </label>
+                    <input type="tel" name="phone" id="demo_phone" required
+                           placeholder="+91 99000 00000"
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]">
                 </div>
             </div>
+
+            <div class="space-y-1.5">
+                <label for="demo_email" class="block text-xs font-semibold text-slate-300">
+                    Business Email Address <span class="text-rose-400">*</span>
+                </label>
+                <input type="email" name="email" id="demo_email" required
+                       placeholder="gm@luxuryresort.com"
+                       class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]">
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label for="demo_property" class="block text-xs font-semibold text-slate-300">
+                        Hotel / Property Name
+                    </label>
+                    <input type="text" name="property" id="demo_property"
+                           placeholder="Name of your hotel"
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]">
+                </div>
+
+                <div class="space-y-1.5">
+                    <label for="demo_rooms" class="block text-xs font-semibold text-slate-300">
+                        Total Rooms / TVs
+                    </label>
+                    <input type="number" name="rooms" id="demo_rooms"
+                           placeholder="e.g. 150" min="1"
+                           class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]">
+                </div>
+            </div>
+
+            <div class="space-y-1.5">
+                <label for="demo_message" class="block text-xs font-semibold text-slate-300">
+                    Specific Requirements or Questions
+                </label>
+                <textarea name="message" id="demo_message" rows="3"
+                          placeholder="Tell us about your property and current TV setup..."
+                          class="w-full px-3.5 py-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-[#1A9C9E] focus:ring-1 focus:ring-[#1A9C9E]"></textarea>
+            </div>
+
+            <div class="pt-2">
+                <button type="submit"
+                        class="w-full py-3.5 px-6 rounded-xl text-sm font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all duration-200 shadow-lg shadow-[#1A9C9E]/30 flex items-center justify-center space-x-2">
+                    <span>Submit Demo Request</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+            <p class="text-center text-[11px] text-slate-500">
+                <i class="fa-solid fa-lock text-[10px] mr-1"></i> Your information is kept strictly confidential. No spam guaranteed.
+            </p>
         </form>
-        
-</div>
-</div>
-</div>
-        </div>
     </div>
 </div>

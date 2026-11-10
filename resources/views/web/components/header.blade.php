@@ -1,103 +1,126 @@
-<header class="elementor elementor-8">
-<div class="elementor-element elementor-element-6696936a e-con-full e-con e-parent">
-<div class="elementor-element elementor-element-6d4e4f3c e-con-inner e-con e-child">
-<div class="elementor-element elementor-element-6be5d8a elementor-widget elementor-widget-image">
-<div class="elementor-widget-container">
-<img src="{{ asset('uploads/') }}/2026/11/PAX-TV-LAUNCHER-2-2.png" alt="Pax TV Launcher" loading="lazy" class="attachment-full size-full" />
-</div>
-</div>
-<div class="elementor-element elementor-element-2f403251 elementor-widget elementor-widget-nav-menu">
-<div class="elementor-widget-container">
-
-        <nav class="elementor-nav-menu--main elementor-nav-menu__container elementor-nav-menu--layout-horizontal e--pointer-none">
-            <ul id="menu-1-header" class="elementor-nav-menu">
-                <li class="menu-item"><a href="#home" class="elementor-item elementor-item-anchor">Home</a></li>
-                <li class="menu-item"><a href="#about" class="elementor-item elementor-item-anchor">About</a></li>
-                <li class="menu-item"><a href="#solutions" class="elementor-item elementor-item-anchor">Solutions</a></li>
-                <li class="menu-item"><a href="#features" class="elementor-item elementor-item-anchor">Features</a></li>
-                <li class="menu-item"><a href="#contact" class="elementor-item elementor-item-anchor">Contact Us</a></li>
-                <li class="menu-item"><a href="{{ route('hotel.register') }}" class="elementor-item">Register Hotel</a></li>
-                <li class="menu-item"><a href="{{ route('login') }}" class="elementor-item">Sign In</a></li>
-            </ul>
-        </nav>
-        <div class="elementor-menu-toggle" role="button" tabindex="0" aria-label="Menu Toggle">
-            <i class="fas fa-bars"></i>
-        </div>
-        <nav class="elementor-nav-menu--dropdown elementor-nav-menu__container" style="display:none;">
-            <ul class="elementor-nav-menu">
-                <li class="menu-item"><a href="#home" class="elementor-item">Home</a></li>
-                <li class="menu-item"><a href="#about" class="elementor-item">About</a></li>
-                <li class="menu-item"><a href="#solutions" class="elementor-item">Solutions</a></li>
-                <li class="menu-item"><a href="#features" class="elementor-item">Features</a></li>
-                <li class="menu-item"><a href="#contact" class="elementor-item">Contact Us</a></li>
-                <li class="menu-item"><a href="{{ route('hotel.register') }}" class="elementor-item">Register Hotel</a></li>
-                <li class="menu-item"><a href="{{ route('login') }}" class="elementor-item">Sign In</a></li>
-            </ul>
-        </nav>
-        
-</div>
-</div>
-<div class="elementor-element elementor-element-30231dbe elementor-widget elementor-widget-button">
-<div class="elementor-widget-container">
-<div class="elementor-button-wrapper"><a href="#request-demo" class="elementor-button elementor-button-link elementor-size-sm" role="button" data-open-popup="popup-demo"><span class="elementor-button-content-wrapper"><span class="elementor-button-icon"><i class="fas fa-chevron-right"></i></span> <span class="elementor-button-text">Request Demo </span></span></a></div>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-2bf12f3a elementor-widget elementor-widget-html">
-<div class="elementor-widget-container">
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    function updateScroll() {
-        document.body.classList.toggle("scrolled", window.scrollY > 0);
-    }
-
-    window.addEventListener("scroll", updateScroll, { passive: true });
-    updateScroll();
-});
-</script>
-</div>
-</div>
-</div>
-<div class="elementor-element elementor-element-385c6528 e-con-full e-con e-parent">
-<div class="elementor-element elementor-element-3c879f97 elementor-widget elementor-widget-form">
-<div class="elementor-widget-container">
-
-        <form class="elementor-form" method="POST" action="{{ route('contact.submit') }}">
-            @csrf
-            <div class="elementor-form-fields-wrapper elementor-labels-above">
-                <div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-50 elementor-field-required">
-                    <label for="form-field-name" class="elementor-field-label">Full Name</label>
-                    <input size="1" type="text" name="name" id="form-field-name" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="Enter your full name" required="required">
-                </div>
-                <div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone elementor-col-50 elementor-field-required">
-                    <label for="form-field-phone" class="elementor-field-label">Phone Number</label>
-                    <input size="1" type="tel" name="phone" id="form-field-phone" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="+91 00000 00000" required="required">
-                </div>
-                <div class="elementor-field-type-email elementor-field-group elementor-column elementor-field-group-email elementor-col-100 elementor-field-required">
-                    <label for="form-field-email" class="elementor-field-label">Email Address</label>
-                    <input size="1" type="email" name="email" id="form-field-email" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="you@company.com" required="required">
-                </div>
-                <div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-property elementor-col-50">
-                    <label for="form-field-property" class="elementor-field-label">Hotel / Property Name</label>
-                    <input size="1" type="text" name="property" id="form-field-property" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="Name of your hotel">
-                </div>
-                <div class="elementor-field-type-number elementor-field-group elementor-column elementor-field-group-rooms elementor-col-50">
-                    <label for="form-field-rooms" class="elementor-field-label">Number of Rooms</label>
-                    <input size="1" type="number" name="rooms" id="form-field-rooms" class="elementor-field elementor-size-sm elementor-field-textual" placeholder="e.g. 120">
-                </div>
-                <div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-message elementor-col-100">
-                    <label for="form-field-message" class="elementor-field-label">Message</label>
-                    <textarea class="elementor-field-textual elementor-field elementor-size-sm" name="message" id="form-field-message" rows="4" placeholder="Tell us about your requirements"></textarea>
-                </div>
-                <div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
-                    <button type="submit" class="elementor-button elementor-size-sm">
-                        <span><span class="elementor-button-text">Request Demo</span></span>
-                    </button>
-                </div>
+<header class="sticky top-0 z-50 w-full transition-all duration-300 bg-[#050B18]/85 backdrop-blur-xl border-b border-white/10" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-20">
+            
+            <!-- Brand Logo -->
+            <div class="shrink-0 flex items-center">
+                <a href="#home" class="flex items-center space-x-3 group">
+                    <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
+                         alt="Pax TV Launcher" 
+                         class="h-9 sm:h-11 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                </a>
             </div>
-        </form>
-        
-</div>
-</div>
-</div>
+
+            <!-- Desktop Navigation Menu -->
+            <nav class="hidden lg:flex items-center space-x-1 xl:space-x-2">
+                <a href="#home" class="px-3.5 py-2 text-sm font-medium text-slate-200 hover:text-[#22B5B7] rounded-lg transition-colors duration-200">
+                    Home
+                </a>
+                <a href="#about" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-[#22B5B7] rounded-lg transition-colors duration-200">
+                    About
+                </a>
+                <a href="#solutions" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-[#22B5B7] rounded-lg transition-colors duration-200">
+                    Solutions
+                </a>
+                <a href="#features" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-[#22B5B7] rounded-lg transition-colors duration-200">
+                    Features
+                </a>
+                <a href="#gallery" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-[#22B5B7] rounded-lg transition-colors duration-200">
+                    Gallery
+                </a>
+                <a href="{{ route('hotel.register') }}" class="px-3.5 py-2 text-sm font-semibold text-teal-300 hover:text-white hover:bg-[#1A9C9E]/20 rounded-lg transition-all duration-200">
+                    <i class="fa-solid fa-hotel mr-1 text-xs"></i> Register Hotel
+                </a>
+                <a href="{{ route('login') }}" class="px-3.5 py-2 text-sm font-medium text-slate-300 hover:text-white rounded-lg transition-colors duration-200">
+                    Sign In
+                </a>
+            </nav>
+
+            <!-- CTA Actions (Desktop) -->
+            <div class="hidden lg:flex items-center space-x-4">
+                <button type="button" 
+                        data-open-popup="popup-demo"
+                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all duration-200 shadow-lg shadow-[#1A9C9E]/25 hover:shadow-[#1A9C9E]/40 hover:scale-[1.02] cursor-pointer">
+                    <span>Request Demo</span>
+                    <i class="fas fa-chevron-right ml-2 text-xs"></i>
+                </button>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <div class="flex lg:hidden items-center">
+                <button type="button" 
+                        id="mobileMenuToggle" 
+                        aria-label="Toggle mobile menu"
+                        class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-200 hover:text-white hover:bg-white/10 transition-colors">
+                    <i class="fas fa-bars text-lg" id="mobileMenuIcon"></i>
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation Menu -->
+    <div id="mobileMenuDropdown" class="hidden lg:hidden border-t border-white/10 bg-[#050B18]/95 backdrop-blur-2xl px-4 pt-3 pb-6 space-y-2">
+        <a href="#home" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:bg-white/5 hover:text-[#22B5B7]">
+            Home
+        </a>
+        <a href="#about" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-white/5 hover:text-[#22B5B7]">
+            About
+        </a>
+        <a href="#solutions" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-white/5 hover:text-[#22B5B7]">
+            Solutions
+        </a>
+        <a href="#features" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-white/5 hover:text-[#22B5B7]">
+            Features
+        </a>
+        <a href="#gallery" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-300 hover:bg-white/5 hover:text-[#22B5B7]">
+            Gallery
+        </a>
+        <div class="pt-3 border-t border-white/10 space-y-2">
+            <a href="{{ route('hotel.register') }}" class="block px-3 py-2.5 rounded-lg text-base font-bold text-teal-300 bg-teal-500/10 hover:bg-teal-500/20">
+                <i class="fa-solid fa-hotel mr-2"></i> Register Hotel
+            </a>
+            <a href="{{ route('login') }}" class="block px-3 py-2.5 rounded-lg text-base font-medium text-slate-200 hover:bg-white/5">
+                Sign In
+            </a>
+            <button type="button" 
+                    data-open-popup="popup-demo"
+                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-xl text-base font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all shadow-lg shadow-[#1A9C9E]/30">
+                <span>Request Demo</span>
+                <i class="fas fa-chevron-right ml-2 text-xs"></i>
+            </button>
+        </div>
+    </div>
 </header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleBtn = document.getElementById('mobileMenuToggle');
+        const menuDropdown = document.getElementById('mobileMenuDropdown');
+        const menuIcon = document.getElementById('mobileMenuIcon');
+
+        if (toggleBtn && menuDropdown) {
+            toggleBtn.addEventListener('click', function () {
+                const isHidden = menuDropdown.classList.contains('hidden');
+                if (isHidden) {
+                    menuDropdown.classList.remove('hidden');
+                    menuIcon.classList.remove('fa-bars');
+                    menuIcon.classList.add('fa-times');
+                } else {
+                    menuDropdown.classList.add('hidden');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                }
+            });
+
+            // Close mobile menu on clicking any link
+            menuDropdown.querySelectorAll('a, button').forEach(item => {
+                item.addEventListener('click', () => {
+                    menuDropdown.classList.add('hidden');
+                    menuIcon.classList.remove('fa-times');
+                    menuIcon.classList.add('fa-bars');
+                });
+            });
+        }
+    });
+</script>
