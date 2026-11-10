@@ -100,3 +100,4 @@ class CompleteHotelRegistrationRequest extends FormRequest
         ], 422));
     }
 }
+

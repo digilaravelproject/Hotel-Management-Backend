@@ -82,3 +82,4 @@ class CreateHotelRegistrationOrderRequest extends FormRequest
         ], 422));
     }
 }
+

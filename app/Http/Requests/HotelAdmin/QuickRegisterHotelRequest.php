@@ -89,3 +89,4 @@ class QuickRegisterHotelRequest extends FormRequest
         parent::failedValidation($validator);
     }
 }
+
