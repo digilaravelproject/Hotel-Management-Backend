@@ -4,58 +4,53 @@
 
 @section('content')
 
-<!-- 1. HERO SECTION -->
-<section id="home" class="relative min-h-[85vh] lg:min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#050B18]">
-    <!-- Background Image with Cinematic Dark Gradient Overlay -->
+<!-- 1. HERO SECTION (Matching Reference Image Exactly) -->
+<section id="home" class="relative min-h-[90vh] lg:min-h-[96vh] flex items-center overflow-hidden bg-[#050B18]">
+    <!-- Background Image with Subtle Shading -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
              alt="PaxTV Hotel Suite Smart Display" 
-             class="w-full h-full object-cover object-center filter brightness-[0.72] contrast-[1.08] scale-105 transition-transform duration-1000 ease-out" />
-        <!-- Cosmic Multi-Stop Gradient Overlay -->
-        <div class="absolute inset-0 bg-gradient-to-r from-[#050B18]/95 via-[#050B18]/80 to-[#050B18]/40"></div>
-        <div class="absolute inset-0 bg-gradient-to-t from-[#050B18] via-transparent to-[#050B18]/60"></div>
+             class="w-full h-full object-cover object-center filter brightness-[0.92] contrast-[1.04]" />
+        <!-- Soft Gradient Shading for Text Legibility while preserving the Smart TV sharpness on the right -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-[#050B18] via-transparent to-black/30"></div>
     </div>
 
     <!-- Hero Content Container -->
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28 w-full">
-        <div class="max-w-2xl lg:max-w-3xl space-y-6">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-32 sm:pt-40 lg:pt-44 pb-20 sm:pb-28 w-full">
+        <div class="max-w-xl lg:max-w-2xl space-y-5">
             
-            <!-- Category Badge -->
-            <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs font-semibold text-teal-300 font-mono tracking-wide shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-[#1A9C9E] animate-pulse"></span>
-                <span>NEXT-GEN HOSPITALITY TV CLOUD</span>
+            <!-- Category Eyebrow in Teal -->
+            <div class="text-[#14B8A6] font-bold text-xs sm:text-sm tracking-[0.18em] uppercase font-mono">
+                PREMIUM HOTEL TV SOLUTION
             </div>
 
-            <!-- Main Punchy Headline -->
-            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white font-heading leading-[1.12] tracking-tight">
-                Transform Every Guest Stay with <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-300 via-[#22B5B7] to-cyan-400">Smarter TV Experiences</span>
+            <!-- Main Exact Headline -->
+            <h1 class="text-3xl sm:text-5xl lg:text-[54px] font-extrabold text-white font-heading leading-[1.14] tracking-tight">
+                Transform Every Guest<br>
+                Stay with Smarter TV<br>
+                Experiences
             </h1>
 
-            <!-- Descriptive Subtitle -->
-            <p class="text-base sm:text-lg lg:text-xl text-slate-300 font-normal leading-relaxed max-w-2xl">
-                An all-in-one Android TV & Google TV hospitality solution designed to elevate guest entertainment, showcase hotel amenities, and simplify central TV management across every room.
+            <!-- Exact Descriptive Subtitle -->
+            <p class="text-sm sm:text-base text-slate-200 font-normal leading-relaxed max-w-lg">
+                An all-in-one Android TV & Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
-            <!-- Dual CTA Action Buttons -->
-            <div class="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+            <!-- Dual Exact Action Buttons -->
+            <div class="pt-3 flex flex-wrap items-center gap-4">
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-4 rounded-full text-base font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all duration-200 shadow-xl shadow-[#1A9C9E]/35 hover:shadow-[#1A9C9E]/50 hover:scale-[1.02] cursor-pointer">
-                    <span>Request a Demo</span>
-                    <i class="fas fa-chevron-right ml-2.5 text-xs"></i>
+                        class="inline-flex items-center justify-center px-7 py-3.5 rounded-xl text-sm sm:text-base font-bold text-slate-900 bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
+                    <span>Request Demo</span>
                 </button>
 
-                <a href="#solutions" 
-                   class="inline-flex items-center justify-center px-7 py-4 rounded-full text-base font-bold text-slate-200 hover:text-white bg-white/10 hover:bg-white/15 backdrop-blur-md border border-white/15 transition-all duration-200">
-                    <span>Explore Solutions</span>
-                    <i class="fas fa-arrow-down ml-2.5 text-xs text-teal-400"></i>
-                </a>
-            </div>
-
-            <!-- Trust Micro-Badges -->
-            <div class="pt-4 flex items-center space-x-6 text-xs text-slate-400">
-                <span class="flex items-center"><i class="fa-solid fa-check text-teal-400 mr-1.5"></i> Works on Android & Google TV</span>
-                <span class="flex items-center"><i class="fa-solid fa-check text-teal-400 mr-1.5"></i> Zero Proprietary Hardware</span>
+                <button type="button" 
+                        data-open-popup="popup-demo"
+                        class="inline-flex items-center justify-center px-7 py-3.5 rounded-xl text-sm sm:text-base font-semibold text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/30 transition-all duration-200 cursor-pointer">
+                    <i class="fa-solid fa-play text-xs mr-2 text-white"></i>
+                    <span>Watch Video</span>
+                </button>
             </div>
 
         </div>
