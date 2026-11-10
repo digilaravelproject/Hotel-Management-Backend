@@ -4,57 +4,60 @@
 
 @section('content')
 
-<!-- 1. HERO SECTION (100% Exact Match to Original Elementor Specifications) -->
+<!-- 1. HERO SECTION (100% Fit & Proportionate Layout) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0E2556] min-h-[540px] sm:min-h-[640px] lg:min-h-[700px]">
+         class="relative w-full overflow-hidden bg-[#0A162D] min-h-[500px] sm:min-h-[560px] md:min-h-[600px] lg:min-h-0 lg:aspect-[2111/745] flex items-center">
     
-    <!-- Background Image with PAXTV Interface on the right side -->
+    <!-- Background Image: 100% Fitted, Zero Crop -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.png') }}" 
              alt="Luxury Hotel Room with PAXTV Interface" 
-             class="w-full h-full object-cover object-right md:object-[center_right]" />
+             class="w-full h-full object-cover md:object-cover lg:object-fill 2xl:object-contain object-right" />
         
         <!-- Mobile-Only Gradient Overlay (Desktop: Overlay Removed) -->
         <div class="absolute inset-0 block md:hidden" 
              style="background: linear-gradient(90deg, rgb(28 34 37 / 92%) 0%, rgb(10 32 38 / 84%) 35%, rgb(29 49 54 / 62%) 65%, rgb(21 38 43 / 38%) 100%);"></div>
+
+        <!-- Subtle Left Gradient on Tablet/Desktop for crystal clear headline legibility over window/bed -->
+        <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-[#050B18]/75 via-[#050B18]/35 to-transparent pointer-events-none w-[52%]"></div>
     </div>
 
-    <!-- Hero Content Container -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[115px] sm:pt-[170px] md:pt-[190px] lg:pt-[240px] pb-[45px] sm:pb-[70px] md:pb-[90px] lg:pb-[130px]">
+    <!-- Hero Content Container (Centered within section) -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[95px] sm:pt-[110px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-8 sm:pb-10 lg:pb-8 flex items-center">
         
-        <!-- Inner Container -->
-        <div class="w-full lg:w-[60%] flex flex-col items-start gap-3.5 sm:gap-[22px] p-0 sm:p-5 rounded-[10px]">
+        <!-- Left Content Column (Strictly 48% width so TV screen on right is 100% unobstructed) -->
+        <div class="w-full md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-start gap-2.5 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
             
-            <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #00fbff -->
+            <!-- Eyebrow: 11px/12px uppercase #00fbff -->
             <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#00fbff] uppercase tracking-[2px] m-0 drop-shadow-sm">
                 Premium Hotel TV Solution
             </h6>
 
-            <!-- Exact Main Headline -->
-            <h1 class="font-heading text-[25px] sm:text-[38px] md:text-[52px] lg:text-[59px] font-bold text-white leading-[1.2] tracking-[-0.5px] m-0 break-words drop-shadow-md">
+            <!-- Main Headline (Scaled proportionately so it never overflows) -->
+            <h1 class="font-heading text-[24px] sm:text-[32px] md:text-[36px] lg:text-[32px] xl:text-[40px] 2xl:text-[46px] font-bold text-white leading-[1.2] tracking-tight m-0 break-words drop-shadow-md">
                 Transform Every Guest Stay with Smarter TV Experiences
             </h1>
 
-            <!-- Exact Subtitle -->
-            <p class="font-heading text-[13.5px] sm:text-[16px] lg:text-[17px] font-normal text-[#E2E8F0] leading-[1.6] sm:leading-[1.7] m-0 max-w-[560px] drop-shadow-sm">
+            <!-- Subtitle -->
+            <p class="font-heading text-[13px] sm:text-[14.5px] lg:text-[13.5px] xl:text-[15px] font-normal text-[#E2E8F0] leading-[1.55] m-0 max-w-[460px] drop-shadow-sm">
                 An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
-            <!-- Exact Action Buttons Container -->
-            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[14px] w-full sm:w-auto pt-2">
+            <!-- Action Buttons Container -->
+            <div class="flex flex-row items-center gap-3 sm:gap-3.5 w-full sm:w-auto pt-1 sm:pt-2">
                 
                 <!-- Request Demo Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-bold text-[#0E2556] bg-[#00fbff] font-heading hover:bg-[#33fcff] transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_20px_rgba(0,251,255,0.4)] cursor-pointer w-full sm:w-auto text-center">
+                        class="inline-flex items-center justify-center px-6 sm:px-7 py-2.5 sm:py-3 rounded-[10px] text-[13px] sm:text-[14px] font-bold text-[#0E2556] bg-[#00fbff] font-heading hover:bg-[#33fcff] transition-all duration-300 hover:-translate-y-0.5 shadow-[0_4px_18px_rgba(0,251,255,0.4)] cursor-pointer text-center shrink-0">
                     <span>Request Demo</span>
                 </button>
 
                 <!-- Watch Video Button -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[13px] sm:py-[15px] rounded-[10px] text-[14px] sm:text-[15px] font-semibold text-white bg-white/[0.06] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto text-center">
-                    <span class="mr-2">▶</span>
+                        class="inline-flex items-center justify-center px-5 sm:px-6 py-2.5 sm:py-3 rounded-[10px] text-[13px] sm:text-[14px] font-semibold text-white bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-xs font-heading transition-all duration-300 hover:-translate-y-0.5 cursor-pointer text-center shrink-0">
+                    <span class="mr-2 text-xs">▶</span>
                     <span>Watch Video</span>
                 </button>
 
