@@ -1008,40 +1008,37 @@
 </section>
 
 
-<!-- 10. CTA BANNER ("REQUEST A DEMO TODAY" - Exact Match to Reference Image 1:1) -->
-<section id="contactus" class="relative overflow-hidden border-b-2 border-[#15888A]" 
+<!-- 10. CTA BANNER ("REQUEST A DEMO TODAY" - Light #146A82 Overlay) -->
+<section id="contactus" class="relative overflow-hidden border-b-2 border-[#146A82]" 
          style="padding-top: 85px; padding-bottom: 85px;">
     
-    <!-- Background Luxury Resort Image with Rich Multi-Layer Dark Navy Overlay (Exact Match to Reference) -->
+    <!-- Background Luxury Resort Image with Light #146A82 Gradient Overlay -->
     <div class="absolute inset-0 z-0">
         <img src="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.png') }}" 
              alt="Twilight Luxury Resort" 
-             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.75] contrast-[1.1]" />
+             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.95] contrast-[1.05]" />
         
-        <!-- Base Blue Night Ambiance Tint -->
-        <div class="absolute inset-0 bg-[#071A36]/50"></div>
-
-        <!-- Multi-Stop Left-to-Right Navy Gradient (Solid Midnight Navy on Left, Rich Ocean Blue Filter on Right) -->
+        <!-- Light Multi-Stop #146A82 Gradient Overlay -->
         <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, #06152B 0%, #071B38 30%, rgba(7, 27, 56, 0.94) 52%, rgba(8, 33, 68, 0.72) 75%, rgba(9, 38, 78, 0.50) 100%);"></div>
+             style="background: linear-gradient(90deg, rgba(20, 106, 130, 0.92) 0%, rgba(20, 106, 130, 0.84) 35%, rgba(20, 106, 130, 0.62) 65%, rgba(20, 106, 130, 0.38) 100%);"></div>
     </div>
 
     <!-- Left-Aligned Content Container -->
     <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="max-w-[580px] space-y-4 sm:space-y-5">
             
-            <!-- Category Eyebrow in Teal -->
-            <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
+            <!-- Category Eyebrow in Light Cyan -->
+            <div class="text-[#E0F7FA] font-semibold text-xs tracking-[2px] uppercase font-mono drop-shadow-sm">
                 READY TO TRANSFORM YOUR GUEST EXPERIENCE?
             </div>
 
             <!-- Exact Headline -->
-            <h2 class="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+            <h2 class="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white font-heading leading-[1.2] tracking-tight drop-shadow-sm">
                 Request a Demo Today
             </h2>
 
             <!-- Exact Descriptive Subtitle -->
-            <p class="text-sm sm:text-base text-[#CBD5E1] font-normal leading-[1.7] max-w-[520px]">
+            <p class="text-sm sm:text-base text-white/90 font-normal leading-[1.7] max-w-[520px]">
                 Discover how our Hotel TV solution can add value to your property and delight your guests.
             </p>
 
@@ -1055,10 +1052,10 @@
                     <span>Request Demo</span>
                 </button>
 
-                <!-- Contact Us Button (Navy Outline / Dark Semi-Transparent) -->
+                <!-- Contact Us Button (#146A82 Outline / Glass) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-[#0A1931]/60 hover:bg-white/10 backdrop-blur-md border border-white/35 transition-all duration-200 cursor-pointer">
+                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-[#146A82]/50 hover:bg-[#146A82]/80 backdrop-blur-md border border-white/45 transition-all duration-200 cursor-pointer">
                     <span>Contact Us</span>
                 </button>
 
