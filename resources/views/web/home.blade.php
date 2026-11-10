@@ -768,11 +768,11 @@
 </section>
 
 
-<!-- 9. TRUSTED BY HOTELS (Light Theme Gradient) -->
-<section class="relative w-full" 
-         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 60px; padding-bottom: 60px;">
+<!-- 9. TRUSTED BY HOTELS (Exact Match to Reference Carousel Slider) -->
+<section id="reviews" class="relative w-full bg-white" style="padding-top: 70px; padding-bottom: 70px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         
+        <!-- Header -->
         <div class="max-w-3xl space-y-3 mb-10">
             <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                 WHAT HOTELIERS SAY
@@ -785,58 +785,230 @@
             </p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Slider Carousel Outer Wrapper -->
+        <div class="relative px-2 sm:px-4">
             
-            <!-- Review 1 -->
-            <div class="bg-white rounded-[16px] p-6 border border-slate-200/60 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition-transform duration-300">
-                <p class="text-[14px] text-[#475569] leading-relaxed italic">
-                    "Guests find the TV interface simple and our hotel information is always up to date. It has become part of the in-room experience."
-                </p>
-                <div class="pt-3 border-t border-slate-100">
-                    <div class="text-[14px] font-bold text-[#0E2556]">General Manager</div>
-                    <div class="text-[12px] text-[#15888A] font-medium">City Business Hotel</div>
+            <!-- Left Chevron Arrow -->
+            <button type="button" 
+                    id="hotelReviewPrev"
+                    aria-label="Previous Reviews"
+                    class="absolute -left-2 sm:-left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] transition-colors cursor-pointer select-none">
+                <i class="fas fa-chevron-left text-base sm:text-lg"></i>
+            </button>
+
+            <!-- Slider Viewport Track -->
+            <div class="overflow-hidden py-4 -my-4">
+                <div id="hotelReviewTrack" 
+                     class="flex transition-transform duration-500 ease-out"
+                     style="gap: 24px;">
+                    
+                    <!-- Review Card 1 (From Screenshot) -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <!-- 5 Teal Stars -->
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    The installation was smooth and the team supported us even after go-live. The system has been stable and reliable.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Operations Head</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Resort &amp; Spa</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 2 (From Screenshot) -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <!-- 5 Teal Stars -->
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Screen casting and live channels are used by almost every guest. Our in-room services orders have also improved.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">IT Manager</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Business Hotel Chain</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 3 (From Screenshot) -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <!-- 5 Teal Stars -->
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Branding the interface with our hotel identity gave the rooms a more premium feel without any extra effort from our team.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Hotel Director</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Heritage Hotel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 4 (From Screenshot) -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <!-- 5 Teal Stars -->
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Local attractions and dining guides on the TV keep guests informed and help us promote our own restaurants.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Marketing Manager</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Luxury Hotel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 5 -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Guests find the TV interface simple and our hotel information is always up to date. It has become part of the in-room experience.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">General Manager</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">City Business Hotel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 6 -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Multi-language support made a clear difference for our international guests. We now get far fewer questions at the front desk.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Front Office Manager</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Boutique Hotel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 7 -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    The cloud management portal saves our staff hours of manual TV configuration across all guest rooms.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Chief Technology Officer</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Grand Horizon Hotel</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 8 -->
+                    <div class="shrink-0 w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                        <div class="bg-white rounded-[16px] p-6 sm:p-7 border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 h-full flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center space-x-1 text-[#15888A] mb-4 text-xs">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <p class="text-[13.5px] sm:text-[14px] text-[#475569] leading-relaxed font-sans">
+                                    Guest satisfaction scores for in-room entertainment jumped by 40% within the first month of deployment.
+                                </p>
+                            </div>
+                            <div class="pt-6 mt-auto">
+                                <div class="text-[15px] font-bold text-[#0E2556] font-heading leading-tight">Guest Experience Director</div>
+                                <div class="text-[12.5px] text-[#15888A] font-medium mt-1">Coastal Bay Suites</div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Review 2 -->
-            <div class="bg-white rounded-[16px] p-6 border border-slate-200/60 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition-transform duration-300">
-                <p class="text-[14px] text-[#475569] leading-relaxed italic">
-                    "Multi-language support made a clear difference for our international guests. We now get far fewer questions at the front desk."
-                </p>
-                <div class="pt-3 border-t border-slate-100">
-                    <div class="text-[14px] font-bold text-[#0E2556]">Front Office Manager</div>
-                    <div class="text-[12px] text-[#15888A] font-medium">Boutique Hotel</div>
-                </div>
-            </div>
-
-            <!-- Review 3 -->
-            <div class="bg-white rounded-[16px] p-6 border border-slate-200/60 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition-transform duration-300">
-                <p class="text-[14px] text-[#475569] leading-relaxed italic">
-                    "The installation was smooth and the team supported us even after go-live. The system has been stable and reliable."
-                </p>
-                <div class="pt-3 border-t border-slate-100">
-                    <div class="text-[14px] font-bold text-[#0E2556]">Operations Head</div>
-                    <div class="text-[12px] text-[#15888A] font-medium">Resort &amp; Spa</div>
-                </div>
-            </div>
-
-            <!-- Review 4 -->
-            <div class="bg-white rounded-[16px] p-6 border border-slate-200/60 shadow-md flex flex-col justify-between space-y-4 hover:-translate-y-1 transition-transform duration-300">
-                <p class="text-[14px] text-[#475569] leading-relaxed italic">
-                    "Screen casting and live channels are used by almost every guest. Our in-room services orders have also improved."
-                </p>
-                <div class="pt-3 border-t border-slate-100">
-                    <div class="text-[14px] font-bold text-[#0E2556]">IT Manager</div>
-                    <div class="text-[12px] text-[#15888A] font-medium">Business Hotel Chain</div>
-                </div>
-            </div>
+            <!-- Right Chevron Arrow -->
+            <button type="button" 
+                    id="hotelReviewNext"
+                    aria-label="Next Reviews"
+                    class="absolute -right-2 sm:-right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] transition-colors cursor-pointer select-none">
+                <i class="fas fa-chevron-right text-base sm:text-lg"></i>
+            </button>
 
         </div>
+
+        <!-- Pagination Dots (5 Dots matching Reference Image) -->
+        <div id="hotelReviewDots" class="flex items-center justify-center space-x-2 pt-8">
+            <button type="button" data-dot="0" aria-label="Slide 1" class="w-5 h-2 rounded-full bg-[#0E2556] transition-all duration-300 cursor-pointer"></button>
+            <button type="button" data-dot="1" aria-label="Slide 2" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"></button>
+            <button type="button" data-dot="2" aria-label="Slide 3" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"></button>
+            <button type="button" data-dot="3" aria-label="Slide 4" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"></button>
+            <button type="button" data-dot="4" aria-label="Slide 5" class="w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer"></button>
+        </div>
+
     </div>
 </section>
 
 
-<!-- 11. CTA BANNER ("REQUEST A DEMO TODAY") -->
+<!-- 10. CTA BANNER ("REQUEST A DEMO TODAY") -->
 <section class="relative py-24 lg:py-32 overflow-hidden">
     <!-- Background Image with Gradient Overlay -->
     <div class="absolute inset-0 z-0">
@@ -876,5 +1048,110 @@
         </div>
     </div>
 </section>
+
+<!-- Reviews Slider JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const track = document.getElementById('hotelReviewTrack');
+        const prevBtn = document.getElementById('hotelReviewPrev');
+        const nextBtn = document.getElementById('hotelReviewNext');
+        const dotsContainer = document.getElementById('hotelReviewDots');
+
+        if (!track || !prevBtn || !nextBtn || !dotsContainer) return;
+
+        const cards = track.children;
+        const totalCards = cards.length;
+        let currentIndex = 0;
+        const totalDots = 5;
+
+        function getVisibleCards() {
+            if (window.innerWidth >= 1024) return 4;
+            if (window.innerWidth >= 640) return 2;
+            return 1;
+        }
+
+        function getMaxIndex() {
+            const visible = getVisibleCards();
+            return Math.max(0, totalCards - visible);
+        }
+
+        function updateSlider(index) {
+            const maxIndex = getMaxIndex();
+            currentIndex = Math.max(0, Math.min(index, maxIndex));
+
+            if (cards.length > 0) {
+                const cardWidth = cards[0].getBoundingClientRect().width;
+                const gap = 24; // 24px gap matching layout
+                const offset = currentIndex * (cardWidth + gap);
+                track.style.transform = `translateX(-${offset}px)`;
+            }
+
+            // Update Pagination Dots
+            const dots = dotsContainer.querySelectorAll('button');
+            const activeDotIndex = maxIndex > 0 ? Math.round((currentIndex / maxIndex) * (dots.length - 1)) : 0;
+
+            dots.forEach((dot, i) => {
+                if (i === activeDotIndex) {
+                    dot.className = 'w-5 h-2 rounded-full bg-[#0E2556] transition-all duration-300 cursor-pointer';
+                } else {
+                    dot.className = 'w-2 h-2 rounded-full bg-slate-300 hover:bg-slate-400 transition-all duration-300 cursor-pointer';
+                }
+            });
+        }
+
+        prevBtn.addEventListener('click', function () {
+            const maxIndex = getMaxIndex();
+            const next = currentIndex > 0 ? currentIndex - 1 : maxIndex;
+            updateSlider(next);
+        });
+
+        nextBtn.addEventListener('click', function () {
+            const maxIndex = getMaxIndex();
+            const next = currentIndex < maxIndex ? currentIndex + 1 : 0;
+            updateSlider(next);
+        });
+
+        dotsContainer.querySelectorAll('button').forEach((dot, dotIdx) => {
+            dot.addEventListener('click', function () {
+                const maxIndex = getMaxIndex();
+                const targetIndex = Math.round((dotIdx / (totalDots - 1)) * maxIndex);
+                updateSlider(targetIndex);
+            });
+        });
+
+        window.addEventListener('resize', function () {
+            updateSlider(currentIndex);
+        });
+
+        // Touch swipe support
+        let startX = 0;
+        track.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+
+        track.addEventListener('touchend', (e) => {
+            const diffX = startX - e.changedTouches[0].clientX;
+            if (diffX > 40) {
+                nextBtn.click();
+            } else if (diffX < -40) {
+                prevBtn.click();
+            }
+        });
+
+        // Auto slide every 5 seconds (pausing on hover)
+        let autoPlayTimer = setInterval(() => {
+            nextBtn.click();
+        }, 5000);
+
+        track.parentElement.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
+        track.parentElement.addEventListener('mouseleave', () => {
+            clearInterval(autoPlayTimer);
+            autoPlayTimer = setInterval(() => nextBtn.click(), 5000);
+        });
+
+        // Initial setup
+        updateSlider(0);
+    });
+</script>
 
 @endsection
