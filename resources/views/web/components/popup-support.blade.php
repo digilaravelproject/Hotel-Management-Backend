@@ -1,62 +1,63 @@
 <div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px;">
-    <div class="paxtv-modal-dialog relative w-full rounded-[16px] overflow-hidden p-0" 
-         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 92vh; overflow-y: auto;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+    
+    <div class="paxtv-modal-dialog relative w-full rounded-[16px] overflow-hidden p-0 my-auto" 
+         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 94vh; overflow-y: auto;">
         
+        <!-- Close Button (Always visible at top-right on both mobile and desktop) -->
+        <button type="button" 
+                class="paxtv-modal-close absolute top-3 right-3 sm:top-4 sm:right-4 md:top-5 md:right-5 w-8 h-8 rounded-full md:rounded-[4px] flex items-center justify-center bg-black/40 md:bg-transparent text-white md:text-[#475569] md:border md:border-[#CBD5E1] hover:bg-black/60 md:hover:border-slate-500 md:hover:text-[#0E2556] transition-all cursor-pointer z-30"
+                style="box-shadow: none;"
+                aria-label="Close modal">
+            <svg class="w-4 h-4 md:w-3.5 md:h-3.5" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+
         <div class="flex flex-col md:flex-row w-full min-h-[520px]">
             <!-- Left Column: Navy-Cyan Gradient Brand Section -->
-            <div class="w-full md:w-[42%] md:min-w-[42%] md:max-w-[42%] shrink-0 flex flex-col justify-center text-left p-6 sm:p-8 md:p-[44px_38px]"
+            <div class="w-full md:w-[42%] md:min-w-[42%] md:max-w-[42%] shrink-0 flex flex-col justify-center text-left p-5 sm:p-7 md:p-[44px_38px]"
                  style="background-image: linear-gradient(150deg, #0E2556 0%, #15888A 100%);">
                 
-                <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#5EC9CB] mb-2">
+                <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#5EC9CB] mb-1.5 sm:mb-2">
                     Ongoing Support
                 </span>
                 
-                <h2 class="font-heading text-[24px] sm:text-[28px] md:text-[32px] font-bold text-white leading-[1.2] tracking-[-0.5px] mb-4">
+                <h2 class="font-heading text-[22px] sm:text-[26px] md:text-[32px] font-bold text-white leading-[1.25] md:leading-[1.2] tracking-[-0.5px] mb-3 sm:mb-4 pr-6 md:pr-0">
                     Reliable Support. Continuous Improvement. Seamless Performance.
                 </h2>
                 
-                <p class="font-heading text-[13.5px] sm:text-[14px] font-normal leading-[1.7] text-[#D6E4F0] mb-3.5">
+                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-3 sm:mb-3.5">
                     Keep your hospitality entertainment system running smoothly with Pax TV Hospitality. Our dedicated technical support and regular software updates help maintain system stability, enhance performance, and ensure a consistent guest experience.
                 </p>
                 
-                <p class="font-heading text-[13.5px] sm:text-[14px] font-normal leading-[1.7] text-[#D6E4F0] mb-6">
+                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-5 sm:mb-6">
                     From troubleshooting and system maintenance to feature enhancements, security improvements, and technical assistance, Pax TV provides ongoing support to help hotels operate confidently, minimise disruptions, and deliver uninterrupted in-room entertainment.
                 </p>
                 
                 <div class="pt-1">
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            class="inline-block px-7 py-3.5 rounded-[10px] font-heading text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
+                            class="w-full sm:w-auto text-center inline-block px-7 py-3 sm:py-3.5 rounded-[10px] font-heading text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
                         Request Demo
                     </button>
                 </div>
             </div>
 
             <!-- Right Column: White Feature Grid Section -->
-            <div class="w-full md:w-[58%] md:min-w-[58%] md:max-w-[58%] grow bg-white flex flex-col justify-center relative p-6 sm:p-8 md:p-[44px_38px]">
+            <div class="w-full md:w-[58%] md:min-w-[58%] md:max-w-[58%] grow bg-white flex flex-col justify-center relative p-5 sm:p-7 md:p-[44px_38px]">
                 
-                <!-- Close Button with subtle border -->
-                <button type="button" 
-                        class="paxtv-modal-close hover:border-slate-500 hover:text-[#0E2556] transition-colors cursor-pointer z-20"
-                        style="position: absolute; top: 16px; right: 18px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: transparent !important; border: 1px solid #CBD5E1 !important; border-radius: 4px !important; color: #475569; padding: 0; box-shadow: none;"
-                        aria-label="Close modal">
-                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2.4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-
-                <div class="mb-4 text-left">
-                    <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#15888A] mb-1.5">
+                <div class="mb-3 sm:mb-4 text-left">
+                    <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#15888A] mb-1 sm:mb-1.5">
                         What's Included
                     </span>
-                    <h3 class="font-heading text-[20px] sm:text-[24px] font-bold text-[#0E2556] tracking-[-0.3px]">
+                    <h3 class="font-heading text-[19px] sm:text-[22px] md:text-[24px] font-bold text-[#0E2556] tracking-[-0.3px]">
                         Support that keeps you running
                     </h3>
                 </div>
 
                 <!-- 6 Feature Cards Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-2">
                     
                     <!-- 1. Dedicated Technical Support -->
                     <div class="group flex items-center gap-3 p-4 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">

@@ -1,11 +1,11 @@
 <div id="popup-demo" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 1000050 !important; background-color: rgba(15, 23, 42, 0.82) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px;">
-    <div class="paxtv-modal-dialog relative w-full overflow-hidden" 
-         style="max-width: 580px !important; width: 100% !important; background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important; padding: 40px 36px 36px 36px;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 1000050 !important; background-color: rgba(15, 23, 42, 0.82) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+    <div class="paxtv-modal-dialog relative w-full overflow-hidden p-6 sm:p-8 md:p-[40px_36px_36px_36px] my-auto" 
+         style="max-width: 580px !important; width: 100% !important; max-height: 94vh; overflow-y: auto; background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important;">
         
         <!-- Close Button -->
         <button type="button" class="paxtv-modal-close hover:text-white transition-colors duration-200 focus:outline-none cursor-pointer z-10" 
-                style="position: absolute; top: 16px; right: 20px; width: auto; height: auto; background: transparent !important; border: none !important; border-radius: 0 !important; color: #5EC9CB; padding: 4px; box-shadow: none;" 
+                style="position: absolute; top: 14px; right: 16px; width: auto; height: auto; background: transparent !important; border: none !important; border-radius: 0 !important; color: #5EC9CB; padding: 6px; box-shadow: none;" 
                 aria-label="Close modal">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>

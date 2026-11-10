@@ -6,8 +6,7 @@
 
 <!-- 1. HERO SECTION (100% Exact Match to Original Elementor Specifications) -->
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0E2556]"
-         style="min-height: 700px;">
+         class="relative w-full overflow-hidden bg-[#0E2556] min-h-[560px] sm:min-h-[640px] lg:min-h-[700px]">
     
     <!-- Background Image (Exact Elementor: center right / cover) -->
     <div class="absolute inset-0 z-0">
@@ -23,10 +22,10 @@
     </div>
 
     <!-- Hero Content Container (Exact Elementor: max-w 1300px, pt: 240px, pb: 130px) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[150px] md:pt-[180px] lg:pt-[240px] pb-[60px] md:pb-[90px] lg:pb-[130px]">
+    <div class="relative z-10 max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8 w-full pt-[130px] sm:pt-[170px] md:pt-[190px] lg:pt-[240px] pb-[50px] sm:pb-[70px] md:pb-[90px] lg:pb-[130px]">
         
         <!-- Inner 60% Width Container (Exact Elementor: width 60%, gap 22px, p 20px, rounded 10px) -->
-        <div class="w-full lg:w-[60%] flex flex-col items-start gap-[22px] p-2 sm:p-5 rounded-[10px]">
+        <div class="w-full lg:w-[60%] flex flex-col items-start gap-4 sm:gap-[22px] p-1 sm:p-5 rounded-[10px]">
             
             <!-- Exact Eyebrow: h6, 12px Alexandria 600, uppercase, letter-spacing 2px, #5EC9CB -->
             <h6 class="font-heading text-[11px] sm:text-[12px] font-semibold text-[#5EC9CB] uppercase tracking-[2px] m-0">
@@ -34,29 +33,29 @@
             </h6>
 
             <!-- Exact Main Headline: h1, 59px (tablet: 52px, mobile: 35px) Alexandria 700, line-height 1.2em, letter-spacing -0.5px, #FFFFFF -->
-            <h1 class="font-heading text-[35px] sm:text-[52px] lg:text-[59px] font-bold text-white leading-[1.2] tracking-[-0.5px] m-0">
+            <h1 class="font-heading text-[28px] sm:text-[42px] md:text-[52px] lg:text-[59px] font-bold text-white leading-[1.18] sm:leading-[1.2] tracking-[-0.5px] m-0 break-words">
                 Transform Every Guest Stay with Smarter TV Experiences
             </h1>
 
             <!-- Exact Subtitle: p, 17px (mobile: 14px) Alexandria 400, line-height 1.7em, #CBD5E1 -->
-            <p class="font-heading text-[14px] sm:text-[17px] font-normal text-[#CBD5E1] leading-[1.7] m-0 max-w-[560px]">
+            <p class="font-heading text-[14px] sm:text-[16px] lg:text-[17px] font-normal text-[#CBD5E1] leading-[1.65] sm:leading-[1.7] m-0 max-w-[560px]">
                 An all-in-one Android TV &amp; Google TV hospitality solution designed to elevate guest entertainment and simplify hotel TV management.
             </p>
 
             <!-- Exact Action Buttons Container: row, gap 14px, wrap -->
-            <div class="flex items-center gap-[14px] flex-wrap pt-1">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-[14px] w-full sm:w-auto pt-1">
                 
                 <!-- Exact Request Demo Button: 15px Alexandria 600, bg #FFFFFF, text #0E2556, padding 15px 30px, rounded 10px -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer">
+                        class="inline-flex items-center justify-center px-[30px] py-[14px] sm:py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-[#0E2556] bg-white font-heading hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 hover:-translate-y-0.5 shadow-lg cursor-pointer w-full sm:w-auto text-center">
                     <span>Request Demo</span>
                 </button>
 
                 <!-- Exact Watch Video Button: 15px Alexandria 600, bg rgba(255,255,255,0.04), border rgba(255,255,255,0.45), text #FFFFFF, padding 15px 30px, rounded 10px -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-[30px] py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-white bg-white/[0.04] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
+                        class="inline-flex items-center justify-center px-[30px] py-[14px] sm:py-[15px] rounded-[10px] text-[13px] sm:text-[15px] font-semibold text-white bg-white/[0.04] border border-white/45 font-heading hover:bg-white hover:text-[#0E2556] hover:border-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer w-full sm:w-auto text-center">
                     <span class="mr-2">▶</span>
                     <span>Watch Video</span>
                 </button>
@@ -69,11 +68,10 @@
 
 
 <!-- 2. VALUE PROPOSITION FEATURE BAR (Exact Match to Reference Design) -->
-<section class="relative z-20 w-full" 
+<section class="relative z-20 w-full py-8 sm:py-10 lg:py-[50px]" 
          style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%);">
-    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8"
-         style="padding-top: 50px; padding-bottom: 50px;">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 items-center">
+    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6 lg:gap-8 items-center">
             
             <!-- Feature 1: Customizable UI -->
             <div class="flex items-center space-x-3.5 group">
@@ -145,7 +143,7 @@
 
 
 <!-- 3. ABOUT US: PAXTV LAUNCHER SECTION (Exact Match to Reference Design) -->
-<section id="about" class="w-full bg-white" style="padding-top: 60px; padding-bottom: 60px;">
+<section id="about" class="w-full bg-white py-10 sm:py-14 lg:py-[60px]">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
@@ -159,31 +157,31 @@
             </div>
 
             <!-- Right Text Content -->
-            <div class="lg:col-span-6 space-y-5">
+            <div class="lg:col-span-6 space-y-4 sm:space-y-5">
                 <!-- Eyebrow -->
                 <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     ABOUT US
                 </div>
 
                 <!-- Title -->
-                <h2 class="text-3xl sm:text-[37px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-2xl sm:text-3xl lg:text-[37px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                     PAXTV Launcher
                 </h2>
 
                 <!-- Paragraph 1 -->
-                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                     PAXTV Launcher is an India-headquartered hospitality technology company focused on transforming hotel entertainment and digital guest experiences. Our smart TV solutions help hotels deliver a fully branded, interactive, and personalised in-room experience.
                 </p>
 
                 <!-- Paragraph 2 -->
-                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                     PAXTV Launcher is a smart hotel TV platform that brings live TV, IPTV, OTT applications, multilingual entertainment, and hotel services together in one seamless interface. With screen casting, real-time information, personalised welcome messages, and promotional features, our platform helps hotels enhance guest satisfaction, streamline communication, promote in-house services, and unlock new revenue opportunities.
                 </p>
 
                 <!-- Action Button -->
                 <div class="pt-2">
                     <a href="#solutions" 
-                       class="inline-flex items-center justify-center px-8 py-3.5 rounded-[10px] text-[15px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 cursor-pointer">
+                       class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-[10px] text-[15px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 cursor-pointer text-center">
                         <span>Read More &rarr;</span>
                     </a>
                 </div>
@@ -196,8 +194,8 @@
 
 <!-- 4. OUR SOLUTIONS SECTION (Exact Match to Reference Design) -->
 <section id="solutions" 
-         class="relative w-full overflow-hidden" 
-         style="background-image: url('{{ asset('uploads/2026/11/our-solution.png') }}'); background-position: top center; background-size: cover; padding-top: 70px; padding-bottom: 70px;">
+         class="relative w-full overflow-hidden py-10 sm:py-14 lg:py-[70px]" 
+         style="background-image: url('{{ asset('uploads/2026/11/our-solution.png') }}'); background-position: top center; background-size: cover;">
     
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <!-- 68% width on desktop so the smart TV on the right of the background image remains clearly visible -->
@@ -208,10 +206,10 @@
                 <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     TAILORED FOR YOUR HOTEL
                 </div>
-                <h2 class="text-3xl sm:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-2xl sm:text-3xl lg:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
                     Our Solutions
                 </h2>
-                <p class="text-[15px] sm:text-[16px] text-[#B0B1B1] font-normal leading-[1.7] max-w-2xl font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#B0B1B1] font-normal leading-[1.7] max-w-2xl font-sans">
                     A complete in-room entertainment and guest engagement solution designed for modern hospitality needs.
                 </p>
             </div>
@@ -220,14 +218,14 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pt-3">
                 
                 <!-- Card 1: Hotel TV Application -->
-                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                <div class="bg-white rounded-[18px] p-5 sm:p-6 lg:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                      style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
                     <div class="space-y-4">
                         <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
                              style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
                             <i class="fas fa-desktop text-lg text-white"></i>
                         </div>
-                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                        <h4 class="font-heading font-semibold text-[18px] sm:text-[20px] text-[#0E2556] leading-tight">
                             Hotel TV Application
                         </h4>
                         <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
@@ -237,21 +235,21 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-hotel-tv"
-                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Card 2: System Integration -->
-                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                <div class="bg-white rounded-[18px] p-5 sm:p-6 lg:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                      style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
                     <div class="space-y-4">
                         <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
                              style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
                             <i class="fas fa-cogs text-lg text-white"></i>
                         </div>
-                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                        <h4 class="font-heading font-semibold text-[18px] sm:text-[20px] text-[#0E2556] leading-tight">
                             System Integration
                         </h4>
                         <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
@@ -261,21 +259,21 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-integration"
-                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Card 3: Ongoing Support -->
-                <div class="bg-white rounded-[18px] p-6 sm:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                <div class="bg-white rounded-[18px] p-5 sm:p-6 lg:p-7 transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                      style="box-shadow: 0px 10px 30px 0px rgba(14, 37, 86, 0.15);">
                     <div class="space-y-4">
                         <div class="w-11 h-11 rounded-[8px] flex items-center justify-center shrink-0"
                              style="background-color: #0E2556; box-shadow: 0 8px 18px -8px rgba(14, 37, 86, 0.45);">
                             <i class="fas fa-headset text-lg text-white"></i>
                         </div>
-                        <h4 class="font-heading font-semibold text-[19px] sm:text-[20px] text-[#0E2556] leading-tight">
+                        <h4 class="font-heading font-semibold text-[18px] sm:text-[20px] text-[#0E2556] leading-tight">
                             Ongoing Support
                         </h4>
                         <p class="font-sans text-[13.5px] text-[#475569] leading-[1.6]">
@@ -285,7 +283,7 @@
                     <div class="pt-6">
                         <button type="button" 
                                 data-open-popup="popup-support"
-                                class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
+                                class="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2.5 sm:py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer text-center">
                             <span>Learn More &rarr;</span>
                         </button>
                     </div>
@@ -299,21 +297,27 @@
 
 
 <!-- 5. FEATURE COMPARISON MATRIX ("GO BEYOND ENTERTAINMENT") (Exact Match to Reference Design) -->
-<section class="relative w-full" 
-         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 60px; padding-bottom: 60px;">
+<section class="relative w-full py-10 sm:py-14 lg:py-[60px]" 
+         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%);">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Left-Aligned Section Header -->
-        <div class="max-w-3xl space-y-3 mb-10">
+        <div class="max-w-3xl space-y-3 mb-8 sm:mb-10">
             <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                 SEE WHAT MAKES PAX TV DIFFERENT
             </div>
-            <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+            <h2 class="text-2xl sm:text-3xl lg:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                 Go Beyond Entertainment. Deliver a Connected Guest Experience.
             </h2>
-            <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+            <p class="text-[14.5px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                 Modern hospitality deserves more than conventional television. Pax TV Hospitality, powered by Pax TV Launcher, brings entertainment, hotel information, and guest-facing services together through an intuitive TV experience.
             </p>
+        </div>
+
+        <!-- Horizontal Swipe Hint on Mobile -->
+        <div class="flex items-center gap-2 text-[12px] text-[#15888A] font-semibold mb-3 md:hidden">
+            <i class="fas fa-arrows-left-right text-xs"></i>
+            <span>Swipe horizontally to view full comparison</span>
         </div>
 
         <!-- 3-Column Comparison Table Card (Matching User Reference Image Exactly) -->
@@ -455,84 +459,84 @@
 
 
 <!-- 6. MULTI LANGUAGE SUPPORT SECTION (Exact Match to Reference Design) -->
-<section class="relative w-full overflow-hidden" 
-         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding-top: 60px; padding-bottom: 60px;">
+<section class="relative w-full overflow-hidden py-10 sm:py-14 lg:py-[60px]" 
+         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%);">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             <!-- Left Text Content & Language Badges (58% width on desktop) -->
-            <div class="lg:col-span-7 space-y-5">
+            <div class="lg:col-span-7 space-y-4 sm:space-y-5">
                 <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
                     GLOBAL GUEST EXPERIENCE
                 </div>
 
-                <h2 class="text-3xl sm:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-2xl sm:text-3xl lg:text-[39px] font-bold text-white font-heading leading-[1.2] tracking-tight">
                     Multi-Language Support
                 </h2>
 
-                <p class="text-[15px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
                     Cater to international guests with multiple language options and easy navigation.
                 </p>
 
                 <!-- Language Pill Buttons Grid -->
-                <div class="pt-2 flex flex-wrap gap-2.5">
+                <div class="pt-2 flex flex-wrap gap-2 sm:gap-2.5">
                     <!-- Active Language: English -->
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white text-[#0E2556] shadow-sm transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white text-[#0E2556] shadow-sm transition-all duration-200">
                         English
                     </button>
                     
                     <!-- Other Languages -->
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         हिंदी
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         मराठी
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         ગુજરાતી
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         தமிழ்
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         ಕನ್ನಡ
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         తెలుగు
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         বাংলা
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Français
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Deutsch
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Español
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         Português
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         中文
                     </button>
                     <button type="button" 
-                            class="px-4.5 py-2 rounded-[10px] text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
+                            class="px-3.5 sm:px-4.5 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[12px] sm:text-[13px] font-semibold bg-white/[0.04] text-white border border-white/45 hover:bg-white hover:text-[#0E2556] transition-all duration-200">
                         عربى
                     </button>
                 </div>
@@ -553,10 +557,10 @@
 
 
 <!-- 7. HOTEL INFORMATION & SERVICES SECTION (Light Ice-Blue Gradient matching Reference Image 1:1) -->
-<section id="features" class="relative w-full" 
-         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 70px; padding-bottom: 70px;">
+<section id="features" class="relative w-full py-10 sm:py-14 lg:py-[70px]" 
+         style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%);">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             
             <!-- Left Image Showcase -->
             <div class="lg:col-span-6 order-2 lg:order-1">
@@ -568,7 +572,7 @@
             </div>
 
             <!-- Right Content & 6 Feature Icons (Stacked Icon on Top, Label Below) -->
-            <div class="lg:col-span-6 order-1 lg:order-2 space-y-6">
+            <div class="lg:col-span-6 order-1 lg:order-2 space-y-5 sm:space-y-6">
                 
                 <!-- Eyebrow -->
                 <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
@@ -576,80 +580,80 @@
                 </div>
 
                 <!-- Section Heading -->
-                <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-2xl sm:text-3xl lg:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                     Hotel Information &amp; Services
                 </h2>
 
                 <!-- Subtitle -->
-                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                     Showcase hotel amenities, dining options, facilities and local attractions directly on the TV.
                 </p>
 
                 <!-- 6 Features Grid (3 Columns x 2 Rows: Icon on top, Label below, Centered) -->
-                <div class="grid grid-cols-3 gap-y-7 gap-x-4 pt-3">
+                <div class="grid grid-cols-3 gap-y-5 sm:gap-y-7 gap-x-2 sm:gap-x-4 pt-3">
                     
                     <!-- 1. Hotel Information -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="far fa-building text-xl text-white"></i>
+                            <i class="far fa-building text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             Hotel Information
                         </span>
                     </div>
 
                     <!-- 2. City Guide -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="far fa-map text-xl text-white"></i>
+                            <i class="far fa-map text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             City Guide
                         </span>
                     </div>
 
                     <!-- 3. Dining & Restaurants -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="fas fa-utensils text-xl text-white"></i>
+                            <i class="fas fa-utensils text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             Dining &amp; Restaurants
                         </span>
                     </div>
 
                     <!-- 4. Local Attractions -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="fas fa-landmark text-xl text-white"></i>
+                            <i class="fas fa-landmark text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             Local Attractions
                         </span>
                     </div>
 
                     <!-- 5. In-Room Services -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="fas fa-concierge-bell text-xl text-white"></i>
+                            <i class="fas fa-concierge-bell text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             In-Room Services
                         </span>
                     </div>
 
                     <!-- 6. Flight Information -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3"
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3"
                              style="background-color: #0E2556; box-shadow: 0 8px 20px -6px rgba(14, 37, 86, 0.45);">
-                            <i class="fas fa-plane text-xl text-white"></i>
+                            <i class="fas fa-plane text-lg sm:text-xl text-white"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-[#0E2556] leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-[#0E2556] leading-snug px-0.5 break-words">
                             Flight Information
                         </span>
                     </div>
@@ -664,13 +668,13 @@
 
 
 <!-- 8. LIVE TV & ENTERTAINMENT SECTION (Deep Navy to Cyan Gradient matching Reference Image 1:1) -->
-<section class="relative w-full" 
-         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%); padding-top: 70px; padding-bottom: 70px;">
+<section class="relative w-full py-10 sm:py-14 lg:py-[70px]" 
+         style="background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%);">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 items-center">
             
             <!-- Left Text Content & 6 Feature Icons (White Circles on Dark Gradient) -->
-            <div class="lg:col-span-6 space-y-6">
+            <div class="lg:col-span-6 space-y-5 sm:space-y-6">
                 
                 <!-- Eyebrow -->
                 <div class="text-[#5EC9CB] font-semibold text-xs tracking-[2px] uppercase font-mono">
@@ -678,74 +682,74 @@
                 </div>
 
                 <!-- Section Heading -->
-                <h2 class="text-3xl sm:text-[38px] font-bold text-white font-heading leading-[1.2] tracking-tight">
+                <h2 class="text-2xl sm:text-3xl lg:text-[38px] font-bold text-white font-heading leading-[1.2] tracking-tight">
                     Live TV &amp; Entertainment
                 </h2>
 
                 <!-- Subtitle -->
-                <p class="text-[15px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
+                <p class="text-[14.5px] sm:text-[16px] text-[#CBD5E1] font-normal leading-[1.7] font-sans">
                     Deliver seamless live TV, movies and guest entertainment with an intuitive interface.
                 </p>
 
                 <!-- 6 Features Grid (3 Columns x 2 Rows: White circle on top, White label below, Centered) -->
-                <div class="grid grid-cols-3 gap-y-7 gap-x-4 pt-3">
+                <div class="grid grid-cols-3 gap-y-5 sm:gap-y-7 gap-x-2 sm:gap-x-4 pt-3">
                     
                     <!-- 1. Live TV Channels -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fas fa-tv text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fas fa-tv text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             Live TV Channels
                         </span>
                     </div>
 
                     <!-- 2. On-Demand Movies -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fas fa-film text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fas fa-film text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             On-Demand Movies
                         </span>
                     </div>
 
                     <!-- 3. Web Applications -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fas fa-globe text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fas fa-globe text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             Web Applications
                         </span>
                     </div>
 
                     <!-- 4. Screen Cast -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fab fa-chromecast text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fab fa-chromecast text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             Screen Cast
                         </span>
                     </div>
 
                     <!-- 5. Personalised Recommendations -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fas fa-heart text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fas fa-heart text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             Personalised Recommendations
                         </span>
                     </div>
 
                     <!-- 6. On-Demand Movies (or OTT) -->
                     <div class="flex flex-col items-center text-center group">
-                        <div class="w-14 h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-3 shadow-lg">
-                            <i class="fas fa-film text-xl text-[#0E2556]"></i>
+                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white flex items-center justify-center transition-transform duration-300 group-hover:scale-110 mb-2 sm:mb-3 shadow-lg">
+                            <i class="fas fa-film text-lg sm:text-xl text-[#0E2556]"></i>
                         </div>
-                        <span class="text-[14px] font-semibold text-white leading-snug">
+                        <span class="text-[11.5px] sm:text-[13px] lg:text-[14px] font-semibold text-white leading-snug px-0.5 break-words">
                             On-Demand Movies
                         </span>
                     </div>
@@ -769,31 +773,31 @@
 
 
 <!-- 9. TRUSTED BY HOTELS (Exact Match to Reference Carousel Slider) -->
-<section id="reviews" class="relative w-full bg-white" style="padding-top: 70px; padding-bottom: 70px;">
+<section id="reviews" class="relative w-full bg-white py-10 sm:py-14 lg:py-[70px]">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Header -->
-        <div class="max-w-3xl space-y-3 mb-10">
+        <div class="max-w-3xl space-y-3 mb-8 sm:mb-10">
             <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
                 WHAT HOTELIERS SAY
             </div>
-            <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
+            <h2 class="text-2xl sm:text-3xl lg:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                 Trusted By Hotels
             </h2>
-            <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+            <p class="text-[14.5px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
                 Hear from hotel teams who have upgraded their in-room guest experience with PAX TV.
             </p>
         </div>
 
         <!-- Slider Carousel Outer Wrapper -->
-        <div class="relative px-2 sm:px-4">
+        <div class="relative px-1 sm:px-4">
             
             <!-- Left Chevron Arrow -->
             <button type="button" 
                     id="hotelReviewPrev"
                     aria-label="Previous Reviews"
-                    class="absolute -left-2 sm:-left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] transition-colors cursor-pointer select-none">
-                <i class="fas fa-chevron-left text-base sm:text-lg"></i>
+                    class="absolute -left-1 sm:-left-3 lg:-left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 shadow-md border border-slate-200 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] hover:bg-white transition-all cursor-pointer select-none">
+                <i class="fas fa-chevron-left text-sm sm:text-base"></i>
             </button>
 
             <!-- Slider Viewport Track -->
@@ -989,8 +993,8 @@
             <button type="button" 
                     id="hotelReviewNext"
                     aria-label="Next Reviews"
-                    class="absolute -right-2 sm:-right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] transition-colors cursor-pointer select-none">
-                <i class="fas fa-chevron-right text-base sm:text-lg"></i>
+                    class="absolute -right-1 sm:-right-3 lg:-right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/90 shadow-md border border-slate-200 flex items-center justify-center text-[#0E2556] hover:text-[#15888A] hover:bg-white transition-all cursor-pointer select-none">
+                <i class="fas fa-chevron-right text-sm sm:text-base"></i>
             </button>
 
         </div>
@@ -1009,8 +1013,7 @@
 
 
 <!-- 10. CTA BANNER ("REQUEST A DEMO TODAY" - Light #146A82 Overlay) -->
-<section id="contactus" class="relative overflow-hidden border-b-2 border-[#146A82]" 
-         style="padding-top: 85px; padding-bottom: 85px;">
+<section id="contactus" class="relative overflow-hidden border-b-2 border-[#146A82] py-12 sm:py-16 lg:py-[85px]">
     
     <!-- Background Luxury Resort Image with Light #146A82 Gradient Overlay -->
     <div class="absolute inset-0 z-0">
@@ -1033,29 +1036,29 @@
             </div>
 
             <!-- Exact Headline -->
-            <h2 class="text-3xl sm:text-4xl lg:text-[46px] font-bold text-white font-heading leading-[1.2] tracking-tight drop-shadow-sm">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-[46px] font-bold text-white font-heading leading-[1.2] tracking-tight drop-shadow-sm">
                 Request a Demo Today
             </h2>
 
             <!-- Exact Descriptive Subtitle -->
-            <p class="text-sm sm:text-base text-white/90 font-normal leading-[1.7] max-w-[520px]">
+            <p class="text-[14px] sm:text-base text-white/90 font-normal leading-[1.7] max-w-[520px]">
                 Discover how our Hotel TV solution can add value to your property and delight your guests.
             </p>
 
             <!-- Dual Action Buttons (Request Demo & Contact Us) -->
-            <div class="pt-3 flex flex-wrap items-center gap-3.5">
+            <div class="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
                 
                 <!-- Request Demo Button (Solid White with Navy Text) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-[#0E2556] bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
+                        class="w-full sm:w-auto text-center inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-[#0E2556] bg-white hover:bg-slate-100 transition-all duration-200 shadow-xl hover:scale-[1.02] cursor-pointer">
                     <span>Request Demo</span>
                 </button>
 
                 <!-- Contact Us Button (#146A82 Outline / Glass) -->
                 <button type="button" 
                         data-open-popup="popup-demo"
-                        class="inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-[#146A82]/50 hover:bg-[#146A82]/80 backdrop-blur-md border border-white/45 transition-all duration-200 cursor-pointer">
+                        class="w-full sm:w-auto text-center inline-flex items-center justify-center px-7 py-3 rounded-[10px] text-sm sm:text-base font-semibold text-white bg-[#146A82]/50 hover:bg-[#146A82]/80 backdrop-blur-md border border-white/45 transition-all duration-200 cursor-pointer">
                     <span>Contact Us</span>
                 </button>
 

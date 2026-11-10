@@ -1,4 +1,4 @@
-<footer class="w-full text-slate-300" style="background-color: #0E2556; padding-top: 60px; padding-bottom: 60px;">
+<footer class="w-full text-slate-300 py-10 sm:py-12 lg:py-[60px]" style="background-color: #0E2556;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
             

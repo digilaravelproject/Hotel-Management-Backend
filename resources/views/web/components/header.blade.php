@@ -2,12 +2,12 @@
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div id="headerInner" class="flex items-center justify-between py-[18px] transition-all duration-300">
             
-            <!-- Brand Logo (Slightly Increased Size: ~68px Height) -->
+            <!-- Brand Logo (Responsive Height: ~48px mobile, 64px sm, 68px desktop) -->
             <div class="shrink-0 flex items-center">
                 <a href="#home" class="flex items-center group">
                     <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
                          alt="Pax TV Launcher" 
-                         class="h-14 sm:h-16 lg:h-[68px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                         class="h-12 sm:h-14 lg:h-[68px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
             </div>
 
