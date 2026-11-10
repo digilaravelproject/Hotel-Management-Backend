@@ -1,4 +1,5 @@
-<div id="popup-hotel-tv" class="paxtv-modal-overlay" aria-hidden="true" style="display:none; background-color: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
+<div id="popup-hotel-tv" class="paxtv-modal-overlay" aria-hidden="true" 
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px;">
     <div class="paxtv-modal-dialog relative w-full rounded-[16px] overflow-hidden p-0" 
          style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 92vh; overflow-y: auto;">
         

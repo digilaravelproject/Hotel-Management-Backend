@@ -177,13 +177,13 @@
     @include('web.components.footer')
 
     <!-- Interactive Popups / Modals -->
-    @include('web.components.popup-demo')
     @include('web.components.popup-hotel-tv')
     @include('web.components.popup-integration')
     @include('web.components.popup-support')
+    @include('web.components.popup-demo')
 
     <!-- Scripts -->
-    <script src="{{ asset('js/paxtv.js') }}"></script>
+    <script src="{{ asset('js/paxtv.js') }}?v={{ filemtime(public_path('js/paxtv.js')) }}"></script>
     @stack('scripts')
 </body>
 </html>

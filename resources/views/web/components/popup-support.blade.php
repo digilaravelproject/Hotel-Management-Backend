@@ -1,4 +1,5 @@
-<div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" style="display:none;">
+<div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" 
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 16px;">
     <div class="paxtv-modal-dialog p-6 sm:p-8 max-w-2xl">
         <button type="button" class="paxtv-modal-close" aria-label="Close modal">&times;</button>
         

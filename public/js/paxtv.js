@@ -2,39 +2,45 @@
  * Pax TV Launcher - Client Interactions & Modal Engine
  */
 
-document.addEventListener('DOMContentLoaded', function () {
-    // 1. Popup / Modal Controller
-    function openModal(modalId) {
-        // If another modal is open, close it first
-        document.querySelectorAll('.paxtv-modal-overlay.active').forEach(m => {
-            if (m.id !== modalId) {
-                m.classList.remove('active');
-                m.style.display = 'none';
+function openModal(modalId) {
+    // Immediately close and hide any active modal
+    document.querySelectorAll('.paxtv-modal-overlay').forEach(m => {
+        if (m.id !== modalId) {
+            m.classList.remove('active');
+            m.style.display = 'none';
+            m.setAttribute('aria-hidden', 'true');
+        }
+    });
+
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden', 'false');
+        // Force reflow for transition
+        void modal.offsetHeight;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modal) {
+    if (modal) {
+        modal.classList.remove('active');
+        modal.setAttribute('aria-hidden', 'true');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            // Only restore scroll if no other active modals
+            if (!document.querySelector('.paxtv-modal-overlay.active')) {
+                document.body.style.overflow = '';
             }
-        });
-
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.style.display = 'flex';
-            // Force reflow for transition
-            modal.offsetHeight;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+        }, 200);
     }
+}
 
-    function closeModal(modal) {
-        if (modal) {
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
-                // Only restore scroll if no other active modals
-                if (!document.querySelector('.paxtv-modal-overlay.active')) {
-                    document.body.style.overflow = '';
-                }
-            }, 300);
-        }
-    }
+window.openModal = openModal;
+window.closeModal = closeModal;
+
+document.addEventListener('DOMContentLoaded', function () {
 
     // Trigger popup on click
     document.addEventListener('click', function (e) {
