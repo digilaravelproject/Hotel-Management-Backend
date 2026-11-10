@@ -185,7 +185,7 @@
                             </span>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5" id="planCardsContainer">
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3.5" id="planCardsContainer">
                             @foreach($plans as $p)
                                 @php
                                     $isFirst = $loop->first;
@@ -199,7 +199,7 @@
                                     $totalMenusInSystem = \App\Models\Plan::totalMenusCount();
                                     $menusCount = is_array($p->allowed_menus) ? count($p->allowed_menus) : $totalMenusInSystem;
                                 @endphp
-                                <label class="plan-card relative flex flex-col justify-between p-4 sm:p-5 rounded-2xl border-2 cursor-pointer transition-all {{ $isFirst ? 'active border-[#150A42]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
+                                <label class="plan-card relative flex flex-col justify-between p-3 sm:p-5 rounded-xl sm:rounded-2xl border-2 cursor-pointer transition-all {{ $isFirst ? 'active border-[#150A42]' : 'border-slate-200 bg-white hover:border-slate-300' }}"
                                        onclick="selectPlanCard(this)"
                                        data-id="{{ $p->id }}"
                                        data-name="{{ $p->name }}"
@@ -219,60 +219,60 @@
 
                                     <div>
                                         <!-- Top Badge Row -->
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider font-mono {{ $cycle === 'yearly' ? 'bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs' : 'bg-purple-100 text-[#150A42] border border-purple-200 shadow-2xs' }}">
+                                        <div class="flex items-start justify-between gap-1 mb-1.5 sm:mb-2">
+                                            <span class="px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider font-mono shrink-0 {{ $cycle === 'yearly' ? 'bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs' : 'bg-purple-100 text-[#150A42] border border-purple-200 shadow-2xs' }}">
                                                 @if($cycle === 'yearly')
-                                                    <i class="fa-solid fa-crown text-[9px] text-amber-600 mr-1"></i> YEARLY PLAN
+                                                    <i class="fa-solid fa-crown text-[8px] sm:text-[9px] text-amber-600 mr-0.5 sm:mr-1"></i><span class="hidden xs:inline sm:inline">YEARLY </span>PLAN
                                                 @else
-                                                    <i class="fa-solid fa-calendar-days text-[9px] text-purple-600 mr-1"></i> MONTHLY PLAN
+                                                    <i class="fa-solid fa-calendar-days text-[8px] sm:text-[9px] text-purple-600 mr-0.5 sm:mr-1"></i><span class="hidden xs:inline sm:inline">MONTHLY </span>PLAN
                                                 @endif
                                             </span>
                                             
                                             <!-- Checkmark Icon -->
-                                            <div class="plan-check-bubble w-5 h-5 rounded-full flex items-center justify-center text-xs {{ $isFirst ? 'bg-[#150A42] text-white' : 'bg-slate-100 text-transparent' }}">
-                                                <i class="fa-solid fa-check text-[10px]"></i>
+                                            <div class="plan-check-bubble w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center text-[9px] sm:text-xs shrink-0 {{ $isFirst ? 'bg-[#150A42] text-white' : 'bg-slate-100 text-transparent' }}">
+                                                <i class="fa-solid fa-check text-[8px] sm:text-[10px]"></i>
                                             </div>
                                         </div>
 
-                                        <h3 class="text-base font-black text-slate-900 tracking-tight">{{ $p->name }}</h3>
+                                        <h3 class="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">{{ $p->name }}</h3>
                                         @if($p->description)
-                                            <p class="text-xs text-slate-500 mt-0.5 line-clamp-1">{{ $p->description }}</p>
+                                            <p class="text-[10px] sm:text-xs text-slate-500 mt-0.5 line-clamp-1 hidden sm:block">{{ $p->description }}</p>
                                         @endif
 
                                         <!-- Price Box (Matching Reference Design) -->
-                                        <div class="mt-2.5 p-3 rounded-xl bg-slate-50/90 border border-slate-200/80 space-y-1.5">
-                                            <div class="flex items-baseline space-x-1 font-mono">
-                                                <span class="text-2xl font-black text-[#150A42]">₹{{ number_format($monthlyRate, 0) }}</span>
-                                                <span class="text-xs text-slate-500 font-sans font-bold">/ TV / month</span>
+                                        <div class="mt-2 sm:mt-2.5 p-2 sm:p-3 rounded-lg sm:rounded-xl bg-slate-50/90 border border-slate-200/80 space-y-1 sm:space-y-1.5">
+                                            <div class="flex items-baseline space-x-1 font-mono flex-wrap">
+                                                <span class="text-lg sm:text-2xl font-black text-[#150A42]">₹{{ number_format($monthlyRate, 0) }}</span>
+                                                <span class="text-[9px] sm:text-xs text-slate-500 font-sans font-bold">/ TV / mo</span>
                                             </div>
 
                                             @if($cycle === 'yearly')
-                                                <div class="text-[11px] font-bold text-amber-900 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200/80 flex items-center space-x-1.5">
-                                                    <i class="fa-solid fa-crown text-[10px] text-amber-600"></i>
-                                                    <span>Billed annually at ₹{{ number_format($annualTotal, 0) }} / TV / year</span>
+                                                <div class="text-[9px] sm:text-[11px] font-bold text-amber-900 bg-amber-50 px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg border border-amber-200/80 flex items-center space-x-1">
+                                                    <i class="fa-solid fa-crown text-[8px] sm:text-[10px] text-amber-600 shrink-0"></i>
+                                                    <span class="truncate leading-tight">₹{{ number_format($annualTotal, 0) }} / TV / yr</span>
                                                 </div>
                                             @else
-                                                <div class="text-[11px] font-semibold text-slate-500 flex items-center space-x-1.5">
-                                                    <i class="fa-solid fa-calendar-days text-[10px] text-purple-600"></i>
-                                                    <span>Billed monthly</span>
+                                                <div class="text-[9px] sm:text-[11px] font-semibold text-slate-500 flex items-center space-x-1">
+                                                    <i class="fa-solid fa-calendar-days text-[8px] sm:text-[10px] text-purple-600 shrink-0"></i>
+                                                    <span class="truncate">Billed monthly</span>
                                                 </div>
                                             @endif
 
                                             <!-- Tax & Max Limit -->
-                                            <div class="pt-0.5 flex items-center space-x-2 flex-wrap gap-1 text-[10px]">
+                                            <div class="pt-0.5 flex items-center space-x-1 sm:space-x-2 flex-wrap gap-1 text-[8px] sm:text-[10px]">
                                                 @if($taxRate > 0)
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md font-bold font-mono {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }}">
-                                                        <i class="fa-solid fa-shield-halved mr-1 text-[9px]"></i>
-                                                        {{ $taxName }} ({{ number_format($taxRate, 0) }}% {{ ucfirst($taxType) }})
+                                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md font-bold font-mono text-[8px] sm:text-[10px] {{ $taxType === 'inclusive' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200' }}">
+                                                        <i class="fa-solid fa-shield-halved mr-0.5 sm:mr-1 text-[8px] sm:text-[9px]"></i>
+                                                        {{ $taxName }} ({{ number_format($taxRate, 0) }}%)
                                                     </span>
                                                 @else
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md font-semibold font-mono text-[8px] sm:text-[10px] bg-slate-100 text-slate-600 border border-slate-200">
                                                         Tax Exempt
                                                     </span>
                                                 @endif
 
                                                 @if($p->room_count)
-                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md font-semibold font-mono bg-purple-50 text-[#150A42] border border-purple-100">
+                                                    <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md font-semibold font-mono text-[8px] sm:text-[10px] bg-purple-50 text-[#150A42] border border-purple-100">
                                                         Max {{ $p->room_count }} TVs
                                                     </span>
                                                 @endif
@@ -281,21 +281,21 @@
                                     </div>
 
                                     <!-- Features & OTT Badges -->
-                                    <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+                                    <div class="mt-2.5 sm:mt-3 pt-2 sm:pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-1 sm:gap-1.5">
                                         @if($p->hasOtt())
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-purple-50 text-[#150A42] border border-purple-200/60 font-bold text-[11px] font-mono shadow-2xs">
-                                                <i class="fa-solid fa-play mr-1 text-[9px] text-purple-600"></i>
+                                            <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-purple-50 text-[#150A42] border border-purple-200/60 font-bold text-[9px] sm:text-[11px] font-mono shadow-2xs">
+                                                <i class="fa-solid fa-play mr-1 text-[8px] sm:text-[9px] text-purple-600"></i>
                                                 <span>OTT: {{ count($p->ott_platforms ?? []) }} Apps</span>
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-slate-100 text-slate-500 font-bold text-[11px] font-mono">
-                                                <i class="fa-solid fa-ban mr-1 text-[9px] text-slate-400"></i>
-                                                <span>OTT Disabled</span>
+                                            <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-slate-100 text-slate-500 font-bold text-[9px] sm:text-[11px] font-mono">
+                                                <i class="fa-solid fa-ban mr-1 text-[8px] sm:text-[9px] text-slate-400"></i>
+                                                <span>OTT Off</span>
                                             </span>
                                         @endif
 
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-[11px] font-mono shadow-2xs">
-                                            <i class="fa-solid fa-bars mr-1 text-[9px] text-slate-500"></i>
+                                        <span class="inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-[9px] sm:text-[11px] font-mono shadow-2xs">
+                                            <i class="fa-solid fa-bars mr-1 text-[8px] sm:text-[9px] text-slate-500"></i>
                                             <span>{{ $menusCount }}/{{ $totalMenusInSystem }} Menus</span>
                                         </span>
                                     </div>
