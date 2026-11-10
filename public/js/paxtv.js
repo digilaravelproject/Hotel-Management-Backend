@@ -5,6 +5,14 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Popup / Modal Controller
     function openModal(modalId) {
+        // If another modal is open, close it first
+        document.querySelectorAll('.paxtv-modal-overlay.active').forEach(m => {
+            if (m.id !== modalId) {
+                m.classList.remove('active');
+                m.style.display = 'none';
+            }
+        });
+
         const modal = document.getElementById(modalId);
         if (modal) {
             modal.style.display = 'flex';
