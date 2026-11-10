@@ -38,7 +38,6 @@
                     <li><a href="#about" class="hover:text-[#22B5B7] transition-colors flex items-center"><i class="fas fa-angle-right text-xs text-[#1A9C9E] mr-2"></i> About Us</a></li>
                     <li><a href="#solutions" class="hover:text-[#22B5B7] transition-colors flex items-center"><i class="fas fa-angle-right text-xs text-[#1A9C9E] mr-2"></i> Our Solutions</a></li>
                     <li><a href="#features" class="hover:text-[#22B5B7] transition-colors flex items-center"><i class="fas fa-angle-right text-xs text-[#1A9C9E] mr-2"></i> Hotel Services</a></li>
-                    <li><a href="#gallery" class="hover:text-[#22B5B7] transition-colors flex items-center"><i class="fas fa-angle-right text-xs text-[#1A9C9E] mr-2"></i> Gallery</a></li>
                     <li><a href="{{ route('hotel.register') }}" class="hover:text-[#22B5B7] transition-colors flex items-center"><i class="fas fa-angle-right text-xs text-[#1A9C9E] mr-2"></i> Register Hotel</a></li>
                 </ul>
             </div>

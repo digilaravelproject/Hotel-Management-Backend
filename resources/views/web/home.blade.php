@@ -768,62 +768,7 @@
 </section>
 
 
-<!-- 9. GALLERY SECTION (Light Theme: White Background) -->
-<section id="gallery" class="w-full bg-white" style="padding-top: 60px; padding-bottom: 60px;">
-    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div class="max-w-3xl space-y-3 mb-10">
-            <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
-                REAL IMPLEMENTATIONS
-            </div>
-            <h2 class="text-3xl sm:text-[38px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
-                Gallery
-            </h2>
-            <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
-                See how our Hotel TV solution enhances guest experiences in premium properties worldwide.
-            </p>
-        </div>
-
-        <!-- Gallery Grid (1 Large Image on Left, 4 Smaller Images in 2x2 Grid on Right matching Elementor) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            
-            <!-- Left Large Image -->
-            <div class="lg:col-span-5 rounded-[12px] overflow-hidden shadow-md border border-slate-200/60">
-                <img src="{{ asset('uploads/2026/11/Luxury-Suite-at-Tropical-Sunset-e1791468262686-1-1-1.png') }}" 
-                     alt="Luxury Suite PaxTV" 
-                     class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-            </div>
-
-            <!-- Right 4 Images in 2x2 Grid -->
-            <div class="lg:col-span-7 grid grid-cols-2 gap-5">
-                <div class="rounded-[12px] overflow-hidden shadow-md border border-slate-200/60 aspect-video">
-                    <img src="{{ asset('uploads/2026/11/ChatGPT-Image-Oct-8-2026-07_25_19-PM-4-1-1-1.png') }}" 
-                         alt="PaxTV Room Showcase" 
-                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-                </div>
-                <div class="rounded-[12px] overflow-hidden shadow-md border border-slate-200/60 aspect-video">
-                    <img src="{{ asset('uploads/2026/11/ChatGPT-Image-Oct-8-2026-07_25_17-PM-2-1-1-1.png') }}" 
-                         alt="PaxTV Room Showcase" 
-                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-                </div>
-                <div class="rounded-[12px] overflow-hidden shadow-md border border-slate-200/60 aspect-video">
-                    <img src="{{ asset('uploads/2026/11/ChatGPT-Image-Oct-8-2026-07_25_18-PM-3-1-1-1.png') }}" 
-                         alt="PaxTV Room Showcase" 
-                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-                </div>
-                <div class="rounded-[12px] overflow-hidden shadow-md border border-slate-200/60 aspect-video">
-                    <img src="{{ asset('uploads/2026/11/ChatGPT-Image-Oct-8-2026-07_25_15-PM-1-1-1-1.png') }}" 
-                         alt="PaxTV Room Showcase" 
-                         class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-
-<!-- 10. TRUSTED BY HOTELS (Light Theme Gradient) -->
+<!-- 9. TRUSTED BY HOTELS (Light Theme Gradient) -->
 <section class="relative w-full" 
          style="background-image: linear-gradient(160deg, #F5FAFB 0%, #E2F1F2 100%); padding-top: 60px; padding-bottom: 60px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">

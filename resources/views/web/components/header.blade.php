@@ -29,11 +29,6 @@
                     </a>
                     <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
 
-                    <a href="#gallery" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
-                        Gallery
-                    </a>
-                    <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
-
                     <a href="#contactus" data-open-popup="popup-demo" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200 cursor-pointer">
                         Contact Us
                     </a>
@@ -72,9 +67,6 @@
         </a>
         <a href="#solutions" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
             Solution
-        </a>
-        <a href="#gallery" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
-            Gallery
         </a>
         <a href="#contactus" data-open-popup="popup-demo" class="block px-3 py-2 rounded-lg text-base font-medium text-white hover:bg-white/5">
             Contact Us
