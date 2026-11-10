@@ -1,5 +1,5 @@
 <header id="mainHeader" class="absolute top-0 left-0 right-0 z-50 w-full transition-all duration-300 bg-transparent">
-    <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-12">
+    <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-20 sm:h-24">
             
             <!-- Brand Logo -->
@@ -7,34 +7,34 @@
                 <a href="#home" class="flex items-center group">
                     <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
                          alt="Pax TV Launcher" 
-                         class="h-11 sm:h-13 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
+                         class="h-10 sm:h-12 w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
             </div>
 
             <!-- Desktop Navigation Links (Exact Match to Reference Design) -->
-            <div class="hidden md:flex items-center space-x-6 lg:space-x-8">
+            <div class="hidden md:flex items-center space-x-5 lg:space-x-7">
                 <nav class="flex items-center">
-                    <a href="#home" class="text-[15px] font-bold text-[#14B8A6] hover:text-[#22D3EE] transition-colors duration-200">
+                    <a href="#home" class="text-sm font-semibold text-[#14B8A6] hover:text-[#22D3EE] transition-colors duration-200">
                         Home
                     </a>
-                    <span class="text-white/40 px-3.5 lg:px-4 select-none font-light text-xs">|</span>
+                    <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
 
-                    <a href="#about" class="text-[15px] font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#about" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
                         About
                     </a>
-                    <span class="text-white/40 px-3.5 lg:px-4 select-none font-light text-xs">|</span>
+                    <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
 
-                    <a href="#solutions" class="text-[15px] font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#solutions" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
                         Solution
                     </a>
-                    <span class="text-white/40 px-3.5 lg:px-4 select-none font-light text-xs">|</span>
+                    <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
 
-                    <a href="#gallery" class="text-[15px] font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
+                    <a href="#gallery" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200">
                         Gallery
                     </a>
-                    <span class="text-white/40 px-3.5 lg:px-4 select-none font-light text-xs">|</span>
+                    <span class="text-white/40 px-3 select-none font-light text-xs">|</span>
 
-                    <a href="#contactus" data-open-popup="popup-demo" class="text-[15px] font-medium text-white hover:text-[#14B8A6] transition-colors duration-200 cursor-pointer">
+                    <a href="#contactus" data-open-popup="popup-demo" class="text-sm font-medium text-white hover:text-[#14B8A6] transition-colors duration-200 cursor-pointer">
                         Contact Us
                     </a>
                 </nav>
@@ -43,9 +43,9 @@
                 <button type="button" 
                         data-open-popup="popup-demo"
                         style="background-color: rgb(26, 156, 158);"
-                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-[#052229] hover:brightness-110 transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer shrink-0">
+                        class="inline-flex items-center justify-center px-5 py-2.5 rounded-[10px] text-sm font-semibold text-[#0E2556] hover:bg-[#22B5B7] transition-all duration-200 shadow-md hover:scale-[1.02] cursor-pointer shrink-0">
                     <span>Request Demo</span>
-                    <i class="fas fa-chevron-right ml-2 text-xs text-[#052229]"></i>
+                    <i class="fas fa-chevron-right ml-2 text-xs"></i>
                 </button>
             </div>
 
@@ -89,7 +89,7 @@
             <button type="button" 
                     data-open-popup="popup-demo"
                     style="background-color: rgb(26, 156, 158);"
-                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-xl text-base font-bold text-[#052229] hover:brightness-110 transition-all">
+                    class="w-full mt-2 flex items-center justify-center px-5 py-3 rounded-[10px] text-base font-semibold text-[#0E2556] hover:bg-[#22B5B7] transition-all">
                 <span>Request Demo</span>
                 <i class="fas fa-chevron-right ml-2 text-xs"></i>
             </button>
