@@ -14,12 +14,9 @@
              alt="PaxTV Hotel Suite Smart Display" 
              class="w-full h-full object-cover object-[20%_center] md:object-[center_right]" />
         
-        <!-- Contrast Overlay: rich navy on mobile for crystal clear legibility, exact 0.37 black on desktop -->
-        <div class="absolute inset-0 bg-[#0E2556]/80 sm:bg-black" style="opacity: 0.37;" class="hidden sm:block"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0E2556]/90 via-[#0E2556]/75 to-[#0E2556]/95 sm:hidden"></div>
-
-        <!-- Subtle Left Gradient for desktop -->
-        <div class="hidden sm:block absolute inset-0 bg-gradient-to-r from-[#0E2556]/70 via-[#0E2556]/30 to-transparent"></div>
+        <!-- Mobile-Only Gradient Overlay (Desktop: Overlay Removed) -->
+        <div class="absolute inset-0 block md:hidden" 
+             style="background: linear-gradient(90deg, rgb(28 34 37 / 92%) 0%, rgb(10 32 38 / 84%) 35%, rgb(29 49 54 / 62%) 65%, rgb(21 38 43 / 38%) 100%);"></div>
     </div>
 
     <!-- Hero Content Container -->
@@ -1022,9 +1019,9 @@
              alt="Twilight Luxury Resort" 
              class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.95] contrast-[1.05]" />
         
-        <!-- Light Multi-Stop #146A82 Gradient Overlay -->
-        <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, rgba(20, 106, 130, 0.92) 0%, rgba(20, 106, 130, 0.84) 35%, rgba(20, 106, 130, 0.62) 65%, rgba(20, 106, 130, 0.38) 100%);"></div>
+        <!-- Mobile-Only Gradient Overlay (Desktop: Overlay Removed) -->
+        <div class="absolute inset-0 block md:hidden" 
+             style="background: linear-gradient(90deg, rgb(28 34 37 / 92%) 0%, rgb(10 32 38 / 84%) 35%, rgb(29 49 54 / 62%) 65%, rgb(21 38 43 / 38%) 100%);"></div>
     </div>
 
     <!-- Left-Aligned Content Container -->
