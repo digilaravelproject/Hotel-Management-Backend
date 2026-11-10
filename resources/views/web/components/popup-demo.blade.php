@@ -1,8 +1,8 @@
 <div id="popup-demo" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 1000050 !important; background-color: rgba(15, 23, 42, 0.85) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow-y: auto !important; -webkit-overflow-scrolling: touch; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 1000050 !important; background-color: rgba(15, 23, 42, 0.85) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden !important; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
     
     <div class="paxtv-modal-dialog relative w-full rounded-[16px] my-auto" 
-         style="max-width: 540px !important; width: 100% !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch; background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important;">
+         style="max-width: 540px !important; width: 100% !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch; background-image: linear-gradient(135deg, #0E2556 0%, #146A82 100%) !important; border-top: 3px solid #1A9C9E !important; border-left: 0 !important; border-right: 0 !important; border-bottom: 0 !important; border-radius: 16px !important; box-shadow: 0px 24px 60px 0px rgba(0, 0, 0, 0.45) !important;">
         
         <div class="p-4 sm:p-7 md:p-[32px_36px]">
             <!-- Close Button -->

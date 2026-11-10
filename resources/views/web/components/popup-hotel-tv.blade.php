@@ -1,8 +1,8 @@
 <div id="popup-hotel-tv" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow-y: auto !important; -webkit-overflow-scrolling: touch; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden !important; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
     
     <div class="paxtv-modal-dialog relative w-full rounded-[16px] p-0 my-auto" 
-         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch;">
+         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch;">
         
         <!-- Close Button (Always visible at top-right on both mobile and desktop) -->
         <button type="button" 
@@ -23,22 +23,22 @@
                     Pax TV Hospitality
                 </span>
                 
-                <h2 class="font-heading text-[22px] sm:text-[26px] md:text-[32px] font-bold text-white leading-[1.25] md:leading-[1.2] tracking-[-0.5px] mb-3 sm:mb-4 pr-6 md:pr-0">
+                <h2 class="font-heading text-[20px] sm:text-[26px] md:text-[32px] font-bold text-white leading-[1.25] md:leading-[1.2] tracking-[-0.5px] mb-2.5 sm:mb-4 pr-6 md:pr-0">
                     One Smart Screen. Endless Hospitality Experiences.
                 </h2>
                 
-                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-3 sm:mb-3.5">
+                <p class="font-heading text-[12.5px] sm:text-[14px] font-normal leading-[1.6] md:leading-[1.7] text-[#D6E4F0] mb-3 sm:mb-3.5">
                     Transform every hotel TV into a personalised digital experience with Pax TV Hospitality. Powered by Pax TV Launcher, our application brings together OTT platforms, IPTV, live TV channels, multilingual support, flight information, local weather updates, location details, date and time, and hotel services in one seamless, custom-branded interface.
                 </p>
                 
-                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-5 sm:mb-6">
+                <p class="hidden sm:block font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-5 sm:mb-6">
                     Designed for modern hospitality, Pax TV makes entertainment and essential guest information easily accessible, creating a smarter, more connected, and convenient in-room experience.
                 </p>
                 
                 <div class="pt-1">
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            class="w-full sm:w-auto text-center inline-block px-7 py-3 sm:py-3.5 rounded-[10px] font-heading text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
+                            class="w-full sm:w-auto text-center inline-block px-7 py-2.5 sm:py-3.5 rounded-[10px] font-heading text-[13.5px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
                         Request Demo
                     </button>
                 </div>

@@ -1,8 +1,8 @@
 <div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow-y: auto !important; -webkit-overflow-scrolling: touch; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden !important; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
     
     <div class="paxtv-modal-dialog relative w-full rounded-[16px] p-0 my-auto" 
-         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch;">
+         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; overflow-x: hidden !important; -webkit-overflow-scrolling: touch;">
         
         <!-- Close Button (Always visible at top-right on both mobile and desktop) -->
         <button type="button" 
@@ -23,22 +23,22 @@
                     Ongoing Support
                 </span>
                 
-                <h2 class="font-heading text-[22px] sm:text-[26px] md:text-[32px] font-bold text-white leading-[1.25] md:leading-[1.2] tracking-[-0.5px] mb-3 sm:mb-4 pr-6 md:pr-0">
+                <h2 class="font-heading text-[20px] sm:text-[26px] md:text-[32px] font-bold text-white leading-[1.25] md:leading-[1.2] tracking-[-0.5px] mb-2.5 sm:mb-4 pr-6 md:pr-0">
                     Reliable Support. Continuous Improvement. Seamless Performance.
                 </h2>
                 
-                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-3 sm:mb-3.5">
+                <p class="font-heading text-[12.5px] sm:text-[14px] font-normal leading-[1.6] md:leading-[1.7] text-[#D6E4F0] mb-3 sm:mb-3.5">
                     Keep your hospitality entertainment system running smoothly with Pax TV Hospitality. Our dedicated technical support and regular software updates help maintain system stability, enhance performance, and ensure a consistent guest experience.
                 </p>
                 
-                <p class="font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-5 sm:mb-6">
+                <p class="hidden sm:block font-heading text-[13px] sm:text-[14px] font-normal leading-[1.65] md:leading-[1.7] text-[#D6E4F0] mb-5 sm:mb-6">
                     From troubleshooting and system maintenance to feature enhancements, security improvements, and technical assistance, Pax TV provides ongoing support to help hotels operate confidently, minimise disruptions, and deliver uninterrupted in-room entertainment.
                 </p>
                 
                 <div class="pt-1">
                     <button type="button" 
                             data-open-popup="popup-demo"
-                            class="w-full sm:w-auto text-center inline-block px-7 py-3 sm:py-3.5 rounded-[10px] font-heading text-[14px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
+                            class="w-full sm:w-auto text-center inline-block px-7 py-2.5 sm:py-3.5 rounded-[10px] font-heading text-[13.5px] sm:text-[15px] font-semibold text-[#0E2556] bg-white hover:bg-[#1A9C9E] hover:text-white transition-all duration-300 shadow-md hover:-translate-y-0.5 cursor-pointer">
                         Request Demo
                     </button>
                 </div>
@@ -51,13 +51,13 @@
                     <span class="block font-heading text-[11px] sm:text-[12px] font-semibold uppercase tracking-[2px] text-[#15888A] mb-1 sm:mb-1.5">
                         What's Included
                     </span>
-                    <h3 class="font-heading text-[19px] sm:text-[22px] md:text-[24px] font-bold text-[#0E2556] tracking-[-0.3px]">
+                    <h3 class="font-heading text-[18px] sm:text-[22px] md:text-[24px] font-bold text-[#0E2556] tracking-[-0.3px]">
                         Support that keeps you running
                     </h3>
                 </div>
 
                 <!-- 6 Feature Cards Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 pt-1 sm:pt-2">
                     
                     <!-- 1. Dedicated Technical Support -->
                     <div class="group flex items-center gap-3 p-4 rounded-[12px] bg-[#F5FAFB] border border-[#E2F1F2] hover:-translate-y-0.5 hover:shadow-[0_14px_26px_-16px_rgba(14,37,86,0.45)] transition-all duration-250 cursor-pointer">
