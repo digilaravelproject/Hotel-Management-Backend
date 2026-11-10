@@ -260,7 +260,7 @@
                     </div>
                     <div class="pt-6">
                         <button type="button" 
-                                data-open-popup="popup-demo"
+                                data-open-popup="popup-integration"
                                 class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
                             <span>Learn More &rarr;</span>
                         </button>
@@ -284,7 +284,7 @@
                     </div>
                     <div class="pt-6">
                         <button type="button" 
-                                data-open-popup="popup-demo"
+                                data-open-popup="popup-support"
                                 class="inline-flex items-center justify-center px-4 py-2 rounded-[10px] text-[13px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-sm hover:shadow-md cursor-pointer">
                             <span>Learn More &rarr;</span>
                         </button>
