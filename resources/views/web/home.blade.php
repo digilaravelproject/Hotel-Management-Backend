@@ -8,11 +8,11 @@
 <section id="home" 
          class="relative w-full overflow-hidden bg-[#0E2556] min-h-[540px] sm:min-h-[640px] lg:min-h-[700px]">
     
-    <!-- Background Image: object-[20%_center] on mobile so the image's embedded TV text doesn't clash behind headline; center_right on desktop -->
+    <!-- Background Image with PAXTV Interface on the right side -->
     <div class="absolute inset-0 z-0">
-        <img src="{{ asset('uploads/2026/11/PAXTV_Hotel_Banner_1500x700_HD.png') }}" 
-             alt="PaxTV Hotel Suite Smart Display" 
-             class="w-full h-full object-cover object-[20%_center] md:object-[center_right]" />
+        <img src="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.png') }}" 
+             alt="Luxury Hotel Room with PAXTV Interface" 
+             class="w-full h-full object-cover object-right md:object-[center_right]" />
         
         <!-- Mobile-Only Gradient Overlay (Desktop: Overlay Removed) -->
         <div class="absolute inset-0 block md:hidden" 
