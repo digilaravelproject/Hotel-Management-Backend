@@ -155,16 +155,16 @@
 </div>
 
 <!-- Approve Modal -->
-<div id="approveModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-[26px] max-w-md w-full p-6 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div class="font-extrabold text-slate-900 text-base flex items-center space-x-2.5">
-                <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-sm font-bold">
+<div id="approveModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl sm:rounded-[26px] max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200/90 space-y-4 sm:space-y-5 animate-in fade-in duration-200 my-auto max-h-[calc(100dvh-1.5rem)] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4">
+            <div class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center space-x-2.5">
+                <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 flex items-center justify-center text-sm font-bold shrink-0">
                     <i class="fa-solid fa-check"></i>
                 </span>
                 <span>Approve Withdrawal Payout</span>
             </div>
-            <button type="button" onclick="closeApproveModal()" class="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer">
+            <button type="button" onclick="closeApproveModal()" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer shrink-0">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>
@@ -203,16 +203,16 @@
 </div>
 
 <!-- Reject Modal -->
-<div id="rejectModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-4">
-    <div class="bg-white rounded-[26px] max-w-md w-full p-6 shadow-2xl border border-slate-200/90 space-y-5 animate-in fade-in duration-200">
-        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-            <div class="font-extrabold text-slate-900 text-base flex items-center space-x-2.5">
-                <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center text-sm font-bold">
+<div id="rejectModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-[#0A051B]/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl sm:rounded-[26px] max-w-md w-full p-5 sm:p-6 shadow-2xl border border-slate-200/90 space-y-4 sm:space-y-5 animate-in fade-in duration-200 my-auto max-h-[calc(100dvh-1.5rem)] overflow-y-auto">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3 sm:pb-4">
+            <div class="font-extrabold text-slate-900 text-sm sm:text-base flex items-center space-x-2.5">
+                <span class="w-8 h-8 rounded-xl bg-rose-50 text-rose-700 border border-rose-100 flex items-center justify-center text-sm font-bold shrink-0">
                     <i class="fa-solid fa-xmark"></i>
                 </span>
                 <span>Reject Withdrawal Request</span>
             </div>
-            <button type="button" onclick="closeRejectModal()" class="w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer">
+            <button type="button" onclick="closeRejectModal()" class="w-8 h-8 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center text-sm cursor-pointer shrink-0">
                 <i class="fa-solid fa-xmark"></i>
             </button>
         </div>

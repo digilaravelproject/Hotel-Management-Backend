@@ -522,218 +522,224 @@
 </div>
 
 <!-- Interactive Modal: Request Withdrawal -->
-<div id="withdrawModal" class="fixed inset-0 z-50 bg-[#0B0424]/75 backdrop-blur-xs hidden items-center justify-center p-4">
-    <div class="bg-white rounded-[28px] max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden transform transition-all animate-in fade-in zoom-in-95 duration-150">
-        <form method="POST" action="{{ route('distributor.wallet.withdraw') }}" id="withdrawForm" onsubmit="return validateWithdrawForm(event)" class="space-y-0">
-            @csrf
+<div id="withdrawModal" class="fixed inset-0 z-50 bg-[#060E1E]/80 backdrop-blur-sm hidden overflow-y-auto overflow-x-hidden p-2 sm:p-4 md:p-6 transition-all duration-200">
+    <div class="min-h-full flex items-center justify-center py-2 sm:py-6 w-full">
+        <div class="bg-white rounded-2xl sm:rounded-[28px] max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-3rem)] transform transition-all animate-in fade-in zoom-in-95 duration-150">
+            <form method="POST" action="{{ route('distributor.wallet.withdraw') }}" id="withdrawForm" onsubmit="return validateWithdrawForm(event)" class="flex flex-col h-full min-h-0 overflow-hidden m-0 p-0">
+                @csrf
 
-            <!-- Modal Header -->
-            <div class="p-6 bg-white border-b border-slate-100 flex items-center justify-between">
-                <div class="flex items-center space-x-3.5">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-purple-500 to-[#150A42] text-white flex items-center justify-center text-base font-black shadow-md shadow-[#150A42]/15 shrink-0">
-                        <i class="fa-solid fa-paper-plane text-amber-300"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-black text-slate-900">Request Payout from Wallet</h3>
-                        <p class="text-xs text-slate-400 font-medium mt-0.5">Direct disbursement to your Bank Account or UPI VPA</p>
-                    </div>
-                </div>
-                <button type="button" onclick="closeWithdrawModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer">
-                    <i class="fa-solid fa-xmark text-lg"></i>
-                </button>
-            </div>
-
-            <div class="p-6 space-y-5 max-h-[78vh] overflow-y-auto">
-
-                <!-- Spendable Balance Card with Quick Amount Chips -->
-                <div class="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#150A42] to-[#2B1270] text-white shadow-lg shadow-[#150A42]/10 space-y-3 relative overflow-hidden">
-                    <div class="absolute -right-8 -bottom-8 w-28 h-28 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
-
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-black text-purple-200 uppercase tracking-wider block">Spendable Balance</span>
-                            <span class="text-2xl sm:text-3xl font-black text-white" id="availableBalanceDisplay">₹{{ number_format($metrics['available_balance'], 2) }}</span>
+                <!-- Modal Header (Always Fixed at Top) -->
+                <div class="px-4 py-3.5 sm:px-6 sm:py-4 bg-white border-b border-slate-100 flex items-center justify-between shrink-0">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-gradient-to-tr from-[#0E2556] to-[#0A162D] text-white flex items-center justify-center text-sm sm:text-base font-black shadow-md shadow-slate-900/15 shrink-0 border border-[#00fbff]/20">
+                            <i class="fa-solid fa-paper-plane text-[#00fbff]"></i>
                         </div>
-                        <span class="px-3 py-1 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[10px] font-black font-mono">
-                            Zero Deduction
-                        </span>
+                        <div>
+                            <h3 class="text-sm sm:text-base font-black text-slate-900 leading-tight">Request Payout from Wallet</h3>
+                            <p class="text-[11px] sm:text-xs text-slate-400 font-medium mt-0.5">Direct disbursement to Bank Account or UPI VPA</p>
+                        </div>
                     </div>
-
-                    <!-- Quick Amount Chips -->
-                    <div class="pt-2 border-t border-white/10 flex flex-wrap items-center gap-1.5">
-                        <span class="text-[10px] text-purple-200/70 font-bold mr-1">Quick Add:</span>
-                        @php
-                            $avail = (float) $metrics['available_balance'];
-                        @endphp
-                        @if($avail >= 500)
-                            <button type="button" onclick="setWithdrawAmount(500)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
-                                ₹500
-                            </button>
-                        @endif
-                        @if($avail >= 1000)
-                            <button type="button" onclick="setWithdrawAmount(1000)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
-                                ₹1,000
-                            </button>
-                        @endif
-                        @if($avail >= 5000)
-                            <button type="button" onclick="setWithdrawAmount(5000)" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
-                                ₹5,000
-                            </button>
-                        @endif
-                        @if($avail >= 100)
-                            <button type="button" onclick="setWithdrawAmount({{ round($avail * 0.5, 2) }})" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
-                                50%
-                            </button>
-                            <button type="button" onclick="setWithdrawAmount({{ $avail }})" class="px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono font-black text-[10px] transition-all cursor-pointer ml-auto shadow-xs">
-                                Max All (₹{{ number_format($avail, 0) }})
-                            </button>
-                        @endif
-                    </div>
+                    <button type="button" onclick="closeWithdrawModal()" class="text-slate-400 hover:text-slate-700 p-1.5 sm:p-2 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer shrink-0">
+                        <i class="fa-solid fa-xmark text-base sm:text-lg"></i>
+                    </button>
                 </div>
 
-                <!-- Amount Input -->
-                <div class="space-y-1.5">
-                    <label for="amountInput" class="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                        Withdrawal Amount (₹) <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-black text-lg pointer-events-none">₹</span>
-                        <input type="number" 
-                               step="0.01" 
-                               min="100" 
-                               max="{{ $metrics['available_balance'] }}" 
-                               name="amount" 
-                               id="amountInput" 
-                               required 
-                               placeholder="e.g. 5000" 
-                               oninput="handleAmountInput(this.value)"
-                               class="w-full pl-9 pr-4 py-3 bg-slate-50/70 border border-slate-200 rounded-2xl text-base font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] outline-none transition-all">
+                <!-- Modal Body (Independently Scrollable with Smooth Touch Momentum) -->
+                <div class="p-4 sm:p-6 space-y-4 sm:space-y-5 flex-1 min-h-0 overflow-y-auto overscroll-contain" style="-webkit-overflow-scrolling: touch;">
+
+                    <!-- Spendable Balance Card with Quick Amount Chips -->
+                    <div class="p-3.5 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0A162D] via-[#0E2556] to-[#0A162D] text-white shadow-lg shadow-black/20 space-y-2.5 sm:space-y-3 relative overflow-hidden border border-[#00fbff]/20">
+                        <div class="absolute -right-8 -bottom-8 w-28 h-28 bg-[#00fbff]/10 rounded-full blur-xl pointer-events-none"></div>
+
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <span class="text-[9px] sm:text-[10px] font-black text-slate-300 uppercase tracking-wider block font-mono">Spendable Balance</span>
+                                <span class="text-xl sm:text-3xl font-black text-white font-mono" id="availableBalanceDisplay">₹{{ number_format($metrics['available_balance'], 2) }}</span>
+                            </div>
+                            <span class="px-2.5 py-0.5 sm:py-1 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30 text-[9px] sm:text-[10px] font-black font-mono">
+                                Zero Deduction
+                            </span>
+                        </div>
+
+                        <!-- Quick Amount Chips -->
+                        <div class="pt-2 border-t border-white/10 flex flex-wrap items-center gap-1 sm:gap-1.5">
+                            <span class="text-[9px] sm:text-[10px] text-slate-300 font-bold mr-1">Quick Add:</span>
+                            @php
+                                $avail = (float) $metrics['available_balance'];
+                            @endphp
+                            @if($avail >= 500)
+                                <button type="button" onclick="setWithdrawAmount(500)" class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
+                                    ₹500
+                                </button>
+                            @endif
+                            @if($avail >= 1000)
+                                <button type="button" onclick="setWithdrawAmount(1000)" class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
+                                    ₹1,000
+                                </button>
+                            @endif
+                            @if($avail >= 5000)
+                                <button type="button" onclick="setWithdrawAmount(5000)" class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
+                                    ₹5,000
+                                </button>
+                            @endif
+                            @if($avail >= 100)
+                                <button type="button" onclick="setWithdrawAmount({{ round($avail * 0.5, 2) }})" class="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-mono font-bold text-[10px] transition-all cursor-pointer">
+                                    50%
+                                </button>
+                                <button type="button" onclick="setWithdrawAmount({{ $avail }})" class="px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-mono font-black text-[10px] transition-all cursor-pointer ml-auto shadow-xs">
+                                    Max All (₹{{ number_format($avail, 0) }})
+                                </button>
+                            @endif
+                        </div>
                     </div>
 
-                    <!-- Live Calculation & Validation Alert -->
-                    <div id="balanceFeedback" class="text-[11px] font-semibold text-slate-400 flex items-center justify-between pt-1">
-                        <span>Min payout: ₹100</span>
-                        <span id="remainingBalanceText" class="font-mono text-slate-600">Remaining: ₹{{ number_format($metrics['available_balance'], 2) }}</span>
-                    </div>
-                </div>
+                    <!-- Amount Input -->
+                    <div class="space-y-1">
+                        <label for="amountInput" class="block text-[11px] sm:text-xs font-black text-slate-700 uppercase tracking-wider">
+                            Withdrawal Amount (₹) <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-black text-base sm:text-lg pointer-events-none">₹</span>
+                            <input type="number" 
+                                   step="0.01" 
+                                   min="100" 
+                                   max="{{ $metrics['available_balance'] }}" 
+                                   name="amount" 
+                                   id="amountInput" 
+                                   required 
+                                   placeholder="e.g. 5000" 
+                                   oninput="handleAmountInput(this.value)"
+                                   class="w-full pl-8 pr-3.5 py-2.5 sm:py-3 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl text-sm sm:text-base font-black text-slate-900 focus:bg-white focus:ring-4 focus:ring-slate-900/5 focus:border-[#0A162D] outline-none transition-all">
+                        </div>
 
-                <!-- Payout Method Selector -->
-                <div class="space-y-2">
-                    <label class="block text-xs font-black text-slate-700 uppercase tracking-wider">
-                        Select Payout Channel <span class="text-rose-500">*</span>
-                    </label>
-                    <div class="grid grid-cols-2 gap-3">
-                        <label id="bankTabLabel" 
-                               onclick="selectPayoutMethod('bank')"
-                               class="relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-[#150A42] bg-purple-50/40 cursor-pointer transition-all shadow-2xs">
-                            <input type="radio" name="payment_method" value="bank_transfer" checked class="sr-only">
-                            <div class="w-8 h-8 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0">
-                                <i class="fa-solid fa-building-columns"></i>
+                        <!-- Live Calculation & Validation Alert -->
+                        <div id="balanceFeedback" class="text-[10px] sm:text-[11px] font-semibold text-slate-400 flex items-center justify-between pt-0.5">
+                            <span>Min payout: ₹100</span>
+                            <span id="remainingBalanceText" class="font-mono text-slate-600">Remaining: ₹{{ number_format($metrics['available_balance'], 2) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Payout Method Selector -->
+                    <div class="space-y-1.5">
+                        <label class="block text-[11px] sm:text-xs font-black text-slate-700 uppercase tracking-wider">
+                            Select Payout Channel <span class="text-rose-500">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <label id="bankTabLabel" 
+                                   onclick="selectPayoutMethod('bank')"
+                                   class="relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-[#0A162D] bg-slate-50 cursor-pointer transition-all shadow-2xs">
+                                <input type="radio" name="payment_method" value="bank_transfer" checked class="sr-only">
+                                <div class="payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-200 text-[#0A162D] flex items-center justify-center text-xs sm:text-sm shrink-0">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-black text-slate-900 block truncate">Bank Transfer</span>
+                                    <span class="text-[9px] sm:text-[10px] text-slate-400 font-medium block truncate">NEFT / RTGS / IMPS</span>
+                                </div>
+                            </label>
+
+                            <label id="upiTabLabel" 
+                                   onclick="selectPayoutMethod('upi')"
+                                   class="relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs">
+                                <input type="radio" name="payment_method" value="upi" class="sr-only">
+                                <div class="payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs sm:text-sm shrink-0">
+                                    <i class="fa-solid fa-mobile-screen-button"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <span class="text-xs font-black text-slate-900 block truncate">Instant UPI VPA</span>
+                                    <span class="text-[9px] sm:text-[10px] text-slate-400 font-medium block truncate">GPay / PhonePe / Paytm</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bank Fields Container -->
+                    <div id="bankFields" class="space-y-2.5 sm:space-y-3 pt-0.5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Account Holder Name *</label>
+                                <input type="text" 
+                                       name="account_holder_name" 
+                                       id="accountHolderName" 
+                                       value="{{ old('account_holder_name', auth()->user()->name) }}" 
+                                       placeholder="As per bank passbook" 
+                                       class="w-full px-3.5 py-2 sm:py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#0A162D] outline-none">
                             </div>
                             <div>
-                                <span class="text-xs font-black text-slate-900 block">Bank Transfer</span>
-                                <span class="text-[10px] text-slate-400 font-medium">NEFT / RTGS / IMPS</span>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Bank Name *</label>
+                                <input type="text" 
+                                       name="bank_name" 
+                                       id="bankName" 
+                                       value="{{ old('bank_name') }}" 
+                                       placeholder="e.g. HDFC Bank, SBI, ICICI" 
+                                       class="w-full px-3.5 py-2 sm:py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#0A162D] outline-none">
                             </div>
-                        </label>
-
-                        <label id="upiTabLabel" 
-                               onclick="selectPayoutMethod('upi')"
-                               class="relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs">
-                            <input type="radio" name="payment_method" value="upi" class="sr-only">
-                            <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm shrink-0">
-                                <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">Account Number *</label>
+                                <input type="text" 
+                                       name="account_number" 
+                                       id="accountNumber" 
+                                       value="{{ old('account_number') }}" 
+                                       placeholder="Enter account number" 
+                                       class="w-full px-3.5 py-2 sm:py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 focus:bg-white focus:border-[#0A162D] outline-none">
                             </div>
                             <div>
-                                <span class="text-xs font-black text-slate-900 block">Instant UPI VPA</span>
-                                <span class="text-[10px] text-slate-400 font-medium">GPay / PhonePe / Paytm</span>
+                                <label class="block text-[11px] font-bold text-slate-700 mb-1">IFSC Code *</label>
+                                <input type="text" 
+                                       name="ifsc_code" 
+                                       id="ifscCode" 
+                                       value="{{ old('ifsc_code') }}" 
+                                       placeholder="e.g. HDFC0001234" 
+                                       oninput="this.value = this.value.toUpperCase()" 
+                                       maxlength="11" 
+                                       class="w-full px-3.5 py-2 sm:py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs uppercase font-mono font-bold text-slate-900 focus:bg-white focus:border-[#0A162D] outline-none">
                             </div>
-                        </label>
+                        </div>
                     </div>
+
+                    <!-- UPI Fields Container (Hidden by default) -->
+                    <div id="upiFields" class="space-y-2.5 sm:space-y-3 pt-0.5 hidden">
+                        <div>
+                            <label class="block text-[11px] font-bold text-slate-700 mb-1">UPI ID / Virtual Payment Address (VPA) *</label>
+                            <input type="text" 
+                                   name="upi_id" 
+                                   id="upiIdInput" 
+                                   value="{{ old('upi_id') }}" 
+                                   placeholder="e.g. yourname@okhdfcbank or 9876543210@paytm" 
+                                   class="w-full px-3.5 py-2 sm:py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 focus:bg-white focus:border-[#0A162D] outline-none">
+                        </div>
+                        <!-- Quick Handle Chips -->
+                        <div class="flex flex-wrap items-center gap-1 sm:gap-1.5 pt-1">
+                            <span class="text-[10px] text-slate-400 font-bold mr-1">Common handles:</span>
+                            <button type="button" onclick="appendUpiSuffix('@okhdfcbank')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-mono cursor-pointer">@okhdfcbank</button>
+                            <button type="button" onclick="appendUpiSuffix('@okaxis')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-mono cursor-pointer">@okaxis</button>
+                            <button type="button" onclick="appendUpiSuffix('@okicici')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-mono cursor-pointer">@okicici</button>
+                            <button type="button" onclick="appendUpiSuffix('@paytm')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-mono cursor-pointer">@paytm</button>
+                            <button type="button" onclick="appendUpiSuffix('@ybl')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-mono cursor-pointer">@ybl</button>
+                        </div>
+                    </div>
+
                 </div>
 
-                <!-- Bank Fields Container -->
-                <div id="bankFields" class="space-y-3 pt-1">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Account Holder Name *</label>
-                            <input type="text" 
-                                   name="account_holder_name" 
-                                   id="accountHolderName" 
-                                   value="{{ old('account_holder_name', auth()->user()->name) }}" 
-                                   placeholder="As per bank passbook" 
-                                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#150A42] outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Bank Name *</label>
-                            <input type="text" 
-                                   name="bank_name" 
-                                   id="bankName" 
-                                   value="{{ old('bank_name') }}" 
-                                   placeholder="e.g. HDFC Bank, SBI, ICICI" 
-                                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-900 focus:bg-white focus:border-[#150A42] outline-none">
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">Account Number *</label>
-                            <input type="text" 
-                                   name="account_number" 
-                                   id="accountNumber" 
-                                   value="{{ old('account_number') }}" 
-                                   placeholder="Enter account number" 
-                                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 focus:bg-white focus:border-[#150A42] outline-none">
-                        </div>
-                        <div>
-                            <label class="block text-[11px] font-bold text-slate-700 mb-1">IFSC Code *</label>
-                            <input type="text" 
-                                   name="ifsc_code" 
-                                   id="ifscCode" 
-                                   value="{{ old('ifsc_code') }}" 
-                                   placeholder="e.g. HDFC0001234" 
-                                   oninput="this.value = this.value.toUpperCase()" 
-                                   maxlength="11"
-                                   class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs uppercase font-mono font-bold text-slate-900 focus:bg-white focus:border-[#150A42] outline-none">
-                        </div>
-                    </div>
+                <!-- Modal Footer (ALWAYS VISIBLE PINNED AT BOTTOM) -->
+                <div class="px-4 py-3 sm:px-6 sm:py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0 gap-3">
+                    <button type="button" onclick="closeWithdrawModal()" class="px-4 sm:px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-all active:scale-95 cursor-pointer">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            id="submitWithdrawBtn"
+                            @if($metrics['available_balance'] < 100) disabled @endif 
+                            class="px-5 sm:px-6 py-2.5 rounded-xl bg-[#0A162D] hover:bg-[#0E2556] text-white font-extrabold text-xs shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center space-x-2">
+                        <i class="fa-solid fa-check text-xs text-[#00fbff]"></i>
+                        <span id="submitWithdrawBtnText">Submit Payout Request</span>
+                    </button>
                 </div>
-
-                <!-- UPI Fields Container (Hidden by default) -->
-                <div id="upiFields" class="space-y-3 pt-1 hidden">
-                    <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">UPI ID / Virtual Payment Address (VPA) *</label>
-                        <input type="text" 
-                               name="upi_id" 
-                               id="upiIdInput" 
-                               value="{{ old('upi_id') }}" 
-                               placeholder="e.g. yourname@okhdfcbank or 9876543210@paytm" 
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono font-bold text-slate-900 focus:bg-white focus:border-[#150A42] outline-none">
-                    </div>
-                    <!-- Quick Handle Chips -->
-                    <div class="flex flex-wrap items-center gap-1.5 pt-1">
-                        <span class="text-[10px] text-slate-400 font-bold mr-1">Common handles:</span>
-                        <button type="button" onclick="appendUpiSuffix('@okhdfcbank')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 text-slate-700 text-[10px] font-mono cursor-pointer">@okhdfcbank</button>
-                        <button type="button" onclick="appendUpiSuffix('@okaxis')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 text-slate-700 text-[10px] font-mono cursor-pointer">@okaxis</button>
-                        <button type="button" onclick="appendUpiSuffix('@okicici')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 text-slate-700 text-[10px] font-mono cursor-pointer">@okicici</button>
-                        <button type="button" onclick="appendUpiSuffix('@paytm')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 text-slate-700 text-[10px] font-mono cursor-pointer">@paytm</button>
-                        <button type="button" onclick="appendUpiSuffix('@ybl')" class="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-purple-100 text-slate-700 text-[10px] font-mono cursor-pointer">@ybl</button>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                <button type="button" onclick="closeWithdrawModal()" class="px-5 py-2.5 rounded-2xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold transition-all active:scale-95 cursor-pointer">
-                    Cancel
-                </button>
-                <button type="submit" 
-                        id="submitWithdrawBtn"
-                        @if($metrics['available_balance'] < 100) disabled @endif 
-                        class="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-extrabold text-xs shadow-md shadow-[#150A42]/15 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer flex items-center space-x-2">
-                    <i class="fa-solid fa-check text-xs text-amber-300"></i>
-                    <span id="submitWithdrawBtnText">Submit Payout Request</span>
-                </button>
-            </div>
+            </form>
+        </div>
+    </div>
+</div>
         </form>
     </div>
 </div>
@@ -771,7 +777,7 @@
 
     // Close on click outside
     document.getElementById('withdrawModal').addEventListener('click', function(e) {
-        if (e.target === this) {
+        if (e.target === this || e.target.classList.contains('min-h-full')) {
             closeWithdrawModal();
         }
     });
@@ -823,11 +829,13 @@
             bankRadio.checked = true;
             upiRadio.checked = false;
 
-            bankTab.className = "relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-[#150A42] bg-purple-50/40 cursor-pointer transition-all shadow-2xs";
-            bankTab.querySelector('.w-8').className = "w-8 h-8 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0";
+            bankTab.className = "relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-[#0A162D] bg-slate-50 cursor-pointer transition-all shadow-2xs";
+            const bankIcon = bankTab.querySelector('.payout-icon');
+            if (bankIcon) bankIcon.className = "payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-200 text-[#0A162D] flex items-center justify-center text-xs sm:text-sm shrink-0";
 
-            upiTab.className = "relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs";
-            upiTab.querySelector('.w-8').className = "w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm shrink-0";
+            upiTab.className = "relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs";
+            const upiIcon = upiTab.querySelector('.payout-icon');
+            if (upiIcon) upiIcon.className = "payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs sm:text-sm shrink-0";
 
             bankFields.classList.remove('hidden');
             upiFields.classList.add('hidden');
@@ -835,11 +843,13 @@
             upiRadio.checked = true;
             bankRadio.checked = false;
 
-            upiTab.className = "relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-[#150A42] bg-purple-50/40 cursor-pointer transition-all shadow-2xs";
-            upiTab.querySelector('.w-8').className = "w-8 h-8 rounded-xl bg-purple-100 text-[#150A42] flex items-center justify-center text-sm shrink-0";
+            upiTab.className = "relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-[#0A162D] bg-slate-50 cursor-pointer transition-all shadow-2xs";
+            const upiIcon = upiTab.querySelector('.payout-icon');
+            if (upiIcon) upiIcon.className = "payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-200 text-[#0A162D] flex items-center justify-center text-xs sm:text-sm shrink-0";
 
-            bankTab.className = "relative flex items-center space-x-3 p-3.5 rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs";
-            bankTab.querySelector('.w-8').className = "w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center text-sm shrink-0";
+            bankTab.className = "relative flex items-center space-x-2 sm:space-x-3 p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border-2 border-slate-200 bg-white hover:bg-slate-50 cursor-pointer transition-all shadow-2xs";
+            const bankIcon = bankTab.querySelector('.payout-icon');
+            if (bankIcon) bankIcon.className = "payout-icon w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs sm:text-sm shrink-0";
 
             bankFields.classList.add('hidden');
             upiFields.classList.remove('hidden');
