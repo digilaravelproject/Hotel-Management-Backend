@@ -19,11 +19,10 @@
 
         <!-- Multi-Stop Left-to-Right Dark Gradient for Text Contrast (Crisp typography without darkening the Smart TV) -->
         <div class="absolute inset-0" 
-             style="background: linear-gradient(90deg, rgba(5, 11, 24, 0.90) 0%, rgba(5, 11, 24, 0.78) 32%, rgba(5, 11, 24, 0.40) 55%, rgba(5, 11, 24, 0.05) 75%, rgba(5, 11, 24, 0) 100%);"></div>
+             style="background:linear-gradient(90deg, rgb(5 11 24 / 30%) 0%, rgb(5 11 24 / 30%) 32%, rgba(5, 11, 24, 0.40) 55%, rgba(5, 11, 24, 0.05) 75%, rgba(5, 11, 24, 0) 100%);"></div>
 
         <!-- Top Gradient for Header Contrast -->
-        <div class="absolute inset-0"
-             style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.60) 0%, rgba(0, 0, 0, 0.20) 20%, rgba(0, 0, 0, 0) 35%);"></div>
+        <div class="absolute inset-0"></div>
     </div>
 
     <!-- Hero Content Container (Explicit 190px top padding guarantees zero collision with header logo) -->
@@ -145,73 +144,48 @@
 </section>
 
 
-<!-- 3. ABOUT US: PAXTV LAUNCHER SECTION -->
-<section id="about" class="py-20 lg:py-28 bg-[#050B18]">
+<!-- 3. ABOUT US: PAXTV LAUNCHER SECTION (Exact Match to Reference Design) -->
+<section id="about" class="w-full bg-white" style="padding-top: 60px; padding-bottom: 60px;">
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             <!-- Left Image Showcase -->
-            <div class="lg:col-span-6 relative">
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/15 group">
+            <div class="lg:col-span-6">
+                <div class="relative overflow-hidden rounded-[10px]">
                     <img src="{{ asset('uploads/2026/11/About-us.png') }}" 
-                         alt="PaxTV Hotel Experience Management" 
-                         class="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-105" />
-                    <div class="absolute inset-0 bg-gradient-to-t from-[#050B18]/60 via-transparent to-transparent"></div>
+                         alt="PAXTV Launcher In-Room Hospitality Smart TV" 
+                         class="w-full h-auto object-cover rounded-[10px]" />
                 </div>
-                <!-- Ambient Backdrop Glow -->
-                <div class="absolute -bottom-6 -left-6 w-48 h-48 bg-[#1A9C9E]/20 rounded-full blur-3xl pointer-events-none"></div>
             </div>
 
             <!-- Right Text Content -->
-            <div class="lg:col-span-6 space-y-6">
-                <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-400 font-mono uppercase tracking-wider">
-                    <i class="fa-solid fa-hotel text-[10px]"></i>
-                    <span>About Us</span>
+            <div class="lg:col-span-6 space-y-5">
+                <!-- Eyebrow -->
+                <div class="text-[#15888A] font-semibold text-xs tracking-[2px] uppercase font-mono">
+                    ABOUT US
                 </div>
 
-                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-white font-heading leading-tight tracking-tight">
+                <!-- Title -->
+                <h2 class="text-3xl sm:text-[37px] font-bold text-[#0E2556] font-heading leading-[1.2] tracking-tight">
                     PAXTV Launcher
                 </h2>
 
-                <p class="text-base sm:text-lg text-slate-300 leading-relaxed font-normal">
-                    PaxTV Launcher transforms standard guest room displays into intelligent interactive hubs. Our cloud-managed platform gives hotel operators full control over guest entertainment, hotel branding, personalized messaging, and contactless digital guest services.
+                <!-- Paragraph 1 -->
+                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                    PAXTV Launcher is an India-headquartered hospitality technology company focused on transforming hotel entertainment and digital guest experiences. Our smart TV solutions help hotels deliver a fully branded, interactive, and personalised in-room experience.
                 </p>
 
-                <p class="text-sm sm:text-base text-slate-400 leading-relaxed">
-                    With zero proprietary hardware lock-in, native support for Android TV and Google TV, and seamless integration with existing hotel PMS, PaxTV delivers a five-star hospitality experience right out of the box.
+                <!-- Paragraph 2 -->
+                <p class="text-[15px] sm:text-[16px] text-[#475569] font-normal leading-[1.7] font-sans">
+                    PAXTV Launcher is a smart hotel TV platform that brings live TV, IPTV, OTT applications, multilingual entertainment, and hotel services together in one seamless interface. With screen casting, real-time information, personalised welcome messages, and promotional features, our platform helps hotels enhance guest satisfaction, streamline communication, promote in-house services, and unlock new revenue opportunities.
                 </p>
 
-                <!-- Value Props Checklist -->
-                <div class="pt-2 space-y-3">
-                    <div class="flex items-start space-x-3">
-                        <div class="w-6 h-6 rounded-full bg-teal-500/20 text-[#22B5B7] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <span class="text-sm text-slate-300"><strong>Zero Expensive Hardware:</strong> Deploy directly onto your existing smart TVs without bulky external boxes.</span>
-                    </div>
-
-                    <div class="flex items-start space-x-3">
-                        <div class="w-6 h-6 rounded-full bg-teal-500/20 text-[#22B5B7] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <span class="text-sm text-slate-300"><strong>Over-the-Air Control:</strong> Update hotel branding, promos, and in-room menus across all TVs in seconds from anywhere.</span>
-                    </div>
-
-                    <div class="flex items-start space-x-3">
-                        <div class="w-6 h-6 rounded-full bg-teal-500/20 text-[#22B5B7] flex items-center justify-center shrink-0 mt-0.5 text-xs font-bold">
-                            <i class="fas fa-check"></i>
-                        </div>
-                        <span class="text-sm text-slate-300"><strong>Automated Privacy:</strong> Automatic credential wipe and cache clearing on every guest checkout.</span>
-                    </div>
-                </div>
-
-                <div class="pt-4">
-                    <button type="button" 
-                            data-open-popup="popup-demo"
-                            class="inline-flex items-center justify-center px-7 py-3.5 rounded-full text-sm font-bold text-white bg-[#1A9C9E] hover:bg-[#22B5B7] transition-all duration-200 shadow-lg shadow-[#1A9C9E]/30 cursor-pointer">
-                        <span>Discover More</span>
-                        <i class="fas fa-chevron-right ml-2 text-xs"></i>
-                    </button>
+                <!-- Action Button -->
+                <div class="pt-2">
+                    <a href="#solutions" 
+                       class="inline-flex items-center justify-center px-8 py-3.5 rounded-[10px] text-[15px] font-semibold text-white bg-[#0E2556] hover:bg-[#1A9C9E] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 cursor-pointer">
+                        <span>Read More &rarr;</span>
+                    </a>
                 </div>
             </div>
 
