@@ -1,8 +1,8 @@
 <div id="popup-support" class="paxtv-modal-overlay" aria-hidden="true" 
-     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
+     style="display:none; position: fixed !important; inset: 0 !important; width: 100% !important; height: 100% !important; z-index: 999990 !important; background-color: rgba(0, 0, 0, 0.8) !important; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow-y: auto !important; -webkit-overflow-scrolling: touch; align-items: center; justify-content: center; padding: 12px sm:padding: 16px;">
     
-    <div class="paxtv-modal-dialog relative w-full rounded-[16px] overflow-hidden p-0 my-auto" 
-         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: 94vh; overflow-y: auto;">
+    <div class="paxtv-modal-dialog relative w-full rounded-[16px] p-0 my-auto" 
+         style="max-width: 980px !important; width: 100% !important; box-shadow: 2px 8px 23px 3px rgba(0, 0, 0, 0.2); border: none !important; background: #FFFFFF !important; max-height: calc(100dvh - 24px) !important; overflow-y: auto !important; -webkit-overflow-scrolling: touch;">
         
         <!-- Close Button (Always visible at top-right on both mobile and desktop) -->
         <button type="button" 
