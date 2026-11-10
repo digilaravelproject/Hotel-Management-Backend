@@ -26,8 +26,8 @@
         <div class="hidden md:block absolute inset-0 bg-gradient-to-r from-[#050B18]/75 via-[#050B18]/35 to-transparent pointer-events-none w-[52%]"></div>
     </div>
 
-    <!-- Hero Content Container (Centered within section) -->
-    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[135px] xs:pt-[105px] sm:pt-[115px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-6 sm:pb-10 lg:pb-8 flex items-center">
+    <!-- Hero Content Container (Centered within section, positioned with comfortable top spacing on mobile) -->
+    <div class="relative z-10 max-w-[1300px] mx-auto px-5 sm:px-6 lg:px-8 w-full pt-[140px] xs:pt-[155px] sm:pt-[170px] md:pt-[120px] lg:pt-[105px] xl:pt-[120px] pb-6 sm:pb-10 lg:pb-8 flex items-center">
         
         <!-- Content Column (Mobile: Centered with equal left-right spacing below header; Desktop: Strictly 48% width) -->
         <div class="w-full max-w-[480px] mx-auto md:mx-0 md:max-w-none md:w-[54%] lg:w-[48%] xl:w-[46%] flex flex-col items-center text-center md:items-start md:text-left gap-2 xs:gap-2.5 sm:gap-3.5 lg:gap-3.5 xl:gap-4 p-0">
