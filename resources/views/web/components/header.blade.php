@@ -57,13 +57,29 @@
 
             </div>
 
-            <!-- Mobile Hamburger Toggle -->
-            <div class="flex md:hidden items-center">
+            <!-- Mobile Actions (Login & Request Demo) + Hamburger Toggle -->
+            <div class="flex md:hidden items-center gap-1.5 sm:gap-2">
+                <!-- Mobile Login Button -->
+                <a href="{{ route('login') }}" 
+                   class="inline-flex items-center justify-center px-2 sm:px-2.5 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-semibold text-white/95 hover:text-white bg-white/10 hover:bg-white/20 border border-white/25 transition-all font-heading">
+                    <i class="fa-solid fa-user mr-1 text-[10px] text-[#5EC9CB]"></i>
+                    <span>Login</span>
+                </a>
+
+                <!-- Mobile Request Demo Button -->
+                <button type="button" 
+                        data-open-popup="popup-demo"
+                        style="background-color: #1A9C9E;"
+                        class="inline-flex items-center justify-center px-2.5 sm:px-3 py-1.5 rounded-[8px] text-[11px] sm:text-[12px] font-semibold text-[#0E2556] font-heading hover:bg-[#22B5B7] transition-all shadow-sm cursor-pointer whitespace-nowrap">
+                    <span>Request Demo</span>
+                </button>
+
+                <!-- Mobile Hamburger Toggle -->
                 <button type="button" 
                         id="mobileMenuToggle" 
                         aria-label="Toggle mobile menu"
-                        class="p-2.5 rounded-xl bg-black/40 border border-white/20 text-white hover:bg-black/60 transition-colors">
-                    <i class="fas fa-bars text-lg" id="mobileMenuIcon"></i>
+                        class="p-2 rounded-lg bg-black/40 border border-white/20 text-white hover:bg-black/60 transition-colors">
+                    <i class="fas fa-bars text-sm sm:text-base" id="mobileMenuIcon"></i>
                 </button>
             </div>
 
