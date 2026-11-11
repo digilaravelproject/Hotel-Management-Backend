@@ -5,8 +5,12 @@
             <!-- Brand Column -->
             <div class="lg:col-span-4 space-y-4">
                 <a href="#home" class="inline-block">
-                    <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
+                    <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.webp') }}" 
                          alt="Pax TV Launcher" 
+                         width="240"
+                         height="68"
+                         loading="lazy"
+                         decoding="async"
                          class="h-12 sm:h-14 w-auto object-contain" />
                 </a>
                 <p class="text-[13.5px] sm:text-[14px] leading-relaxed text-[#CBD5E1] max-w-sm font-sans">

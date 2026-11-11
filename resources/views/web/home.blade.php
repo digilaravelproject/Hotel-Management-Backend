@@ -20,10 +20,17 @@
     <div class="absolute inset-0 z-0">
         <picture class="w-full h-full block">
             <!-- Mobile (< 768px): Dedicated 4:5 composition (1086x1448) -->
+            <source media="(max-width: 767px)" srcset="{{ asset('uploads/2026/11/mobile-hero-banner.webp') }}" type="image/webp">
             <source media="(max-width: 767px)" srcset="{{ asset('uploads/2026/11/mobile-hero-banner.png') }}">
             <!-- Desktop / Tablet (>= 768px): Panoramic Landscape (2111x745) -->
-            <img src="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.png') }}" 
+            <source srcset="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.webp') }}" type="image/webp">
+            <img src="{{ asset('uploads/2026/11/Luxury-Hotel-Room-with-PAXTV-Interface.webp') }}" 
                  alt="Luxury Hotel Room with PAXTV Interface" 
+                 width="2111"
+                 height="745"
+                 loading="eager"
+                 fetchpriority="high"
+                 decoding="async"
                  class="w-full h-full object-fill md:object-cover lg:object-fill 2xl:object-contain object-right" />
         </picture>
 
@@ -163,10 +170,18 @@
             
             <!-- Left Image Showcase -->
             <div class="lg:col-span-6">
-                <div class="relative overflow-hidden rounded-[10px]">
-                    <img src="{{ asset('uploads/2026/11/About-us.png') }}" 
-                         alt="PAXTV Launcher In-Room Hospitality Smart TV" 
-                         class="w-full h-auto object-cover rounded-[10px]" />
+                <div class="relative overflow-hidden rounded-[10px] bg-slate-100 aspect-[1254/1254] animate-pulse">
+                    <picture>
+                        <source srcset="{{ asset('uploads/2026/11/About-us.webp') }}" type="image/webp">
+                        <img src="{{ asset('uploads/2026/11/About-us.webp') }}" 
+                             alt="PAXTV Launcher In-Room Hospitality Smart TV" 
+                             width="1254"
+                             height="1254"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.remove('opacity-0'); this.closest('.animate-pulse')?.classList.remove('animate-pulse');"
+                             class="w-full h-auto object-cover rounded-[10px] opacity-0 transition-opacity duration-700 ease-out" />
+                    </picture>
                 </div>
             </div>
 
@@ -209,7 +224,7 @@
 <!-- 4. OUR SOLUTIONS SECTION (Exact Match to Reference Design) -->
 <section id="solutions" 
          class="relative w-full overflow-hidden py-10 sm:py-14 lg:py-[70px]" 
-         style="background-image: url('{{ asset('uploads/2026/11/our-solution.png') }}'); background-position: top center; background-size: cover;">
+         style="background-image: url('{{ asset('uploads/2026/11/our-solution.webp') }}'); background-position: top center; background-size: cover;">
     
     <div class="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <!-- 68% width on desktop so the smart TV on the right of the background image remains clearly visible -->
@@ -558,10 +573,18 @@
 
             <!-- Right Mockup Image (42% width on desktop) -->
             <div class="lg:col-span-5">
-                <div class="relative rounded-[10px] overflow-hidden shadow-2xl">
-                    <img src="{{ asset('uploads/2026/11/Sunset-Resort-Language-Selection-UI-1-1-1.png') }}" 
-                         alt="PaxTV Language Switcher Interface" 
-                         class="w-full h-auto object-cover rounded-[10px]" />
+                <div class="relative rounded-[10px] overflow-hidden shadow-2xl bg-slate-900/40 aspect-[1600/900] animate-pulse">
+                    <picture>
+                        <source srcset="{{ asset('uploads/2026/11/Sunset-Resort-Language-Selection-UI-1-1-1.webp') }}" type="image/webp">
+                        <img src="{{ asset('uploads/2026/11/Sunset-Resort-Language-Selection-UI-1-1-1.webp') }}" 
+                             alt="PaxTV Language Switcher Interface" 
+                             width="1600"
+                             height="900"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.remove('opacity-0'); this.closest('.animate-pulse')?.classList.remove('animate-pulse');"
+                             class="w-full h-auto object-cover rounded-[10px] opacity-0 transition-opacity duration-700 ease-out" />
+                    </picture>
                 </div>
             </div>
 
@@ -578,10 +601,18 @@
             
             <!-- Left Image Showcase -->
             <div class="lg:col-span-6 order-2 lg:order-1">
-                <div class="relative rounded-2xl overflow-hidden shadow-xl">
-                    <img src="{{ asset('uploads/2026/11/hotel-information-service.png') }}" 
-                         alt="PaxTV Hotel Information & Services UI" 
-                         class="w-full h-auto object-cover rounded-2xl" />
+                <div class="relative rounded-2xl overflow-hidden shadow-xl bg-slate-200/60 aspect-[1254/1254] animate-pulse">
+                    <picture>
+                        <source srcset="{{ asset('uploads/2026/11/hotel-information-service.webp') }}" type="image/webp">
+                        <img src="{{ asset('uploads/2026/11/hotel-information-service.webp') }}" 
+                             alt="PaxTV Hotel Information & Services UI" 
+                             width="1254"
+                             height="1254"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.remove('opacity-0'); this.closest('.animate-pulse')?.classList.remove('animate-pulse');"
+                             class="w-full h-auto object-cover rounded-2xl opacity-0 transition-opacity duration-700 ease-out" />
+                    </picture>
                 </div>
             </div>
 
@@ -774,10 +805,18 @@
 
             <!-- Right Image Showcase -->
             <div class="lg:col-span-6">
-                <div class="relative rounded-2xl overflow-hidden shadow-2xl">
-                    <img src="{{ asset('uploads/2026/11/Live-TV-ent.png') }}" 
-                         alt="PaxTV Live Entertainment UI" 
-                         class="w-full h-auto object-cover rounded-2xl" />
+                <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-slate-900/60 aspect-[1672/941] animate-pulse">
+                    <picture>
+                        <source srcset="{{ asset('uploads/2026/11/Live-TV-ent.webp') }}" type="image/webp">
+                        <img src="{{ asset('uploads/2026/11/Live-TV-ent.webp') }}" 
+                             alt="PaxTV Live Entertainment UI" 
+                             width="1672"
+                             height="941"
+                             loading="lazy"
+                             decoding="async"
+                             onload="this.classList.remove('opacity-0'); this.closest('.animate-pulse')?.classList.remove('animate-pulse');"
+                             class="w-full h-auto object-cover rounded-2xl opacity-0 transition-opacity duration-700 ease-out" />
+                    </picture>
                 </div>
             </div>
 
@@ -1030,10 +1069,17 @@
 <section id="contactus" class="relative overflow-hidden border-b-2 border-[#146A82] py-12 sm:py-16 lg:py-[85px]">
     
     <!-- Background Luxury Resort Image with Light #146A82 Gradient Overlay -->
-    <div class="absolute inset-0 z-0">
-        <img src="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.png') }}" 
-             alt="Twilight Luxury Resort" 
-             class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.95] contrast-[1.05]" />
+    <div class="absolute inset-0 z-0 bg-slate-900">
+        <picture>
+            <source srcset="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.webp') }}" type="image/webp">
+            <img src="{{ asset('uploads/2026/11/Twilight-Luxury-Resort-by-the-Sea-1-1-1.webp') }}" 
+                 alt="Twilight Luxury Resort" 
+                 width="1600"
+                 height="600"
+                 loading="lazy"
+                 decoding="async"
+                 class="w-full h-full object-cover object-right lg:object-[center_right] filter brightness-[0.95] contrast-[1.05]" />
+        </picture>
         
         <!-- Mobile-Only Gradient Overlay (Desktop: Overlay Removed) -->
         <div class="absolute inset-0 block md:hidden" 
@@ -1184,6 +1230,20 @@
 
         // Initial setup
         updateSlider(0);
+
+        // Smooth Lazy-Image Skeleton handler (removes pulse & opacity-0 as soon as image is loaded)
+        document.querySelectorAll('img[loading="lazy"]').forEach((img) => {
+            const markLoaded = () => {
+                img.classList.remove('opacity-0');
+                const pulseParent = img.closest('.animate-pulse');
+                if (pulseParent) pulseParent.classList.remove('animate-pulse');
+            };
+            if (img.complete && img.naturalHeight !== 0) {
+                markLoaded();
+            } else {
+                img.addEventListener('load', markLoaded, { once: true });
+            }
+        });
     });
 </script>
 

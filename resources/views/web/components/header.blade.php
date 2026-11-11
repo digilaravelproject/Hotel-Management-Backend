@@ -5,8 +5,13 @@
             <!-- Brand Logo (Responsive Height: ~48px mobile, 64px sm, 68px desktop) -->
             <div class="shrink-0 flex items-center">
                 <a href="#home" class="flex items-center group">
-                    <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.png') }}" 
+                    <img src="{{ asset('uploads/2026/11/PAX-TV-LAUNCHER-2-2.webp') }}" 
                          alt="Pax TV Launcher" 
+                         width="240"
+                         height="68"
+                         loading="eager"
+                         fetchpriority="high"
+                         decoding="async"
                          class="h-12 sm:h-14 lg:h-[68px] w-auto object-contain transition-transform duration-300 group-hover:scale-105" />
                 </a>
             </div>
