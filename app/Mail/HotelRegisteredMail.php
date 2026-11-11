@@ -26,6 +26,10 @@ class HotelRegisteredMail extends Mailable
         $this->hotelAdmin = $hotelAdmin;
         $this->plainPassword = $plainPassword;
 
+        if (config('app.env') !== 'local' || request()->server('HTTP_X_FORWARDED_PROTO') === 'https') {
+            URL::forceScheme('https');
+        }
+
         // Generate authentic, tamper-proof signed URL valid for exactly 7 days
         $this->downloadUrl = URL::temporarySignedRoute(
             'app.apk.download',
