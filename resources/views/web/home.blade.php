@@ -14,10 +14,10 @@
     }
 </style>
 <section id="home" 
-         class="relative w-full overflow-hidden bg-[#0A162D] aspect-[1086/1448] md:aspect-auto md:min-h-[560px] lg:aspect-[2111/745] flex items-start md:items-center">
+         class="relative w-full overflow-hidden bg-[#0A162D] aspect-[1086/1448] md:aspect-auto md:min-h-[580px] lg:min-h-[640px] xl:min-h-[700px] 2xl:min-h-[745px] flex items-start md:items-center">
     
-    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape (100% Full Uncropped Fit) -->
-    <div class="absolute inset-0 z-0">
+    <!-- Background Image: Responsive Mobile Vertical 4:5 + Desktop Landscape (100% Full Edge-to-Edge Cover) -->
+    <div class="absolute inset-0 z-0 w-full h-full">
         <picture class="w-full h-full block">
             <!-- Mobile (< 768px): Dedicated 4:5 composition (1086x1448) -->
             <source media="(max-width: 767px)" srcset="{{ asset('uploads/2026/11/mobile-hero-banner.webp') }}" type="image/webp">
@@ -31,7 +31,7 @@
                  loading="eager"
                  fetchpriority="high"
                  decoding="async"
-                 class="w-full h-full object-fill md:object-cover lg:object-fill 2xl:object-contain object-right" />
+                 class="w-full h-full object-cover object-center md:object-right" />
         </picture>
 
         <!-- Mobile Soft Light Black Overlay (Light uniform ~25% black tint across the whole banner) -->
