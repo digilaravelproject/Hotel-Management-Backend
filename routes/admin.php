@@ -137,6 +137,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
 
     // Website Demo Requests & Inquiries
     Route::get('inquiries', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'index'])->name('inquiries.index');
+    Route::post('inquiries/{id}/resend', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'resendEmail'])->name('inquiries.resend');
     Route::put('inquiries/{id}/status', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'updateStatus'])->name('inquiries.status');
     Route::delete('inquiries/{id}', [\App\Http\Controllers\SuperAdmin\InquiryController::class, 'destroy'])->name('inquiries.destroy');
 });

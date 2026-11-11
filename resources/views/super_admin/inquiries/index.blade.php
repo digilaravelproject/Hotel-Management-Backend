@@ -6,6 +6,30 @@
 @section('content')
 <div class="space-y-6">
 
+    @if(session('success'))
+    <div class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-circle-check text-emerald-600 text-sm"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-emerald-500 hover:text-emerald-800">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-xs font-semibold flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-red-600 text-sm"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+        <button type="button" onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-800">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+    @endif
+
     <!-- KPI Metric Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <!-- 1. Total Leads -->
@@ -209,6 +233,14 @@
                                     <i class="fa-solid fa-reply text-xs"></i>
                                 </a>
 
+                                <!-- Resend APK Demo Email (Fresh 7-Day Link) -->
+                                <form method="POST" action="{{ route('super-admin.inquiries.resend', $lead->id) }}" onsubmit="return confirm('Resend fresh demo thank-you email with a new 7-day download link to {{ $lead->email }}?');" class="inline">
+                                    @csrf
+                                    <button type="submit" class="p-1.5 rounded-lg text-slate-500 hover:text-cyan-600 hover:bg-cyan-50 transition" title="Resend Demo Email with New Download Link">
+                                        <i class="fa-solid fa-paper-plane text-xs"></i>
+                                    </button>
+                                </form>
+
                                 <!-- Delete Form -->
                                 <form method="POST" action="{{ route('super-admin.inquiries.destroy', $lead->id) }}" onsubmit="return confirm('Are you sure you want to delete lead #{{ $lead->id }}?');" class="inline">
                                     @csrf
@@ -312,20 +344,36 @@
             </div>
 
             <!-- Modal Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-200 flex justify-end gap-2">
-                <button type="button" onclick="closeInquiryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
-                    Close
-                </button>
-                <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#150A42] text-white hover:bg-purple-900 transition shadow-xs">
-                    Save Changes
-                </button>
+            <div class="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-2">
+                <div>
+                    <button type="button" onclick="resendCurrentInquiryEmail()" class="px-3.5 py-2 rounded-xl text-xs font-bold bg-cyan-50 text-cyan-800 hover:bg-cyan-100 border border-cyan-200 transition inline-flex items-center gap-1.5 shadow-xs" title="Send a fresh email with newly generated 7-day download link">
+                        <i class="fa-solid fa-paper-plane text-[10px] text-cyan-600"></i>
+                        <span>Resend APK Email</span>
+                    </button>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="closeInquiryModal()" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-200 transition">
+                        Close
+                    </button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#150A42] text-white hover:bg-purple-900 transition shadow-xs">
+                        Save Changes
+                    </button>
+                </div>
             </div>
+        </form>
+
+        <!-- Hidden Form for Resending from Modal -->
+        <form id="modal-resend-form" method="POST" action="" class="hidden">
+            @csrf
         </form>
     </div>
 </div>
 
 <script>
+let activeLead = null;
+
 function openInquiryModal(lead) {
+    activeLead = lead;
     document.getElementById('modal-title').textContent = 'Inquiry Details #' + lead.id;
     document.getElementById('modal-date').textContent = 'Received: ' + (new Date(lead.created_at)).toLocaleString();
     document.getElementById('modal-name').textContent = lead.name || '--';
@@ -341,10 +389,21 @@ function openInquiryModal(lead) {
     const form = document.getElementById('inquiry-update-form');
     form.action = "{{ url('super-admin/inquiries') }}/" + lead.id + "/status";
 
+    const resendForm = document.getElementById('modal-resend-form');
+    resendForm.action = "{{ url('super-admin/inquiries') }}/" + lead.id + "/resend";
+
     document.getElementById('inquiry-detail-modal').classList.remove('hidden');
 }
 
+function resendCurrentInquiryEmail() {
+    if (!activeLead) return;
+    if (confirm('Resend fresh demo thank-you email with newly generated 7-day download link to ' + activeLead.email + '?')) {
+        document.getElementById('modal-resend-form').submit();
+    }
+}
+
 function closeInquiryModal() {
+    activeLead = null;
     document.getElementById('inquiry-detail-modal').classList.add('hidden');
 }
 </script>

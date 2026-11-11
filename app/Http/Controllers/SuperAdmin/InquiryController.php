@@ -5,6 +5,10 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ContactInquiry;
+use App\Mail\DemoRequestThankYouMail;
+use App\Mail\MailSetting;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class InquiryController extends Controller
 {
@@ -81,6 +85,28 @@ class InquiryController extends Controller
         }
 
         return back()->with('success', "Inquiry #{$inquiry->id} updated successfully.");
+    }
+
+    /**
+     * Resend demo thank-you email with fresh signed 7-day download link.
+     */
+    public function resendEmail($id)
+    {
+        $inquiry = ContactInquiry::findOrFail($id);
+
+        try {
+            if (class_exists(MailSetting::class)) {
+                MailSetting::getSettings()->applyConfig();
+            }
+
+            Mail::to($inquiry->email)->send(new DemoRequestThankYouMail($inquiry));
+            Log::info("Demo email resent to {$inquiry->email} for inquiry #{$inquiry->id} by super admin.");
+
+            return back()->with('success', "Fresh demo email with 7-day download link sent to {$inquiry->email}!");
+        } catch (\Throwable $e) {
+            Log::error("Failed resending demo email to {$inquiry->email}: " . $e->getMessage());
+            return back()->with('error', "Could not send email: " . $e->getMessage());
+        }
     }
 
     /**
