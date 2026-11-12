@@ -55,9 +55,9 @@ class TvLoginService
                 throw new HttpException(403, 'Demo showcase hotel not configured');
             }
 
-            // Hardware-lock anti-abuse: check if device already has a demo record by deviceId or macAddress
-            $existingDemoDevice = ConnectedDevice::query()
-                ->where('is_demo', true)
+            // Hardware-lock anti-abuse: check any existing device record by deviceId or macAddress
+            // to prevent duplicate device_id constraint crashes and cross-hotel device hijacking.
+            $existingDevice = ConnectedDevice::query()
                 ->where(function ($q) use ($data) {
                     $q->where('device_id', $data['deviceId']);
                     if (!empty($data['macAddress'])) {
@@ -66,21 +66,28 @@ class TvLoginService
                 })
                 ->first();
 
-            if ($existingDemoDevice) {
-                if ($existingDemoDevice->demo_status === 'expired' || ($existingDemoDevice->demo_expires_at && now()->greaterThan($existingDemoDevice->demo_expires_at))) {
-                    $existingDemoDevice->update(['demo_status' => 'expired']);
+            if ($existingDevice) {
+                if (!$existingDevice->is_demo) {
+                    throw new HttpException(
+                        403,
+                        'This TV device is already registered with a hotel or has already used its demo trial. Please sign in with your hotel license.'
+                    );
+                }
+
+                if ($existingDevice->demo_status === 'expired' || ($existingDevice->demo_expires_at && now()->greaterThan($existingDevice->demo_expires_at))) {
+                    $existingDevice->update(['demo_status' => 'expired']);
                     throw new HttpException(403, 'Demo trial has already expired for this TV device. Please purchase a license.');
                 }
                 // Active existing demo device: refresh token
                 $token = Str::random(80);
-                $existingDemoDevice->update([
+                $existingDevice->update([
                     'api_token' => $token,
-                    'mac_address' => $data['macAddress'] ?? $existingDemoDevice->mac_address,
-                    'ip_address' => $data['ipAddress'] ?? $existingDemoDevice->ip_address,
+                    'mac_address' => $data['macAddress'] ?? $existingDevice->mac_address,
+                    'ip_address' => $data['ipAddress'] ?? $existingDevice->ip_address,
                 ]);
-                $daysLeft = $existingDemoDevice->demo_expires_at ? max(0, (int) ceil(now()->diffInHours($existingDemoDevice->demo_expires_at) / 24)) : 0;
+                $daysLeft = $existingDevice->demo_expires_at ? max(0, (int) ceil(now()->diffInHours($existingDevice->demo_expires_at) / 24)) : 0;
                 return [
-                    'device' => $existingDemoDevice->fresh(),
+                    'device' => $existingDevice->fresh(),
                     'hotel' => $demoHotel,
                     'is_demo' => true,
                     'days_left' => $daysLeft,

@@ -200,4 +200,47 @@ class TvDemoSystemTest extends TestCase
         $this->assertEquals('converted', $device->demo_status);
         $this->assertEquals($paidHotel->id, $device->hotel_admin_id);
     }
+
+    public function test_registered_non_demo_tv_returns_403_instead_of_duplicate_entry_on_demo_login(): void
+    {
+        $paidHotel = HotelAdmin::create([
+            'owner_name' => 'Existing Hotel Owner',
+            'email' => 'existinghotel@test.com',
+            'password' => bcrypt('password'),
+            'phone' => '7777777777',
+            'hotel_name' => 'Taj Palace',
+            'hotel_location' => 'Delhi',
+            'room_count' => 20,
+            'plan_id' => $this->demoHotel->plan_id,
+            'payment_status' => 'paid',
+            'approval_status' => 'approved',
+            'status' => true,
+            'license_key' => 'PAID-LIC-1111-2222',
+        ]);
+
+        ConnectedDevice::create([
+            'hotel_admin_id' => $paidHotel->id,
+            'room_no' => '101',
+            'device_id' => '86a8c82e813ec1ca',
+            'mac_address' => 'B0:1C:0C:AC:6D:3D',
+            'api_token' => 'existing-paid-token',
+            'is_demo' => false,
+        ]);
+
+        $response = $this->postJson('/api/tv/demo-login', [
+            'deviceId' => '86a8c82e813ec1ca',
+            'macAddress' => 'B0:1C:0C:AC:6D:3D',
+            'model' => '4KTV-0SU',
+            'brand' => 'Panasonic',
+            'osVersion' => '10',
+        ]);
+
+        $response->assertStatus(403);
+        $response->assertJsonPath('status', false);
+        $this->assertDatabaseHas('connected_devices', [
+            'device_id' => '86a8c82e813ec1ca',
+            'hotel_admin_id' => $paidHotel->id,
+            'is_demo' => false,
+        ]);
+    }
 }
