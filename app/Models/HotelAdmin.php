@@ -66,6 +66,8 @@ class HotelAdmin extends Authenticatable
         'remember_token',
         'google2fa_secret',
         'two_factor_recovery_codes',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     /**

@@ -50,10 +50,14 @@ class TvFlightController extends Controller
             }
         }
 
-        // Global fallback to BOM if nothing found
-        $targetIata = $requestedIata 
-            ? strtoupper(trim($requestedIata))
-            : ($primaryAirport ? $primaryAirport->iata_code : 'BOM');
+        // Strict hotel-scoped airport authorization (prevents arbitrary external flight API quota abuse)
+        $targetIata = $this->resolveAuthorizedAirportIata($hotel, $requestedIata, $primaryAirport, $secondaryAirport);
+        if ($targetIata === null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Requested airport is not authorized for this hotel.',
+            ], 403);
+        }
 
         $schedule = $this->flightService->getAirportSchedule($targetIata, false);
 
@@ -111,7 +115,16 @@ class TvFlightController extends Controller
         RateLimiter::hit($rateKey, 180);
 
         $requestedIata = $request->input('airport') ?? $request->query('airport');
-        $targetIata = $requestedIata ? strtoupper(trim($requestedIata)) : ($hotel->primaryAirport ? $hotel->primaryAirport->iata_code : 'BOM');
+        $primaryAirport = $hotel->primaryAirport;
+        $secondaryAirport = $hotel->secondaryAirport;
+        $targetIata = $this->resolveAuthorizedAirportIata($hotel, $requestedIata, $primaryAirport, $secondaryAirport);
+
+        if ($targetIata === null) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Requested airport is not authorized for this hotel.',
+            ], 403);
+        }
 
         $schedule = $this->flightService->getAirportSchedule($targetIata, true);
 
@@ -139,5 +152,29 @@ class TvFlightController extends Controller
                 'arrivals' => $schedule['arrivals'] ?? [],
             ],
         ]);
+    }
+
+    /**
+     * Resolve an authorized 3-letter IATA airport code scoped to the TV's hotel configuration.
+     */
+    protected function resolveAuthorizedAirportIata($hotel, ?string $requestedIata, $primaryAirport, $secondaryAirport): ?string
+    {
+        $allowedIatas = array_values(array_unique(array_filter([
+            $primaryAirport ? strtoupper(trim((string) $primaryAirport->iata_code)) : null,
+            $secondaryAirport ? strtoupper(trim((string) $secondaryAirport->iata_code)) : null,
+        ])));
+
+        if ($requestedIata !== null && trim($requestedIata) !== '') {
+            $cleanIata = strtoupper(trim($requestedIata));
+            if (!preg_match('/^[A-Z]{3}$/', $cleanIata)) {
+                return null;
+            }
+            if (!empty($allowedIatas) && !in_array($cleanIata, $allowedIatas, true)) {
+                return null;
+            }
+            return $cleanIata;
+        }
+
+        return $allowedIatas[0] ?? 'BOM';
     }
 }

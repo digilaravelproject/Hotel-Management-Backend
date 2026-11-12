@@ -95,11 +95,19 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:users,email',
             'phone' => 'nullable|string|max:20',
-            'password' => 'required|string|min:6|confirmed',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,name',
+            'password' => 'required|string|min:8|confirmed',
+            'roles' => 'required|array|min:1',
+            'roles.*' => [
+                Rule::exists('roles', 'name')->where(function ($q) {
+                    $q->where('guard_name', 'web')->where('name', '!=', 'super_admin');
+                }),
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name',
+            'permissions.*' => [
+                Rule::exists('permissions', 'name')->where(function ($q) {
+                    $q->where('guard_name', 'web');
+                }),
+            ],
             'status' => 'nullable|boolean',
             'commission_percentage' => 'nullable|numeric|between:0,100',
         ]);
@@ -139,7 +147,10 @@ class UserController extends Controller
     public function edit($id)
     {
         $user = User::with(['roles', 'permissions', 'hotels', 'wallet'])->findOrFail($id);
-        $roles = Role::where('guard_name', 'web')->get();
+        if ($user->hasRole('super_admin')) {
+            abort(403, 'Protected super administrator accounts cannot be modified here.');
+        }
+        $roles = Role::where('guard_name', 'web')->where('name', '!=', 'super_admin')->get();
         $permissions = Permission::where('guard_name', 'web')->get()->groupBy(function ($item) {
             return explode('.', $item->name)[0] ?? 'general';
         });
@@ -156,16 +167,27 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        if ($user->hasRole('super_admin')) {
+            abort(403, 'Protected super administrator accounts cannot be modified here.');
+        }
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'phone' => 'nullable|string|max:20',
-            'password' => 'nullable|string|min:6|confirmed',
-            'roles' => 'required|array',
-            'roles.*' => 'exists:roles,name',
+            'password' => 'nullable|string|min:8|confirmed',
+            'roles' => 'required|array|min:1',
+            'roles.*' => [
+                Rule::exists('roles', 'name')->where(function ($q) {
+                    $q->where('guard_name', 'web')->where('name', '!=', 'super_admin');
+                }),
+            ],
             'permissions' => 'nullable|array',
-            'permissions.*' => 'exists:permissions,name',
+            'permissions.*' => [
+                Rule::exists('permissions', 'name')->where(function ($q) {
+                    $q->where('guard_name', 'web');
+                }),
+            ],
             'status' => 'nullable|boolean',
             'commission_percentage' => 'nullable|numeric|between:0,100',
         ]);
@@ -208,6 +230,12 @@ class UserController extends Controller
     public function toggleStatus($id)
     {
         $user = User::findOrFail($id);
+        if ($user->hasRole('super_admin') || auth()->guard('web')->id() === $user->id) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'This account status cannot be toggled.'], 403);
+            }
+            return back()->with('error', 'This account status cannot be toggled.');
+        }
         $user->status = !$user->status;
         $user->save();
 
@@ -230,8 +258,15 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        if ($user->hasRole('super_admin')) {
+            if (request()->wantsJson()) {
+                return response()->json(['success' => false, 'message' => 'Protected super administrator accounts cannot be deleted.'], 403);
+            }
+            return back()->with('error', 'Protected super administrator accounts cannot be deleted.');
+        }
+
         // Prevent self deletion if authenticated as this user
-        if (auth()->id() === $user->id) {
+        if (auth()->guard('web')->id() === $user->id || auth()->id() === $user->id) {
             if (request()->wantsJson()) {
                 return response()->json(['success' => false, 'message' => 'You cannot delete your own account.'], 403);
             }

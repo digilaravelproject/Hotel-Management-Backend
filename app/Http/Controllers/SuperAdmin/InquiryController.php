@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ContactInquiry;
 use App\Mail\DemoRequestThankYouMail;
-use App\Mail\MailSetting;
+use App\Models\MailSetting;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 

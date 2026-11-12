@@ -851,13 +851,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = `w-full p-2.5 rounded-xl text-left transition-all flex items-center justify-between hover:bg-purple-50 group cursor-pointer text-xs font-bold ${isSelected ? 'bg-purple-50 text-[#150A42]' : 'text-slate-700'}`;
-            btn.innerHTML = `
-                <div class="flex items-center space-x-2 truncate">
-                    <span class="w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-purple-600' : 'bg-slate-300'}"></span>
-                    <span class="truncate">${opt.text}</span>
-                </div>
-                ${isSelected ? '<span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] shrink-0 ml-2"><i class="fa-solid fa-check"></i></span>' : ''}
-            `;
+            const leftWrap = document.createElement('div');
+            leftWrap.className = 'flex items-center space-x-2 truncate';
+            const dot = document.createElement('span');
+            dot.className = `w-1.5 h-1.5 rounded-full ${isSelected ? 'bg-purple-600' : 'bg-slate-300'}`;
+            const label = document.createElement('span');
+            label.className = 'truncate';
+            label.textContent = opt.text;
+            leftWrap.appendChild(dot);
+            leftWrap.appendChild(label);
+            btn.appendChild(leftWrap);
+            if (isSelected) {
+                const badge = document.createElement('span');
+                badge.className = 'w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] shrink-0 ml-2';
+                const check = document.createElement('i');
+                check.className = 'fa-solid fa-check';
+                badge.appendChild(check);
+                btn.appendChild(badge);
+            }
             btn.onclick = function(e) {
                 selectDurationOption(opt.value, opt.text, e);
             };
@@ -1254,7 +1265,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const planId = selectedOpt.dataset.planId;
 
         document.getElementById('displayHotelName').textContent = name;
-        document.getElementById('displayHotelLocation').innerHTML = '<i class="fa-solid fa-location-dot mr-1 text-purple-600 text-[10px]"></i> ' + location;
+        const locEl = document.getElementById('displayHotelLocation');
+        locEl.textContent = '';
+        const pinIcon = document.createElement('i');
+        pinIcon.className = 'fa-solid fa-location-dot mr-1 text-purple-600 text-[10px]';
+        locEl.appendChild(pinIcon);
+        locEl.appendChild(document.createTextNode(' ' + location));
         document.getElementById('displayHotelRooms').textContent = existingTvs + ' Rms';
         document.getElementById('displayHotelDevices').textContent = devices + ' Screens';
         document.getElementById('displayHotelPlan').textContent = planName;

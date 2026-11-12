@@ -1118,6 +1118,8 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 									<p>Fill in the form — we reply within 24 hours.</p>								</div>
 				<div class="elementor-element elementor-element-6a070195 taj-pop-form elementor-button-align-stretch elementor-invisible elementor-widget elementor-widget-form" data-id="6a070195" data-element_type="widget" data-e-type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeInUp&quot;,&quot;_animation_delay&quot;:0.7,&quot;step_next_label&quot;:&quot;Next&quot;,&quot;step_previous_label&quot;:&quot;Previous&quot;,&quot;button_width&quot;:&quot;100&quot;,&quot;step_type&quot;:&quot;number_text&quot;,&quot;step_icon_shape&quot;:&quot;circle&quot;}" data-widget_type="form.default">
 							<form class="elementor-form" method="post" name="Hotel TV Demo Popup" aria-label="Hotel TV Demo Popup">
+			@csrf
+			<input type="text" name="website_hp_check" value="" style="display:none !important; position:absolute !important; left:-9999px !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
 			<input type="hidden" name="post_id" value="250"/>
 			<input type="hidden" name="form_id" value="6a070195"/>
 			<input type="hidden" name="referer_title" value="" />
@@ -1336,11 +1338,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 email: formData.get('form_fields[email]') || '',
                 hotel_name: formData.get('form_fields[hotel]') || '',
                 subject: 'Hotel Demo Request (' + (formData.get('form_fields[rooms]') || 'General') + ')',
-                message: formData.get('form_fields[message]') || 'Demo requested from landing page popup.'
+                message: formData.get('form_fields[message]') || 'Demo requested from landing page popup.',
+                website_hp_check: formData.get('website_hp_check') || ''
             };
 
             try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+                               || form.querySelector('input[name="_token"]')?.value;
                 const res = await fetch("{{ route('contact.submit') }}", {
                     method: 'POST',
                     headers: {
@@ -1348,6 +1352,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         'X-CSRF-TOKEN': csrfToken || '',
                         'Accept': 'application/json'
                     },
+                    credentials: 'include',
                     body: JSON.stringify(data)
                 });
 

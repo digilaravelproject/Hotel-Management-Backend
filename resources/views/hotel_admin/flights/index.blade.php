@@ -702,7 +702,13 @@
 
         const cityEl = document.getElementById('display_' + type + '_city');
         if (cityEl) {
-            cityEl.innerHTML = `<i class="fa-solid fa-location-dot text-[9px] text-slate-400"></i> <span>${city}${country ? ', ' + country : ''}</span>`;
+            cityEl.textContent = '';
+            const pinIcon = document.createElement('i');
+            pinIcon.className = 'fa-solid fa-location-dot text-[9px] text-slate-400 mr-1';
+            const citySpan = document.createElement('span');
+            citySpan.textContent = `${city}${country ? ', ' + country : ''}`;
+            cityEl.appendChild(pinIcon);
+            cityEl.appendChild(citySpan);
         }
 
         if (type === 'secondary') {

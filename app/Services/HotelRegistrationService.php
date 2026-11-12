@@ -28,26 +28,19 @@ class HotelRegistrationService
      */
     public function createRegistrationOrder(array $data): array
     {
-        $plan = Plan::with('tax')->findOrFail($data['plan_id']);
+        $plan = Plan::with('tax')
+            ->where('status', true)
+            ->where('is_hidden', false)
+            ->findOrFail($data['plan_id']);
         $tvCount = max(1, (int) ($data['room_count'] ?? 10));
 
         $defaultMonths = ($plan->billing_cycle === 'yearly') ? 12 : 1;
         $durationMonths = max(1, (int) ($data['duration_months'] ?? $defaultMonths));
 
-        $monthlyRate = (float) $plan->monthly_rate_per_tv;
-        $subtotal = round($monthlyRate * $tvCount * $durationMonths, 2);
-
-        $tax = $plan->tax ?: Tax::where('status', true)->where('is_default', true)->first();
-        $taxType = $plan->tax_type ?? 'exclusive';
-
-        if ($tax && $tax->rate > 0) {
-            $taxCalc = $tax->calculateTax($subtotal, $taxType);
-            $amount = (float) $taxCalc['total_amount'];
-            $taxAmount = (float) ($taxCalc['tax_amount'] ?? round($amount - $subtotal, 2));
-        } else {
-            $amount = $subtotal;
-            $taxAmount = 0.00;
-        }
+        $pricing = app(PaymentOrderService::class)->calculateSubscriptionTotal($plan, $tvCount, $durationMonths);
+        $subtotal = $pricing['subtotal'];
+        $amount = $pricing['total_amount'];
+        $taxAmount = $pricing['tax_amount'];
 
         $gateway = PaymentManager::active();
         $orderId = 'HREG-' . strtoupper(Str::random(10));
@@ -72,7 +65,15 @@ class HotelRegistrationService
             'currency' => $orderData['currency'] ?? 'INR',
             'status' => 'pending',
             'plan_id' => $plan->id,
-            'payload' => json_encode(array_merge($data, $orderData)),
+            'idempotency_checked' => false,
+            'payload' => array_merge($data, $orderData, [
+                'purpose' => 'hotel_registration',
+                'order_id' => $gatewayOrderId,
+                'plan_id' => $plan->id,
+                'tv_count' => $tvCount,
+                'duration_months' => $durationMonths,
+                'expected_amount' => $amount,
+            ]),
         ]);
 
         return array_merge([
@@ -105,77 +106,79 @@ class HotelRegistrationService
         ?UploadedFile $coverImage = null,
         array $paymentPayload = []
     ): HotelAdmin {
-        $plan = Plan::with('tax')->findOrFail($validatedData['plan_id']);
+        $plan = Plan::with('tax')
+            ->where('status', true)
+            ->where('is_hidden', false)
+            ->findOrFail($validatedData['plan_id']);
 
         $defaultMonths = ($plan->billing_cycle === 'yearly') ? 12 : 1;
         $durationMonths = max(1, (int) ($validatedData['duration_months'] ?? $defaultMonths));
+        $tvCount = max(1, (int) $validatedData['room_count']);
 
         $gateway = PaymentManager::active();
+        $paymentOrderService = app(PaymentOrderService::class);
+        $pricing = $paymentOrderService->calculateSubscriptionTotal($plan, $tvCount, $durationMonths);
 
-        // Resolve transaction identifier
-        $transactionId = $validatedData['order_id'] 
-            ?? $validatedData['razorpay_order_id'] 
-            ?? $paymentPayload['razorpay_order_id'] 
-            ?? ('TXN_' . Str::random(10));
+        // Resolve authoritative gateway order identifier; never fabricate a random fallback ID
+        $transactionId = trim((string) (
+            $validatedData['order_id']
+            ?? $validatedData['razorpay_order_id']
+            ?? $paymentPayload['razorpay_order_id']
+            ?? $paymentPayload['txnid']
+            ?? ''
+        ));
+        $paymentReference = trim((string) (
+            $paymentPayload['razorpay_payment_id']
+            ?? $validatedData['razorpay_payment_id']
+            ?? $paymentPayload['txnid']
+            ?? $transactionId
+        ));
 
-        // Idempotency check: Ensure transaction has not already succeeded
-        $existingTx = PaymentTransaction::where('transaction_id', $transactionId)->first();
-        if ($existingTx && $existingTx->status === 'success' && $existingTx->idempotency_checked) {
-            if ($existingTx->hotel_admin_id) {
-                $alreadyRegistered = HotelAdmin::find($existingTx->hotel_admin_id);
-                if ($alreadyRegistered) {
-                    Auth::guard('hotel_admin')->login($alreadyRegistered);
-                    return $alreadyRegistered;
-                }
-            }
-            throw new RuntimeException('This payment transaction has already been processed (Idempotency protection triggered).');
+        if ($transactionId === '') {
+            throw new RuntimeException('Missing payment order identifier. Please initialize checkout again.');
         }
 
-        // Verify gateway signature if strategy is active
-        if ($gateway->isEnabled()) {
-            $mergedVerificationData = array_merge($validatedData, $paymentPayload);
-            $isVerified = $gateway->verifyPayment($mergedVerificationData);
-
-            if (!$isVerified 
-                && !str_starts_with($transactionId, 'order_mock_') 
-                && !str_starts_with($transactionId, 'txnid_') 
-                && !str_starts_with($transactionId, 'TXN_') 
-                && !str_starts_with($transactionId, 'HREG-')
-            ) {
-                throw new RuntimeException('Payment Verification Failed via ' . $gateway->getName());
-            }
-        }
-
-        // Upload and compress images
-        $logoPath = $logo ? ImageHelper::compressAndConvertToWebp($logo, 'uploads/hotel_logos', 500, 'logo', 1200) : null;
-        $imagePath = $coverImage ? ImageHelper::compressAndConvertToWebp($coverImage, 'uploads/hotel_images', 1000, 'cover', 2560) : null;
-
-        $city = $validatedData['city'] ?? ($validatedData['hotel_location'] ?? 'Mumbai');
-        $location = $validatedData['hotel_location'] ?? $city;
-        $purchaseDate = now();
-        $expiryDate = now()->addMonthsNoOverflow($durationMonths);
-        $licenseKey = $this->generateUniqueLicenseKey();
-
+        // Security (SEC-01): Atomic DB lock + signature + pending-order binding + NEVER auto-login an existing account on replay
         return DB::transaction(function () use (
             $validatedData,
+            $paymentPayload,
+            $logo,
+            $coverImage,
             $plan,
             $durationMonths,
-            $transactionId,
-            $paymentPayload,
+            $tvCount,
             $gateway,
-            $existingTx,
-            $logoPath,
-            $imagePath,
-            $city,
-            $location,
-            $purchaseDate,
-            $expiryDate,
-            $licenseKey
+            $paymentOrderService,
+            $pricing,
+            $transactionId,
+            $paymentReference
         ) {
-            $paymentId = $validatedData['razorpay_payment_id'] 
-                ?? $paymentPayload['razorpay_payment_id'] 
-                ?? $paymentPayload['mihpayid'] 
-                ?? ('pay_' . Str::random(12));
+            $mergedVerificationData = array_merge($validatedData, $paymentPayload);
+            $consumed = $paymentOrderService->consumeVerifiedPayment(
+                $gateway,
+                $transactionId,
+                $paymentReference,
+                $mergedVerificationData,
+                'hotel_registration',
+                [
+                    'plan_id' => $plan->id,
+                    'expected_amount' => $pricing['total_amount'],
+                ]
+            );
+
+            $logoPath = $logo ? ImageHelper::compressAndConvertToWebp($logo, 'uploads/hotel_logos', 500, 'logo', 1200) : null;
+            $imagePath = $coverImage ? ImageHelper::compressAndConvertToWebp($coverImage, 'uploads/hotel_images', 1000, 'cover', 2560) : null;
+
+            $city = $validatedData['city'] ?? ($validatedData['hotel_location'] ?? 'Mumbai');
+            $location = $validatedData['hotel_location'] ?? $city;
+            $purchaseDate = now();
+            $expiryDate = now()->addMonthsNoOverflow($durationMonths);
+            $licenseKey = $this->generateUniqueLicenseKey();
+
+            $paymentId = $validatedData['razorpay_payment_id']
+                ?? $paymentPayload['razorpay_payment_id']
+                ?? $paymentPayload['mihpayid']
+                ?? $consumed['transaction_id'];
 
             $hotelAdmin = HotelAdmin::create([
                 'owner_name' => $validatedData['owner_name'],
@@ -187,7 +190,7 @@ class HotelRegistrationService
                 'city' => $city,
                 'hotel_logo' => $logoPath,
                 'hotel_image' => $imagePath,
-                'room_count' => (int) $validatedData['room_count'],
+                'room_count' => $tvCount,
                 'plan_id' => $plan->id,
                 'payment_status' => 'paid',
                 'razorpay_order_id' => $transactionId,
@@ -200,41 +203,24 @@ class HotelRegistrationService
                 'expiry_date' => $expiryDate,
             ]);
 
-            $totalAmount = round((float) $plan->monthly_rate_per_tv * (int) $validatedData['room_count'] * $durationMonths, 2);
-
-            // Update or create idempotent transaction record
-            if ($existingTx) {
-                $existingTx->update([
+            // Attach the newly created hotel to its verified PaymentTransaction record(s)
+            PaymentTransaction::whereIn('transaction_id', array_values(array_unique([$transactionId, $consumed['transaction_id']])))
+                ->update([
                     'hotel_admin_id' => $hotelAdmin->id,
-                    'status' => 'success',
-                    'paid_at' => now(),
-                    'idempotency_checked' => true,
-                    'payload' => json_encode(array_merge($validatedData, $paymentPayload)),
                 ]);
-            } else {
-                PaymentTransaction::create([
-                    'hotel_admin_id' => $hotelAdmin->id,
-                    'gateway_code' => $gateway->getCode(),
-                    'transaction_id' => $transactionId,
-                    'amount' => $totalAmount,
-                    'currency' => 'INR',
-                    'status' => 'success',
-                    'plan_id' => $plan->id,
-                    'paid_at' => now(),
-                    'idempotency_checked' => true,
-                    'payload' => json_encode(array_merge($validatedData, $paymentPayload)),
-                ]);
-            }
 
-            // Send registration email
+            // Send registration notification email without embedding plaintext password in body where avoidable
             try {
-                Mail::to($hotelAdmin->email)->send(new HotelRegisteredMail($hotelAdmin, $validatedData['password']));
+                Mail::to($hotelAdmin->email)->send(new HotelRegisteredMail($hotelAdmin, 'Set during self-registration (hidden for your security)'));
             } catch (\Throwable $e) {
                 Log::warning('Hotel registration welcome email delivery notice: ' . $e->getMessage());
             }
 
-            // Auto-login new hotel admin
+            // Auto-login newly registered hotel admin & regenerate session ID
             Auth::guard('hotel_admin')->login($hotelAdmin);
+            if (request()->hasSession()) {
+                request()->session()->regenerate();
+            }
 
             return $hotelAdmin;
         });

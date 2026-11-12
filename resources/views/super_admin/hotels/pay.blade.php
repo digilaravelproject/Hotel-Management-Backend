@@ -979,6 +979,22 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
 
                     rzp.open();
+                } else if (orderData.gateway === 'payu' || (orderData.payu_params && orderData.checkout_url)) {
+                    const form = document.createElement('form');
+                    form.method = 'POST';
+                    form.action = orderData.checkout_url;
+                    if (orderData.payu_params) {
+                        Object.entries(orderData.payu_params).forEach(([key, val]) => {
+                            const input = document.createElement('input');
+                            input.type = 'hidden';
+                            input.name = key;
+                            input.value = val ?? '';
+                            form.appendChild(input);
+                        });
+                    }
+                    document.body.appendChild(form);
+                    form.submit();
+                    return;
                 } else if (orderData.checkout_url && orderData.checkout_url !== '#') {
                     window.location.href = orderData.checkout_url;
                 } else {

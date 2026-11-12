@@ -27,6 +27,11 @@ class ConnectedDevice extends Model
         'demo_status',
     ];
 
+    protected $hidden = [
+        'api_token',
+        'fcm_token',
+    ];
+
     protected $casts = [
         'ott_overrides' => 'array',
         'menu_overrides' => 'array',

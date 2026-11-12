@@ -234,12 +234,14 @@
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-bold text-slate-600">Sandbox Secret / Salt</label>
                                 <div class="relative">
+                                    <input type="hidden" name="gateways[{{ $code }}][clear_sandbox_secret]" id="clear-sandbox-secret-{{ $code }}" value="0">
                                     <input type="password" 
                                            id="pwd-sandbox-{{ $code }}"
                                            name="gateways[{{ $code }}][sandbox_secret]" 
-                                           value="{{ $sandboxSecret }}" 
+                                           value="" 
+                                           oninput="const f=document.getElementById('clear-sandbox-secret-{{ $code }}'); if(f && this.value!=='') f.value='0';"
                                            autocomplete="new-password"
-                                           placeholder="Enter Sandbox Secret Key" 
+                                           placeholder="{{ !empty($sandboxSecret) ? '•••••••••••• (Configured — leave blank to keep)' : 'Enter Sandbox Secret Key' }}" 
                                            class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 transition-all">
                                     <button type="button" onclick="toggleSecret('pwd-sandbox-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                         <i class="fa-solid fa-eye"></i>
@@ -294,12 +296,14 @@
                             <div class="space-y-1.5">
                                 <label class="text-[11px] font-bold text-slate-600">Live Secret / Encryption Salt</label>
                                 <div class="relative">
+                                    <input type="hidden" name="gateways[{{ $code }}][clear_live_secret]" id="clear-live-secret-{{ $code }}" value="0">
                                     <input type="password" 
                                            id="pwd-live-{{ $code }}"
                                            name="gateways[{{ $code }}][live_secret]" 
-                                           value="{{ $liveSecret }}" 
+                                           value="" 
+                                           oninput="const f=document.getElementById('clear-live-secret-{{ $code }}'); if(f && this.value!=='') f.value='0';"
                                            autocomplete="new-password"
-                                           placeholder="Enter Live Secret Key" 
+                                           placeholder="{{ !empty($liveSecret) ? '•••••••••••• (Configured — leave blank to keep)' : 'Enter Live Secret Key' }}" 
                                            class="w-full pl-3.5 pr-10 py-2 bg-white border border-slate-200 rounded-xl text-xs font-mono font-medium text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all">
                                     <button type="button" onclick="toggleSecret('pwd-live-{{ $code }}', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
                                         <i class="fa-solid fa-eye"></i>
@@ -409,12 +413,17 @@
         const keyInput = document.querySelector(`input[name="gateways[${code}][${type}_key]"]`);
         const secretInput = document.querySelector(`input[name="gateways[${code}][${type}_secret]"]`);
         const midInput = document.querySelector(`input[name="gateways[${code}][${type}_merchant_id]"]`);
+        const clearFlag = document.getElementById(`clear-${type}-secret-${code}`);
+        if (clearFlag) {
+            clearFlag.value = '1';
+        }
         if (keyInput) {
             keyInput.value = '';
             keyInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
         if (secretInput) {
             secretInput.value = '';
+            secretInput.placeholder = 'Secret marked for removal on Save';
             secretInput.dispatchEvent(new Event('input', { bubbles: true }));
         }
         if (midInput) {

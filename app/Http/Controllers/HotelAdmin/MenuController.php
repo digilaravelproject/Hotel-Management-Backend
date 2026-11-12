@@ -125,11 +125,11 @@ class MenuController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Failed to update menu settings: ' . $e->getMessage(),
+                    'message' => 'Failed to update menu settings. Please try again.',
                 ], 500);
             }
 
-            return back()->with('error', 'Failed to update menu settings: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update menu settings. Please try again.');
         }
     }
 
@@ -171,11 +171,11 @@ class MenuController extends Controller
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Failed to reset menus: ' . $e->getMessage(),
+                    'message' => 'Failed to reset menus. Please try again.',
                 ], 500);
             }
 
-            return back()->with('error', 'Failed to reset menus: ' . $e->getMessage());
+            return back()->with('error', 'Failed to reset menus. Please try again.');
         }
     }
 
@@ -310,8 +310,11 @@ class MenuController extends Controller
             };
         }
 
-        // Listen for real-time menu updates from parent builder
+        // Listen for real-time menu updates from same-origin parent builder only
         window.addEventListener('message', function(ev) {
+            if (ev.origin !== window.location.origin) {
+                return;
+            }
             if (ev.data && ev.data.type === 'UPDATE_MENU') {
                 var updatedMenus = ev.data.menus;
                 window.MENU_DATA = updatedMenus;

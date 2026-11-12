@@ -79,22 +79,6 @@ class HotelAdminController extends Controller
      */
     public function show(int $id)
     {
-        // Auto-revert Hotel 2 if prematurely updated without verified gateway transaction
-        if ($id == 2) {
-            $unpaidRecentInv = \App\Models\Invoice::where('hotel_admin_id', 2)
-                ->where('created_at', '>=', '2026-11-05 18:00:00')
-                ->latest('id')
-                ->first();
-            if ($unpaidRecentInv) {
-                $unpaidRecentInv->delete();
-                HotelAdmin::where('id', 2)->update([
-                    'payment_status' => 'expired',
-                    'expiry_date' => '2026-11-04 00:00:00',
-                    'room_count' => 10,
-                ]);
-            }
-        }
-
         $hotel = HotelAdmin::with(['plan.tax', 'distributor', 'connectedDevices'])->findOrFail($id);
 
         return view('super_admin.hotels.show', compact('hotel'));
@@ -146,22 +130,6 @@ class HotelAdminController extends Controller
      */
     public function showPayment(int $id)
     {
-        // Auto-revert Hotel 2 if prematurely updated without verified gateway transaction
-        if ($id == 2) {
-            $unpaidRecentInv = \App\Models\Invoice::where('hotel_admin_id', 2)
-                ->where('created_at', '>=', '2026-11-05 18:00:00')
-                ->latest('id')
-                ->first();
-            if ($unpaidRecentInv) {
-                $unpaidRecentInv->delete();
-                HotelAdmin::where('id', 2)->update([
-                    'payment_status' => 'expired',
-                    'expiry_date' => '2026-11-04 00:00:00',
-                    'room_count' => 10,
-                ]);
-            }
-        }
-
         $hotel = HotelAdmin::with(['plan.tax', 'distributor', 'connectedDevices'])->findOrFail($id);
 
         if (!$hotel->plan) {
@@ -214,17 +182,9 @@ class HotelAdminController extends Controller
         $tvCount = max(1, (int) $validated['tv_count']);
         $durationMonths = (int) $validated['duration_months'];
 
-        $monthlyRate = (float) $plan->monthly_rate_per_tv;
-        $subtotal = round($monthlyRate * $tvCount * $durationMonths, 2);
-
-        $tax = $plan->tax ?: \App\Models\Tax::where('status', true)->where('is_default', true)->first();
-        $taxType = $plan->tax_type ?? 'exclusive';
-        if ($tax && $tax->rate > 0) {
-            $taxCalc = $tax->calculateTax($subtotal, $taxType);
-            $amount = $taxCalc['total_amount'];
-        } else {
-            $amount = $subtotal;
-        }
+        $paymentOrderService = app(\App\Services\PaymentOrderService::class);
+        $pricing = $paymentOrderService->calculateSubscriptionTotal($plan, $tvCount, $durationMonths);
+        $amount = $pricing['total_amount'];
 
         try {
             $gateway = \App\Services\PaymentManager::active();
@@ -232,24 +192,37 @@ class HotelAdminController extends Controller
             if (!$gateway->isEnabled()) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'No online payment gateway is currently enabled. Please enable Razorpay in Gateway Settings.',
+                    'message' => 'No online payment gateway is currently enabled. Please enable a payment gateway in Gateway Settings.',
                 ], 422);
             }
 
-            $order = $gateway->createOrder($amount, 'HRENEW-' . strtoupper(\Illuminate\Support\Str::random(10)), [
-                'name' => $hotel->owner_name ?: 'Hotel Admin',
-                'email' => $hotel->email ?: 'admin@pax.tv',
-                'phone' => $hotel->phone ?: '9999999999',
-                'product_info' => 'Hotel Renewal: ' . $plan->name . ' (' . $tvCount . ' TVs, ' . $durationMonths . ' mo)',
-                'udf1' => (string) $hotel->id,
-                'udf2' => (string) $plan->id,
-                'udf3' => (string) $durationMonths,
-                'udf4' => (string) $tvCount,
-            ]);
+            $order = $paymentOrderService->createPendingOrder(
+                $gateway,
+                $amount,
+                'HRENEW-',
+                [
+                    'name' => $hotel->owner_name ?: 'Hotel Admin',
+                    'email' => $hotel->email ?: 'admin@pax.tv',
+                    'phone' => $hotel->phone ?: '9999999999',
+                    'product_info' => 'Hotel Renewal: ' . $plan->name . ' (' . $tvCount . ' TVs, ' . $durationMonths . ' mo)',
+                    'udf1' => (string) $hotel->id,
+                    'udf2' => (string) $plan->id,
+                    'udf3' => (string) $durationMonths,
+                    'udf4' => (string) $tvCount,
+                    'udf5' => 'super_admin_renewal',
+                ],
+                [
+                    'purpose' => 'super_admin_renewal',
+                    'hotel_admin_id' => $hotel->id,
+                    'plan_id' => $plan->id,
+                    'tv_count' => $tvCount,
+                    'duration_months' => $durationMonths,
+                ]
+            );
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to initialize payment gateway: ' . $e->getMessage(),
+                'message' => 'Failed to initialize payment gateway. Please check gateway configuration.',
             ], 422);
         }
 
@@ -297,78 +270,71 @@ class HotelAdminController extends Controller
             $durationMonths = ($plan->billing_cycle === 'yearly' ? 12 : 1);
         }
 
-        // Calculate dynamic subtotal & taxes based on duration and TV count
-        $monthlyRate = (float) $plan->monthly_rate_per_tv;
-        $subtotal = round($monthlyRate * $tvCount * $durationMonths, 2);
+        $paymentOrderService = app(\App\Services\PaymentOrderService::class);
+        $pricing = $paymentOrderService->calculateSubscriptionTotal($plan, $tvCount, $durationMonths);
+        $totalAmount = $pricing['total_amount'];
 
-        $tax = $plan->tax;
-        $taxType = $plan->tax_type ?? 'exclusive';
-        $taxRate = $tax ? (float) $tax->rate : 0.0;
-
-        $taxAmount = 0.00;
-        $totalAmount = $subtotal;
-
-        if ($taxRate > 0) {
-            if ($taxType === 'inclusive') {
-                $taxAmount = round($subtotal - ($subtotal / (1 + ($taxRate / 100))), 2);
-                $totalAmount = $subtotal;
-            } else {
-                $taxAmount = round($subtotal * ($taxRate / 100), 2);
-                $totalAmount = round($subtotal + $taxAmount, 2);
-            }
-        }
-
-        // STRICT GATEWAY SIGNATURE VERIFICATION: DO NOT ALLOW RENEWAL WITHOUT VERIFIED PAYMENT
         if ($code === 'payu') {
-            $payload = $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash']);
-            $transactionId = $payload['txnid'] ?? '';
+            $payload = $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash', 'udf1', 'udf2', 'udf3', 'udf4', 'udf5', 'additionalCharges']);
+            $orderId = (string) ($payload['txnid'] ?? '');
+            $paymentReference = $orderId;
         } else {
             $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
-            $transactionId = $payload['razorpay_payment_id'] ?? '';
+            $orderId = (string) ($payload['razorpay_order_id'] ?? '');
+            $paymentReference = (string) ($payload['razorpay_payment_id'] ?? '');
         }
 
-        if (empty($transactionId) || empty($payload['razorpay_order_id']) || empty($payload['razorpay_signature'])) {
+        if ($orderId === '' && $paymentReference === '') {
             return back()->with('error', 'Payment was NOT completed on the payment gateway. Renewal was cancelled.');
         }
 
-        if (!$gateway->verifyPayment($payload)) {
-            \App\Models\PaymentTransaction::create([
-                'hotel_admin_id' => $hotel->id,
-                'gateway_code' => $code,
-                'transaction_id' => (string) ($transactionId ?: 'failed_' . time()),
-                'amount' => $totalAmount,
-                'currency' => 'INR',
-                'status' => 'failed',
-                'payload' => $payload,
-                'plan_id' => $plan->id,
-            ]);
+        try {
+            $consumed = \Illuminate\Support\Facades\DB::transaction(function () use (
+                $paymentOrderService,
+                $gateway,
+                $code,
+                $orderId,
+                $paymentReference,
+                $payload,
+                $hotel,
+                $plan,
+                $tvCount,
+                $durationMonths,
+                $totalAmount,
+                $subService
+            ) {
+                $consumed = $paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    $orderId,
+                    $paymentReference,
+                    $payload,
+                    'super_admin_renewal',
+                    [
+                        'hotel_admin_id' => $hotel->id,
+                        'plan_id' => $plan->id,
+                        'expected_amount' => $totalAmount,
+                    ]
+                );
 
-            return back()->with('error', 'Payment verification failed via ' . $gateway->getName() . '. Transaction was not trusted, renewal was NOT activated.');
+                $subService->activate($hotel, $plan, $durationMonths, [
+                    'tv_count' => $tvCount,
+                    'amount' => $consumed['amount'],
+                    'payment_method' => 'online_gateway',
+                    'gateway_code' => $code,
+                    'transaction_id' => $consumed['transaction_id'],
+                    'payload' => $consumed['payload'],
+                    'skip_payment_tx_record' => true,
+                    'notes' => "Super Admin verified online renewal via {$gateway->getName()} ({$consumed['transaction_id']})",
+                ]);
+
+                return $consumed;
+            });
+        } catch (\Throwable $e) {
+            return back()->with('error', $e instanceof \RuntimeException ? $e->getMessage() : ('Payment verification failed via ' . $gateway->getName() . '. Transaction was not trusted, renewal was NOT activated.'));
         }
-
-        // Prevent duplicate processing of the same transaction
-        if ($transactionId) {
-            $alreadyProcessed = \App\Models\PaymentTransaction::where('transaction_id', $transactionId)
-                ->where('status', 'success')
-                ->exists();
-
-            if ($alreadyProcessed) {
-                return back()->with('error', 'This payment was already processed. Duplicate submission blocked.');
-            }
-        }
-
-        $subService->activate($hotel, $plan, $durationMonths, [
-            'tv_count' => $tvCount,
-            'amount' => $totalAmount,
-            'payment_method' => 'online_gateway',
-            'gateway_code' => $code,
-            'transaction_id' => $transactionId,
-            'payload' => $payload,
-            'notes' => "Super Admin verified online renewal via {$gateway->getName()} ({$transactionId})",
-        ]);
 
         return redirect()->route('super-admin.hotels.show', $hotel->id)
-            ->with('success', "Payment of ₹" . number_format($totalAmount, 2) . " verified via {$gateway->getName()}! Hotel renewed for {$durationMonths} months and GST Tax Invoice generated.");
+            ->with('success', "Payment of ₹" . number_format($consumed['amount'], 2) . " verified via {$gateway->getName()}! Hotel renewed for {$durationMonths} months and GST Tax Invoice generated.");
     }
 
     /**

@@ -33,9 +33,11 @@ class PaymentSettingController extends Controller
             'gateways.*.merchant_id' => 'nullable|string',
             'gateways.*.sandbox_key' => 'nullable|string',
             'gateways.*.sandbox_secret' => 'nullable|string',
+            'gateways.*.clear_sandbox_secret' => 'nullable|boolean',
             'gateways.*.sandbox_merchant_id' => 'nullable|string',
             'gateways.*.live_key' => 'nullable|string',
             'gateways.*.live_secret' => 'nullable|string',
+            'gateways.*.clear_live_secret' => 'nullable|boolean',
             'gateways.*.live_merchant_id' => 'nullable|string',
         ]);
 
@@ -71,24 +73,28 @@ class PaymentSettingController extends Controller
                 $oldLiveSecret = $gateway->getLiveSecret();
                 $oldLiveMerchantId = $gateway->getLiveMerchantId();
 
-                // Resolve new Sandbox credentials (empty string clears the value to null)
+                // Resolve new Sandbox credentials (blank retains stored secret unless explicit clear flag is sent)
                 $newSandboxKey = isset($data['sandbox_key']) 
                     ? (trim($data['sandbox_key']) !== '' ? trim($data['sandbox_key']) : null) 
                     : $oldSandboxKey;
-                $newSandboxSecret = isset($data['sandbox_secret']) 
-                    ? (trim($data['sandbox_secret']) !== '' ? trim($data['sandbox_secret']) : null) 
-                    : $oldSandboxSecret;
+                $newSandboxSecret = !empty($data['clear_sandbox_secret'])
+                    ? null
+                    : ((isset($data['sandbox_secret']) && trim((string) $data['sandbox_secret']) !== '')
+                        ? trim((string) $data['sandbox_secret'])
+                        : $oldSandboxSecret);
                 $newSandboxMerchantId = isset($data['sandbox_merchant_id']) 
                     ? (trim($data['sandbox_merchant_id']) !== '' ? trim($data['sandbox_merchant_id']) : null) 
                     : $oldSandboxMerchantId;
 
-                // Resolve new Live credentials (empty string clears the value to null)
+                // Resolve new Live credentials (blank retains stored secret unless explicit clear flag is sent)
                 $newLiveKey = isset($data['live_key']) 
                     ? (trim($data['live_key']) !== '' ? trim($data['live_key']) : null) 
                     : $oldLiveKey;
-                $newLiveSecret = isset($data['live_secret']) 
-                    ? (trim($data['live_secret']) !== '' ? trim($data['live_secret']) : null) 
-                    : $oldLiveSecret;
+                $newLiveSecret = !empty($data['clear_live_secret'])
+                    ? null
+                    : ((isset($data['live_secret']) && trim((string) $data['live_secret']) !== '')
+                        ? trim((string) $data['live_secret'])
+                        : $oldLiveSecret);
                 $newLiveMerchantId = isset($data['live_merchant_id']) 
                     ? (trim($data['live_merchant_id']) !== '' ? trim($data['live_merchant_id']) : null) 
                     : $oldLiveMerchantId;

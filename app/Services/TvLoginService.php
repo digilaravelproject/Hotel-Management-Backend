@@ -16,24 +16,22 @@ class TvLoginService
             return null;
         }
 
+        $code = trim($code);
+        $user = null;
+
         // Direct user ID (e.g. 5)
         if (is_numeric($code)) {
             $user = \App\Models\User::find((int) $code);
-            return $user?->id;
-        }
-
-        // Prefix match e.g. DST-5, DIST-5
-        if (preg_match('/^(?:DIST|DST)[-_]?(\d+)$/i', $code, $matches)) {
+        } elseif (preg_match('/^(?:DIST|DST)[-_]?(\d+)$/i', $code, $matches)) {
+            // Prefix match e.g. DST-5, DIST-5
             $user = \App\Models\User::find((int) $matches[1]);
-            if ($user) {
-                return $user->id;
-            }
+        } elseif (\Illuminate\Support\Facades\Schema::hasColumn('users', 'distributor_referral_code')) {
+            // Safe column check for custom referral code
+            $user = \App\Models\User::where('distributor_referral_code', $code)->first();
         }
 
-        // Safe column check for custom referral code
-        if (\Illuminate\Support\Facades\Schema::hasColumn('users', 'distributor_referral_code')) {
-            $user = \App\Models\User::where('distributor_referral_code', $code)->first();
-            return $user?->id;
+        if ($user && $user->status && ($user->hasRole('distributor') || $user->hasRole('super_admin'))) {
+            return $user->id;
         }
 
         return null;
@@ -137,9 +135,15 @@ class TvLoginService
 
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
+        $wasDemoDevice = $device && $device->is_demo;
+
+        // Tenant isolation: never allow one hotel to hijack a non-demo device bound to another hotel
+        if ($device && !$wasDemoDevice && (int) $device->hotel_admin_id !== (int) $hotel->id) {
+            throw new HttpException(403, 'This TV device is already registered to another hotel. Please disconnect it from the previous hotel first.');
+        }
 
         // If device was previously in demo mode, convert it to paid
-        if ($device && $device->is_demo) {
+        if ($wasDemoDevice) {
             $device->update([
                 'is_demo' => false,
                 'demo_expires_at' => null,

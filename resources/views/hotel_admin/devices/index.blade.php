@@ -701,7 +701,15 @@
         const alertBox = document.getElementById('pairFormAlert');
         if (alertBox) {
             alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
-            alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> Scanned Code: <b>' + code + '</b>. Now enter Room Number & connect.';
+            alertBox.textContent = '';
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-circle-check text-emerald-600 mr-1.5';
+            const codeBold = document.createElement('b');
+            codeBold.textContent = code;
+            alertBox.appendChild(icon);
+            alertBox.appendChild(document.createTextNode(' Scanned Code: '));
+            alertBox.appendChild(codeBold);
+            alertBox.appendChild(document.createTextNode('. Now enter Room Number & connect.'));
             alertBox.classList.remove('hidden');
         }
     }
@@ -834,7 +842,11 @@
 
             if (response.ok && data.success) {
                 alertBox.className = 'p-3.5 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
-                alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ' + data.message;
+                alertBox.textContent = '';
+                const okIcon = document.createElement('i');
+                okIcon.className = 'fa-solid fa-circle-check text-emerald-600 mr-1.5';
+                alertBox.appendChild(okIcon);
+                alertBox.appendChild(document.createTextNode(' ' + (data.message || 'TV paired successfully.')));
                 alertBox.classList.remove('hidden');
 
                 setTimeout(() => {
@@ -842,8 +854,10 @@
                 }, 500);
             } else {
                 alertBox.className = 'p-3.5 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800 space-y-2';
-                let msgHtml = `<div>${data.message || 'Pairing failed. Please check the code.'}</div>`;
-                alertBox.innerHTML = msgHtml;
+                alertBox.textContent = '';
+                const errDiv = document.createElement('div');
+                errDiv.textContent = data.message || 'Pairing failed. Please check the code.';
+                alertBox.appendChild(errDiv);
                 alertBox.classList.remove('hidden');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fa-solid fa-link text-xs text-amber-300 mr-1.5"></i><span>Connect & Pair TV</span>';

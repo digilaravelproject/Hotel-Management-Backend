@@ -773,21 +773,31 @@
                 } else {
                     try {
                         const res = JSON.parse(xhr.responseText);
-                        let errMsg = res.message || 'Upload failed.';
-                        if (res.errors) {
-                            errMsg = Object.values(res.errors).flat().join('<br>');
-                        }
-                        alertContainer.innerHTML = `
-                            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
-                                <div>${errMsg}</div>
-                            </div>`;
+                        const errList = res.errors ? Object.values(res.errors).flat() : [res.message || 'Upload failed.'];
+                        alertContainer.textContent = '';
+                        const wrap = document.createElement('div');
+                        wrap.className = 'p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2';
+                        const tri = document.createElement('i');
+                        tri.className = 'fa-solid fa-triangle-exclamation text-rose-500';
+                        const msgBox = document.createElement('div');
+                        errList.forEach((msg, idx) => {
+                            if (idx > 0) msgBox.appendChild(document.createElement('br'));
+                            msgBox.appendChild(document.createTextNode(String(msg)));
+                        });
+                        wrap.appendChild(tri);
+                        wrap.appendChild(msgBox);
+                        alertContainer.appendChild(wrap);
                     } catch(err) {
-                        alertContainer.innerHTML = `
-                            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
-                                <span>Upload failed with status code ${xhr.status}.</span>
-                            </div>`;
+                        alertContainer.textContent = '';
+                        const wrap = document.createElement('div');
+                        wrap.className = 'p-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center space-x-2';
+                        const tri = document.createElement('i');
+                        tri.className = 'fa-solid fa-triangle-exclamation text-rose-500';
+                        const msgSpan = document.createElement('span');
+                        msgSpan.textContent = `Upload failed with status code ${xhr.status}.`;
+                        wrap.appendChild(tri);
+                        wrap.appendChild(msgSpan);
+                        alertContainer.appendChild(wrap);
                     }
                 }
             });

@@ -9,6 +9,7 @@ use App\Models\MailSetting;
 use App\Mail\DemoRequestThankYouMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 class LandingPageController extends Controller
 {
@@ -90,6 +91,21 @@ class LandingPageController extends Controller
      */
     public function submitContact(Request $request)
     {
+        // Bot honeypot protection
+        if ($request->filled('website_hp_check')) {
+            return response()->json(['success' => true, 'message' => 'Thank you!']);
+        }
+
+        $throttleKey = 'contact-us:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            return response()->json([
+                'success' => false,
+                'message' => "Too many inquiries sent. Please try again in {$seconds} seconds."
+            ], 429);
+        }
+        RateLimiter::hit($throttleKey, 300);
+
         $validated = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:150',

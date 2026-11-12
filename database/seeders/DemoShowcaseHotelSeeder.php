@@ -13,6 +13,10 @@ class DemoShowcaseHotelSeeder extends Seeder
      */
     public function run(): void
     {
+        if (app()->isProduction()) {
+            return;
+        }
+
         $plan = Plan::orderBy('room_count', 'desc')->first();
 
         HotelAdmin::updateOrCreate(

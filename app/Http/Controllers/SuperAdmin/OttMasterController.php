@@ -4,6 +4,7 @@ namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Helpers\ImageHelper;
 use App\Models\OttPlatform;
 use Illuminate\Support\Str;
 
@@ -26,23 +27,24 @@ class OttMasterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'package_name' => 'required|string|max:255|unique:ott_platforms,package_name',
-            'icon' => 'nullable',
+            'icon' => $request->hasFile('icon')
+                ? 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048'
+                : 'nullable|string|max:500',
         ]);
 
         $iconPath = null;
 
-        // Check if an image file was uploaded
+        // Handle icon upload securely (rejects SVG/PHP; re-encodes via GD into WebP)
         if ($request->hasFile('icon')) {
-            $file = $request->file('icon');
-            $filename = Str::slug($request->name) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $destination = public_path('images/ott');
-            if (!is_dir($destination)) {
-                mkdir($destination, 0777, true);
-            }
-            $file->move($destination, $filename);
-            $iconPath = 'images/ott/' . $filename;
+            $iconPath = ImageHelper::compressAndConvertToWebp(
+                $request->file('icon'),
+                'images/ott',
+                250,
+                Str::slug($request->name),
+                512
+            );
         } elseif (is_string($request->icon) && !empty($request->icon)) {
-            $iconPath = $request->icon;
+            $iconPath = $this->sanitizeIconPath($request->icon);
         } else {
             // Check if default SVG exists for this name
             $defaultSvg = 'images/ott/' . Str::slug($request->name) . '.svg';
@@ -79,7 +81,9 @@ class OttMasterController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'package_name' => 'required|string|max:255|unique:ott_platforms,package_name,' . $id,
-            'icon' => 'nullable',
+            'icon' => $request->hasFile('icon')
+                ? 'nullable|file|mimes:png,jpg,jpeg,webp|max:2048'
+                : 'nullable|string|max:500',
         ]);
 
         $updateData = [
@@ -87,18 +91,23 @@ class OttMasterController extends Controller
             'package_name' => $request->package_name,
         ];
 
-        // Handle new icon upload if provided
+        // Handle new icon upload securely (rejects SVG/PHP; re-encodes via GD into WebP)
         if ($request->hasFile('icon')) {
-            $file = $request->file('icon');
-            $filename = Str::slug($request->name) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $destination = public_path('images/ott');
-            if (!is_dir($destination)) {
-                mkdir($destination, 0777, true);
+            $updateData['icon'] = ImageHelper::compressAndConvertToWebp(
+                $request->file('icon'),
+                'images/ott',
+                250,
+                Str::slug($request->name),
+                512
+            );
+            if ($platform->icon) {
+                ImageHelper::deleteFile($platform->icon);
             }
-            $file->move($destination, $filename);
-            $updateData['icon'] = 'images/ott/' . $filename;
         } elseif (is_string($request->icon) && !empty($request->icon)) {
-            $updateData['icon'] = $request->icon;
+            $safeIcon = $this->sanitizeIconPath($request->icon);
+            if ($safeIcon !== null) {
+                $updateData['icon'] = $safeIcon;
+            }
         }
 
         $platform->update($updateData);
@@ -146,5 +155,26 @@ class OttMasterController extends Controller
         }
 
         return redirect()->back()->with('success', 'Application deleted from master catalog.');
+    }
+
+    /**
+     * Validate preset icon path/URL strings to block traversal and active URI schemes.
+     */
+    private function sanitizeIconPath(?string $icon): ?string
+    {
+        if ($icon === null) {
+            return null;
+        }
+
+        $trimmed = trim($icon);
+        if ($trimmed === '' || str_contains($trimmed, "\0") || str_contains($trimmed, '..')) {
+            return null;
+        }
+
+        if (preg_match('/^(javascript|vbscript|data):/i', $trimmed)) {
+            return null;
+        }
+
+        return $trimmed;
     }
 }

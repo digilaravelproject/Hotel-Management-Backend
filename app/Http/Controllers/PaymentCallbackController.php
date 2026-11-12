@@ -24,89 +24,111 @@ class PaymentCallbackController extends Controller
     public function success(Request $request)
     {
         $payload = $request->all();
-        $txnid = $payload['txnid'] ?? $request->input('txnid');
-        $status = strtolower($payload['status'] ?? '');
+        $txnid = trim((string) ($payload['txnid'] ?? $request->input('txnid') ?? ''));
+        $status = strtolower((string) ($payload['status'] ?? ''));
 
-        // Verify PayU signature / reverse hash
+        if ($txnid === '' || $status !== 'success') {
+            return $this->failure($request, 'Payment verification failed. Invalid callback status or transaction ID.');
+        }
+
+        $pendingTx = PaymentTransaction::where('transaction_id', $txnid)->first();
+        if ($pendingTx && in_array($pendingTx->status, ['success', 'consumed'], true)) {
+            $type = (string) ($pendingTx->payload['purpose'] ?? $payload['udf5'] ?? 'distributor_sale');
+            return $this->redirectToSource($type, 'This transaction was already processed successfully.');
+        }
+
+        $type = (string) ($pendingTx?->payload['purpose'] ?? $payload['udf5'] ?? 'distributor_sale');
+        $hotelId = (int) ($pendingTx?->hotel_admin_id ?? $payload['udf1'] ?? 0);
+        $planId = (int) ($pendingTx?->plan_id ?? $payload['udf2'] ?? 0);
+        $durationMonths = max(1, (int) ($pendingTx?->payload['duration_months'] ?? $payload['udf3'] ?? 1));
+        $distributorId = (int) ($pendingTx?->distributor_id ?? $payload['udf4'] ?? 0);
+
+        $hotel = $hotelId > 0 ? HotelAdmin::find($hotelId) : null;
+        $plan = $planId > 0 ? Plan::with('tax')->find($planId) : null;
+
+        if (!$hotel || !$plan) {
+            return $this->failure($request, 'Unable to match payment callback to a valid hotel and subscription plan.');
+        }
+
+        $paymentOrderService = app(\App\Services\PaymentOrderService::class);
+        $tvCount = max(1, (int) ($pendingTx?->payload['tv_count'] ?? $hotel->room_count ?: ($plan->room_count ?: 1)));
+        $expectedAmount = $pendingTx ? (float) $pendingTx->amount : null;
+
         try {
             $gateway = PaymentManager::resolve('payu');
-            $isVerified = $gateway->verifyPayment($payload);
-        } catch (\Exception $e) {
-            $isVerified = false;
-        }
 
-        if (!$isVerified && $status !== 'success') {
-            return $this->failure($request, 'Payment verification failed. Security hash mismatch.');
-        }
+            \Illuminate\Support\Facades\DB::transaction(function () use (
+                $paymentOrderService,
+                $gateway,
+                $txnid,
+                $payload,
+                $type,
+                $hotel,
+                $plan,
+                $durationMonths,
+                $distributorId,
+                $expectedAmount,
+                $pendingTx
+            ) {
+                $expectations = [
+                    'hotel_admin_id' => $hotel->id,
+                    'plan_id' => $plan->id,
+                ];
+                if ($expectedAmount !== null) {
+                    $expectations['expected_amount'] = $expectedAmount;
+                }
+                if ($type === 'distributor_sale' && $distributorId > 0) {
+                    $expectations['distributor_id'] = $distributorId;
+                }
 
-        $type = $payload['udf5'] ?? 'distributor_sale';
-        $hotelId = $payload['udf1'] ?? null;
-        $planId = $payload['udf2'] ?? null;
-        $durationMonths = (int) ($payload['udf3'] ?? 1);
-        $distributorId = $payload['udf4'] ?? null;
-        $amount = (float) ($payload['amount'] ?? 0);
+                $consumed = $paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    $txnid,
+                    $txnid,
+                    $payload,
+                    $type,
+                    $expectations
+                );
 
-        // Idempotency: avoid double-activation
-        if ($txnid) {
-            $already = PaymentTransaction::where('transaction_id', $txnid)
-                ->where('status', 'success')
-                ->exists();
-
-            if ($already) {
-                return $this->redirectToSource($type, 'This transaction was already processed successfully.');
-            }
-        }
-
-        if ($hotelId && $planId) {
-            $hotel = HotelAdmin::find($hotelId);
-            $plan = Plan::find($planId);
-
-            if ($hotel && $plan) {
-                if ($type === 'distributor_sale' && $distributorId) {
-                    $this->hotelService->assignPlanAndRecordSale(
-                        $hotel,
-                        $plan,
-                        $durationMonths,
-                        [
-                            'payment_method' => 'online_gateway',
-                            'amount' => $amount,
-                            'notes' => "PayU Verified: {$txnid}",
-                        ],
-                        (int) $distributorId
-                    );
-                } else {
-                    $this->subscriptionService->activate($hotel, $plan, $durationMonths, [
-                        'amount' => $amount,
+                if ($type === 'hotel_tv_addon') {
+                    $additionalTvs = max(1, (int) ($pendingTx?->payload['additional_tvs'] ?? $payload['udf4'] ?? 1));
+                    $this->subscriptionService->addTvAddon($hotel, $additionalTvs, [
+                        'amount' => $consumed['amount'],
                         'payment_method' => 'online_gateway',
                         'gateway_code' => 'payu',
                         'transaction_id' => $txnid,
                         'payload' => $payload,
-                        'notes' => "PayU Online Payment: {$txnid}",
+                        'skip_payment_tx_record' => true,
+                        'notes' => "PayU Online TV Add-On: {$txnid}",
+                    ]);
+                } else {
+                    $this->subscriptionService->activate($hotel, $plan, $durationMonths, [
+                        'tv_count' => max(1, (int) ($pendingTx?->payload['tv_count'] ?? $hotel->room_count ?: ($plan->room_count ?: 1))),
+                        'distributor_id' => ($type === 'distributor_sale' && $distributorId > 0) ? $distributorId : null,
+                        'amount' => $consumed['amount'],
+                        'payment_method' => 'online_gateway',
+                        'gateway_code' => 'payu',
+                        'transaction_id' => $txnid,
+                        'payload' => $payload,
+                        'skip_payment_tx_record' => true,
+                        'notes' => ($type === 'distributor_sale' ? 'PayU Verified: ' : 'PayU Online Payment: ') . $txnid,
                     ]);
                 }
-
-                PaymentTransaction::create([
-                    'distributor_id' => ($type === 'distributor_sale') ? $distributorId : null,
-                    'hotel_admin_id' => $hotel->id,
-                    'gateway_code' => 'payu',
-                    'transaction_id' => (string) ($txnid ?: 'payu_' . time()),
-                    'amount' => $amount,
-                    'currency' => 'INR',
-                    'status' => 'success',
-                    'payload' => $payload,
-                    'plan_id' => $plan->id,
-                    'paid_at' => now(),
-                    'idempotency_checked' => true,
-                ]);
-
-                return $this->redirectToSource(
-                    $type,
-                    "Payment successful via PayU! Package '{$plan->name}' has been activated."
-                );
-            }
+            });
+        } catch (\Throwable $e) {
+            Log::warning('PayU Payment Callback Rejected', [
+                'txnid' => $txnid,
+                'status' => $status,
+                'error' => $e->getMessage(),
+                'ip' => $request->ip(),
+            ]);
+            return $this->failure($request, 'Payment verification failed. Security hash or order validation mismatch.');
         }
 
-        return $this->redirectToSource($type, 'Payment completed successfully via PayU.');
+        return $this->redirectToSource(
+            $type,
+            "Payment successful via PayU! Package '{$plan->name}' has been activated."
+        );
     }
 
     /**
@@ -115,25 +137,23 @@ class PaymentCallbackController extends Controller
     public function failure(Request $request, ?string $customMsg = null)
     {
         $payload = $request->all();
-        $txnid = $payload['txnid'] ?? $request->input('txnid');
-        $type = $payload['udf5'] ?? 'distributor_sale';
+        $txnid = trim((string) ($payload['txnid'] ?? $request->input('txnid') ?? ''));
+        $type = (string) ($payload['udf5'] ?? 'distributor_sale');
         $errorMsg = $customMsg ?: ($payload['error_Message'] ?? $payload['error'] ?? 'Payment failed or cancelled. No plan was activated.');
 
-        if ($txnid) {
-            PaymentTransaction::create([
-                'distributor_id' => $payload['udf4'] ?? null,
-                'hotel_admin_id' => $payload['udf1'] ?? null,
-                'gateway_code' => 'payu',
-                'transaction_id' => (string) $txnid,
-                'amount' => (float) ($payload['amount'] ?? 0),
-                'currency' => 'INR',
-                'status' => 'failed',
-                'payload' => $payload,
-                'plan_id' => $payload['udf2'] ?? null,
-            ]);
+        if ($txnid !== '') {
+            app(\App\Services\PaymentOrderService::class)->recordFailedAttempt(
+                'payu',
+                $txnid,
+                (float) ($payload['amount'] ?? 0),
+                $payload,
+                !empty($payload['udf1']) ? (int) $payload['udf1'] : null,
+                !empty($payload['udf4']) ? (int) $payload['udf4'] : null,
+                $payload['udf2'] ?? null
+            );
         }
 
-        if ($type === 'hotel_subscription') {
+        if ($type === 'hotel_subscription' || $type === 'hotel_tv_addon') {
             return redirect()->route('hotel.subscription')->with('error', $errorMsg);
         }
 
@@ -142,7 +162,7 @@ class PaymentCallbackController extends Controller
 
     protected function redirectToSource(string $type, string $message)
     {
-        if ($type === 'hotel_subscription') {
+        if ($type === 'hotel_subscription' || $type === 'hotel_tv_addon') {
             return redirect()->route('hotel.subscription')->with('success', $message);
         }
 

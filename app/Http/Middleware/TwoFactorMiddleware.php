@@ -28,14 +28,14 @@ class TwoFactorMiddleware
         }
 
         if ($user && $user->google2fa_enabled) {
-            if (!session('2fa_verified', false)) {
+            if (!session("2fa_verified:{$guard}:{$user->id}", false)) {
                 // Store pending 2FA state and logout current unverified session
+                Auth::guard($guard)->logout();
+                $request->session()->regenerate();
                 session([
                     '2fa:user:id' => $user->id,
                     '2fa:user:guard' => $guard,
                 ]);
-
-                Auth::guard($guard)->logout();
 
                 return redirect()->route('2fa.verify');
             }

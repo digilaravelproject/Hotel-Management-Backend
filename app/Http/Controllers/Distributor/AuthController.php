@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Distributor;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 
 class AuthController extends Controller
 {
@@ -32,21 +33,41 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::guard('web')->attempt($credentials, $request->boolean('remember'))) {
+        $email = strtolower(trim($credentials['email']));
+        $throttleKey = 'distributor-login:' . $email . '|' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $msg = "Too many login attempts. Please try again in {$seconds} seconds.";
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 429);
+            }
+            return back()->withErrors(['email' => $msg])->onlyInput('email');
+        }
+
+        if (Auth::guard('web')->attempt(['email' => $email, 'password' => $credentials['password']], $request->boolean('remember'))) {
             $user = Auth::guard('web')->user();
 
             // Verify account status
             if (!$user->status) {
                 Auth::guard('web')->logout();
+                RateLimiter::hit($throttleKey, 60);
+                if ($request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Your distributor account is currently deactivated. Please contact Super Admin.'], 403);
+                }
                 return back()->withErrors(['email' => 'Your distributor account is currently deactivated. Please contact Super Admin.'])->onlyInput('email');
             }
 
             // Verify user has distributor or super_admin role
             if (!$user->hasRole('distributor') && !$user->hasRole('super_admin')) {
                 Auth::guard('web')->logout();
+                RateLimiter::hit($throttleKey, 60);
+                if ($request->wantsJson()) {
+                    return response()->json(['success' => false, 'message' => 'Access denied. You do not have distributor privileges.'], 403);
+                }
                 return back()->withErrors(['email' => 'Access denied. You do not have distributor privileges.'])->onlyInput('email');
             }
 
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             if ($request->wantsJson()) {
@@ -60,6 +81,8 @@ class AuthController extends Controller
             return redirect()->intended(route('distributor.dashboard'))
                              ->with('success', "Welcome back, {$user->name}!");
         }
+
+        RateLimiter::hit($throttleKey, 60);
 
         if ($request->wantsJson()) {
             return response()->json(['success' => false, 'message' => 'Invalid email or password.'], 401);

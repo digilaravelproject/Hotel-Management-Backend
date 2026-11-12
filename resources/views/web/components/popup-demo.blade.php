@@ -30,6 +30,8 @@
             <!-- Form -->
             <form method="POST" action="{{ route('contact.submit') }}" id="demo-request-form">
                 @csrf
+                {{-- Anti-bot honeypot --}}
+                <input type="text" name="website_hp_check" value="" style="display:none !important; position:absolute !important; left:-9999px !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
                 
                 <div class="space-y-2 sm:space-y-3">
                     <!-- Row 1: Full Name & Phone Number -->
@@ -150,6 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(form.action, {
                 method: 'POST',
                 headers: headers,
+                credentials: 'include',
                 body: formData
             });
 

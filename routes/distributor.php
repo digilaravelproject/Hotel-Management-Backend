@@ -13,12 +13,12 @@ use App\Http\Controllers\Distributor\DistributorController;
 // Guest authentication routes
 Route::prefix('distributor')->name('distributor.')->group(function () {
     Route::get('login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+    Route::post('login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login'])->middleware('throttle:15,1');
     Route::post('logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('logout');
 });
 
-// Protected Distributor Routes (requires web auth and distributor/super_admin role)
-Route::middleware(['auth:web', 'role:distributor|super_admin'])->prefix('distributor')->name('distributor.')->group(function () {
+// Protected Distributor Routes (requires active web auth and distributor/super_admin role)
+Route::middleware(['auth:web', 'active_user', 'role:distributor|super_admin'])->prefix('distributor')->name('distributor.')->group(function () {
     Route::get('dashboard', [DistributorController::class, 'dashboard'])->name('dashboard');
 
     // Hotels onboarded by distributor

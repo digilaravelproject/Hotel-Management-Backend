@@ -29,8 +29,8 @@ Route::domain($mainDomain)->group(function () {
     // Dedicated Thank-You Page after demo request submission
     Route::get('/thank-you', [LandingPageController::class, 'thankYou'])->name('thank-you');
 
-    // Contact & Lead Generation Form Submission
-    Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->name('contact.submit');
+    // Contact & Lead Generation Form Submission (SEC-08: Rate limited)
+    Route::post('/contact-us', [LandingPageController::class, 'submitContact'])->middleware('throttle:10,1')->name('contact.submit');
     Route::get('/contact-us', [LandingPageController::class, 'contact'])->name('contact-us');
 
     // Secure 7-Day Signed APK Package Download
@@ -38,7 +38,7 @@ Route::domain($mainDomain)->group(function () {
 
     // Information & Support Pages
     Route::get('/privacy-policy', [LandingPageController::class, 'privacy'])->name('privacy-policy');
-    Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->name('register.suggest-plan');
+    Route::post('/register/suggest-plan', [LandingPageController::class, 'suggestPlan'])->middleware('throttle:30,1')->name('register.suggest-plan');
 });
 
 // Canonical 301 SEO Redirect: www.paxtvlauncher.com -> paxtvlauncher.com
@@ -65,7 +65,7 @@ Route::domain($appDomain)->group(function () {
 
     // Common Authentication Routes
     Route::get('/login', [CommonLoginController::class, 'showLoginForm'])->name('login');
-    Route::post('/login', [CommonLoginController::class, 'login']);
+    Route::post('/login', [CommonLoginController::class, 'login'])->middleware('throttle:15,1');
     Route::post('/logout', [CommonLoginController::class, 'logout'])->name('logout');
 
     // Payment Gateway Callbacks (PayU, etc.)

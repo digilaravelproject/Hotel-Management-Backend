@@ -130,22 +130,31 @@ class TemplateController extends Controller
 
             $extractedPath = null;
             if (class_exists('ZipArchive')) {
-                $zip    = new \ZipArchive();
+                $zip = new \ZipArchive();
                 $zipFullPath = Storage::disk('public')->path($filePath);
 
                 if ($zip->open($zipFullPath) === true) {
-                    // Remove old extracted folder for this theme (cleanup)
-                    if ($latestForTheme && !empty($latestForTheme->extracted_path)) {
-                        $oldExtractedFullPath = public_path($latestForTheme->extracted_path);
-                        if (is_dir($oldExtractedFullPath)) {
-                            $this->deleteDirectory($oldExtractedFullPath);
+                    try {
+                        // Remove old extracted folder for this theme (cleanup)
+                        if ($latestForTheme && !empty($latestForTheme->extracted_path)) {
+                            $oldExtractedFullPath = public_path($latestForTheme->extracted_path);
+                            if (is_dir($oldExtractedFullPath)) {
+                                $this->deleteDirectory($oldExtractedFullPath);
+                            }
                         }
-                    }
 
-                    @mkdir($extractFullPath, 0755, true);
-                    $zip->extractTo($extractFullPath);
+                        $this->extractSafeThemeZip($zip, $extractFullPath);
+                        $extractedPath = $extractFolder;
+                    } catch (\Throwable $e) {
+                        $zip->close();
+                        Storage::disk('public')->delete($filePath);
+                        \Illuminate\Support\Facades\Log::warning('Rejected unsafe theme ZIP upload', [
+                            'error' => $e->getMessage(),
+                            'admin_id' => auth('super_admin')->id(),
+                        ]);
+                        return back()->with('error', 'Theme archive rejected: ' . $e->getMessage());
+                    }
                     $zip->close();
-                    $extractedPath = $extractFolder;
                 }
             }
 
@@ -200,17 +209,171 @@ class TemplateController extends Controller
     /**
      * Recursively delete a directory and its contents.
      */
+    private function extractSafeThemeZip(\ZipArchive $zip, string $extractFullPath): void
+    {
+        $themesBase = public_path('themes');
+        if (!is_dir($themesBase)) {
+            @mkdir($themesBase, 0755, true);
+        }
+        $themesRoot = realpath($themesBase);
+        if ($themesRoot === false) {
+            throw new \RuntimeException('Themes directory could not be resolved.');
+        }
+
+        if (!is_dir($extractFullPath)) {
+            @mkdir($extractFullPath, 0755, true);
+        }
+        $extractRoot = realpath($extractFullPath);
+        $themesPrefix = rtrim($themesRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if ($extractRoot === false || !str_starts_with($extractRoot, $themesPrefix)) {
+            throw new \RuntimeException('Invalid theme extraction destination.');
+        }
+
+        $maxFiles = 2000;
+        $maxTotalBytes = 100 * 1024 * 1024; // 100 MB decompressed limit
+        $allowedExtensions = [
+            'html', 'htm', 'css', 'js', 'mjs', 'json', 'map', 'txt', 'md',
+            'png', 'jpg', 'jpeg', 'gif', 'webp', 'svg', 'ico',
+            'woff', 'woff2', 'ttf', 'otf', 'eot',
+            'mp4', 'webm', 'mp3', 'wav', 'ogg', 'xml', 'lottie', 'wasm',
+        ];
+        $blockedBasenames = ['.htaccess', '.htpasswd', '.user.ini', '.env', 'web.config'];
+
+        if ($zip->numFiles > $maxFiles) {
+            throw new \RuntimeException('Theme archive contains too many entries.');
+        }
+
+        $totalBytes = 0;
+
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $stat = $zip->statIndex($i);
+            if ($stat === false || !isset($stat['name'])) {
+                throw new \RuntimeException('Corrupted ZIP entry encountered.');
+            }
+
+            $rawName = $stat['name'];
+            if (str_contains($rawName, "\0")) {
+                throw new \RuntimeException('Invalid null byte in archive path.');
+            }
+
+            $normalized = str_replace('\\', '/', $rawName);
+            if (str_starts_with($normalized, '/') || preg_match('/^[A-Za-z]:/', $normalized)) {
+                throw new \RuntimeException('Absolute path in archive is not allowed.');
+            }
+
+            $isDir = str_ends_with($normalized, '/');
+            $trimmed = trim($normalized, '/');
+            if ($trimmed === '') {
+                continue;
+            }
+
+            $segments = explode('/', $trimmed);
+            foreach ($segments as $segment) {
+                if ($segment === '' || $segment === '.' || $segment === '..') {
+                    throw new \RuntimeException('Path traversal segment detected in archive.');
+                }
+            }
+
+            // Skip macOS resource fork noise safely
+            if ($segments[0] === '__MACOSX') {
+                continue;
+            }
+
+            // Reject Unix symlinks inside ZIP archives
+            $opsys = 0;
+            $externalAttr = 0;
+            if ($zip->getExternalAttributesIndex($i, $opsys, $externalAttr)) {
+                if ($opsys === \ZipArchive::OPSYS_UNIX && ((($externalAttr >> 16) & 0xF000) === 0xA000)) {
+                    throw new \RuntimeException('Symbolic links inside theme archives are not allowed.');
+                }
+            }
+
+            $targetRelative = implode(DIRECTORY_SEPARATOR, $segments);
+            $targetPath = $extractRoot . DIRECTORY_SEPARATOR . $targetRelative;
+
+            if ($isDir) {
+                if (!is_dir($targetPath)) {
+                    @mkdir($targetPath, 0755, true);
+                }
+                continue;
+            }
+
+            $basename = strtolower(end($segments));
+            if (in_array($basename, $blockedBasenames, true)) {
+                throw new \RuntimeException("Disallowed configuration file in archive: {$basename}");
+            }
+
+            $ext = strtolower(pathinfo($basename, PATHINFO_EXTENSION));
+            if ($ext === '' || !in_array($ext, $allowedExtensions, true)) {
+                throw new \RuntimeException("Disallowed file extension in theme archive: .{$ext}");
+            }
+
+            $parentDir = dirname($targetPath);
+            if (!is_dir($parentDir)) {
+                @mkdir($parentDir, 0755, true);
+            }
+            $parentReal = realpath($parentDir);
+            $extractPrefix = rtrim($extractRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            if ($parentReal === false || ($parentReal !== $extractRoot && !str_starts_with($parentReal, $extractPrefix))) {
+                throw new \RuntimeException('Resolved archive path escapes theme directory.');
+            }
+
+            $stream = $zip->getStream($rawName);
+            if ($stream === false) {
+                throw new \RuntimeException("Unable to read archive entry: {$trimmed}");
+            }
+
+            $out = fopen($targetPath, 'wb');
+            if ($out === false) {
+                fclose($stream);
+                throw new \RuntimeException("Unable to write archive entry: {$trimmed}");
+            }
+
+            try {
+                while (!feof($stream)) {
+                    $chunk = fread($stream, 8192);
+                    if ($chunk === false) {
+                        throw new \RuntimeException("Failed reading archive stream: {$trimmed}");
+                    }
+                    $totalBytes += strlen($chunk);
+                    if ($totalBytes > $maxTotalBytes) {
+                        throw new \RuntimeException('Theme archive exceeds maximum uncompressed size limit.');
+                    }
+                    fwrite($out, $chunk);
+                }
+            } finally {
+                fclose($out);
+                fclose($stream);
+            }
+        }
+    }
+
     private function deleteDirectory(string $dir): void
     {
-        if (!is_dir($dir)) {
+        $themesRoot = realpath(public_path('themes'));
+        $targetReal = realpath($dir);
+        if ($themesRoot === false || $targetReal === false) {
             return;
         }
-        $items = array_diff(scandir($dir), ['.', '..']);
-        foreach ($items as $item) {
-            $path = $dir . DIRECTORY_SEPARATOR . $item;
-            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
+
+        $themesPrefix = rtrim($themesRoot, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        if (!str_starts_with($targetReal, $themesPrefix) || is_link($dir)) {
+            \Illuminate\Support\Facades\Log::warning('Blocked unsafe deleteDirectory outside themes directory', ['dir' => $dir]);
+            return;
         }
-        rmdir($dir);
+
+        $items = array_diff(scandir($targetReal), ['.', '..']);
+        foreach ($items as $item) {
+            $path = $targetReal . DIRECTORY_SEPARATOR . $item;
+            if (is_link($path)) {
+                @unlink($path);
+            } elseif (is_dir($path)) {
+                $this->deleteDirectory($path);
+            } else {
+                @unlink($path);
+            }
+        }
+        @rmdir($targetReal);
     }
 
     /**

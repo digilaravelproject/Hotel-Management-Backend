@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 
 class CommonLoginController extends Controller
 {
@@ -55,6 +56,16 @@ class CommonLoginController extends Controller
             'password' => 'required|string',
         ]);
 
+        $throttleKey = 'login:' . strtolower(trim($credentials['email'])) . '|' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            $msg = "Too many login attempts. Please try again in {$seconds} seconds.";
+            if ($request->wantsJson()) {
+                return response()->json(['success' => false, 'message' => $msg], 429);
+            }
+            return back()->withErrors(['email' => $msg])->onlyInput('email');
+        }
+
         $remember = $request->boolean('remember');
         $email = strtolower(trim($credentials['email']));
         $password = $credentials['password'];
@@ -66,6 +77,8 @@ class CommonLoginController extends Controller
         if ($superAdmin && Hash::check($password, $superAdmin->password)) {
             // Check 2FA
             if ($superAdmin->google2fa_enabled) {
+                session()->forget(["2fa_verified:super_admin:{$superAdmin->id}", '2fa_verified']);
+                $request->session()->regenerate();
                 session([
                     '2fa:user:id' => $superAdmin->id,
                     '2fa:user:guard' => 'super_admin',
@@ -75,7 +88,9 @@ class CommonLoginController extends Controller
             }
 
             Auth::guard('super_admin')->login($superAdmin, $remember);
-            session()->put('2fa_verified', true);
+            RateLimiter::clear($throttleKey);
+            session()->forget('2fa_verified');
+            session()->put("2fa_verified:super_admin:{$superAdmin->id}", true);
             $request->session()->regenerate();
 
             if ($request->wantsJson()) {
@@ -102,6 +117,7 @@ class CommonLoginController extends Controller
             }
 
             Auth::guard('web')->login($user, $remember);
+            RateLimiter::clear($throttleKey);
             $request->session()->regenerate();
 
             // Direct to appropriate dashboard based on Spatie roles
@@ -149,6 +165,8 @@ class CommonLoginController extends Controller
 
             // Check 2FA
             if ($hotelAdmin->google2fa_enabled) {
+                session()->forget(["2fa_verified:hotel_admin:{$hotelAdmin->id}", '2fa_verified']);
+                $request->session()->regenerate();
                 session([
                     '2fa:user:id' => $hotelAdmin->id,
                     '2fa:user:guard' => 'hotel_admin',
@@ -158,7 +176,9 @@ class CommonLoginController extends Controller
             }
 
             Auth::guard('hotel_admin')->login($hotelAdmin, $remember);
-            session()->put('2fa_verified', true);
+            RateLimiter::clear($throttleKey);
+            session()->forget('2fa_verified');
+            session()->put("2fa_verified:hotel_admin:{$hotelAdmin->id}", true);
             $request->session()->regenerate();
 
             $hasActivePlan = $hotelAdmin->plan_id 
@@ -181,6 +201,8 @@ class CommonLoginController extends Controller
         // ---------------------------------------------------------------------
         // 4. Invalid Credentials
         // ---------------------------------------------------------------------
+        RateLimiter::hit($throttleKey, 60);
+
         if ($request->wantsJson()) {
             return response()->json([
                 'success' => false,

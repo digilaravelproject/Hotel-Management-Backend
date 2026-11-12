@@ -44,39 +44,31 @@ class ImageHelper
         $extension = strtolower($isUploadedFile ? $file->getClientOriginalExtension() : pathinfo($file, PATHINFO_EXTENSION));
         $mime = $isUploadedFile ? $file->getClientMimeType() : (@mime_content_type($file) ?: '');
 
-        // 1. Vector graphics (SVG): Keep original SVG format for infinite vector scaling without rasterization
+        // 1. Vector graphics (SVG): Keep original SVG format for infinite vector scaling after strict DOM sanitization
         if ($extension === 'svg' || $mime === 'image/svg+xml') {
-            $savedName = $filename . '.svg';
-            if ($isUploadedFile) {
-                $file->move($destinationPath, $savedName);
-            } else {
-                @copy($file, $destinationPath . DIRECTORY_SEPARATOR . $savedName);
+            $svgSource = $isUploadedFile ? @file_get_contents($file->getRealPath()) : @file_get_contents($file);
+            if ($svgSource === false || trim($svgSource) === '') {
+                throw new \InvalidArgumentException('Uploaded SVG file is empty or unreadable.');
             }
+
+            $sanitizedSvg = self::sanitizeSvg($svgSource);
+            $savedName = $filename . '.svg';
+            file_put_contents($destinationPath . DIRECTORY_SEPARATOR . $savedName, $sanitizedSvg);
             return $cleanFolder . '/' . $savedName;
         }
 
-        // 2. Read source file content into memory
+        // 2. Read source file content into memory and strictly validate image via GD
         $filePath = $isUploadedFile ? $file->getRealPath() : $file;
         $fileContent = @file_get_contents($filePath);
 
         if ($fileContent === false) {
-            // Fallback move
-            $savedName = $filename . '.' . ($extension ?: 'jpg');
-            if ($isUploadedFile) {
-                $file->move($destinationPath, $savedName);
-            }
-            return $cleanFolder . '/' . $savedName;
+            throw new \InvalidArgumentException('Uploaded image file cannot be read.');
         }
 
         $sourceImage = @imagecreatefromstring($fileContent);
 
         if (!$sourceImage) {
-            // Fallback if GD cannot parse format
-            $savedName = $filename . '.' . ($extension ?: 'jpg');
-            if ($isUploadedFile) {
-                $file->move($destinationPath, $savedName);
-            }
-            return $cleanFolder . '/' . $savedName;
+            throw new \InvalidArgumentException('Uploaded file is not a valid or supported raster image.');
         }
 
         // 3. Fix JPEG / Phone camera EXIF orientation if available
@@ -190,30 +182,99 @@ class ImageHelper
         }
 
         $cleanPath = trim(str_replace('\\', '/', $path), '/');
+        if ($cleanPath === '' || str_contains($cleanPath, '..') || str_contains($cleanPath, "\0")) {
+            return false;
+        }
 
-        // Check standard public path
-        $publicFile = public_path($cleanPath);
-        if (file_exists($publicFile) && is_file($publicFile)) {
+        $publicRoot = realpath(public_path());
+        $storageRoot = realpath(storage_path('app/public'));
+
+        // Check standard public path safely within public root
+        $publicFile = realpath(public_path($cleanPath));
+        if ($publicFile && $publicRoot && str_starts_with($publicFile, $publicRoot . DIRECTORY_SEPARATOR) && is_file($publicFile)) {
             @unlink($publicFile);
             return true;
         }
 
-        // Check storage symlink variants
-        if (str_starts_with($cleanPath, 'storage/')) {
-            $storageSubPath = substr($cleanPath, 8);
-            $realStorage = storage_path('app/public/' . $storageSubPath);
-            if (file_exists($realStorage) && is_file($realStorage)) {
-                @unlink($realStorage);
-                return true;
-            }
-        } else {
-            $realStorage = storage_path('app/public/' . $cleanPath);
-            if (file_exists($realStorage) && is_file($realStorage)) {
-                @unlink($realStorage);
-                return true;
-            }
+        // Check storage symlink variants safely within storage/app/public root
+        $storageRel = str_starts_with($cleanPath, 'storage/') ? substr($cleanPath, 8) : $cleanPath;
+        $realStorage = realpath(storage_path('app/public/' . $storageRel));
+        if ($realStorage && $storageRoot && str_starts_with($realStorage, $storageRoot . DIRECTORY_SEPARATOR) && is_file($realStorage)) {
+            @unlink($realStorage);
+            return true;
         }
 
         return false;
+    }
+
+    /**
+     * Strict XML/DOM SVG sanitizer blocking active scripts, XXE/DTDs, foreignObject,
+     * SMIL animation vectors, event handlers, and javascript:/data: URIs.
+     */
+    public static function sanitizeSvg(string $svgSource): string
+    {
+        if (preg_match('/<!(?:DOCTYPE|ENTITY)|<\?(?:php|=)|javascript:|vbscript:/i', $svgSource)) {
+            throw new \InvalidArgumentException('Uploaded SVG contains prohibited directives or executable schemes.');
+        }
+
+        $prevUseErrors = libxml_use_internal_errors(true);
+        $dom = new \DOMDocument();
+        $loaded = $dom->loadXML($svgSource, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($prevUseErrors);
+
+        if (!$loaded || !$dom->documentElement || strtolower($dom->documentElement->localName ?? $dom->documentElement->nodeName) !== 'svg') {
+            throw new \InvalidArgumentException('Uploaded SVG document structure is invalid.');
+        }
+
+        $disallowedTags = [
+            'script', 'foreignobject', 'iframe', 'object', 'embed', 'applet',
+            'meta', 'link', 'base', 'style', 'animate', 'animatecolor',
+            'animatemotion', 'animatetransform', 'set', 'audio', 'video', 'handler',
+        ];
+
+        $xpath = new \DOMXPath($dom);
+        foreach ($xpath->query('//*') as $node) {
+            if (!($node instanceof \DOMElement)) {
+                continue;
+            }
+            $tagName = strtolower($node->localName ?? $node->nodeName);
+            if (in_array($tagName, $disallowedTags, true)) {
+                $node->parentNode?->removeChild($node);
+                continue;
+            }
+
+            // Inspect all attributes on remaining elements
+            $attrsToRemove = [];
+            foreach ($node->attributes as $attr) {
+                $attrName = strtolower($attr->nodeName);
+                $localAttr = strtolower($attr->localName ?? $attr->name);
+                $val = html_entity_decode(trim((string) $attr->nodeValue), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                if (str_starts_with($localAttr, 'on') || $localAttr === 'style') {
+                    $attrsToRemove[] = $attr->nodeName;
+                    continue;
+                }
+
+                if (in_array($localAttr, ['href', 'src', 'action', 'formaction'], true) || str_ends_with($attrName, ':href')) {
+                    if ($val !== '' && !str_starts_with($val, '#')) {
+                        $attrsToRemove[] = $attr->nodeName;
+                    }
+                } elseif (preg_match('/(?:javascript|vbscript|data\s*:\s*text\/html|expression\s*\()/i', $val)) {
+                    $attrsToRemove[] = $attr->nodeName;
+                }
+            }
+
+            foreach ($attrsToRemove as $removeName) {
+                $node->removeAttribute($removeName);
+            }
+        }
+
+        $cleanXml = $dom->saveXML($dom->documentElement);
+        if (!$cleanXml) {
+            throw new \InvalidArgumentException('Failed to serialize sanitized SVG content.');
+        }
+
+        return $cleanXml;
     }
 }

@@ -19,11 +19,17 @@ class PaymentGateway extends Model
         'extra_config',
     ];
 
+    protected $hidden = [
+        'api_key',
+        'api_secret',
+        'extra_config',
+    ];
+
     protected $casts = [
         'is_enabled' => 'boolean',
-        'extra_config' => 'array',
-        'api_key' => 'encrypted',
-        'api_secret' => 'encrypted',
+        'extra_config' => \App\Casts\SafeEncryptedGatewayExtraConfigCast::class,
+        'api_key' => \App\Casts\SafeEncryptedStringCast::class,
+        'api_secret' => \App\Casts\SafeEncryptedStringCast::class,
     ];
 
     /**

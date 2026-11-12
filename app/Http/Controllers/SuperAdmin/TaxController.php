@@ -39,6 +39,12 @@ class TaxController extends Controller
         $split1 = $isSplit ? (float) ($request->split_rate_1 ?? ($rate / 2)) : null;
         $split2 = $isSplit ? (float) ($request->split_rate_2 ?? ($rate - $split1)) : null;
 
+        if ($isSplit && abs(($split1 + $split2) - $rate) > 0.01) {
+            return back()->withInput()->withErrors([
+                'split_rate_1' => 'Split tax component rates must sum to the total tax rate (' . $rate . '%).',
+            ]);
+        }
+
         if ($request->boolean('is_default')) {
             Tax::where('is_default', true)->update(['is_default' => false]);
         }
@@ -83,6 +89,12 @@ class TaxController extends Controller
         $rate = (float) $request->rate;
         $split1 = $isSplit ? (float) ($request->split_rate_1 ?? ($rate / 2)) : null;
         $split2 = $isSplit ? (float) ($request->split_rate_2 ?? ($rate - $split1)) : null;
+
+        if ($isSplit && abs(($split1 + $split2) - $rate) > 0.01) {
+            return back()->withInput()->withErrors([
+                'split_rate_1' => 'Split tax component rates must sum to the total tax rate (' . $rate . '%).',
+            ]);
+        }
 
         if ($request->boolean('is_default')) {
             Tax::where('id', '!=', $tax->id)->where('is_default', true)->update(['is_default' => false]);

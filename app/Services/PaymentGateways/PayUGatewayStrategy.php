@@ -40,18 +40,22 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
         $merchantSalt = trim((string) ($this->gatewayModel->effective_api_secret ?: $this->gatewayModel->api_secret));
         $isLive = $this->gatewayModel->mode === 'live';
 
-        $txnid = 'txnid_' . rand(100000, 999999);
+        $txnid = 'txnid_' . strtoupper(\Illuminate\Support\Str::random(12));
         $productInfo = $customerDetails['product_info'] ?? 'Hotel Subscription';
         $firstName = $customerDetails['name'] ?? 'Hotel Admin';
         $email = $customerDetails['email'] ?? '';
         $phone = $customerDetails['phone'] ?? '';
 
         if (empty($merchantKey) || empty($merchantSalt)) {
-            // Mock simulation
+            if (!app()->environment(['local', 'testing'])) {
+                throw new Exception('PayU gateway credentials are not configured.');
+            }
+            // Mock simulation permitted ONLY in local/testing
+            $mockTxnId = 'txnid_mock_' . strtoupper(\Illuminate\Support\Str::random(10));
             return [
                 'success' => true,
-                'order_id' => $txnid,
-                'gateway_reference' => 'payu_ref_' . rand(100000, 999999),
+                'order_id' => $mockTxnId,
+                'gateway_reference' => 'payu_ref_' . bin2hex(random_bytes(4)),
                 'amount' => $amount,
                 'currency' => 'INR',
                 'checkout_url' => '#',
@@ -105,31 +109,38 @@ class PayUGatewayStrategy implements PaymentGatewayInterface
             return false;
         }
 
-        $merchantSalt = $this->gatewayModel->api_secret;
-        $merchantKey = $this->gatewayModel->api_key;
+        $merchantSalt = trim((string) ($this->gatewayModel->effective_api_secret ?: $this->gatewayModel->api_secret));
+        $merchantKey = trim((string) ($this->gatewayModel->effective_api_key ?: $this->gatewayModel->api_key));
 
-        $status = $payload['status'] ?? '';
-        $txnid = $payload['txnid'] ?? '';
-        $amount = $payload['amount'] ?? '';
-        $productInfo = $payload['productinfo'] ?? '';
-        $firstName = $payload['firstname'] ?? '';
-        $email = $payload['email'] ?? '';
-        $receivedHash = $payload['hash'] ?? '';
-        $udf1 = $payload['udf1'] ?? '';
-        $udf2 = $payload['udf2'] ?? '';
-        $udf3 = $payload['udf3'] ?? '';
-        $udf4 = $payload['udf4'] ?? '';
-        $udf5 = $payload['udf5'] ?? '';
+        $status = (string) ($payload['status'] ?? '');
+        $txnid = (string) ($payload['txnid'] ?? '');
+        $amount = (string) ($payload['amount'] ?? '');
+        $productInfo = (string) ($payload['productinfo'] ?? '');
+        $firstName = (string) ($payload['firstname'] ?? '');
+        $email = (string) ($payload['email'] ?? '');
+        $receivedHash = (string) ($payload['hash'] ?? '');
+        $additionalCharges = (string) ($payload['additionalCharges'] ?? '');
+        $udf1 = (string) ($payload['udf1'] ?? '');
+        $udf2 = (string) ($payload['udf2'] ?? '');
+        $udf3 = (string) ($payload['udf3'] ?? '');
+        $udf4 = (string) ($payload['udf4'] ?? '');
+        $udf5 = (string) ($payload['udf5'] ?? '');
 
-        if (empty($merchantSalt) || empty($receivedHash)) {
-            return $status === 'success';
+        if ($merchantKey === '' || $merchantSalt === '' || $receivedHash === '') {
+            if (app()->environment(['local', 'testing']) && str_starts_with($txnid, 'txnid_mock_')) {
+                return strtolower($status) === 'success';
+            }
+            return false;
         }
 
         // Reverse hash calculation for PayU response verification:
-        // salt|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key
+        // [additionalCharges|]salt|status||||||udf5|udf4|udf3|udf2|udf1|email|firstname|productinfo|amount|txnid|key
         $hashString = "{$merchantSalt}|{$status}||||||{$udf5}|{$udf4}|{$udf3}|{$udf2}|{$udf1}|{$email}|{$firstName}|{$productInfo}|{$amount}|{$txnid}|{$merchantKey}";
+        if ($additionalCharges !== '') {
+            $hashString = "{$additionalCharges}|{$hashString}";
+        }
         $calculatedHash = strtolower(hash('sha512', $hashString));
 
-        return $status === 'success' && hash_equals($calculatedHash, $receivedHash);
+        return strtolower($status) === 'success' && hash_equals($calculatedHash, strtolower($receivedHash));
     }
 }
