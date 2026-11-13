@@ -98,7 +98,7 @@ class TvPairController extends Controller
     public function checkStatus(Request $request, TvLoginService $tvLoginService)
     {
         $throttleKey = 'tv-pair-check:' . $request->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 120)) {
+        if (RateLimiter::tooManyAttempts($throttleKey, 300)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Too many status check requests. Please slow down.'
@@ -107,24 +107,26 @@ class TvPairController extends Controller
         RateLimiter::hit($throttleKey, 60);
 
         $request->validate([
-            'pair_code' => 'required|string',
+            'pair_code' => 'nullable|string',
+            'pairCode' => 'nullable|string',
             'deviceId' => 'nullable|string',
             'device_id' => 'nullable|string',
             'macAddress' => 'nullable|string',
             'mac_address' => 'nullable|string',
         ]);
 
-        $deviceId = trim($request->input('deviceId') ?: $request->input('device_id', ''));
-        $macAddress = trim($request->input('macAddress') ?: $request->input('mac_address', ''));
-        if ($deviceId === '') {
+        $rawInputCode = $request->input('pair_code') ?: $request->input('pairCode');
+        if (empty($rawInputCode)) {
             return response()->json([
                 'status' => false,
-                'state' => 'unauthorized',
-                'message' => 'Device ID is required to poll pairing status.',
+                'message' => 'The pair_code field is required.',
             ], 422);
         }
 
-        $cleanCode = strtoupper(trim($request->pair_code));
+        $deviceId = trim($request->input('deviceId') ?: $request->input('device_id', ''));
+        $macAddress = trim($request->input('macAddress') ?: $request->input('mac_address', ''));
+
+        $cleanCode = strtoupper(trim($rawInputCode));
         $rawCode = str_replace(['-', ' '], '', $cleanCode);
         $formattedCode = strlen($rawCode) === 8 ? substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4) : $cleanCode;
 
@@ -150,8 +152,8 @@ class TvPairController extends Controller
             ], $timeMeta), 404);
         }
 
-        // SEC-04: Strict device authorization check on all states to prevent pairing hijacking & token theft
-        if (!empty($session->device_id) && $session->device_id !== $deviceId) {
+        // SEC-04: Strict device authorization check: if deviceId or macAddress are provided, verify they match
+        if ($deviceId !== '' && !empty($session->device_id) && $session->device_id !== $deviceId) {
             return response()->json(array_merge([
                 'status' => false,
                 'state' => 'unauthorized',

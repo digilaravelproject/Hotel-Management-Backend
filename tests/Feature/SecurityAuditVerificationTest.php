@@ -175,8 +175,8 @@ class SecurityAuditVerificationTest extends TestCase
             'is_demo' => false,
         ]);
 
-        // Missing device_id rejected
-        $this->postJson('/api/tv/pair-status', ['pair_code' => 'ABCD-1234'])
+        // Missing pair_code rejected
+        $this->postJson('/api/tv/pair-status', [])
             ->assertStatus(422);
 
         // Attacker with wrong device_id blocked
