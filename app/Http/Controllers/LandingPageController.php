@@ -119,7 +119,25 @@ class LandingPageController extends Controller
             'phone' => 'required|string|max:30',
         ]);
 
-        // 1. Save directly to database
+        // 1. Cloudflare Turnstile Verification (if enabled in Super Admin settings)
+        $turnstile = app(\App\Services\TurnstileService::class);
+        if ($turnstile->isEnabled()) {
+            $token = $request->input('cf-turnstile-response');
+            if (!$turnstile->verify($token, $request->ip())) {
+                if ($request->expectsJson() || $request->ajax()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Security bot verification failed. Please refresh and try again.',
+                    ], 422);
+                }
+
+                return redirect()->back()->withInput()->withErrors([
+                    'cf-turnstile-response' => 'Security bot verification failed. Please try again.',
+                ]);
+            }
+        }
+
+        // 2. Save directly to database
         $inquiry = ContactInquiry::create([
             'name' => $validated['name'],
             'email' => $validated['email'],

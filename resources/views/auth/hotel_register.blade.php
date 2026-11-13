@@ -752,6 +752,16 @@
                         </div>
                     </div>
 
+                    @php
+                        $turnstile = app(\App\Services\TurnstileService::class);
+                    @endphp
+                    @if($turnstile->isEnabled())
+                        <!-- Cloudflare Turnstile Anti-Bot Security -->
+                        <div class="pt-4 flex justify-center">
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="light"></div>
+                        </div>
+                    @endif
+
                     <!-- Step 3 Actions: Back + Confirm & Pay Button -->
                     <div class="pt-5 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
                         <button type="button" 
@@ -1158,6 +1168,7 @@
                 hotel_name: document.getElementById('input_hotel_name')?.value,
                 email: document.getElementById('input_email')?.value,
                 phone: document.getElementById('input_phone')?.value,
+                'cf-turnstile-response': document.querySelector('[name="cf-turnstile-response"]')?.value || '',
             };
 
             const orderResponse = await fetch('{{ route("register.create-order") }}', {
@@ -1300,4 +1311,8 @@
         recalculatePricingStep();
     });
 </script>
+
+@if(app(\App\Services\TurnstileService::class)->isEnabled())
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
 @endsection

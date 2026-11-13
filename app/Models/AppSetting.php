@@ -18,11 +18,42 @@ class AppSetting extends Model
         'contact_email',
         'contact_phone',
         'default_theme_id',
+        'turnstile_enabled',
+        'turnstile_site_key',
+        'turnstile_secret_key',
     ];
 
     protected $casts = [
         'default_theme_id' => 'integer',
+        'turnstile_enabled' => 'boolean',
     ];
+
+    public function setTurnstileSecretKeyAttribute(?string $value): void
+    {
+        if (empty($value)) {
+            $this->attributes['turnstile_secret_key'] = null;
+            return;
+        }
+
+        try {
+            $this->attributes['turnstile_secret_key'] = \Illuminate\Support\Facades\Crypt::encryptString($value);
+        } catch (\Throwable) {
+            $this->attributes['turnstile_secret_key'] = $value;
+        }
+    }
+
+    public function getTurnstileSecretKeyAttribute(?string $value): ?string
+    {
+        if (empty($value)) {
+            return null;
+        }
+
+        try {
+            return \Illuminate\Support\Facades\Crypt::decryptString($value);
+        } catch (\Throwable) {
+            return $value;
+        }
+    }
 
     /**
      * Cache key for global app settings.

@@ -35,6 +35,9 @@ class SettingController extends Controller
             'contact_phone' => 'nullable|string|max:30',
             'app_logo' => 'nullable|file|mimes:png,jpg,jpeg,svg,webp|max:2048',
             'app_favicon' => 'nullable|file|mimes:ico,png,svg|max:1024',
+            'turnstile_enabled' => 'nullable|boolean',
+            'turnstile_site_key' => 'nullable|string|max:150',
+            'turnstile_secret_key' => 'nullable|string|max:255',
         ], [
             'app_name.required' => 'The Application Name is required.',
             'app_logo.mimes' => 'Application Logo must be a valid image format (PNG, JPG, JPEG, SVG, or WEBP).',
@@ -49,7 +52,15 @@ class SettingController extends Controller
             'footer_text' => $validated['footer_text'] ?? ('© ' . date('Y') . ' ' . $validated['app_name'] . '. All rights reserved.'),
             'contact_email' => $validated['contact_email'] ?? null,
             'contact_phone' => $validated['contact_phone'] ?? null,
+            'turnstile_enabled' => $request->boolean('turnstile_enabled'),
+            'turnstile_site_key' => $request->filled('turnstile_site_key') ? trim($request->input('turnstile_site_key')) : null,
         ];
+
+        if ($request->filled('turnstile_secret_key')) {
+            $data['turnstile_secret_key'] = trim($request->input('turnstile_secret_key'));
+        } elseif ($request->boolean('clear_turnstile_secret')) {
+            $data['turnstile_secret_key'] = null;
+        }
 
         // Ensure target directory exists in public/uploads/settings
         $destinationDir = public_path('uploads/settings');

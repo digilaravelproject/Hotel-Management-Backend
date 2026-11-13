@@ -57,6 +57,17 @@ class RegistrationController extends Controller
      */
     public function createOrder(CreateHotelRegistrationOrderRequest $request): JsonResponse
     {
+        $turnstile = app(\App\Services\TurnstileService::class);
+        if ($turnstile->isEnabled()) {
+            $token = $request->input('cf-turnstile-response');
+            if (!$turnstile->verify($token, $request->ip())) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Security bot verification failed. Please refresh the page and try again.',
+                ], 422);
+            }
+        }
+
         try {
             $orderData = $this->registrationService->createRegistrationOrder($request->validated());
 

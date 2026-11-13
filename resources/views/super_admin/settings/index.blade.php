@@ -356,7 +356,99 @@
             </div>
         </div>
 
-        <!-- Section 5: Payment Gateway Quick Management -->
+        <!-- Section 5: Cloudflare Turnstile Anti-Bot Security -->
+        <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-8 shadow-xs space-y-6">
+            <div class="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-2xl bg-cyan-50 border border-cyan-100 flex items-center justify-center text-cyan-600 shrink-0 shadow-2xs">
+                        <i class="fa-solid fa-shield-halved text-base"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight">Cloudflare Turnstile (Anti-Bot Protection)</h3>
+                        <p class="text-xs text-slate-500 font-medium">Automatic bot verification for public leads (Try Demo) and Hotel Registration forms.</p>
+                    </div>
+                </div>
+                <div>
+                    @if($setting->turnstile_enabled && !empty($setting->turnstile_site_key))
+                        <span class="inline-flex items-center px-3 py-1 text-[11px] font-bold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                            Turnstile Active
+                        </span>
+                    @else
+                        <span class="inline-flex items-center px-3 py-1 text-[11px] font-bold rounded-full bg-slate-100 text-slate-600 border border-slate-200">
+                            <i class="fa-solid fa-circle-pause mr-1.5 text-[10px]"></i>
+                            Turnstile Disabled (Honeypot Active)
+                        </span>
+                    @endif
+                </div>
+            </div>
+
+            <!-- Guidelines Callout -->
+            <div class="p-3.5 rounded-2xl bg-cyan-50/50 border border-cyan-100/80 flex items-start space-x-3">
+                <div class="w-7 h-7 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center shrink-0 mt-0.5 text-xs">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div class="text-[11px] text-slate-600 space-y-1">
+                    <span class="font-bold text-slate-800 block">How Cloudflare Turnstile Works:</span>
+                    <p>Turnstile delivers 100% free, friction-free verification without user puzzles. To get keys, log into your <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank" rel="noopener noreferrer" class="text-cyan-700 font-bold underline hover:text-cyan-900">Cloudflare Dashboard &rarr; Turnstile</a> and create a <strong>Managed</strong> widget for your domain.</p>
+                </div>
+            </div>
+
+            <!-- Toggle Switch & Keys -->
+            <div class="space-y-5">
+                <div class="flex items-center justify-between p-4 rounded-2xl bg-[#F8F9FD] border border-slate-200/80">
+                    <div>
+                        <label for="turnstile_enabled" class="text-xs font-bold text-slate-800 block cursor-pointer">Enable Cloudflare Turnstile</label>
+                        <p class="text-[11px] text-slate-500 font-medium">When turned ON and keys are provided, public forms will automatically require Turnstile verification.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" name="turnstile_enabled" id="turnstile_enabled" value="1" {{ old('turnstile_enabled', $setting->turnstile_enabled) ? 'checked' : '' }} class="sr-only peer">
+                        <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#150A42]"></div>
+                    </label>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700 flex items-center justify-between">
+                            <span>Turnstile Site Key (Public)</span>
+                            <span class="text-[10px] text-slate-400 font-mono">Frontend widget</span>
+                        </label>
+                        <input type="text" 
+                               name="turnstile_site_key" 
+                               value="{{ old('turnstile_site_key', $setting->turnstile_site_key) }}"
+                               placeholder="e.g. 0x4AAAAAAABcdef12345678"
+                               class="w-full px-4 py-2.5 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-slate-700 flex items-center justify-between">
+                            <span>Turnstile Secret Key (Private)</span>
+                            <span class="text-[10px] text-slate-400 font-mono">Server-side verification</span>
+                        </label>
+                        <div class="relative">
+                            <input type="password" 
+                                   name="turnstile_secret_key" 
+                                   id="turnstile_secret_key"
+                                   placeholder="{{ !empty($setting->turnstile_secret_key) ? '•••••••••••••••••••••••••••••••• (Configured)' : 'e.g. 0x4AAAAAAABcdef987654321' }}"
+                                   class="w-full px-4 py-2.5 pr-10 bg-[#F8F9FD] border border-slate-200 rounded-xl text-xs font-mono font-semibold text-slate-900 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] transition-all">
+                            <button type="button" 
+                                    onclick="toggleTurnstileSecretVisibility()" 
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer">
+                                <i id="turnstileSecretEye" class="fa-solid fa-eye text-xs"></i>
+                            </button>
+                        </div>
+                        @if(!empty($setting->turnstile_secret_key))
+                        <div class="flex items-center space-x-2 pt-0.5">
+                            <input type="checkbox" name="clear_turnstile_secret" id="clear_turnstile_secret" value="1" class="rounded text-[#150A42] focus:ring-[#150A42]">
+                            <label for="clear_turnstile_secret" class="text-[10.5px] text-rose-600 font-medium cursor-pointer">Remove / clear existing saved Secret Key</label>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Payment Gateway Quick Management -->
         <div class="bg-white border border-slate-200/80 rounded-[26px] p-5 sm:p-8 shadow-xs space-y-4">
             <div class="border-b border-slate-100 pb-4 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -476,6 +568,21 @@
             document.getElementById('faviconSelectedInfo').classList.remove('hidden');
         };
         reader.readAsDataURL(file);
+    }
+
+    function toggleTurnstileSecretVisibility() {
+        const input = document.getElementById('turnstile_secret_key');
+        const eye = document.getElementById('turnstileSecretEye');
+        if (!input || !eye) return;
+        if (input.type === 'password') {
+            input.type = 'text';
+            eye.classList.remove('fa-eye');
+            eye.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            eye.classList.remove('fa-eye-slash');
+            eye.classList.add('fa-eye');
+        }
     }
 </script>
 @endsection

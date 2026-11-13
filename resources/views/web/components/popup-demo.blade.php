@@ -73,6 +73,16 @@
                                style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
                     </div>
 
+                    @php
+                        $turnstile = app(\App\Services\TurnstileService::class);
+                    @endphp
+                    @if($turnstile->isEnabled())
+                        <!-- Cloudflare Turnstile Auto-Verify Widget -->
+                        <div class="pt-1 flex justify-center">
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="dark" data-size="flexible"></div>
+                        </div>
+                    @endif
+
                     <!-- Submit Button -->
                     <div class="pt-2 sm:pt-3">
                         <button type="submit"
@@ -161,3 +171,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+@if(app(\App\Services\TurnstileService::class)->isEnabled())
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
