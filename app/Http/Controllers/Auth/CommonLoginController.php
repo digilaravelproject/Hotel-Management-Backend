@@ -50,16 +50,7 @@ class CommonLoginController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
-        ]);
-
-        $remember = $request->boolean('remember');
-        $email = strtolower(trim($credentials['email']));
-        $password = $credentials['password'];
-
-        // Cloudflare Turnstile Bot Verification (if enabled)
+        // 1. Cloudflare Turnstile Bot Verification first (executes canonical siteverify before credentials check)
         $turnstile = app(\App\Services\TurnstileService::class);
         if ($turnstile->isEnabled()) {
             $token = $request->input('cf-turnstile-response');
@@ -69,6 +60,15 @@ class CommonLoginController extends Controller
                 ]);
             }
         }
+
+        $credentials = $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        $remember = $request->boolean('remember');
+        $email = strtolower(trim($credentials['email']));
+        $password = $credentials['password'];
 
         // ---------------------------------------------------------------------
         // 1. Check Super Admin Guard (SuperAdmin Model)
