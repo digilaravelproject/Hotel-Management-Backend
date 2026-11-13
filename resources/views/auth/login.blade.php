@@ -263,6 +263,15 @@
                         @endif
                     </div>
 
+                    @php
+                        $turnstile = app(\App\Services\TurnstileService::class);
+                    @endphp
+                    @if($turnstile->isEnabled())
+                        <div class="pt-3 flex justify-center">
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="light" data-action="login"></div>
+                        </div>
+                    @endif
+
                     <!-- Sign In Pill Button (Signature Arrow + Gradient) -->
                     <button type="submit" 
                             class="w-full mt-6 py-4 px-8 rounded-full bg-gradient-to-r from-[#FF5722] to-[#FF3D00] hover:from-[#f4511e] hover:to-[#e63900] text-white font-extrabold text-sm tracking-wide shadow-lg shadow-[#FF5722]/30 hover:shadow-xl hover:shadow-[#FF5722]/40 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center space-x-2 cursor-pointer">
@@ -419,4 +428,8 @@
         animateStars();
     })();
 </script>
+
+@if(app(\App\Services\TurnstileService::class)->isEnabled())
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
 @endsection

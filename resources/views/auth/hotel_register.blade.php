@@ -758,7 +758,7 @@
                     @if($turnstile->isEnabled())
                         <!-- Cloudflare Turnstile Anti-Bot Security -->
                         <div class="pt-4 flex justify-center">
-                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="light"></div>
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="light" data-action="signup"></div>
                         </div>
                     @endif
 

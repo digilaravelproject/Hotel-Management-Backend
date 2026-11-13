@@ -79,7 +79,7 @@
                     @if($turnstile->isEnabled())
                         <!-- Cloudflare Turnstile Auto-Verify Widget (Clean, Seamless, No White Outline) -->
                         <div class="pt-1 pb-0.5 flex justify-center items-center overflow-hidden">
-                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="dark" data-size="normal"></div>
+                            <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="dark" data-size="normal" data-action="contact"></div>
                         </div>
                     @endif
 

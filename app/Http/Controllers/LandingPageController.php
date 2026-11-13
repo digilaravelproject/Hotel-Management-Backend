@@ -119,11 +119,11 @@ class LandingPageController extends Controller
             'phone' => 'required|string|max:30',
         ]);
 
-        // 1. Cloudflare Turnstile Verification (if enabled in Super Admin settings)
+        // 1. Cloudflare Turnstile Verification (if enabled in Super Admin settings or .env)
         $turnstile = app(\App\Services\TurnstileService::class);
         if ($turnstile->isEnabled()) {
             $token = $request->input('cf-turnstile-response');
-            if (!$turnstile->verify($token, $request->ip())) {
+            if (!$turnstile->verify($token, $request->ip(), 'contact')) {
                 if ($request->expectsJson() || $request->ajax()) {
                     return response()->json([
                         'success' => false,

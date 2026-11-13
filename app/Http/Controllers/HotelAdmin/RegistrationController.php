@@ -60,7 +60,7 @@ class RegistrationController extends Controller
         $turnstile = app(\App\Services\TurnstileService::class);
         if ($turnstile->isEnabled()) {
             $token = $request->input('cf-turnstile-response');
-            if (!$turnstile->verify($token, $request->ip())) {
+            if (!$turnstile->verify($token, $request->ip(), 'signup')) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Security bot verification failed. Please refresh the page and try again.',

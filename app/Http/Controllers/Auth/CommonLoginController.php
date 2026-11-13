@@ -59,6 +59,17 @@ class CommonLoginController extends Controller
         $email = strtolower(trim($credentials['email']));
         $password = $credentials['password'];
 
+        // Cloudflare Turnstile Bot Verification (if enabled)
+        $turnstile = app(\App\Services\TurnstileService::class);
+        if ($turnstile->isEnabled()) {
+            $token = $request->input('cf-turnstile-response');
+            if (!$turnstile->verify($token, $request->ip(), 'login')) {
+                return redirect()->back()->withInput($request->only('email'))->withErrors([
+                    'email' => 'Security bot verification failed. Please try again.',
+                ]);
+            }
+        }
+
         // ---------------------------------------------------------------------
         // 1. Check Super Admin Guard (SuperAdmin Model)
         // ---------------------------------------------------------------------

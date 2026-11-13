@@ -296,6 +296,15 @@
                                 <textarea name="message" id="message" rows="5" required placeholder="Tell us about your property, estimated room count, or specific requirements..." class="w-full px-4 py-3 bg-[#FAF8F5] border border-[#E5DAC8] rounded-xl text-xs font-medium focus:bg-white focus:outline-none focus:border-[#C5A880] transition-all resize-y">{{ old('message') }}</textarea>
                             </div>
 
+                            @php
+                                $turnstile = app(\App\Services\TurnstileService::class);
+                            @endphp
+                            @if($turnstile->isEnabled())
+                                <div class="pt-2 flex justify-start">
+                                    <div class="cf-turnstile" data-sitekey="{{ $turnstile->getSiteKey() }}" data-theme="light" data-action="contact"></div>
+                                </div>
+                            @endif
+
                             <!-- Submit Action -->
                             <div class="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <p class="text-[11px] text-slate-500">
@@ -474,4 +483,8 @@
     </footer>
 
 </div>
+
+@if(app(\App\Services\TurnstileService::class)->isEnabled())
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+@endif
 @endsection
