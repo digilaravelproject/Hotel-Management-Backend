@@ -19,7 +19,7 @@
                     <span class="text-2xl font-extrabold tracking-tight text-slate-900">
                         Hotel<span class="text-indigo-600">TV</span>
                     </span>
-                </div>
+                </div> 
 
                 <!-- Navigation Links -->
                 <nav class="hidden md:flex items-center space-x-8">
