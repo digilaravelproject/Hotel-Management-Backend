@@ -1124,46 +1124,27 @@ class="post-10 page type-page status-publish ast-article-single" id="post-10" it
 
 							<input type="hidden" name="queried_id" value="10"/>
 			
+			<!-- Honeypot anti-spam -->
+			<div style="position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+				<input type="text" name="website_url" tabindex="-1" autocomplete="off" value="">
+			</div>
+
 			<div class="elementor-form-fields-wrapper elementor-labels-above">
-								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
+								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-100 elementor-sm-100 elementor-field-required elementor-mark-required">
 												<label for="form-field-name" class="elementor-field-label">
 								Full Name							</label>
 														<input size="1" type="text" name="form_fields[name]" id="form-field-name" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="Your full name" required="required">
 											</div>
-								<div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
-												<label for="form-field-phone" class="elementor-field-label">
-								Phone							</label>
-								<input size="1" type="tel" name="form_fields[phone]" id="form-field-phone" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="+91 00000 00000" required="required" pattern="[0-9()#&amp;+*-=.]+" title="Only numbers and phone characters (#, -, *, etc) are accepted.">
-
-						</div>
 								<div class="elementor-field-type-email elementor-field-group elementor-column elementor-field-group-email elementor-col-100 elementor-sm-100 elementor-field-required elementor-mark-required">
 												<label for="form-field-email" class="elementor-field-label">
 								Email							</label>
 														<input size="1" type="email" name="form_fields[email]" id="form-field-email" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="you@hotel.com" required="required">
 											</div>
-								<div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-hotel elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
-												<label for="form-field-hotel" class="elementor-field-label">
-								Hotel Name							</label>
-														<input size="1" type="text" name="form_fields[hotel]" id="form-field-hotel" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="Name of your hotel" required="required">
-											</div>
-								<div class="elementor-field-type-select elementor-field-group elementor-column elementor-field-group-rooms elementor-col-50 elementor-sm-100 elementor-field-required elementor-mark-required">
-												<label for="form-field-rooms" class="elementor-field-label">
-								Number of Rooms							</label>
-								<div class="elementor-field elementor-select-wrapper remove-before ">
-			<div class="select-caret-down-wrapper">
-				<svg aria-hidden="true" class="e-font-icon-svg e-eicon-caret-down" viewBox="0 0 571.4 571.4" xmlns="http://www.w3.org/2000/svg"><path d="M571 393Q571 407 561 418L311 668Q300 679 286 679T261 668L11 418Q0 407 0 393T11 368 36 357H536Q550 357 561 368T571 393Z"></path></svg>			</div>
-			<select name="form_fields[rooms]" id="form-field-rooms" class="elementor-field-textual elementor-size-md" required="required">
-									<option value="1 - 50">1 - 50</option>
-									<option value="51 - 100">51 - 100</option>
-									<option value="101 - 250">101 - 250</option>
-									<option value="250+">250+</option>
-							</select>
-		</div>
+								<div class="elementor-field-type-tel elementor-field-group elementor-column elementor-field-group-phone elementor-col-100 elementor-sm-100 elementor-field-required elementor-mark-required">
+												<label for="form-field-phone" class="elementor-field-label">
+								Mobile Number							</label>
+								<input size="1" type="tel" name="form_fields[phone]" id="form-field-phone" class="elementor-field elementor-size-md  elementor-field-textual" placeholder="+91 00000 00000" required="required" pattern="[0-9()#&amp;+*-=.]+" title="Only numbers and phone characters (#, -, *, etc) are accepted.">
 						</div>
-								<div class="elementor-field-type-textarea elementor-field-group elementor-column elementor-field-group-message elementor-col-100 elementor-sm-100">
-												<label for="form-field-message" class="elementor-field-label">
-								Message							</label>
-						<textarea class="elementor-field-textual elementor-field  elementor-size-md" name="form_fields[message]" id="form-field-message" rows="3" placeholder="Tell us about your requirement (optional)"></textarea>				</div>
 								<div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
 					<button class="elementor-button elementor-size-md" type="submit">
 						<span class="elementor-button-content-wrapper">
@@ -1334,9 +1315,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 name: formData.get('form_fields[name]') || '',
                 phone: formData.get('form_fields[phone]') || '',
                 email: formData.get('form_fields[email]') || '',
-                hotel_name: formData.get('form_fields[hotel]') || '',
-                subject: 'Hotel Demo Request (' + (formData.get('form_fields[rooms]') || 'General') + ')',
-                message: formData.get('form_fields[message]') || 'Demo requested from landing page popup.'
+                website_url: formData.get('website_url') || '',
+                subject: 'Hotel Demo Request',
+                message: 'Demo requested from landing page popup.'
             };
 
             try {

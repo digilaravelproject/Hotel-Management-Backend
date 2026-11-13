@@ -246,6 +246,11 @@
                         <form action="{{ route('contact.submit') }}" method="POST" class="space-y-5">
                             @csrf
 
+                            <!-- Honeypot anti-spam -->
+                            <div style="position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                                <input type="text" name="website_url" tabindex="-1" autocomplete="off" value="">
+                            </div>
+
                             <!-- Name & Email Row -->
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="space-y-1.5">

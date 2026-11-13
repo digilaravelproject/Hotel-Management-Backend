@@ -90,35 +90,46 @@ class LandingPageController extends Controller
      */
     public function submitContact(Request $request)
     {
+        // 0. Honeypot Anti-Spam Check: If a bot fills hidden honeypot fields, drop silently
+        $honeypot = $request->input('website_url') 
+                 ?? $request->input('form_fields.website_url') 
+                 ?? $request->input('website_hp');
+
+        if (!empty($honeypot)) {
+            Log::info('Spam bot blocked via honeypot:', [
+                'ip' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 150),
+            ]);
+
+            // Fake success response so bot believes submission succeeded without polluting DB or triggering emails
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Thank you! Your request has been received.',
+                    'redirect_url' => route('thank-you'),
+                ]);
+            }
+
+            return redirect()->route('thank-you')->with('success', 'Thank you! Your demo request has been received.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:120',
             'email' => 'required|email|max:150',
-            'phone' => 'nullable|string|max:30',
-            'hotel_name' => 'nullable|string|max:150',
-            'property' => 'nullable|string|max:150',
-            'rooms' => 'nullable|integer|min:1',
-            'subject' => 'nullable|string|max:200',
-            'message' => 'nullable|string|max:3000',
+            'phone' => 'required|string|max:30',
         ]);
-
-        $hotelName = $validated['hotel_name'] ?? ($validated['property'] ?? null);
-        $subject = $validated['subject'] ?? 'Pax TV Launcher Demo Request';
 
         // 1. Save directly to database
         $inquiry = ContactInquiry::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'hotel_name' => $hotelName,
-            'rooms' => $validated['rooms'] ?? null,
-            'subject' => $subject,
-            'message' => $validated['message'] ?? null,
+            'phone' => $validated['phone'],
             'status' => 'new',
             'ip_address' => $request->ip(),
             'user_agent' => substr((string) $request->userAgent(), 0, 255),
         ]);
 
-        Log::info('Public Website Lead Saved:', ['id' => $inquiry->id, 'email' => $inquiry->email, 'hotel' => $hotelName]);
+        Log::info('Public Website Lead Saved:', ['id' => $inquiry->id, 'email' => $inquiry->email]);
 
         // 2. Send Thank You Email to the user (non-blocking in case mail server is offline)
         try {

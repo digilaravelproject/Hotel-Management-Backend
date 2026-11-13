@@ -31,79 +31,50 @@
             <form method="POST" action="{{ route('contact.submit') }}" id="demo-request-form">
                 @csrf
                 
-                <div class="space-y-2 sm:space-y-3">
-                    <!-- Row 1: Full Name & Phone Number -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                        <div>
-                            <label for="form_field_name" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1">
-                                Full Name <span class="text-[#EF4444]">*</span>
-                            </label>
-                            <input type="text" name="name" id="form_field_name" required
-                                   placeholder="Enter your full name"
-                                   class="w-full px-3 py-2 sm:py-2.5 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
-                                   style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
-                        </div>
+                <!-- Anti-spam Honeypot Field (Hidden from real users, attractive to bots) -->
+                <div style="position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
+                    <label for="form_field_website_url">Leave this field blank</label>
+                    <input type="text" name="website_url" id="form_field_website_url" tabindex="-1" autocomplete="off" value="">
+                </div>
 
-                        <div>
-                            <label for="form_field_phone" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1">
-                                Phone Number <span class="text-[#EF4444]">*</span>
-                            </label>
-                            <input type="tel" name="phone" id="form_field_phone" required
-                                   placeholder="+91 00000 00000"
-                                   pattern="[0-9()#&+*\-=. ]+"
-                                   title="Only numbers and phone characters (#, -, *, etc) are accepted."
-                                   class="w-full px-3 py-2 sm:py-2.5 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
-                                   style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
-                        </div>
+                <div class="space-y-3 sm:space-y-4">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="form_field_name" class="block font-heading text-[12px] sm:text-[13.5px] font-medium text-[#CBD5E1] mb-1">
+                            Full Name <span class="text-[#EF4444]">*</span>
+                        </label>
+                        <input type="text" name="name" id="form_field_name" required
+                               placeholder="Enter your full name"
+                               class="w-full px-3.5 py-2.5 sm:py-3 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
+                               style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
                     </div>
 
-                    <!-- Row 2: Email Address -->
+                    <!-- Email Address -->
                     <div>
-                        <label for="form_field_email" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1">
+                        <label for="form_field_email" class="block font-heading text-[12px] sm:text-[13.5px] font-medium text-[#CBD5E1] mb-1">
                             Email Address <span class="text-[#EF4444]">*</span>
                         </label>
                         <input type="email" name="email" id="form_field_email" required
                                placeholder="you@company.com"
-                               class="w-full px-3 py-2 sm:py-2.5 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
+                               class="w-full px-3.5 py-2.5 sm:py-3 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
                                style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
                     </div>
 
-                    <!-- Row 3: Hotel / Property Name & Number of Rooms (2-column on mobile too!) -->
-                    <div class="grid grid-cols-2 gap-2 sm:gap-3">
-                        <div>
-                            <label for="form_field_property" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1 truncate">
-                                Hotel / Property
-                            </label>
-                            <input type="text" name="property" id="form_field_property"
-                                   placeholder="Hotel name"
-                                   class="w-full px-3 py-2 sm:py-2.5 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
-                                   style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
-                        </div>
-
-                        <div>
-                            <label for="form_field_rooms" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1 truncate">
-                                No. of Rooms
-                            </label>
-                            <input type="number" name="rooms" id="form_field_rooms"
-                                   placeholder="e.g. 120" min="1"
-                                   class="w-full px-3 py-2 sm:py-2.5 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
-                                   style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
-                        </div>
-                    </div>
-
-                    <!-- Row 4: Message (Compact 2 rows) -->
+                    <!-- Mobile Number -->
                     <div>
-                        <label for="form_field_message" class="block font-heading text-[11.5px] sm:text-[13px] font-medium text-[#CBD5E1] mb-1">
-                            Message
+                        <label for="form_field_phone" class="block font-heading text-[12px] sm:text-[13.5px] font-medium text-[#CBD5E1] mb-1">
+                            Mobile Number <span class="text-[#EF4444]">*</span>
                         </label>
-                        <textarea name="message" id="form_field_message" rows="2"
-                                  placeholder="Tell us about your requirements"
-                                  class="w-full px-3 py-1.5 sm:py-2 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition resize-none"
-                                  style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);"></textarea>
+                        <input type="tel" name="phone" id="form_field_phone" required
+                               placeholder="+91 00000 00000"
+                               pattern="[0-9()#&+*\-=. ]+"
+                               title="Only numbers and phone characters (#, -, *, etc) are accepted."
+                               class="w-full px-3.5 py-2.5 sm:py-3 rounded-[8px] sm:rounded-[10px] text-[13px] sm:text-[14px] text-white font-heading placeholder-slate-400 focus:outline-none focus:border-[#00fbff] focus:ring-1 focus:ring-[#00fbff] transition"
+                               style="background-color: rgba(255, 255, 255, 0.06); border: 1px solid rgba(0, 251, 255, 0.4);">
                     </div>
 
-                    <!-- Submit Button (Prominent & Always In View) -->
-                    <div class="pt-1">
+                    <!-- Submit Button -->
+                    <div class="pt-2 sm:pt-3">
                         <button type="submit"
                                 class="w-full py-2.5 sm:py-3.5 px-6 rounded-[8px] sm:rounded-[10px] font-heading text-[14px] sm:text-[15px] font-bold text-[#0E2556] bg-[#00fbff] hover:bg-[#33fcff] transition-all duration-300 shadow-[0_4px_18px_rgba(0,251,255,0.4)] cursor-pointer flex items-center justify-center">
                             <span>Request Demo</span>
