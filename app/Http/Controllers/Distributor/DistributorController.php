@@ -151,10 +151,15 @@ class DistributorController extends Controller
         $user = auth()->user();
         $validated = $request->validated();
 
-        // Enforce plan TV limit if plan is selected
+        // Enforce active & visible plan and plan TV limit if plan is selected
         if (!empty($validated['plan_id'])) {
-            $plan = Plan::find($validated['plan_id']);
-            if ($plan && $plan->room_count > 0 && !empty($validated['room_count']) && (int) $validated['room_count'] > $plan->room_count) {
+            $plan = Plan::where('status', true)->where('is_hidden', false)->find($validated['plan_id']);
+            if (!$plan) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'plan_id' => ['Selected subscription plan is unavailable or inactive.'],
+                ]);
+            }
+            if ($plan->room_count > 0 && !empty($validated['room_count']) && (int) $validated['room_count'] > $plan->room_count) {
                 $validated['room_count'] = $plan->room_count;
             }
         }
@@ -446,9 +451,13 @@ class DistributorController extends Controller
             'duration_months' => 'nullable|integer|in:1,3,6,12,24,36',
         ]);
 
-        // Security check: hotel must belong to the authenticated distributor
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
-        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
+        $plan = Plan::with('tax')
+            ->where('status', true)
+            ->where(function ($q) use ($hotel) {
+                $q->where('is_hidden', false)->orWhere('id', $hotel->plan_id);
+            })
+            ->findOrFail($validated['plan_id']);
 
         $saleType = $request->input('sale_type', 'subscription');
         $isAddon = ($saleType === 'addon');
@@ -511,21 +520,37 @@ class DistributorController extends Controller
                 ], 422);
             }
 
-            $order = $gateway->createOrder($amount, 'DSALE-' . strtoupper(Str::random(10)), [
-                'name' => $user->name ?? '',
-                'email' => $user->email ?? '',
-                'phone' => $user->phone ?? '',
-                'product_info' => $productInfo,
-                'udf1' => (string) $hotel->id,
-                'udf2' => (string) $plan->id,
-                'udf3' => (string) ($isAddon ? ($addonPricing['remaining_days'] ?? 30) : ($durationMonths ?? 1)),
-                'udf4' => (string) $user->id,
-                'udf5' => $isAddon ? "addon_{$additionalTvs}" : (string) ($tvCount ?? 1),
-            ]);
+            $paymentOrderService = app(\App\Services\PaymentOrderService::class);
+            $order = $paymentOrderService->createPendingOrder(
+                $gateway,
+                $amount,
+                'DSALE-',
+                [
+                    'name' => $user->name ?? '',
+                    'email' => $user->email ?? '',
+                    'phone' => $user->phone ?? '',
+                    'product_info' => $productInfo,
+                    'udf1' => (string) $hotel->id,
+                    'udf2' => (string) $plan->id,
+                    'udf3' => (string) ($isAddon ? ($addonPricing['remaining_days'] ?? 30) : ($durationMonths ?? 1)),
+                    'udf4' => (string) $user->id,
+                    'udf5' => $isAddon ? 'hotel_tv_addon' : 'distributor_sale',
+                ],
+                [
+                    'purpose' => $isAddon ? 'hotel_tv_addon' : 'distributor_sale',
+                    'hotel_admin_id' => $hotel->id,
+                    'distributor_id' => $user->id,
+                    'plan_id' => $plan->id,
+                    'sale_type' => $saleType,
+                    'tv_count' => $isAddon ? null : ($tvCount ?? 1),
+                    'additional_tvs' => $isAddon ? ($additionalTvs ?? 1) : null,
+                    'duration_months' => $durationMonths ?? 1,
+                ]
+            );
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to initialize payment: ' . $e->getMessage(),
+                'message' => 'Failed to initialize payment gateway. Please try again.',
             ], 422);
         }
 
@@ -553,9 +578,14 @@ class DistributorController extends Controller
         $user = auth()->user();
         $validated = $request->validated();
 
-        // Security check: ensure hotel belongs to authenticated distributor
+        // Security check: ensure hotel belongs to authenticated distributor & plan is active/visible
         $hotel = $user->hotels()->findOrFail($validated['hotel_id']);
-        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
+        $plan = Plan::with('tax')
+            ->where('status', true)
+            ->where(function ($q) use ($hotel) {
+                $q->where('is_hidden', false)->orWhere('id', $hotel->plan_id);
+            })
+            ->findOrFail($validated['plan_id']);
 
         $saleType = $request->input('sale_type', 'subscription');
         $isAddon = ($saleType === 'addon');
@@ -606,14 +636,16 @@ class DistributorController extends Controller
         $code = $gateway->getCode();
 
         if ($code === 'payu') {
-            $payload = $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash']);
-            $transactionId = $payload['txnid'] ?? '';
+            $payload = $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash', 'udf1', 'udf2', 'udf3', 'udf4', 'udf5', 'additionalCharges']);
+            $orderId = (string) ($payload['txnid'] ?? '');
+            $paymentReference = $orderId;
         } else {
             $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
-            $transactionId = $payload['razorpay_payment_id'] ?? '';
+            $orderId = (string) ($payload['razorpay_order_id'] ?? '');
+            $paymentReference = (string) ($payload['razorpay_payment_id'] ?? '');
         }
 
-        if (empty($transactionId) && empty($payload['razorpay_order_id'])) {
+        if ($orderId === '' && $paymentReference === '') {
             return $this->gatewaySaleResponse(
                 $request,
                 false,
@@ -621,126 +653,136 @@ class DistributorController extends Controller
             );
         }
 
-        if (!$gateway->verifyPayment($payload)) {
-            PaymentTransaction::create([
-                'distributor_id' => $user->id,
-                'hotel_admin_id' => $hotel->id,
-                'gateway_code' => $code,
-                'transaction_id' => (string) ($transactionId ?: 'failed_' . time()),
-                'amount' => $computedAmount,
-                'currency' => 'INR',
-                'status' => 'failed',
-                'payload' => $payload,
-                'plan_id' => $plan->id,
-            ]);
+        $paymentOrderService = app(\App\Services\PaymentOrderService::class);
 
+        try {
+            $txResult = \Illuminate\Support\Facades\DB::transaction(function () use (
+                $paymentOrderService,
+                $gateway,
+                $code,
+                $orderId,
+                $paymentReference,
+                $payload,
+                $hotel,
+                $plan,
+                $user,
+                $isAddon,
+                $computedAmount,
+                $validated,
+                &$tax,
+                &$taxType,
+                &$ratePerTv,
+                &$subtotal,
+                &$taxAmount,
+                &$cgst,
+                &$sgst,
+                &$tvCount,
+                &$durationMonths,
+                &$isYearly,
+                &$additionalTvs
+            ) {
+                $consumed = $paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    $orderId,
+                    $paymentReference,
+                    $payload,
+                    $isAddon ? 'hotel_tv_addon' : 'distributor_sale',
+                    [
+                        'hotel_admin_id' => $hotel->id,
+                        'distributor_id' => $user->id,
+                        'plan_id' => $plan->id,
+                        'expected_amount' => $computedAmount,
+                    ]
+                );
+
+                $finalTxId = $consumed['transaction_id'];
+                $authoritativeAmount = $consumed['amount'];
+
+                if ($isAddon) {
+                    $res = (new \App\Services\SubscriptionService())->addTvAddon($hotel, $additionalTvs, [
+                        'distributor_id' => $user->id,
+                        'amount' => $authoritativeAmount,
+                        'payment_method' => 'online_gateway',
+                        'gateway_code' => $code,
+                        'transaction_id' => $finalTxId,
+                        'payload' => $consumed['payload'],
+                        'skip_payment_tx_record' => true,
+                        'notes' => "Distributor online TV Add-On (+{$additionalTvs} TVs) for {$hotel->hotel_name}",
+                    ]);
+
+                    return ['is_addon' => true, 'result' => $res];
+                }
+
+                $salePayload = $validated;
+                $salePayload['amount'] = $authoritativeAmount;
+                $salePayload['tv_count'] = $tvCount;
+                $salePayload['notes'] = trim(
+                    ($validated['notes'] ?? '') .
+                    " | {$gateway->getName()} Verified: {$finalTxId}"
+                );
+
+                $res = $this->hotelService->assignPlanAndRecordSale(
+                    $hotel,
+                    $plan,
+                    $durationMonths,
+                    $salePayload,
+                    $user->id
+                );
+
+                $hotel->update(['room_count' => $tvCount]);
+
+                $invoice = null;
+                try {
+                    $invoice = \App\Models\Invoice::create([
+                        'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
+                        'hotel_admin_id' => $hotel->id,
+                        'distributor_id' => $user->id,
+                        'plan_id' => $plan->id,
+                        'plan_name' => $plan->name,
+                        'billing_cycle' => $plan->billing_cycle ?? 'monthly',
+                        'tv_count' => $tvCount,
+                        'price_per_tv' => $ratePerTv,
+                        'subtotal' => $subtotal,
+                        'tax_id' => $tax ? $tax->id : null,
+                        'tax_name' => $tax ? $tax->name : null,
+                        'tax_rate' => $tax ? (float) $tax->rate : 0.00,
+                        'tax_type' => $taxType,
+                        'tax_amount' => $taxAmount,
+                        'cgst_amount' => $cgst,
+                        'sgst_amount' => $sgst,
+                        'total_amount' => $authoritativeAmount,
+                        'payment_status' => 'paid',
+                        'payment_method' => 'online_gateway',
+                        'transaction_id' => $finalTxId,
+                        'paid_at' => now(),
+                        'period_start' => now(),
+                        'period_end' => $res['new_expiry'],
+                        'notes' => "Distributor sale for {$tvCount} TVs (" . ($isYearly ? (($durationMonths / 12) . " Year(s)") : "{$durationMonths} Months") . ") - {$plan->name}",
+                    ]);
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::warning("Distributor Invoice generation skipped or failed: " . $e->getMessage());
+                }
+
+                return ['is_addon' => false, 'result' => $res, 'invoice' => $invoice];
+            });
+        } catch (\Throwable $e) {
             return $this->gatewaySaleResponse(
                 $request,
                 false,
-                'Payment verification failed via ' . $gateway->getName() . '. The transaction was not trusted, license was not activated.'
+                $e instanceof \RuntimeException ? $e->getMessage() : ('Payment verification failed via ' . $gateway->getName() . '. The transaction was not trusted, license was not activated.')
             );
         }
 
-        // Prevent duplicate processing of the same gateway payment
-        if ($transactionId) {
-            $alreadyProcessed = PaymentTransaction::where('transaction_id', $transactionId)
-                ->where('status', 'success')
-                ->exists();
-
-            if ($alreadyProcessed) {
-                return $this->gatewaySaleResponse(
-                    $request,
-                    false,
-                    'This payment was already processed. Duplicate submission blocked.'
-                );
-            }
-        }
-
-        // Process TV Add-On specifically if sale_type is addon
-        if ($isAddon) {
-            $result = (new \App\Services\SubscriptionService())->addTvAddon($hotel, $additionalTvs, [
-                'distributor_id' => $user->id,
-                'amount' => $computedAmount,
-                'payment_method' => 'online_gateway',
-                'gateway_code' => $code,
-                'transaction_id' => (string) ($transactionId ?: ($payload['razorpay_order_id'] ?? '')),
-                'payload' => $payload,
-                'notes' => "Distributor online TV Add-On (+{$additionalTvs} TVs) for {$hotel->hotel_name}",
-            ]);
-
+        if ($txResult['is_addon']) {
             return $this->gatewaySaleResponse(
                 $request,
                 true,
-                "TV Add-On activated successfully! Authorized +{$additionalTvs} extra screens. Hotel property capacity is now {$result['new_tv_count']} TVs."
+                "TV Add-On activated successfully! Authorized +{$additionalTvs} extra screens. Hotel property capacity is now {$txResult['result']['new_tv_count']} TVs."
             );
         }
 
-        // Use the verified gateway amount (in rupees) instead of client-sent value
-        $validated['amount'] = $computedAmount;
-        $validated['tv_count'] = $tvCount;
-        $validated['notes'] = trim(
-            ($validated['notes'] ?? '') .
-            " | {$gateway->getName()} Verified: " . ($transactionId ?? $payload['razorpay_order_id'])
-        );
-
-        $result = $this->hotelService->assignPlanAndRecordSale(
-            $hotel,
-            $plan,
-            $validated['duration_months'],
-            $validated,
-            $user->id
-        );
-
-        // Update hotel TV capacity to matched purchased quota
-        $hotel->update(['room_count' => $tvCount]);
-
-        // Auto-generate Tax-Compliant Invoice for Distributor and Hotel Client
-        $invoice = null;
-        try {
-            $invoice = \App\Models\Invoice::create([
-                'invoice_number' => \App\Models\Invoice::generateInvoiceNumber(),
-                'hotel_admin_id' => $hotel->id,
-                'distributor_id' => $user->id,
-                'plan_id' => $plan->id,
-                'plan_name' => $plan->name,
-                'billing_cycle' => $plan->billing_cycle ?? 'monthly',
-                'tv_count' => $tvCount,
-                'price_per_tv' => $ratePerTv,
-                'subtotal' => $subtotal,
-                'tax_id' => $tax ? $tax->id : null,
-                'tax_name' => $tax ? $tax->name : null,
-                'tax_rate' => $tax ? (float) $tax->rate : 0.00,
-                'tax_type' => $taxType,
-                'tax_amount' => $taxAmount,
-                'cgst_amount' => $cgst,
-                'sgst_amount' => $sgst,
-                'total_amount' => $computedAmount,
-                'payment_status' => 'paid',
-                'payment_method' => 'online_gateway',
-                'transaction_id' => (string) ($transactionId ?: ($payload['razorpay_order_id'] ?? '')),
-                'paid_at' => now(),
-                'period_start' => now(),
-                'period_end' => $result['new_expiry'],
-                'notes' => "Distributor sale for {$tvCount} TVs (" . ($isYearly ? (($durationMonths / 12) . " Year(s)") : "{$durationMonths} Months") . ") - {$plan->name}",
-            ]);
-        } catch (\Throwable $e) {
-            \Illuminate\Support\Facades\Log::warning("Distributor Invoice generation skipped or failed: " . $e->getMessage());
-        }
-
-        // Record successful gateway transaction in the ledger
-        PaymentTransaction::create([
-            'distributor_id' => $user->id,
-            'hotel_admin_id' => $hotel->id,
-            'gateway_code' => $gateway->getCode(),
-            'transaction_id' => (string) ($transactionId ?? $payload['razorpay_order_id']),
-            'amount' => $computedAmount,
-            'currency' => 'INR',
-            'status' => 'success',
-            'payload' => $payload,
-            'plan_id' => $plan->id,
-            'paid_at' => now(),
-            'idempotency_checked' => true,
-        ]);
+        $result = $txResult['result'];
+        $invoice = $txResult['invoice'];
 
         if ($request->wantsJson()) {
             return response()->json([

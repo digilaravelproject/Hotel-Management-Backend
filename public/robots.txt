@@ -1,2 +1,9 @@
 User-agent: *
-Disallow:
+Disallow: /super-admin/
+Disallow: /hotel/
+Disallow: /distributor/
+Disallow: /2fa/
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /git_pull.php
+Allow: /

@@ -11,6 +11,10 @@ class SampleHotelSeeder extends Seeder
 {
     public function run(): void
     {
+        if (app()->isProduction()) {
+            return;
+        }
+
         $bom = Airport::where('iata_code', 'BOM')->first();
         $nmi = Airport::where('iata_code', 'NMI')->first();
 

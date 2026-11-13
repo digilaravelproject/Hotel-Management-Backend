@@ -22,7 +22,10 @@ class StoreDistributorSaleRequest extends FormRequest
         return [
             'sale_type' => 'nullable|in:subscription,addon',
             'hotel_id' => 'required|exists:hotel_admins,id',
-            'plan_id' => 'required|exists:plans,id',
+            'plan_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('plans', 'id')->where('status', true),
+            ],
             'tv_count' => 'nullable|integer|min:1|max:10000',
             'additional_tvs' => 'nullable|integer|min:1|max:5000',
             'duration_months' => 'required_unless:sale_type,addon|nullable|integer|in:1,3,6,12,24,36',

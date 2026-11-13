@@ -113,9 +113,9 @@ class RegistrationController extends Controller
 
             session([
                 'success_hotel' => $hotelAdmin,
-                'plain_password' => $validated['password'],
                 'license_key' => $hotelAdmin->license_key,
             ]);
+            session()->flash('plain_password', $validated['password']);
 
             return response()->json([
                 'success' => true,

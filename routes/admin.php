@@ -24,12 +24,12 @@ use App\Http\Controllers\SuperAdmin\MailSettingController;
 */
 
 Route::get('/super-admin/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('super-admin.login');
-Route::post('/super-admin/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+Route::post('/super-admin/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login'])->middleware('throttle:15,1');
 Route::post('/super-admin/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('super-admin.logout');
 
 // 2FA Auth Routes
 Route::get('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'showVerifyForm'])->name('2fa.verify');
-Route::post('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify']);
+Route::post('/2fa/verify', [\App\Http\Controllers\TwoFactorController::class, 'verify'])->middleware('throttle:10,1');
 
 // Super Admin Panel (Protected by custom super_admin middleware)
 Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-admin.')->group(function () {
@@ -43,7 +43,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::post('/2fa/disable', [\App\Http\Controllers\TwoFactorController::class, 'disable'])->name('2fa.disable');
 
     // Hotels CRUD, Status Toggles, and Super Admin Checkout
-    Route::get('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');
+    Route::post('/hotels/{id}/toggle-status', [SuperHotelController::class, 'toggleStatus'])->name('hotels.toggle-status');
     Route::post('/hotels/{id}/toggle-approval', [SuperHotelController::class, 'toggleApproval'])->name('hotels.toggle-approval');
     Route::get('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'edit'])->name('hotels.menus');
     Route::post('/hotels/{id}/menus', [\App\Http\Controllers\SuperAdmin\MenuController::class, 'update']);
@@ -59,17 +59,17 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
 
     // Amenities management for Super Admin
     Route::get('/hotels/{hotel_id}/amenities', [SuperAmenityController::class, 'index'])->name('hotels.amenities');
-    Route::get('/amenities/{id}/toggle-status', [SuperAmenityController::class, 'toggleStatus'])->name('amenities.toggle-status');
+    Route::post('/amenities/{id}/toggle-status', [SuperAmenityController::class, 'toggleStatus'])->name('amenities.toggle-status');
     Route::put('/amenities/{id}', [SuperAmenityController::class, 'update'])->name('amenities.update');
     Route::delete('/amenities/{id}', [SuperAmenityController::class, 'destroy'])->name('amenities.destroy');
 
     // Plans CRUD, Status Toggles, and Per-TV live preview
     Route::get('/plans/{id}/calculate-preview', [SuperPlanController::class, 'calculatePreview'])->name('plans.calculate-preview');
-    Route::get('/plans/{id}/toggle-status', [SuperPlanController::class, 'toggleStatus'])->name('plans.toggle-status');
+    Route::post('/plans/{id}/toggle-status', [SuperPlanController::class, 'toggleStatus'])->name('plans.toggle-status');
     Route::resource('plans', SuperPlanController::class)->except(['show']);
 
     // Tax Management System
-    Route::get('taxes/{id}/toggle-status', [SuperTaxController::class, 'toggleStatus'])->name('taxes.toggle-status');
+    Route::post('taxes/{id}/toggle-status', [SuperTaxController::class, 'toggleStatus'])->name('taxes.toggle-status');
     Route::resource('taxes', SuperTaxController::class)->except(['create', 'edit', 'show']);
 
     // Invoices Management System
@@ -78,7 +78,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::post('invoices/{id}/mark-paid', [SuperInvoiceController::class, 'markPaid'])->name('invoices.mark-paid');
 
     // User Management & Roles/Permissions
-    Route::match(['get', 'post'], 'users/{id}/toggle-status', [SuperUserController::class, 'toggleStatus'])->name('users.toggle-status');
+    Route::post('users/{id}/toggle-status', [SuperUserController::class, 'toggleStatus'])->name('users.toggle-status');
     Route::resource('users', SuperUserController::class);
 
     // Connected Devices & Demo TV Management
@@ -87,7 +87,7 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::resource('devices', SuperDeviceController::class)->only(['index', 'destroy']);
 
     // Manage OTTs / Applications Master Catalog
-    Route::get('ott-master/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\OttMasterController::class, 'toggleStatus'])->name('ott-master.toggle-status');
+    Route::post('ott-master/{id}/toggle-status', [\App\Http\Controllers\SuperAdmin\OttMasterController::class, 'toggleStatus'])->name('ott-master.toggle-status');
     Route::resource('ott-master', \App\Http\Controllers\SuperAdmin\OttMasterController::class)->except(['create', 'edit', 'show'])->names('ott-master');
 
     // TV Themes & Templates Management
@@ -104,8 +104,8 @@ Route::middleware(['super_admin', '2fa'])->prefix('super-admin')->name('super-ad
     Route::get('flights', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'index'])->name('flights.index');
     Route::post('flights/settings', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'updateSettings'])->name('flights.settings.update');
     Route::post('flights/airports', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'storeAirport'])->name('flights.airports.store');
-    Route::get('flights/airports/{id}/toggle', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'toggleAirportStatus'])->name('flights.airports.toggle');
-    Route::get('flights/refresh/{iata}', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'forceRefresh'])->name('flights.refresh');
+    Route::post('flights/airports/{id}/toggle', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'toggleAirportStatus'])->name('flights.airports.toggle');
+    Route::post('flights/refresh/{iata}', [\App\Http\Controllers\SuperAdmin\FlightSettingController::class, 'forceRefresh'])->name('flights.refresh');
 
     // Firebase FCM Real-Time Engine Management
     Route::get('firebase-settings', [SuperFirebaseSettingsController::class, 'index'])->name('firebase-settings.index');

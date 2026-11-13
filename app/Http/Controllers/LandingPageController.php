@@ -9,6 +9,7 @@ use App\Models\MailSetting;
 use App\Mail\DemoRequestThankYouMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\RateLimiter;
 
 class LandingPageController extends Controller
 {
@@ -93,7 +94,8 @@ class LandingPageController extends Controller
         // 0. Honeypot Anti-Spam Check: If a bot fills hidden honeypot fields, drop silently
         $honeypot = $request->input('website_url') 
                  ?? $request->input('form_fields.website_url') 
-                 ?? $request->input('website_hp');
+                 ?? $request->input('website_hp')
+                 ?? $request->input('website_hp_check');
 
         if (!empty($honeypot)) {
             Log::info('Spam bot blocked via honeypot:', [
@@ -112,6 +114,22 @@ class LandingPageController extends Controller
 
             return redirect()->route('thank-you')->with('success', 'Thank you! Your demo request has been received.');
         }
+
+        // Rate Limiter: Maximum 5 inquiries per 5 minutes per IP
+        $throttleKey = 'contact-us:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Too many inquiries sent. Please try again in {$seconds} seconds."
+                ], 429);
+            }
+            return redirect()->back()->withInput()->withErrors([
+                'email' => "Too many inquiries sent. Please try again in {$seconds} seconds."
+            ]);
+        }
+        RateLimiter::hit($throttleKey, 300);
 
         $validated = $request->validate([
             'name' => 'required|string|max:120',

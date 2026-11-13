@@ -42,13 +42,15 @@ class IciciPaymentService
             ? 'https://apibanking.icicibank.com/api/v1'
             : 'https://test.icicibank.com/api/v1';
 
-        // Mock implementation safeguard if credentials are placeheld
+        // Mock implementation safeguard if credentials are empty — strictly disallowed in non-local/non-testing
         if (empty($apiKey) || empty($merchantId) || empty($apiSecret)) {
-            // Return simulated order for development/testing when gateway is enabled but credentials are mock placeholders
+            if (!app()->environment(['local', 'testing'])) {
+                throw new Exception("ICICI Payment Gateway credentials are not configured.");
+            }
             return [
                 'success' => true,
                 'order_id' => $orderId,
-                'gateway_reference' => 'icici_ref_' . rand(100000, 999999),
+                'gateway_reference' => 'icici_ref_' . strtoupper(bin2hex(random_bytes(4))),
                 'amount' => $amount,
                 'currency' => 'INR',
                 'checkout_url' => '#',
@@ -93,7 +95,26 @@ class IciciPaymentService
             return false;
         }
 
-        // Verify ICICI response signature or checksum logic here
-        return !empty($payload['status']) && $payload['status'] === 'SUCCESS';
+        if (strtoupper((string) ($payload['status'] ?? '')) !== 'SUCCESS') {
+            return false;
+        }
+
+        $apiSecret = trim((string) ($this->gateway->effective_api_secret ?: $this->gateway->api_secret));
+        if ($apiSecret === '') {
+            return app()->environment(['local', 'testing']) && !empty($payload['order_id']);
+        }
+
+        $orderId = (string) ($payload['order_id'] ?? '');
+        $reference = (string) ($payload['gateway_reference'] ?? $payload['transaction_id'] ?? '');
+        $amount = (string) ($payload['amount'] ?? '');
+        $status = (string) ($payload['status'] ?? '');
+        $providedSig = strtolower((string) ($payload['signature'] ?? $payload['checksum'] ?? ''));
+
+        if ($orderId === '' || $providedSig === '') {
+            return false;
+        }
+
+        $expectedSig = strtolower(hash_hmac('sha256', "{$orderId}|{$reference}|{$amount}|{$status}", $apiSecret));
+        return hash_equals($expectedSig, $providedSig);
     }
 }

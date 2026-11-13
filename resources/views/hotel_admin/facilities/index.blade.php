@@ -709,16 +709,26 @@
             facility.features.forEach(f => {
                 const span = document.createElement('span');
                 span.className = 'inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100';
-                span.innerHTML = `<i class="fa-solid fa-circle-check text-[10px] mr-1.5 text-emerald-500"></i> ${f}`;
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-circle-check text-[10px] mr-1.5 text-emerald-500';
+                span.appendChild(icon);
+                span.appendChild(document.createTextNode(' ' + f));
                 featuresContainer.appendChild(span);
             });
         }
 
         const imgContainer = document.getElementById('viewImagePreview');
+        imgContainer.textContent = '';
         if (facility.image) {
-            imgContainer.innerHTML = `<img src="/${facility.image}" class="w-full h-full object-cover">`;
+            const img = document.createElement('img');
+            img.src = '/' + String(facility.image).replace(/^\/+/, '');
+            img.className = 'w-full h-full object-cover';
+            imgContainer.appendChild(img);
         } else {
-            imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base">No 16:9 Image</div>`;
+            const placeholder = document.createElement('div');
+            placeholder.className = 'w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base';
+            placeholder.textContent = 'No 16:9 Image';
+            imgContainer.appendChild(placeholder);
         }
         document.getElementById('viewFacilityModal').classList.remove('hidden');
     }

@@ -51,11 +51,14 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
         $amountInPaise = (int) round($amount * 100);
 
         if (empty($keyId) && empty($keySecret)) {
-            // Mock simulation for development
+            if (!app()->environment(['local', 'testing'])) {
+                throw new Exception("Razorpay credentials are not configured. Please enter keys in Super Admin Payment Settings.");
+            }
+            // Mock simulation permitted ONLY for local development and automated tests
             return [
                 'success' => true,
-                'order_id' => 'order_' . rand(100000, 999999),
-                'gateway_reference' => 'rzp_ref_' . rand(100000, 999999),
+                'order_id' => 'order_mock_' . strtoupper(\Illuminate\Support\Str::random(10)),
+                'gateway_reference' => 'rzp_ref_' . strtoupper(\Illuminate\Support\Str::random(8)),
                 'amount' => $amount,
                 'currency' => 'INR',
                 'checkout_url' => '#',
@@ -115,17 +118,23 @@ class RazorpayGatewayStrategy implements PaymentGatewayInterface
             return false;
         }
 
-        $keySecret = trim((string) ($this->gatewayModel->effective_api_secret ?: ($this->gatewayModel->api_secret ?: env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET')))));
-        if (empty($keySecret)) {
-            return true; // Mock verification
+        $orderId = trim((string) ($payload['razorpay_order_id'] ?? ''));
+        $paymentId = trim((string) ($payload['razorpay_payment_id'] ?? ''));
+        $signature = trim((string) ($payload['razorpay_signature'] ?? ''));
+
+        if ($orderId === '' || $paymentId === '' || $signature === '') {
+            return false;
         }
 
-        $orderId = $payload['razorpay_order_id'] ?? '';
-        $paymentId = $payload['razorpay_payment_id'] ?? '';
-        $signature = $payload['razorpay_signature'] ?? '';
+        $keySecret = trim((string) (
+            $this->gatewayModel->effective_api_secret
+            ?: ($this->gatewayModel->api_secret ?: config('services.razorpay.secret', env('RAZORPAY_KEY_SECRET', env('RAZORPAY_SECRET', ''))))
+        ));
 
-        if (empty($orderId) || empty($paymentId) || empty($signature)) {
-            return false;
+        if ($keySecret === '') {
+            // Mock verification permitted ONLY in local or testing when explicit test/mock IDs are used
+            return app()->environment(['local', 'testing'])
+                && (str_starts_with($orderId, 'order_mock_') || str_starts_with($orderId, 'order_test'));
         }
 
         $generatedSignature = hash_hmac('sha256', $orderId . '|' . $paymentId, $keySecret);

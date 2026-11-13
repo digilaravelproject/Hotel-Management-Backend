@@ -423,14 +423,26 @@
         const count = container.children.length + 1;
         const div = document.createElement('div');
         div.className = 'flex items-center space-x-2.5';
-        div.innerHTML = `
-            <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs shrink-0 font-mono font-bold">${count}</div>
-            <input type="text" name="hotel_amenities[]" value="${val}" placeholder="e.g. 🏊 Infinity Swimming Pool" 
-                class="flex-1 px-4 py-2.5 bg-[#F8F9FD] border border-slate-200/90 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-[#150A42] focus:ring-4 focus:ring-purple-500/10 focus:bg-white transition-all shadow-2xs">
-            <button type="button" onclick="this.parentElement.remove(); updateAmenityCounter();" class="w-9 h-9 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-center shrink-0 cursor-pointer shadow-2xs active:scale-95" title="Remove highlight">
-                <i class="fa-solid fa-trash text-xs"></i>
-            </button>
-        `;
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = 'w-8 h-8 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center text-xs shrink-0 font-mono font-bold';
+        badgeDiv.textContent = count;
+        const inputEl = document.createElement('input');
+        inputEl.type = 'text';
+        inputEl.name = 'hotel_amenities[]';
+        inputEl.value = val;
+        inputEl.placeholder = 'e.g. 🏊 Infinity Swimming Pool';
+        inputEl.className = 'flex-1 px-4 py-2.5 bg-[#F8F9FD] border border-slate-200/90 rounded-2xl text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:border-[#150A42] focus:ring-4 focus:ring-purple-500/10 focus:bg-white transition-all shadow-2xs';
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'w-9 h-9 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-center shrink-0 cursor-pointer shadow-2xs active:scale-95';
+        removeBtn.title = 'Remove highlight';
+        removeBtn.onclick = function() { div.remove(); updateAmenityCounter(); };
+        const trashIcon = document.createElement('i');
+        trashIcon.className = 'fa-solid fa-trash text-xs';
+        removeBtn.appendChild(trashIcon);
+        div.appendChild(badgeDiv);
+        div.appendChild(inputEl);
+        div.appendChild(removeBtn);
         container.appendChild(div);
         if (!val) {
             div.querySelector('input').focus();
@@ -473,11 +485,19 @@
                 reader.onload = function(e) {
                     const card = document.createElement('div');
                     card.className = 'relative rounded-2xl border border-purple-200 overflow-hidden aspect-video bg-slate-900 shadow-2xs';
-                    card.innerHTML = `
-                        <img src="${e.target.result}" alt="New Preview ${index + 1}" class="w-full h-full object-cover">
-                        <span class="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#150A42]/90 text-purple-200 text-[10px] font-black font-mono shadow-xs">New #${index + 1}</span>
-                        <span class="absolute bottom-1.5 left-2 right-2 truncate px-2 py-0.5 rounded bg-black/70 text-white text-[9px] font-mono">${file.name}</span>
-                    `;
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = `New Preview ${index + 1}`;
+                    img.className = 'w-full h-full object-cover';
+                    const numBadge = document.createElement('span');
+                    numBadge.className = 'absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#150A42]/90 text-purple-200 text-[10px] font-black font-mono shadow-xs';
+                    numBadge.textContent = `New #${index + 1}`;
+                    const nameBadge = document.createElement('span');
+                    nameBadge.className = 'absolute bottom-1.5 left-2 right-2 truncate px-2 py-0.5 rounded bg-black/70 text-white text-[9px] font-mono';
+                    nameBadge.textContent = file.name;
+                    card.appendChild(img);
+                    card.appendChild(numBadge);
+                    card.appendChild(nameBadge);
                     previewContainer.appendChild(card);
                 };
                 reader.readAsDataURL(file);

@@ -15,7 +15,12 @@ class FlightSetting extends Model
         'is_active',
     ];
 
+    protected $hidden = [
+        'api_key',
+    ];
+
     protected $casts = [
+        'api_key' => \App\Casts\SafeEncryptedStringCast::class,
         'is_active' => 'boolean',
         'cache_ttl_minutes' => 'integer',
     ];

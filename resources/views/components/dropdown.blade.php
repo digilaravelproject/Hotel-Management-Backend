@@ -301,14 +301,23 @@
                 optBtn.className = `global-dropdown-option w-full flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-purple-50 hover:text-[#150A42] transition-colors cursor-pointer text-left ${isSelected ? 'bg-purple-50 text-[#150A42] font-bold' : ''}`;
                 optBtn.dataset.value = optVal;
 
-                const dotHtml = dotBg ? `<span class="w-1.5 h-1.5 rounded-full shrink-0 ${dotBg}"></span>` : '';
-                optBtn.innerHTML = `
-                    <span class="flex items-center space-x-2 truncate">
-                        ${dotHtml}
-                        <span class="truncate">${optText}</span>
-                    </span>
-                    ${isSelected ? '<i class="fa-solid fa-check text-purple-600 text-[10px] ml-auto"></i>' : ''}
-                `;
+                const wrapSpan = document.createElement('span');
+                wrapSpan.className = 'flex items-center space-x-2 truncate';
+                if (dotBg) {
+                    const dotSpan = document.createElement('span');
+                    dotSpan.className = `w-1.5 h-1.5 rounded-full shrink-0 ${dotBg}`;
+                    wrapSpan.appendChild(dotSpan);
+                }
+                const labelSpan = document.createElement('span');
+                labelSpan.className = 'truncate';
+                labelSpan.textContent = optText;
+                wrapSpan.appendChild(labelSpan);
+                optBtn.appendChild(wrapSpan);
+                if (isSelected) {
+                    const checkIcon = document.createElement('i');
+                    checkIcon.className = 'fa-solid fa-check text-purple-600 text-[10px] ml-auto';
+                    optBtn.appendChild(checkIcon);
+                }
                 optBtn.onclick = function(e) {
                     selectGlobalDropdownOption(selectId, optVal, optText, e);
                 };

@@ -1178,6 +1178,7 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
+                credentials: 'include',
                 body: JSON.stringify(orderPayload)
             });
 
@@ -1284,6 +1285,7 @@
                     'Accept': 'application/json',
                     'X-CSRF-TOKEN': csrfToken
                 },
+                credentials: 'include',
                 body: formData
             });
 

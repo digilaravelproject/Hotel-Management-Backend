@@ -68,7 +68,7 @@ class DistributorHotelOnboardingTest extends TestCase
             'email' => 'admin@seasidevilla.test',
             'distributor_id' => $distributor->id,
             'plan_id' => $plan->id,
-            'payment_status' => 'paid',
+            'payment_status' => 'pending',
             'room_count' => 50, // resolved from plan
         ]);
 

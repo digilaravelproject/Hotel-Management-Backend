@@ -43,6 +43,12 @@ class MailSettingController extends Controller
 
         $setting = MailSetting::getSettings();
 
+        if (($validated['mail_mailer'] ?? '') === 'smtp' && !$this->isAllowedSmtpHost($validated['mail_host'] ?? null)) {
+            return redirect()->back()
+                ->withErrors(['mail_host' => 'The specified SMTP host resolves to an internal or restricted IP address.'])
+                ->withInput();
+        }
+
         // Check if encryption is passed as string 'null' or empty
         $encryption = $validated['mail_encryption'] ?? null;
         if ($encryption === 'null' || $encryption === 'none' || empty($encryption)) {
@@ -106,6 +112,12 @@ class MailSettingController extends Controller
         // Dynamically configure Laravel's mailer
         Config::set('mail.default', $mailer);
         if ($mailer === 'smtp') {
+            if (!$this->isAllowedSmtpHost($host)) {
+                return redirect()->route('super-admin.mail-settings.index')
+                    ->with('error', 'SMTP host rejected: private, loopback, or reserved IP destinations are not permitted.')
+                    ->withInput();
+            }
+
             $scheme = ($encryption === 'ssl' || $port === 465) ? 'smtps' : 'smtp';
             Config::set('mail.mailers.smtp.scheme', $scheme);
             Config::set('mail.mailers.smtp.host', $host);
@@ -114,8 +126,8 @@ class MailSettingController extends Controller
             Config::set('mail.mailers.smtp.username', $username);
             Config::set('mail.mailers.smtp.password', $password);
             Config::set('mail.mailers.smtp.timeout', 15);
-            Config::set('mail.mailers.smtp.verify_peer', false);
-            Config::set('mail.mailers.smtp.verify_peer_name', false);
+            Config::set('mail.mailers.smtp.verify_peer', true);
+            Config::set('mail.mailers.smtp.verify_peer_name', true);
 
             if (empty($encryption)) {
                 Config::set('mail.mailers.smtp.auto_tls', false);
@@ -160,9 +172,50 @@ class MailSettingController extends Controller
             }
 
             return redirect()->route('super-admin.mail-settings.index')
-                ->with('error', 'SMTP Connection Error: ' . $e->getMessage() . $suggestMsg)
+                ->with('error', 'SMTP Connection failed. Please verify host, port, TLS certificate, and credentials.' . $suggestMsg)
                 ->withInput();
         }
+    }
+
+    /**
+     * Block SSRF targeting loopback, private RFC1918, link-local metadata, or reserved ranges in production.
+     */
+    private function isAllowedSmtpHost(?string $host): bool
+    {
+        if (empty($host)) {
+            return false;
+        }
+
+        $trimmed = trim($host, "[] \t\n\r\0\x0B");
+        if ($trimmed === '') {
+            return false;
+        }
+
+        if (app()->environment('local', 'testing')) {
+            return true;
+        }
+
+        $lower = strtolower($trimmed);
+        if ($lower === 'localhost' || str_ends_with($lower, '.local') || str_ends_with($lower, '.internal')) {
+            return false;
+        }
+
+        if (filter_var($trimmed, FILTER_VALIDATE_IP)) {
+            return filter_var($trimmed, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+        }
+
+        $ips = @gethostbynamel($trimmed);
+        if (!is_array($ips) || empty($ips)) {
+            return true;
+        }
+
+        foreach ($ips as $ip) {
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

@@ -750,16 +750,26 @@
             info.specifications.forEach(spec => {
                 const span = document.createElement('span');
                 span.className = 'inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100';
-                span.innerHTML = `<i class="fa-solid fa-circle-check text-[10px] mr-1.5 text-emerald-500"></i> ${spec}`;
+                const icon = document.createElement('i');
+                icon.className = 'fa-solid fa-circle-check text-[10px] mr-1.5 text-emerald-500';
+                span.appendChild(icon);
+                span.appendChild(document.createTextNode(' ' + spec));
                 specsContainer.appendChild(span);
             });
         }
 
         const imgContainer = document.getElementById('viewImagePreview');
+        imgContainer.textContent = '';
         if (info.image) {
-            imgContainer.innerHTML = `<img src="/${info.image}" class="w-full h-full object-cover">`;
+            const img = document.createElement('img');
+            img.src = '/' + String(info.image).replace(/^\/+/, '');
+            img.className = 'w-full h-full object-cover';
+            imgContainer.appendChild(img);
         } else {
-            imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base">#${info.sr_no} • No 16:9 Image</div>`;
+            const placeholder = document.createElement('div');
+            placeholder.className = 'w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base';
+            placeholder.textContent = `#${info.sr_no} • No 16:9 Image`;
+            imgContainer.appendChild(placeholder);
         }
         document.getElementById('viewRoomInfoModal').classList.remove('hidden');
     }
@@ -782,9 +792,10 @@
         if (card) card.setAttribute('data-status', isChecked ? 'active' : 'hidden');
 
         fetch(`/hotel/room-infos/${id}/toggle-status`, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Accept': 'application/json'
             }
         }).then(() => {

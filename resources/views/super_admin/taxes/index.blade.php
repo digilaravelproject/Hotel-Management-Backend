@@ -280,6 +280,7 @@
 
     function toggleTaxStatus(id) {
         fetch(`/super-admin/taxes/${id}/toggle-status`, {
+            method: 'POST',
             headers: { 
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Accept': 'application/json'

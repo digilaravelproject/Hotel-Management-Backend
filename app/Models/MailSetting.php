@@ -28,8 +28,13 @@ class MailSetting extends Model
         'is_active',
     ];
 
+    protected $hidden = [
+        'mail_password',
+    ];
+
     protected $casts = [
         'mail_port' => 'integer',
+        'mail_password' => \App\Casts\SafeEncryptedStringCast::class,
         'notify_hotel_welcome' => 'boolean',
         'notify_subscription_purchased' => 'boolean',
         'notify_subscription_expiring' => 'boolean',
@@ -100,8 +105,8 @@ class MailSetting extends Model
             Config::set('mail.mailers.smtp.username', $this->mail_username);
             Config::set('mail.mailers.smtp.password', $this->mail_password);
             Config::set('mail.mailers.smtp.timeout', 15);
-            Config::set('mail.mailers.smtp.verify_peer', false);
-            Config::set('mail.mailers.smtp.verify_peer_name', false);
+            Config::set('mail.mailers.smtp.verify_peer', true);
+            Config::set('mail.mailers.smtp.verify_peer_name', true);
 
             if (empty($encryption)) {
                 Config::set('mail.mailers.smtp.auto_tls', false);

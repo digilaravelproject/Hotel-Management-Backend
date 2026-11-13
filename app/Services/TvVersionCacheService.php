@@ -18,7 +18,8 @@ class TvVersionCacheService
     {
         $versionTag = $clientVersion ?? 'none';
         $globalStamp = Cache::get('tv_global_template_version_stamp', 1);
-        return self::CACHE_PREFIX . "{$hotelId}_device_{$deviceId}_v_{$versionTag}_g_{$globalStamp}";
+        $themeId = (int) (\App\Models\HotelAdmin::where('id', $hotelId)->value('selected_theme_id') ?? 1);
+        return self::CACHE_PREFIX . "{$hotelId}_theme_{$themeId}_device_{$deviceId}_v_{$versionTag}_g_{$globalStamp}";
     }
 
     /**

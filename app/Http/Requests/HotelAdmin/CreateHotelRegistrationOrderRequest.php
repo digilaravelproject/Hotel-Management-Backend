@@ -40,7 +40,10 @@ class CreateHotelRegistrationOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'plan_id' => 'required|exists:plans,id',
+            'plan_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('plans', 'id')->where(fn ($q) => $q->where('status', true)->where('is_hidden', false)),
+            ],
             'room_count' => 'required|integer|min:1|max:5000',
             'duration_months' => 'nullable|integer|min:1|max:60',
             'owner_name' => 'nullable|string|max:255',

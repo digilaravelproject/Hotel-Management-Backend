@@ -9,6 +9,7 @@ use App\Services\TvLoginService;
 use App\Http\Resources\TvLoginResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\RateLimiter;
 
 class TvPairController extends Controller
 {
@@ -17,6 +18,15 @@ class TvPairController extends Controller
      */
     public function generatePairCode(Request $request)
     {
+        $throttleKey = 'tv-pair-gen:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Too many pairing requests. Please wait a moment.'
+            ], 429);
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $request->validate([
             'deviceId' => 'nullable|string',
             'device_id' => 'nullable|string',
@@ -46,11 +56,11 @@ class TvPairController extends Controller
             $pairCode = substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4);
         } while (TvPairSession::where('pair_code', $pairCode)->where('status', 'pending')->exists());
 
-        // Auto Cleanup: Delete all previous sessions (pending or expired) for this device_id
-        TvPairSession::where('device_id', $deviceId)->delete();
+        // Auto Cleanup: Delete only pending or expired sessions for this device_id (never delete active paired sessions)
+        TvPairSession::where('device_id', $deviceId)->where('status', 'pending')->delete();
 
-        // Also cleanup any global expired sessions
-        TvPairSession::where('expires_at', '<', now())->delete();
+        // Also cleanup any global expired pending sessions
+        TvPairSession::where('expires_at', '<', now())->where('status', 'pending')->delete();
 
         $expiresAt = now()->addMinutes(10);
 
@@ -87,28 +97,42 @@ class TvPairController extends Controller
      */
     public function checkStatus(Request $request, TvLoginService $tvLoginService)
     {
+        $throttleKey = 'tv-pair-check:' . $request->ip();
+        if (RateLimiter::tooManyAttempts($throttleKey, 120)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Too many status check requests. Please slow down.'
+            ], 429);
+        }
+        RateLimiter::hit($throttleKey, 60);
+
         $request->validate([
             'pair_code' => 'required|string',
             'deviceId' => 'nullable|string',
             'device_id' => 'nullable|string',
+            'macAddress' => 'nullable|string',
+            'mac_address' => 'nullable|string',
         ]);
 
         $deviceId = trim($request->input('deviceId') ?: $request->input('device_id', ''));
+        $macAddress = trim($request->input('macAddress') ?: $request->input('mac_address', ''));
+        if ($deviceId === '') {
+            return response()->json([
+                'status' => false,
+                'state' => 'unauthorized',
+                'message' => 'Device ID is required to poll pairing status.',
+            ], 422);
+        }
+
         $cleanCode = strtoupper(trim($request->pair_code));
         $rawCode = str_replace(['-', ' '], '', $cleanCode);
         $formattedCode = strlen($rawCode) === 8 ? substr($rawCode, 0, 4) . '-' . substr($rawCode, 4, 4) : $cleanCode;
 
-        $query = TvPairSession::where(function($q) use ($cleanCode, $rawCode, $formattedCode) {
+        $session = TvPairSession::where(function($q) use ($cleanCode, $rawCode, $formattedCode) {
             $q->where('pair_code', $cleanCode)
               ->orWhere('pair_code', $rawCode)
               ->orWhere('pair_code', $formattedCode);
-        });
-
-        if (!empty($deviceId)) {
-            $query->where('device_id', $deviceId);
-        }
-
-        $session = $query->first();
+        })->first();
 
         $now = now();
         $timeMeta = [
@@ -124,6 +148,23 @@ class TvPairController extends Controller
                 'state' => 'invalid',
                 'message' => 'Invalid pairing session'
             ], $timeMeta), 404);
+        }
+
+        // SEC-04: Strict device authorization check on all states to prevent pairing hijacking & token theft
+        if (!empty($session->device_id) && $session->device_id !== $deviceId) {
+            return response()->json(array_merge([
+                'status' => false,
+                'state' => 'unauthorized',
+                'message' => 'Device authorization failed. Device ID mismatch.'
+            ], $timeMeta), 403);
+        }
+
+        if ($macAddress !== '' && !empty($session->mac_address) && strtoupper($session->mac_address) !== strtoupper($macAddress)) {
+            return response()->json(array_merge([
+                'status' => false,
+                'state' => 'unauthorized',
+                'message' => 'Device authorization failed. MAC address mismatch.'
+            ], $timeMeta), 403);
         }
 
         if ($session->status === 'pending') {
@@ -144,15 +185,26 @@ class TvPairController extends Controller
         }
 
         if ($session->status === 'paired') {
-            $device = ConnectedDevice::where('device_id', $session->device_id)->first();
+            // Restrict paired token pickup window to 15 minutes after pairing while keeping immediate retries working
+            if ($session->updated_at && $session->updated_at->lt(now()->subMinutes(15))) {
+                return response()->json(array_merge([
+                    'status' => false,
+                    'state' => 'expired',
+                    'message' => 'Pairing token retrieval window expired. Please generate a new pairing code.'
+                ], $timeMeta), 410);
+            }
+
+            $device = ConnectedDevice::where('device_id', $session->device_id)
+                ->where('hotel_admin_id', $session->hotel_admin_id)
+                ->first();
             $hotel = $session->hotelAdmin;
 
-            if (!$device || !$hotel) {
+            if (!$device || !$hotel || !$hotel->status || $hotel->approval_status !== 'approved') {
                 return response()->json([
                     'status' => false,
                     'state' => 'failed',
-                    'message' => 'Paired device or hotel not found'
-                ], 500);
+                    'message' => 'Paired device or active approved hotel not found.'
+                ], 403);
             }
 
             $hotel->loadMissing('plan');

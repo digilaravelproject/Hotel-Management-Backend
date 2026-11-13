@@ -557,7 +557,12 @@
         if (card) card.setAttribute('data-status', isChecked ? 'active' : 'hidden');
 
         fetch(`/hotel/our-city/${id}/toggle-status`, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') 
+            }
         }).then(() => {
             if (window.Swal) {
                 const Toast = Swal.mixin({

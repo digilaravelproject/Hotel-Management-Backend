@@ -18,19 +18,19 @@ use App\Http\Controllers\HotelAdmin\GuestController as HotelGuestController;
 
 // Hotel Registration process routes
 Route::get('/hotel/register', [RegistrationController::class, 'showRegistrationForm'])->name('hotel.register');
-Route::post('/hotel/register', [RegistrationController::class, 'processQuickRegister'])->name('hotel.register.submit');
-Route::post('/register/create-order', [RegistrationController::class, 'createOrder'])->name('register.create-order');
-Route::post('/register/complete', [RegistrationController::class, 'completeRegistration'])->name('register.complete');
+Route::post('/hotel/register', [RegistrationController::class, 'processQuickRegister'])->middleware('throttle:10,1')->name('hotel.register.submit');
+Route::post('/register/create-order', [RegistrationController::class, 'createOrder'])->middleware('throttle:15,1')->name('register.create-order');
+Route::post('/register/complete', [RegistrationController::class, 'completeRegistration'])->middleware('throttle:15,1')->name('register.complete');
 Route::get('/register/success', [RegistrationController::class, 'showSuccess'])->name('register.success');
 
 // Hotel Admin Auth routes
 Route::get('/hotel/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'showLoginForm'])->name('hotel.login');
-Route::post('/hotel/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login']);
+Route::post('/hotel/login', [\App\Http\Controllers\Auth\CommonLoginController::class, 'login'])->middleware('throttle:15,1');
 Route::post('/hotel/logout', [\App\Http\Controllers\Auth\CommonLoginController::class, 'logout'])->name('hotel.logout');
 Route::get('/hotel/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('hotel.forgot-password');
-Route::post('/hotel/forgot-password', [ForgotPasswordController::class, 'sendResetOtp']);
+Route::post('/hotel/forgot-password', [ForgotPasswordController::class, 'sendResetOtp'])->middleware('throttle:10,1');
 Route::get('/hotel/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('hotel.reset-password');
-Route::post('/hotel/reset-password', [ForgotPasswordController::class, 'reset']);
+Route::post('/hotel/reset-password', [ForgotPasswordController::class, 'reset'])->middleware('throttle:10,1');
 
 // Hotel Admin Dashboard (Protected by custom hotel_admin middleware)
 Route::middleware(['hotel_admin', '2fa'])->group(function () {
@@ -62,18 +62,18 @@ Route::middleware(['hotel_admin', '2fa'])->group(function () {
     Route::post('/hotel/hotel-info/gallery/{id}/delete', [ProfileController::class, 'deleteGalleryItem'])->name('hotel.hotel-info.gallery.delete');
     
     // Amenities CRUD
-    Route::get('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');
+    Route::post('/hotel/amenities/{id}/toggle-status', [AmenityController::class, 'toggleStatus'])->name('hotel.amenities.toggle-status');
     Route::resource('/hotel/amenities', AmenityController::class)->names('hotel.amenities');
 
     // Room Info CRUD
-    Route::get('/hotel/room-infos/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\RoomInfoController::class, 'toggleStatus'])->name('hotel.room-infos.toggle-status');
+    Route::post('/hotel/room-infos/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\RoomInfoController::class, 'toggleStatus'])->name('hotel.room-infos.toggle-status');
     Route::resource('/hotel/room-infos', \App\Http\Controllers\HotelAdmin\RoomInfoController::class)->names('hotel.room-infos');
 
     // Hotel Facilities / Information Media CRUD
     Route::resource('/hotel/facilities', \App\Http\Controllers\HotelAdmin\HotelFacilityController::class)->names('hotel.facilities');
 
     // Our City Attractions / Places CRUD
-    Route::get('/hotel/our-city/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\OurCityController::class, 'toggleStatus'])->name('hotel.our-city.toggle-status');
+    Route::post('/hotel/our-city/{id}/toggle-status', [\App\Http\Controllers\HotelAdmin\OurCityController::class, 'toggleStatus'])->name('hotel.our-city.toggle-status');
     Route::resource('/hotel/our-city', \App\Http\Controllers\HotelAdmin\OurCityController::class)->names('hotel.our-city');
 
     // Connected TVs & OTT / Menu Configurations

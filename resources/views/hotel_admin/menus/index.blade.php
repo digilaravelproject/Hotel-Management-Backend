@@ -692,12 +692,15 @@
         const iconClass = iconMap[id] || 'fa-cube';
         const isNetReq = ['flights', 'weather'].includes(id);
 
+        const escMenuHtml = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const safeIconClass = String(iconClass || 'fa-cube').replace(/[^a-zA-Z0-9_-]/g, '');
+
         // Collect available group options
         let groupOptionsHtml = '<option value="">Move into Group...</option>';
         document.querySelectorAll('.group-card').forEach(g => {
             const gid = g.dataset.id;
             const gtitle = g.querySelector('.node-title')?.textContent || gid;
-            groupOptionsHtml += `<option value="${gid}">${gtitle}</option>`;
+            groupOptionsHtml += `<option value="${escMenuHtml(gid)}">${escMenuHtml(gtitle)}</option>`;
         });
 
         const newCard = document.createElement('div');
@@ -713,17 +716,17 @@
                     <i class="fa-solid fa-grip-vertical text-sm"></i>
                 </span>
                 <div class="w-10 h-10 rounded-2xl bg-slate-100 text-[#150A42] border border-slate-200/80 flex items-center justify-center shrink-0 shadow-2xs">
-                    <i class="fa-solid ${iconClass} text-sm"></i>
+                    <i class="fa-solid ${safeIconClass} text-sm"></i>
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center space-x-1.5 flex-wrap">
-                        <h4 class="text-xs sm:text-sm font-black text-slate-900 truncate node-title">${meta.name}</h4>
+                        <h4 class="text-xs sm:text-sm font-black text-slate-900 truncate node-title">${escMenuHtml(meta.name)}</h4>
                         ${isNetReq ? `
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200" title="Internet connection required on TV">
                                 <i class="fa-solid fa-wifi text-[8px] mr-1 text-amber-600"></i> Net Req
                             </span>` : ''}
                     </div>
-                    <span class="text-[10px] font-mono text-slate-400 block truncate mt-0.5">ID: ${id}</span>
+                    <span class="text-[10px] font-mono text-slate-400 block truncate mt-0.5">ID: ${escMenuHtml(id)}</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2.5 shrink-0">
@@ -764,6 +767,9 @@
         const iconClass = iconMap[id] || 'fa-cube';
         const isNetReq = ['flights', 'weather'].includes(id);
 
+        const escMenuHtml = (v) => String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const safeIconClass = String(iconClass || 'fa-cube').replace(/[^a-zA-Z0-9_-]/g, '');
+
         const newSub = document.createElement('div');
         newSub.className = 'menu-node sub-item bg-white border border-slate-200/90 rounded-2xl p-3 shadow-2xs flex items-center justify-between gap-3 hover:border-purple-200 hover:shadow-xs transition-all';
         newSub.dataset.id = id;
@@ -777,17 +783,17 @@
                     <i class="fa-solid fa-grip-vertical text-xs"></i>
                 </span>
                 <div class="w-8 h-8 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0">
-                    <i class="fa-solid ${iconClass} text-xs"></i>
+                    <i class="fa-solid ${safeIconClass} text-xs"></i>
                 </div>
                 <div class="min-w-0">
                     <div class="flex items-center space-x-1.5 flex-wrap">
-                        <h5 class="text-xs font-bold text-slate-800 truncate node-title">${meta.name}</h5>
+                        <h5 class="text-xs font-bold text-slate-800 truncate node-title">${escMenuHtml(meta.name)}</h5>
                         ${isNetReq ? `
                             <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold bg-amber-50 text-amber-700 border border-amber-200" title="Internet connection required on TV">
                                 <i class="fa-solid fa-wifi text-[8px] mr-1 text-amber-600"></i> Net Req
                             </span>` : ''}
                     </div>
-                    <span class="text-[10px] font-mono text-slate-400 block truncate">ID: ${id}</span>
+                    <span class="text-[10px] font-mono text-slate-400 block truncate">ID: ${escMenuHtml(id)}</span>
                 </div>
             </div>
             <div class="flex items-center space-x-2.5 shrink-0">
@@ -919,11 +925,16 @@
                     const tabBtn = document.createElement('button');
                     tabBtn.type = 'button';
                     tabBtn.className = 'px-2 py-1 rounded-lg bg-white/10 hover:bg-white/25 text-white text-[9px] font-bold whitespace-nowrap flex items-center space-x-1 border border-white/15 transition-all shrink-0 cursor-pointer active:scale-95';
-                    tabBtn.innerHTML = `
-                        <i class="fa-solid ${icon} text-amber-300 text-[8px]"></i>
-                        <span>${title}</span>
-                        <i class="fa-solid fa-chevron-down text-[7px] text-white/60 ml-0.5"></i>
-                    `;
+                    const safeIcon = String(icon || 'fa-cube').replace(/[^a-zA-Z0-9_-]/g, '');
+                    const iconEl = document.createElement('i');
+                    iconEl.className = `fa-solid ${safeIcon} text-amber-300 text-[8px]`;
+                    const titleSpan = document.createElement('span');
+                    titleSpan.textContent = title;
+                    const chev = document.createElement('i');
+                    chev.className = 'fa-solid fa-chevron-down text-[7px] text-white/60 ml-0.5';
+                    tabBtn.appendChild(iconEl);
+                    tabBtn.appendChild(titleSpan);
+                    tabBtn.appendChild(chev);
                     tabBtn.onclick = () => openTvSubmenu(title, subDataList);
                     navBar.appendChild(tabBtn);
                 } else {
@@ -936,10 +947,13 @@
                     // Add Tab to TV mockup
                     const tabBtn = document.createElement('div');
                     tabBtn.className = 'px-2 py-1 rounded-lg bg-white/10 text-white text-[9px] font-bold whitespace-nowrap flex items-center space-x-1 border border-white/10 shrink-0';
-                    tabBtn.innerHTML = `
-                        <i class="fa-solid ${icon} text-amber-300 text-[8px]"></i>
-                        <span>${title}</span>
-                    `;
+                    const safeIcon = String(icon || 'fa-cube').replace(/[^a-zA-Z0-9_-]/g, '');
+                    const iconEl = document.createElement('i');
+                    iconEl.className = `fa-solid ${safeIcon} text-amber-300 text-[8px]`;
+                    const titleSpan = document.createElement('span');
+                    titleSpan.textContent = title;
+                    tabBtn.appendChild(iconEl);
+                    tabBtn.appendChild(titleSpan);
                     navBar.appendChild(tabBtn);
                 } else {
                     hidden++;
@@ -960,14 +974,14 @@
         if (grpEl) grpEl.textContent = groups;
         if (tabCountEl) tabCountEl.textContent = `${navBar.children.length} Tabs`;
 
-        // Broadcast real-time menus update to theme iframe instantly without saving!
+        // Broadcast real-time menus update to same-origin theme iframe instantly without saving!
         try {
             const iframe = document.getElementById('tvThemeIframe');
             if (iframe && iframe.contentWindow) {
                 iframe.contentWindow.postMessage({
                     type: 'UPDATE_MENU',
                     menus: buildMenuHierarchy()
-                }, '*');
+                }, window.location.origin);
             }
         } catch(e) {}
 
@@ -994,15 +1008,23 @@
 
         const activeSubs = subItems.filter(s => s.visible);
         if (activeSubs.length === 0) {
-            grid.innerHTML = '<span class="text-[9px] text-white/50 col-span-2 italic">No active items in this group.</span>';
+            const emptySpan = document.createElement('span');
+            emptySpan.className = 'text-[9px] text-white/50 col-span-2 italic';
+            emptySpan.textContent = 'No active items in this group.';
+            grid.appendChild(emptySpan);
         } else {
             activeSubs.forEach(s => {
-                grid.innerHTML += `
-                    <div class="flex items-center space-x-1.5 p-1 rounded bg-white/5 border border-white/10 text-white">
-                        <i class="fa-solid ${s.icon} text-amber-300 text-[8px] w-3"></i>
-                        <span class="truncate">${s.name}</span>
-                    </div>
-                `;
+                const row = document.createElement('div');
+                row.className = 'flex items-center space-x-1.5 p-1 rounded bg-white/5 border border-white/10 text-white';
+                const iconEl = document.createElement('i');
+                const safeIcon = String(s.icon || 'fa-cube').replace(/[^a-zA-Z0-9_-]/g, '');
+                iconEl.className = `fa-solid ${safeIcon} text-amber-300 text-[8px] w-3`;
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'truncate';
+                nameSpan.textContent = s.name || '';
+                row.appendChild(iconEl);
+                row.appendChild(nameSpan);
+                grid.appendChild(row);
             });
         }
 

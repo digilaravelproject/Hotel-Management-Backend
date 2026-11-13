@@ -189,7 +189,13 @@ class DeviceController extends Controller
               ->orWhere('pair_code', $rawCode)
               ->orWhere('pair_code', $formattedCode);
         })
-        ->whereIn('status', ['pending', 'paired'])
+        ->where(function ($q) use ($hotel) {
+            $q->where('status', 'pending')
+              ->orWhere(function ($sub) use ($hotel) {
+                  $sub->where('status', 'paired')
+                      ->where('hotel_admin_id', $hotel->id);
+              });
+        })
         ->first();
 
         if (!$session) {
@@ -235,7 +241,8 @@ class DeviceController extends Controller
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
             return response()->json(['success' => false, 'message' => $e->getMessage()], $e->getStatusCode());
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to pair device: ' . $e->getMessage()], 500);
+            \Illuminate\Support\Facades\Log::error('Device pairing failed: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to pair device. Please check the pairing code and try again.'], 500);
         }
     }
 

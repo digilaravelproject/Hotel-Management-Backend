@@ -45,6 +45,14 @@ class AuthenticateTvToken
         }
 
         $hotel = $device->hotelAdmin;
+        if (!$hotel || (!$device->is_demo && (!$hotel->status || $hotel->approval_status !== 'approved'))) {
+            return response()->json([
+                'status' => false,
+                'error_code' => 'HOTEL_INACTIVE',
+                'message' => 'Hotel account is suspended or awaiting approval.',
+            ], 403);
+        }
+
         if ($hotel && !$device->is_demo) {
             // Real-time subscription validity check
             if ($hotel->payment_status !== 'paid' || ($hotel->expiry_date && $hotel->expiry_date->isPast())) {

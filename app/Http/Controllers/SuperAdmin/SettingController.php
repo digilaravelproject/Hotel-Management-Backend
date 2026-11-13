@@ -71,27 +71,19 @@ class SettingController extends Controller
         // 1. Handle Application Logo Upload
         if ($request->hasFile('app_logo')) {
             $logoFile = $request->file('app_logo');
-            $logoExt = strtolower($logoFile->getClientOriginalExtension());
 
-            // Remove previous custom logo if present
-            if (!empty($setting->app_logo) && file_exists(public_path($setting->app_logo))) {
-                @unlink(public_path($setting->app_logo));
+            if (!empty($setting->app_logo)) {
+                ImageHelper::deleteFile($setting->app_logo);
             }
 
-            if ($logoExt === 'svg') {
-                $filename = 'app_logo_' . time() . '_' . Str::random(6) . '.svg';
-                $logoFile->move($destinationDir, $filename);
-                $data['app_logo'] = 'uploads/settings/' . $filename;
-            } else {
-                // Compress and convert to high-def WebP for maximum clarity & performance
-                $data['app_logo'] = ImageHelper::compressAndConvertToWebp(
-                    $logoFile,
-                    'uploads/settings',
-                    400,
-                    'app_logo',
-                    1200
-                );
-            }
+            // Re-encodes raster images to WebP via GD and strictly sanitizes SVG XML via DOM
+            $data['app_logo'] = ImageHelper::compressAndConvertToWebp(
+                $logoFile,
+                'uploads/settings',
+                400,
+                'app_logo',
+                1200
+            );
         }
 
         // 2. Handle Application Favicon Upload
@@ -99,14 +91,36 @@ class SettingController extends Controller
             $favFile = $request->file('app_favicon');
             $favExt = strtolower($favFile->getClientOriginalExtension());
 
-            // Remove previous custom favicon if present
-            if (!empty($setting->app_favicon) && file_exists(public_path($setting->app_favicon))) {
-                @unlink(public_path($setting->app_favicon));
+            if (!empty($setting->app_favicon)) {
+                ImageHelper::deleteFile($setting->app_favicon);
             }
 
-            $favName = 'app_favicon_' . time() . '_' . Str::random(6) . '.' . ($favExt ?: 'ico');
-            $favFile->move($destinationDir, $favName);
-            $data['app_favicon'] = 'uploads/settings/' . $favName;
+            if ($favExt === 'svg') {
+                $svgRaw = @file_get_contents($favFile->getRealPath());
+                if ($svgRaw === false || trim($svgRaw) === '') {
+                    return back()->withInput()->with('error', 'Uploaded favicon SVG is empty or invalid.');
+                }
+                $cleanSvg = ImageHelper::sanitizeSvg($svgRaw);
+                $favName = 'app_favicon_' . time() . '_' . Str::random(6) . '.svg';
+                file_put_contents($destinationDir . DIRECTORY_SEPARATOR . $favName, $cleanSvg);
+                $data['app_favicon'] = 'uploads/settings/' . $favName;
+            } elseif ($favExt === 'png') {
+                $data['app_favicon'] = ImageHelper::compressAndConvertToWebp(
+                    $favFile,
+                    'uploads/settings',
+                    120,
+                    'app_favicon',
+                    256
+                );
+            } else {
+                $icoBytes = @file_get_contents($favFile->getRealPath());
+                if ($icoBytes === false || !str_starts_with($icoBytes, "\x00\x00\x01\x00")) {
+                    return back()->withInput()->with('error', 'Uploaded ICO favicon header is invalid.');
+                }
+                $favName = 'app_favicon_' . time() . '_' . Str::random(6) . '.ico';
+                $favFile->move($destinationDir, $favName);
+                $data['app_favicon'] = 'uploads/settings/' . $favName;
+            }
         }
 
         $setting->update($data);

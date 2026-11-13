@@ -745,6 +745,7 @@
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         
         fetch(`/super-admin/hotels/${id}/toggle-status`, {
+            method: 'POST',
             headers: { 
                 'X-CSRF-TOKEN': csrfToken,
                 'Accept': 'application/json'

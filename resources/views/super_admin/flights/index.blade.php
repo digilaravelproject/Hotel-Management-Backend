@@ -194,12 +194,19 @@
                     <label class="block text-[10px] font-extrabold text-slate-400 uppercase tracking-wider mb-1.5">Provider Access Key / Token</label>
                     <div class="relative">
                         <i class="fa-solid fa-key absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                        <input type="text" 
+                        <input type="password" 
                                name="api_key" 
-                               value="{{ $setting->api_key ?? '' }}" 
-                               placeholder="Enter API key (Leave empty for dynamic mock)" 
+                               value="" 
+                               autocomplete="new-password"
+                               placeholder="{{ !empty($setting->api_key) ? '•••••••••••• (Configured — leave blank to keep)' : 'Enter API key (Leave empty for dynamic mock)' }}" 
                                class="w-full pl-10 pr-4 py-3 text-xs sm:text-sm font-medium rounded-2xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-[#150A42]/15 focus:border-[#150A42] bg-[#F8F9FD] focus:bg-white text-slate-800 font-mono transition-all">
                     </div>
+                    @if(!empty($setting->api_key))
+                        <label class="inline-flex items-center space-x-2 mt-1.5 text-[11px] font-semibold text-rose-600 cursor-pointer">
+                            <input type="checkbox" name="clear_api_key" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500">
+                            <span>Clear stored API key (switch to dynamic mock)</span>
+                        </label>
+                    @endif
                 </div>
 
                 <!-- 3. Cache TTL -->
@@ -346,18 +353,24 @@
                             <td class="px-5 py-4 text-right">
                                 <div class="inline-flex items-center space-x-1.5">
                                     <!-- Refresh Cache -->
-                                    <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" 
-                                       title="Force Refresh Live Cache" 
-                                       class="w-8 h-8 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-100 flex items-center justify-center transition-all shadow-2xs">
-                                        <i class="fa-solid fa-arrows-rotate text-xs"></i>
-                                    </a>
+                                    <form method="POST" action="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                                title="Force Refresh Live Cache"
+                                                class="w-8 h-8 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-100 flex items-center justify-center transition-all shadow-2xs cursor-pointer">
+                                            <i class="fa-solid fa-arrows-rotate text-xs"></i>
+                                        </button>
+                                    </form>
 
                                     <!-- Status Toggle -->
-                                    <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" 
-                                       title="{{ $airport->status ? 'Disable Airport' : 'Enable Airport' }}" 
-                                       class="w-8 h-8 rounded-xl {{ $airport->status ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-100' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100' }} flex items-center justify-center transition-all shadow-2xs">
-                                        <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-xs"></i>
-                                    </a>
+                                    <form method="POST" action="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline">
+                                        @csrf
+                                        <button type="submit"
+                                                title="{{ $airport->status ? 'Disable Airport' : 'Enable Airport' }}"
+                                                class="w-8 h-8 rounded-xl {{ $airport->status ? 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-100' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-100' }} flex items-center justify-center transition-all shadow-2xs cursor-pointer">
+                                            <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-xs"></i>
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>
@@ -408,14 +421,20 @@
                     </div>
 
                     <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100/60">
-                        <a href="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-bold transition-colors">
-                            <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
-                            <span>Refresh Cache</span>
-                        </a>
-                        <a href="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl {{ $airport->status ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} text-xs font-bold transition-colors">
-                            <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-[11px]"></i>
-                            <span>{{ $airport->status ? 'Disable' : 'Enable' }}</span>
-                        </a>
+                        <form method="POST" action="{{ route('super-admin.flights.refresh', $airport->iata_code) }}" class="inline">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-bold transition-colors cursor-pointer">
+                                <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+                                <span>Refresh Cache</span>
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ route('super-admin.flights.airports.toggle', $airport->id) }}" class="inline">
+                            @csrf
+                            <button type="submit" class="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl {{ $airport->status ? 'bg-rose-50 text-rose-700 hover:bg-rose-100' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100' }} text-xs font-bold transition-colors cursor-pointer">
+                                <i class="fa-solid {{ $airport->status ? 'fa-ban' : 'fa-check' }} text-[11px]"></i>
+                                <span>{{ $airport->status ? 'Disable' : 'Enable' }}</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             @empty

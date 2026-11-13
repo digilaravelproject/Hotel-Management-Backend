@@ -47,7 +47,12 @@ class QuickRegisterHotelRequest extends FormRequest
             'city' => 'nullable|string|max:100',
             'hotel_location' => 'nullable|string|max:255',
             'room_count' => 'nullable|integer|min:1|max:5000',
-            'plan_id' => 'nullable|exists:plans,id',
+            'plan_id' => [
+                'nullable',
+                \Illuminate\Validation\Rule::exists('plans', 'id')->where(function ($q) {
+                    $q->where('status', 1)->where('is_hidden', false);
+                }),
+            ],
             'terms' => 'nullable|accepted',
         ];
     }

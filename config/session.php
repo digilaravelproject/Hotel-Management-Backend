@@ -156,7 +156,17 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN'),
+    'domain' => env('SESSION_DOMAIN') ?: (function () {
+        $appEnv = env('APP_ENV', 'production');
+        if (in_array($appEnv, ['local', 'testing'])) {
+            return null;
+        }
+        $mainDomain = env('MAIN_DOMAIN');
+        if ($mainDomain && !in_array($mainDomain, ['localhost', '127.0.0.1'])) {
+            return '.' . ltrim(preg_replace('#^https?://#', '', $mainDomain), '.');
+        }
+        return null;
+    })(),
 
     /*
     |--------------------------------------------------------------------------
@@ -169,7 +179,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE'),
+    'secure' => env('SESSION_SECURE_COOKIE', !in_array(env('APP_ENV', 'production'), ['local', 'testing'], true)),
 
     /*
     |--------------------------------------------------------------------------

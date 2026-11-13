@@ -196,6 +196,7 @@
         const card = document.getElementById(`plan-card-${id}`);
         const statusText = document.getElementById(`plan-status-text-${id}`);
         fetch(`/super-admin/plans/${id}/toggle-status`, {
+            method: 'POST',
             headers: { 
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                 'Accept': 'application/json'

@@ -23,29 +23,35 @@ class TwoFactorController extends Controller
     }
 
     /**
-     * Get currently authenticated admin user (either super_admin or hotel_admin).
+     * Get currently authenticated admin user along with the exact guard name.
+     * Enforces strict guard matching by route prefix to prevent cross-guard confusion.
+     *
+     * @return array{0: mixed, 1: ?string}
      */
-    protected function getUser()
+    protected function getUserWithGuard(): array
     {
         $route = request()->route();
-        $routeName = $route ? $route->getName() : '';
+        $routeName = $route ? (string) $route->getName() : '';
 
-        if ($routeName && str_starts_with($routeName, 'hotel.') && Auth::guard('hotel_admin')->check()) {
-            return Auth::guard('hotel_admin')->user();
+        if ($routeName !== '' && str_starts_with($routeName, 'hotel.')) {
+            return Auth::guard('hotel_admin')->check()
+                ? [Auth::guard('hotel_admin')->user(), 'hotel_admin']
+                : [null, null];
         }
 
-        if ($routeName && str_starts_with($routeName, 'super-admin.') && Auth::guard('super_admin')->check()) {
-            return Auth::guard('super_admin')->user();
+        if ($routeName !== '' && str_starts_with($routeName, 'super-admin.')) {
+            return Auth::guard('super_admin')->check()
+                ? [Auth::guard('super_admin')->user(), 'super_admin']
+                : [null, null];
         }
 
-        // Fallbacks
         if (Auth::guard('hotel_admin')->check()) {
-            return Auth::guard('hotel_admin')->user();
+            return [Auth::guard('hotel_admin')->user(), 'hotel_admin'];
         }
         if (Auth::guard('super_admin')->check()) {
-            return Auth::guard('super_admin')->user();
+            return [Auth::guard('super_admin')->user(), 'super_admin'];
         }
-        return null;
+        return [null, null];
     }
 
     /**
@@ -53,7 +59,7 @@ class TwoFactorController extends Controller
      */
     public function generate(Request $request)
     {
-        $user = $this->getUser();
+        [$user] = $this->getUserWithGuard();
         if (!$user) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
@@ -91,10 +97,10 @@ class TwoFactorController extends Controller
             'one_time_password' => 'required|digits:6',
         ]);
 
-        $user = $this->getUser();
+        [$user, $guard] = $this->getUserWithGuard();
         $secret = session('2fa_setup_secret');
 
-        if (!$user || !$secret) {
+        if (!$user || !$guard || !$secret) {
             return response()->json(['message' => 'Setup session expired. Please close this modal, click Enable 2FA again to generate a fresh QR code.'], 422);
         }
 
@@ -116,7 +122,9 @@ class TwoFactorController extends Controller
         $user->two_factor_recovery_codes = $recoveryCodes;
         $user->save();
 
-        session()->forget('2fa_setup_secret');
+        session()->forget(['2fa_setup_secret', '2fa_verified']);
+        session()->put("2fa_verified:{$guard}:{$user->id}", true);
+        $request->session()->regenerate();
         session()->save();
 
         return response()->json([
@@ -135,8 +143,8 @@ class TwoFactorController extends Controller
             'one_time_password' => 'required|digits:6',
         ]);
 
-        $user = $this->getUser();
-        if (!$user || !$user->google2fa_enabled) {
+        [$user, $guard] = $this->getUserWithGuard();
+        if (!$user || !$guard || !$user->google2fa_enabled) {
             return response()->json(['message' => '2FA is not enabled.'], 422);
         }
 
@@ -153,6 +161,8 @@ class TwoFactorController extends Controller
         $user->google2fa_enabled = false;
         $user->two_factor_recovery_codes = null;
         $user->save();
+
+        session()->forget(["2fa_verified:{$guard}:{$user->id}", '2fa_verified']);
 
         return response()->json(['message' => 'Two-Factor Authentication disabled successfully.']);
     }
@@ -175,7 +185,7 @@ class TwoFactorController extends Controller
     public function verify(Request $request)
     {
         $request->validate([
-            'one_time_password' => 'required|string',
+            'one_time_password' => 'required|string|max:64',
         ]);
 
         if (!session()->has('2fa:user:id') || !session()->has('2fa:user:guard')) {
@@ -184,10 +194,15 @@ class TwoFactorController extends Controller
 
         $userId = session('2fa:user:id');
         $guard = session('2fa:user:guard');
-        $remember = session('2fa:user:remember', false);
+        $remember = (bool) session('2fa:user:remember', false);
 
-        // Rate Limiting Key
-        $throttleKey = '2fa-verify:' . $userId . '|' . $request->ip();
+        if (!in_array($guard, ['super_admin', 'hotel_admin'], true)) {
+            session()->forget(['2fa:user:id', '2fa:user:guard', '2fa:user:remember']);
+            return redirect()->route('login')->withErrors(['otp' => 'Invalid authentication guard state.']);
+        }
+
+        // Guard- and user-scoped rate limiting
+        $throttleKey = '2fa-verify:' . $guard . ':' . $userId . '|' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
             $seconds = RateLimiter::availableIn($throttleKey);
@@ -202,7 +217,12 @@ class TwoFactorController extends Controller
             return redirect()->route('login');
         }
 
-        $otpInput = trim($request->one_time_password);
+        if ($guard === 'hotel_admin' && (!$user->status || $user->approval_status !== 'approved')) {
+            session()->forget(['2fa:user:id', '2fa:user:guard', '2fa:user:remember']);
+            return redirect()->route('login')->withErrors(['otp' => 'Your hotel account is not active or approved.']);
+        }
+
+        $otpInput = trim((string) $request->one_time_password);
         $verified = false;
 
         // 1. Try TOTP code check with window tolerance
@@ -213,11 +233,14 @@ class TwoFactorController extends Controller
         // 2. Fallback check for emergency recovery codes
         if (!$verified && is_array($user->two_factor_recovery_codes)) {
             $recoveryCodes = $user->two_factor_recovery_codes;
-            if (($key = array_search($otpInput, $recoveryCodes)) !== false) {
-                $verified = true;
-                unset($recoveryCodes[$key]);
-                $user->two_factor_recovery_codes = array_values($recoveryCodes);
-                $user->save();
+            foreach ($recoveryCodes as $key => $storedCode) {
+                if (is_string($storedCode) && hash_equals($storedCode, $otpInput)) {
+                    $verified = true;
+                    unset($recoveryCodes[$key]);
+                    $user->two_factor_recovery_codes = array_values($recoveryCodes);
+                    $user->save();
+                    break;
+                }
             }
         }
 
@@ -228,10 +251,11 @@ class TwoFactorController extends Controller
 
         RateLimiter::clear($throttleKey);
 
-        // Complete Authentication
+        // Complete Authentication + regenerate session ID to prevent session fixation
         Auth::guard($guard)->login($user, $remember);
-        session()->put('2fa_verified', true);
-        session()->forget(['2fa:user:id', '2fa:user:guard', '2fa:user:remember']);
+        session()->forget(['2fa:user:id', '2fa:user:guard', '2fa:user:remember', '2fa_verified']);
+        session()->put("2fa_verified:{$guard}:{$user->id}", true);
+        $request->session()->regenerate();
 
         if ($guard === 'super_admin') {
             return redirect()->route('super-admin.dashboard');

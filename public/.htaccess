@@ -18,6 +18,9 @@
     RewriteCond %{REQUEST_URI} (.+)/$
     RewriteRule ^ %1 [L,R=301]
 
+    # Block PHP/script execution inside static upload and theme asset directories
+    RewriteRule ^(uploads|themes|images)/.*\.(php[0-9]?|phtml|phar|cgi|pl|sh)$ - [F,L,NC]
+
     # Send Requests To Front Controller...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f

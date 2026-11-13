@@ -53,19 +53,29 @@ class Invoice extends Model
     ];
 
     /**
-     * Auto-generate standard unique invoice number
+     * Auto-generate collision-safe unique invoice number.
      */
     public static function generateInvoiceNumber(): string
     {
-        $prefix = 'INV-' . date('Y') . '-';
-        $latest = static::where('invoice_number', 'LIKE', $prefix . '%')->latest('id')->first();
-        if ($latest) {
-            $numberPart = (int) substr($latest->invoice_number, strlen($prefix));
-            $nextNumber = str_pad($numberPart + 1, 4, '0', STR_PAD_LEFT);
-        } else {
-            $nextNumber = '0001';
-        }
-        return $prefix . $nextNumber;
+        return \Illuminate\Support\Facades\DB::transaction(function () {
+            $prefix = 'INV-' . date('Y') . '-';
+            $latest = static::where('invoice_number', 'LIKE', $prefix . '%')
+                ->lockForUpdate()
+                ->orderByRaw('LENGTH(invoice_number) DESC, invoice_number DESC')
+                ->first();
+
+            $nextSeq = $latest
+                ? ((int) substr($latest->invoice_number, strlen($prefix))) + 1
+                : 1;
+
+            $candidate = $prefix . str_pad((string) $nextSeq, 4, '0', STR_PAD_LEFT);
+            while (static::where('invoice_number', $candidate)->exists()) {
+                $nextSeq++;
+                $candidate = $prefix . str_pad((string) $nextSeq, 4, '0', STR_PAD_LEFT);
+            }
+
+            return $candidate;
+        });
     }
 
     public function hotel()

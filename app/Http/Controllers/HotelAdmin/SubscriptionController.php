@@ -6,14 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\Plan;
 use App\Models\PaymentTransaction;
 use App\Services\PaymentManager;
+use App\Services\PaymentOrderService;
 use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SubscriptionController extends Controller
 {
-    public function __construct(protected SubscriptionService $subscriptionService) {}
+    public function __construct(
+        protected SubscriptionService $subscriptionService,
+        protected PaymentOrderService $paymentOrderService
+    ) {}
 
     public function index()
     {
@@ -55,13 +61,23 @@ class SubscriptionController extends Controller
 
     public function createOrder(Request $request)
     {
+        $hotel = Auth::guard('hotel_admin')->user();
         $validated = $request->validate([
-            'plan_id' => 'required|exists:plans,id',
+            'plan_id' => [
+                'required',
+                Rule::exists('plans', 'id')->where(function ($q) use ($hotel) {
+                    $q->where('status', true)->where(function ($inner) use ($hotel) {
+                        $inner->where('is_hidden', false);
+                        if ($hotel && $hotel->plan_id) {
+                            $inner->orWhere('id', $hotel->plan_id);
+                        }
+                    });
+                }),
+            ],
             'tv_count' => 'required|integer|min:1|max:1000',
             'duration_months' => 'required|integer|in:1,3,6,12,24,36',
         ]);
 
-        $hotel = Auth::guard('hotel_admin')->user();
         $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
         $tvCount = (int) $validated['tv_count'];
         $durationMonths = (int) $validated['duration_months'];
@@ -77,19 +93,31 @@ class SubscriptionController extends Controller
             if (!$gateway->isEnabled()) {
                 return response()->json(['success' => false, 'message' => 'No payment gateway is enabled. Please contact support.'], 422);
             }
-            $order = $gateway->createOrder($amount, 'HPLAN-' . strtoupper(Str::random(10)), [
-                'name' => $hotel->hotel_name ?? '',
-                'email' => $hotel->email ?? '',
-                'phone' => $hotel->phone ?? '',
-                'product_info' => 'Plan: ' . $plan->name . " ({$tvCount} TVs)",
-                'udf1' => (string) $hotel->id,
-                'udf2' => (string) $plan->id,
-                'udf3' => (string) $durationMonths,
-                'udf4' => (string) $tvCount,
-                'udf5' => 'hotel_subscription',
-            ]);
+            $order = $this->paymentOrderService->createPendingOrder(
+                $gateway,
+                $amount,
+                'HPLAN-',
+                [
+                    'name' => $hotel->hotel_name ?? '',
+                    'email' => $hotel->email ?? '',
+                    'phone' => $hotel->phone ?? '',
+                    'product_info' => 'Plan: ' . $plan->name . " ({$tvCount} TVs)",
+                    'udf1' => (string) $hotel->id,
+                    'udf2' => (string) $plan->id,
+                    'udf3' => (string) $durationMonths,
+                    'udf4' => (string) $tvCount,
+                    'udf5' => 'hotel_subscription',
+                ],
+                [
+                    'purpose' => 'hotel_subscription',
+                    'hotel_admin_id' => $hotel->id,
+                    'plan_id' => $plan->id,
+                    'tv_count' => $tvCount,
+                    'duration_months' => $durationMonths,
+                ]
+            );
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Payment init failed: ' . $e->getMessage()], 422);
+            return response()->json(['success' => false, 'message' => 'Unable to initialize payment gateway. Please try again.'], 422);
         }
 
         return response()->json([
@@ -110,25 +138,41 @@ class SubscriptionController extends Controller
     // Verify payment & activate / upgrade / renew the plan
     public function purchase(Request $request)
     {
+        $hotel = Auth::guard('hotel_admin')->user();
         $validated = $request->validate([
-            'plan_id' => 'required|exists:plans,id',
-            'tv_count' => 'nullable|integer|min:1',
+            'plan_id' => [
+                'required',
+                Rule::exists('plans', 'id')->where(function ($q) use ($hotel) {
+                    $q->where('status', true)->where(function ($inner) use ($hotel) {
+                        $inner->where('is_hidden', false);
+                        if ($hotel && $hotel->plan_id) {
+                            $inner->orWhere('id', $hotel->plan_id);
+                        }
+                    });
+                }),
+            ],
+            'tv_count' => 'nullable|integer|min:1|max:1000',
             'duration_months' => 'required|integer|in:1,3,6,12,24,36',
-            'razorpay_order_id' => 'required_without:txnid|nullable|string',
-            'razorpay_payment_id' => 'nullable|string',
-            'razorpay_signature' => 'nullable|string',
-            'txnid' => 'required_without:razorpay_order_id|nullable|string',
-            'hash' => 'nullable|string',
-            'status' => 'nullable|string',
-            'amount' => 'nullable|string',
-            'productinfo' => 'nullable|string',
-            'firstname' => 'nullable|string',
-            'email' => 'nullable|string',
+            'razorpay_order_id' => 'required_without:txnid|nullable|string|max:120',
+            'razorpay_payment_id' => 'nullable|string|max:120',
+            'razorpay_signature' => 'nullable|string|max:255',
+            'txnid' => 'required_without:razorpay_order_id|nullable|string|max:120',
+            'hash' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:40',
+            'amount' => 'nullable|string|max:40',
+            'productinfo' => 'nullable|string|max:255',
+            'firstname' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
+            'udf1' => 'nullable|string|max:120',
+            'udf2' => 'nullable|string|max:120',
+            'udf3' => 'nullable|string|max:120',
+            'udf4' => 'nullable|string|max:120',
+            'udf5' => 'nullable|string|max:120',
+            'additionalCharges' => 'nullable|string|max:40',
         ]);
 
-        $hotel = Auth::guard('hotel_admin')->user();
         $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
-        $tvCount = (int) ($validated['tv_count'] ?? $hotel->room_count ?? 1);
+        $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: 1));
         $durationMonths = (int) $validated['duration_months'];
 
         $calc = $plan->calculatePricing($tvCount);
@@ -139,37 +183,45 @@ class SubscriptionController extends Controller
         $gateway = PaymentManager::active();
         $gatewayCode = $gateway->getCode();
 
-        // Build a gateway-agnostic payload for the strategy to verify
         $payload = $gatewayCode === 'payu'
-            ? $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash'])
+            ? $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash', 'udf1', 'udf2', 'udf3', 'udf4', 'udf5', 'additionalCharges'])
             : $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
 
-        $transactionId = $payload['razorpay_payment_id'] ?? $payload['txnid'] ?? '';
+        $orderId = (string) ($payload['razorpay_order_id'] ?? $payload['txnid'] ?? '');
+        $paymentReference = (string) ($payload['razorpay_payment_id'] ?? $payload['txnid'] ?? '');
 
-        if (empty($transactionId)) {
-            return response()->json(['success' => false, 'message' => 'No payment reference received from gateway.'], 422);
+        try {
+            $result = DB::transaction(function () use ($gateway, $gatewayCode, $orderId, $paymentReference, $payload, $hotel, $plan, $tvCount, $durationMonths, $computedAmount) {
+                $consumed = $this->paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    $orderId,
+                    $paymentReference,
+                    $payload,
+                    'hotel_subscription',
+                    [
+                        'hotel_admin_id' => $hotel->id,
+                        'plan_id' => $plan->id,
+                        'expected_amount' => $computedAmount,
+                    ]
+                );
+
+                return $this->subscriptionService->activate($hotel, $plan, $durationMonths, [
+                    'amount' => $consumed['amount'],
+                    'tv_count' => $tvCount,
+                    'payment_method' => 'online_gateway',
+                    'gateway_code' => $gatewayCode,
+                    'transaction_id' => $consumed['transaction_id'],
+                    'payload' => $consumed['payload'],
+                    'skip_payment_tx_record' => true,
+                    'notes' => "Online {$gatewayCode} payment: {$consumed['transaction_id']} for {$tvCount} Connected TVs",
+                ]);
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e instanceof \RuntimeException ? $e->getMessage() : 'Payment verification failed. Plan not activated.',
+            ], 422);
         }
-
-        // Duplicate protection
-        $already = PaymentTransaction::where('transaction_id', $transactionId)
-            ->where('status', 'success')->exists();
-        if ($already) {
-            return response()->json(['success' => false, 'message' => 'This payment was already processed.'], 422);
-        }
-
-        if (!$gateway->verifyPayment($payload)) {
-            return response()->json(['success' => false, 'message' => 'Payment verification failed. Plan not activated.'], 422);
-        }
-
-        $result = $this->subscriptionService->activate($hotel, $plan, $durationMonths, [
-            'amount' => $computedAmount,
-            'tv_count' => $tvCount,
-            'payment_method' => 'online_gateway',
-            'gateway_code' => $gatewayCode,
-            'transaction_id' => $transactionId,
-            'payload' => $payload,
-            'notes' => "Online {$gatewayCode} payment: {$transactionId} for {$tvCount} Connected TVs",
-        ]);
 
         return response()->json([
             'success' => true,
@@ -202,19 +254,31 @@ class SubscriptionController extends Controller
             if (!$gateway->isEnabled()) {
                 return response()->json(['success' => false, 'message' => 'No payment gateway is enabled. Please contact support.'], 422);
             }
-            $order = $gateway->createOrder($amount, 'HADDON-' . strtoupper(Str::random(10)), [
-                'name' => $hotel->hotel_name ?? '',
-                'email' => $hotel->email ?? '',
-                'phone' => $hotel->phone ?? '',
-                'product_info' => "TV Add-On: +{$additionalTvs} Screens",
-                'udf1' => (string) $hotel->id,
-                'udf2' => (string) $hotel->plan_id,
-                'udf3' => (string) $pricing['remaining_days'],
-                'udf4' => (string) $additionalTvs,
-                'udf5' => 'hotel_tv_addon',
-            ]);
+            $order = $this->paymentOrderService->createPendingOrder(
+                $gateway,
+                $amount,
+                'HADDON-',
+                [
+                    'name' => $hotel->hotel_name ?? '',
+                    'email' => $hotel->email ?? '',
+                    'phone' => $hotel->phone ?? '',
+                    'product_info' => "TV Add-On: +{$additionalTvs} Screens",
+                    'udf1' => (string) $hotel->id,
+                    'udf2' => (string) $hotel->plan_id,
+                    'udf3' => (string) $pricing['remaining_days'],
+                    'udf4' => (string) $additionalTvs,
+                    'udf5' => 'hotel_tv_addon',
+                ],
+                [
+                    'purpose' => 'hotel_tv_addon',
+                    'hotel_admin_id' => $hotel->id,
+                    'plan_id' => $hotel->plan_id,
+                    'additional_tvs' => $additionalTvs,
+                    'remaining_days' => $pricing['remaining_days'],
+                ]
+            );
         } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Payment init failed: ' . $e->getMessage()], 422);
+            return response()->json(['success' => false, 'message' => 'Unable to initialize payment gateway. Please try again.'], 422);
         }
 
         return response()->json([
@@ -239,17 +303,23 @@ class SubscriptionController extends Controller
     public function purchaseAddon(Request $request)
     {
         $validated = $request->validate([
-            'additional_tvs' => 'required|integer|min:1',
-            'razorpay_order_id' => 'required_without:txnid|nullable|string',
-            'razorpay_payment_id' => 'nullable|string',
-            'razorpay_signature' => 'nullable|string',
-            'txnid' => 'required_without:razorpay_order_id|nullable|string',
-            'hash' => 'nullable|string',
-            'status' => 'nullable|string',
-            'amount' => 'nullable|string',
-            'productinfo' => 'nullable|string',
-            'firstname' => 'nullable|string',
-            'email' => 'nullable|string',
+            'additional_tvs' => 'required|integer|min:1|max:1000',
+            'razorpay_order_id' => 'required_without:txnid|nullable|string|max:120',
+            'razorpay_payment_id' => 'nullable|string|max:120',
+            'razorpay_signature' => 'nullable|string|max:255',
+            'txnid' => 'required_without:razorpay_order_id|nullable|string|max:120',
+            'hash' => 'nullable|string|max:255',
+            'status' => 'nullable|string|max:40',
+            'amount' => 'nullable|string|max:40',
+            'productinfo' => 'nullable|string|max:255',
+            'firstname' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
+            'udf1' => 'nullable|string|max:120',
+            'udf2' => 'nullable|string|max:120',
+            'udf3' => 'nullable|string|max:120',
+            'udf4' => 'nullable|string|max:120',
+            'udf5' => 'nullable|string|max:120',
+            'additionalCharges' => 'nullable|string|max:40',
         ]);
 
         $hotel = Auth::guard('hotel_admin')->user();
@@ -265,33 +335,43 @@ class SubscriptionController extends Controller
         $gatewayCode = $gateway->getCode();
 
         $payload = $gatewayCode === 'payu'
-            ? $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash'])
+            ? $request->only(['status', 'txnid', 'amount', 'productinfo', 'firstname', 'email', 'hash', 'udf1', 'udf2', 'udf3', 'udf4', 'udf5', 'additionalCharges'])
             : $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
 
-        $transactionId = $payload['razorpay_payment_id'] ?? $payload['txnid'] ?? '';
+        $orderId = (string) ($payload['razorpay_order_id'] ?? $payload['txnid'] ?? '');
+        $paymentReference = (string) ($payload['razorpay_payment_id'] ?? $payload['txnid'] ?? '');
 
-        if (empty($transactionId)) {
-            return response()->json(['success' => false, 'message' => 'No payment reference received from gateway.'], 422);
+        try {
+            $result = DB::transaction(function () use ($gateway, $gatewayCode, $orderId, $paymentReference, $payload, $hotel, $additionalTvs, $computedAmount) {
+                $consumed = $this->paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    $orderId,
+                    $paymentReference,
+                    $payload,
+                    'hotel_tv_addon',
+                    [
+                        'hotel_admin_id' => $hotel->id,
+                        'plan_id' => $hotel->plan_id,
+                        'expected_amount' => $computedAmount,
+                    ]
+                );
+
+                return $this->subscriptionService->addTvAddon($hotel, $additionalTvs, [
+                    'amount' => $consumed['amount'],
+                    'payment_method' => 'online_gateway',
+                    'gateway_code' => $gatewayCode,
+                    'transaction_id' => $consumed['transaction_id'],
+                    'payload' => $consumed['payload'],
+                    'skip_payment_tx_record' => true,
+                    'notes' => "Hotel self-service TV Add-On (+{$additionalTvs} TVs, txn: {$consumed['transaction_id']})",
+                ]);
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e instanceof \RuntimeException ? $e->getMessage() : 'Payment verification failed.',
+            ], 422);
         }
-
-        $already = PaymentTransaction::where('transaction_id', $transactionId)
-            ->where('status', 'success')->exists();
-        if ($already) {
-            return response()->json(['success' => false, 'message' => 'This payment was already processed.'], 422);
-        }
-
-        if (!$gateway->verifyPayment($payload)) {
-            return response()->json(['success' => false, 'message' => 'Payment verification failed.'], 422);
-        }
-
-        $result = $this->subscriptionService->addTvAddon($hotel, $additionalTvs, [
-            'amount' => $computedAmount,
-            'payment_method' => 'online_gateway',
-            'gateway_code' => $gatewayCode,
-            'transaction_id' => $transactionId,
-            'payload' => $payload,
-            'notes' => "Hotel self-service TV Add-On (+{$additionalTvs} TVs, txn: {$transactionId})",
-        ]);
 
         return response()->json([
             'success' => true,

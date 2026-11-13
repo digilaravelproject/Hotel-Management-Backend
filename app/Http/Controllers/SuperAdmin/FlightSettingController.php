@@ -62,6 +62,7 @@ class FlightSettingController extends Controller
         $request->validate([
             'provider' => 'required|string|in:airlabs,aviationstack,aerodatabox',
             'api_key' => 'nullable|string',
+            'clear_api_key' => 'nullable|boolean',
             'cache_ttl_minutes' => 'required|integer|min:5|max:1440',
             'is_active' => 'nullable|boolean',
         ]);
@@ -72,7 +73,11 @@ class FlightSettingController extends Controller
         }
 
         $setting->provider = $request->input('provider', 'airlabs');
-        $setting->api_key = $request->input('api_key');
+        if ($request->boolean('clear_api_key')) {
+            $setting->api_key = null;
+        } elseif ($request->filled('api_key')) {
+            $setting->api_key = trim((string) $request->input('api_key'));
+        }
         $setting->cache_ttl_minutes = (int) $request->input('cache_ttl_minutes', 30);
         $setting->is_active = $request->boolean('is_active');
         $setting->save();

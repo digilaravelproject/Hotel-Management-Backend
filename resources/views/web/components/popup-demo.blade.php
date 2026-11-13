@@ -30,6 +30,8 @@
             <!-- Form -->
             <form method="POST" action="{{ route('contact.submit') }}" id="demo-request-form">
                 @csrf
+                {{-- Anti-bot honeypot --}}
+                <input type="text" name="website_hp_check" value="" style="display:none !important; position:absolute !important; left:-9999px !important;" tabindex="-1" autocomplete="off" aria-hidden="true">
                 
                 <!-- Anti-spam Honeypot Field -->
                 <div style="position: absolute; left: -9999px; top: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
@@ -146,6 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const response = await fetch(form.action, {
                 method: 'POST',
                 headers: headers,
+                credentials: 'include',
                 body: formData
             });
 

@@ -617,10 +617,17 @@
         document.getElementById('viewSrBadge').textContent = `#${amenity.sr_no}`;
         document.getElementById('viewDescription').textContent = amenity.description || 'No description provided.';
         const imgContainer = document.getElementById('viewImagePreview');
+        imgContainer.textContent = '';
         if (amenity.image) {
-            imgContainer.innerHTML = `<img src="/${amenity.image}" class="w-full h-full object-cover">`;
+            const img = document.createElement('img');
+            img.src = '/' + String(amenity.image).replace(/^\/+/, '');
+            img.className = 'w-full h-full object-cover';
+            imgContainer.appendChild(img);
         } else {
-            imgContainer.innerHTML = `<div class="w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base">#${amenity.sr_no} • No 16:9 Image</div>`;
+            const placeholder = document.createElement('div');
+            placeholder.className = 'w-full h-full flex items-center justify-center bg-indigo-900/40 text-indigo-200 font-bold text-base';
+            placeholder.textContent = `#${amenity.sr_no} • No 16:9 Image`;
+            imgContainer.appendChild(placeholder);
         }
         document.getElementById('viewAmenityModal').classList.remove('hidden');
     }

@@ -100,72 +100,87 @@ class DashboardController extends Controller
     }
 
     /**
-     * Complete payment/subscription checkout from within the dashboard popup
+     * Complete payment/subscription checkout from within the dashboard popup.
      */
-    public function subscribe(\Illuminate\Http\Request $request)
-    {
-        $request->validate([
-            'plan_id' => 'required|exists:plans,id',
-            'razorpay_order_id' => 'required|string',
-            'razorpay_payment_id' => 'nullable|string',
-            'razorpay_signature' => 'nullable|string',
-        ]);
-
+    public function subscribe(
+        \Illuminate\Http\Request $request,
+        \App\Services\PaymentOrderService $paymentOrderService,
+        \App\Services\SubscriptionService $subscriptionService
+    ) {
         $hotel = Auth::guard('hotel_admin')->user();
-        $plan = \App\Models\Plan::findOrFail($request->plan_id);
-
-        $keyId = env('RAZORPAY_KEY_ID');
-        $keySecret = env('RAZORPAY_KEY_SECRET');
-        $isMockOrder = str_starts_with($request->razorpay_order_id, 'order_mock_');
-
-        if ($keyId && $keySecret && !$isMockOrder) {
-            try {
-                $api = new \Razorpay\Api\Api($keyId, $keySecret);
-                $attributes = [
-                    'razorpay_order_id' => $request->razorpay_order_id,
-                    'razorpay_payment_id' => $request->razorpay_payment_id,
-                    'razorpay_signature' => $request->razorpay_signature,
-                ];
-                $api->utility->verifyPaymentSignature($attributes);
-            } catch (\Exception $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Payment Verification Failed: ' . $e->getMessage()
-                ], 400);
-            }
-        }
-
-        // Generate License Key (XXXX-XXXX-XXXX-XXXX)
-        $licenseKey = sprintf(
-            "%s-%s-%s-%s",
-            strtoupper(\Illuminate\Support\Str::random(4)),
-            strtoupper(\Illuminate\Support\Str::random(4)),
-            strtoupper(\Illuminate\Support\Str::random(4)),
-            strtoupper(\Illuminate\Support\Str::random(4))
-        );
-
-        $paymentId = $request->razorpay_payment_id ?? 'pay_mock_' . \Illuminate\Support\Str::random(14);
-
-        $hotel->update([
-            'plan_id' => $plan->id,
-            'payment_status' => 'paid',
-            'license_key' => $licenseKey,
-            'razorpay_order_id' => $request->razorpay_order_id,
-            'razorpay_payment_id' => $paymentId,
+        $validated = $request->validate([
+            'plan_id' => [
+                'required',
+                \Illuminate\Validation\Rule::exists('plans', 'id')->where(function ($q) use ($hotel) {
+                    $q->where('status', true)->where(function ($inner) use ($hotel) {
+                        $inner->where('is_hidden', false);
+                        if ($hotel && $hotel->plan_id) {
+                            $inner->orWhere('id', $hotel->plan_id);
+                        }
+                    });
+                }),
+            ],
+            'duration_months' => 'nullable|integer|in:1,3,6,12,24,36',
+            'tv_count' => 'nullable|integer|min:1|max:5000',
+            'razorpay_order_id' => 'required|string|max:120',
+            'razorpay_payment_id' => 'nullable|string|max:120',
+            'razorpay_signature' => 'nullable|string|max:255',
         ]);
 
-        // Send confirmation email
+        $plan = Plan::with('tax')->findOrFail($validated['plan_id']);
+        $tvCount = max(1, (int) ($validated['tv_count'] ?? $hotel->room_count ?: ($plan->room_count ?: 1)));
+        $durationMonths = (int) ($validated['duration_months'] ?? ($plan->billing_cycle === 'yearly' ? 12 : 1));
+        $pricing = $paymentOrderService->calculateSubscriptionTotal($plan, $tvCount, $durationMonths);
+
         try {
-            \Illuminate\Support\Facades\Mail::to($hotel->email)->send(
-                new \App\Mail\HotelRegisteredMail($hotel, 'Your existing password')
-            );
-        } catch (\Exception $e) {
-            logger()->error('Mail delivery failed: ' . $e->getMessage());
+            $gateway = \App\Services\PaymentManager::active();
+            $verified = \Illuminate\Support\Facades\DB::transaction(function () use (
+                $paymentOrderService,
+                $subscriptionService,
+                $gateway,
+                $validated,
+                $hotel,
+                $plan,
+                $tvCount,
+                $durationMonths,
+                $pricing
+            ) {
+                $payload = $request->only(['razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']);
+                $consumed = $paymentOrderService->consumeVerifiedPayment(
+                    $gateway,
+                    (string) $validated['razorpay_order_id'],
+                    (string) ($validated['razorpay_payment_id'] ?? $validated['razorpay_order_id']),
+                    $payload,
+                    'hotel_subscription',
+                    [
+                        'hotel_admin_id' => $hotel->id,
+                        'plan_id' => $plan->id,
+                        'expected_amount' => $pricing['total_amount'],
+                    ]
+                );
+
+                return $subscriptionService->activate($hotel, $plan, $durationMonths, [
+                    'tv_count' => $tvCount,
+                    'amount' => $consumed['amount'],
+                    'payment_method' => 'online_gateway',
+                    'gateway_code' => $gateway->getCode(),
+                    'transaction_id' => $consumed['transaction_id'],
+                    'payload' => $consumed['payload'],
+                    'skip_payment_tx_record' => true,
+                    'notes' => "Dashboard online {$gateway->getName()} payment: {$consumed['transaction_id']}",
+                ]);
+            });
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e instanceof \RuntimeException ? $e->getMessage() : 'Payment verification failed. Please retry or contact support.',
+            ], 400);
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Subscription activated successfully!',
+            'new_expiry' => $verified['new_expiry']->format('Y-m-d'),
         ]);
     }
 }
