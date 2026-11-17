@@ -142,7 +142,11 @@ class TvLoginService
 
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
-        $wasDemoDevice = $device && $device->is_demo;
+        $isFromDemoHotel = $device && $device->hotelAdmin && (
+            $device->hotelAdmin->license_key === 'DEMO-MASTER-SHOWCASE'
+            || str_contains(strtolower($device->hotelAdmin->hotel_name ?? ''), 'demo')
+        );
+        $wasDemoDevice = $device && ($device->is_demo || $isFromDemoHotel);
 
         // Tenant isolation: never allow one hotel to hijack a non-demo device bound to another hotel
         if ($device && !$wasDemoDevice && (int) $device->hotel_admin_id !== (int) $hotel->id) {
