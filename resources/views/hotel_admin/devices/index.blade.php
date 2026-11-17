@@ -305,11 +305,17 @@
                                 {{ $devices->firstItem() + $index }}
                             </td>
                             <td class="px-5 py-4">
-                                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-1.5">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-purple-50 text-[#150A42] font-black text-xs border border-purple-200/60 shadow-2xs">
                                         <i class="fa-solid fa-door-closed mr-1.5 text-purple-600 text-[10px]"></i>
                                         Room {{ $device->room_no }}
                                     </span>
+                                    <button type="button" 
+                                            onclick="openEditRoomModal({{ $device->id }}, '{{ addslashes($device->room_no) }}')" 
+                                            class="w-6 h-6 rounded-lg bg-slate-50 hover:bg-purple-100 border border-slate-200 hover:border-purple-300 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" 
+                                            title="Edit Room Number">
+                                        <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                                    </button>
                                 </div>
                                 @if($activeGuest = $activeGuests->get($device->room_no))
                                     <div class="mt-1">
@@ -362,6 +368,10 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 <div class="inline-flex items-center space-x-1.5">
+                                    <button type="button" onclick="openEditRoomModal({{ $device->id }}, '{{ addslashes($device->room_no) }}')" class="inline-flex items-center space-x-1 px-2.5 py-1.5 rounded-xl bg-purple-50/70 hover:bg-purple-100 border border-purple-200/80 text-[#150A42] font-bold text-xs transition-all shadow-2xs cursor-pointer active:scale-95" title="Edit Room Number">
+                                        <i class="fa-solid fa-pen-to-square text-purple-600 text-[11px]"></i>
+                                        <span>Edit</span>
+                                    </button>
                                     <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 text-slate-800 font-bold text-xs transition-all shadow-2xs cursor-pointer" title="View Full Specs">
                                         <i class="fa-solid fa-eye text-purple-600"></i>
                                         <span>View</span>
@@ -417,10 +427,18 @@
             <div class="bg-white border border-slate-100 rounded-[22px] p-4 shadow-sm space-y-3">
                 <div class="flex items-start justify-between gap-2 border-b border-slate-100 pb-2.5">
                     <div class="min-w-0">
-                        <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/60 text-[#150A42] font-black text-xs mb-1 shadow-2xs">
-                            <i class="fa-solid fa-door-closed mr-1.5 text-purple-600 text-[10px]"></i>
-                            Room {{ $device->room_no }}
-                        </span>
+                        <div class="flex items-center space-x-1.5 mb-1">
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-xl bg-purple-50 border border-purple-200/60 text-[#150A42] font-black text-xs shadow-2xs">
+                                <i class="fa-solid fa-door-closed mr-1.5 text-purple-600 text-[10px]"></i>
+                                Room {{ $device->room_no }}
+                            </span>
+                            <button type="button" 
+                                    onclick="openEditRoomModal({{ $device->id }}, '{{ addslashes($device->room_no) }}')" 
+                                    class="w-6 h-6 rounded-lg bg-slate-50 hover:bg-purple-100 border border-slate-200 hover:border-purple-300 text-slate-500 hover:text-[#150A42] flex items-center justify-center transition-all cursor-pointer shadow-2xs active:scale-95" 
+                                    title="Edit Room Number">
+                                <i class="fa-solid fa-pen-to-square text-[10px]"></i>
+                            </button>
+                        </div>
                         @if($activeGuest = $activeGuests->get($device->room_no))
                             <div class="text-xs font-extrabold text-slate-900 truncate flex items-center">
                                 <i class="fa-solid fa-user text-emerald-600 text-[10px] mr-1.5"></i>
@@ -472,6 +490,10 @@
                         <i class="fa-solid fa-list-check text-[11px] text-blue-600"></i>
                         <span>Menus</span>
                     </a>
+                    <button type="button" onclick="openEditRoomModal({{ $device->id }}, '{{ addslashes($device->room_no) }}')" class="py-2 px-2.5 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200/80 text-[#150A42] font-bold text-xs flex items-center justify-center space-x-1 transition-all cursor-pointer shadow-2xs active:scale-95" title="Edit Room Number">
+                        <i class="fa-solid fa-pen-to-square text-purple-600 text-[11px]"></i>
+                        <span>Edit</span>
+                    </button>
                     <button type="button" onclick="showDeviceDetails({{ json_encode($devicePayload) }})" class="py-2 px-3 rounded-xl bg-slate-50 hover:bg-white border border-slate-200 text-slate-900 font-bold text-xs flex items-center justify-center transition-all cursor-pointer shadow-2xs" title="View Full Specs">
                         <i class="fa-solid fa-eye text-purple-600"></i>
                     </button>
@@ -596,8 +618,14 @@
                     </div>
                 </div>
 
-                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-0.5">
-                    <div class="text-[10px] uppercase font-black text-slate-400">Room Number</div>
+                <div class="p-3 rounded-2xl bg-slate-50 border border-slate-100 space-y-1">
+                    <div class="flex items-center justify-between">
+                        <div class="text-[10px] uppercase font-black text-slate-400">Room Number</div>
+                        <button type="button" onclick="closeDeviceDetailsModal(); openEditRoomModal(currentModalDevice.id, currentModalDevice.room_no);" class="text-[10px] font-bold text-purple-700 hover:text-purple-900 flex items-center space-x-1 cursor-pointer">
+                            <i class="fa-solid fa-pen-to-square text-[9px]"></i>
+                            <span>Edit Room</span>
+                        </button>
+                    </div>
                     <div id="modalRoomNo" class="font-extrabold text-[#150A42]">---</div>
                     <div class="text-[10px] text-emerald-600 font-semibold flex items-center space-x-1">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
@@ -650,6 +678,59 @@
                 Close
             </button>
         </div>
+    </div>
+</div>
+
+<!-- Edit Room Number Modal -->
+<div id="editRoomModal" class="fixed inset-0 z-50 bg-[#0B0424]/80 backdrop-blur-sm flex items-center justify-center hidden p-3 sm:p-4" onclick="closeEditRoomModalOnBackdrop(event)">
+    <div class="bg-white border border-slate-100 rounded-[24px] sm:rounded-[28px] p-5 sm:p-6 max-w-sm sm:max-w-md w-full shadow-2xl space-y-4 animate-in fade-in zoom-in-95 duration-150 relative" onclick="event.stopPropagation()">
+        <!-- Header -->
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 text-[#150A42] flex items-center justify-center text-sm shadow-2xs shrink-0">
+                    <i class="fa-solid fa-pen-to-square text-purple-700"></i>
+                </div>
+                <div>
+                    <h3 class="text-sm sm:text-base font-black text-slate-900 tracking-tight leading-tight">Edit Room Number</h3>
+                    <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium">Reassign this TV to another room</p>
+                </div>
+            </div>
+            <button type="button" onclick="closeEditRoomModal()" class="text-slate-400 hover:text-slate-700 w-8 h-8 rounded-lg hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer" title="Close">
+                <i class="fa-solid fa-xmark text-base"></i>
+            </button>
+        </div>
+
+        <form id="editRoomForm" onsubmit="submitEditRoomForm(event)" class="space-y-4">
+            <input type="hidden" id="editDeviceId" name="device_id" value="">
+            
+            <div class="space-y-1.5">
+                <label class="block text-xs font-bold text-slate-700">
+                    New Room Number <span class="text-rose-500">*</span>
+                </label>
+                <div class="relative">
+                    <i class="fa-solid fa-door-closed absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                    <input type="text" 
+                           id="editRoomNoInput" 
+                           name="room_no" 
+                           required 
+                           placeholder="e.g. 101, 202, Deluxe-01" 
+                           class="w-full pl-9 pr-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-purple-500/10 focus:border-[#150A42] transition-all">
+                </div>
+                <p class="text-[10px] text-slate-400 font-medium">Changing the room number will immediately update on TV launcher, welcome screens, and API in real-time.</p>
+            </div>
+
+            <div id="editRoomAlert" class="hidden p-3 rounded-xl text-xs font-semibold"></div>
+
+            <div class="pt-2 flex items-center justify-end space-x-2">
+                <button type="button" onclick="closeEditRoomModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 text-xs font-bold transition-colors cursor-pointer">
+                    Cancel
+                </button>
+                <button type="submit" id="editRoomSubmitBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#150A42] to-[#2B1270] hover:from-[#1b0d54] hover:to-[#38188e] text-white font-bold text-xs shadow-md shadow-[#150A42]/15 flex items-center space-x-1.5 cursor-pointer active:scale-95 transition-all">
+                    <i class="fa-solid fa-check text-[11px] text-amber-300"></i>
+                    <span>Update Room Number</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -1068,8 +1149,96 @@
         if (e.key === 'Escape') {
             closeDeviceDetailsModal();
             closePairModal();
+            closeEditRoomModal();
         }
     });
+
+    // Edit Room Modal Functions
+    function openEditRoomModal(deviceId, currentRoomNo) {
+        document.getElementById('editDeviceId').value = deviceId;
+        document.getElementById('editRoomNoInput').value = currentRoomNo;
+        const alertBox = document.getElementById('editRoomAlert');
+        alertBox.className = 'hidden';
+        alertBox.innerHTML = '';
+        const submitBtn = document.getElementById('editRoomSubmitBtn');
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fa-solid fa-check text-[11px] text-amber-300"></i><span>Update Room Number</span>';
+
+        document.getElementById('editRoomModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        setTimeout(() => {
+            const input = document.getElementById('editRoomNoInput');
+            if (input) {
+                input.focus();
+                input.select();
+            }
+        }, 100);
+    }
+
+    function closeEditRoomModal() {
+        document.getElementById('editRoomModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function closeEditRoomModalOnBackdrop(event) {
+        if (event.target.id === 'editRoomModal') {
+            closeEditRoomModal();
+        }
+    }
+
+    async function submitEditRoomForm(event) {
+        event.preventDefault();
+        const deviceId = document.getElementById('editDeviceId').value;
+        const newRoomNo = document.getElementById('editRoomNoInput').value.trim();
+        const alertBox = document.getElementById('editRoomAlert');
+        const submitBtn = document.getElementById('editRoomSubmitBtn');
+
+        if (!newRoomNo) return;
+
+        alertBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i> Updating...';
+
+        try {
+            const url = "{{ url('/hotel/devices') }}/" + deviceId;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}",
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    _method: 'PUT',
+                    room_no: newRoomNo
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-emerald-50 border border-emerald-200 text-emerald-800';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i> ' + (data.message || 'Room number updated successfully.');
+                alertBox.classList.remove('hidden');
+
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
+                alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-600 mr-1.5"></i> ' + (data.message || 'Failed to update room number.');
+                alertBox.classList.remove('hidden');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fa-solid fa-check text-[11px] text-amber-300"></i><span>Update Room Number</span>';
+            }
+        } catch (err) {
+            alertBox.className = 'p-3 rounded-xl text-xs font-semibold bg-rose-50 border border-rose-200 text-rose-800';
+            alertBox.innerHTML = '<i class="fa-solid fa-circle-exclamation text-rose-600 mr-1.5"></i> Network error occurred. Please try again.';
+            alertBox.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-check text-[11px] text-amber-300"></i><span>Update Room Number</span>';
+        }
+    }
 
     function copyLicenseKey() {
         const key = document.getElementById('modalLicenseKey').innerText;

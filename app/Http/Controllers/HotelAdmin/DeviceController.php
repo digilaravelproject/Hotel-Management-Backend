@@ -141,6 +141,88 @@ class DeviceController extends Controller
     }
 
     /**
+     * Update a connected TV device (e.g. Room Number).
+     */
+    public function update(Request $request, int $id)
+    {
+        $hotel = auth()->guard('hotel_admin')->user();
+        if (!$hotel) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 401);
+        }
+
+        $device = $hotel->connectedDevices()->findOrFail($id);
+
+        $validated = $request->validate([
+            'room_no' => 'required|string|max:50',
+        ]);
+
+        $newRoomNo = trim((string) $validated['room_no']);
+        $oldRoomNo = $device->room_no;
+
+        // Check if another device in this hotel already has this room_no
+        $existingDeviceInRoom = $hotel->connectedDevices()
+            ->where('room_no', $newRoomNo)
+            ->where('id', '!=', $device->id)
+            ->first();
+
+        if ($existingDeviceInRoom) {
+            $errMsg = "Room {$newRoomNo} is already assigned to TV Device ({$existingDeviceInRoom->device_id}). Please enter a different room number.";
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errMsg,
+                ], 422);
+            }
+            return redirect()->back()->with('error', $errMsg);
+        }
+
+        $device->update([
+            'room_no' => $newRoomNo,
+        ]);
+
+        // Invalidate TV caches for both old and new room numbers
+        if ($oldRoomNo) {
+            \App\Services\TvVersionCacheService::clearHotelCache((int) $hotel->id, 'DEVICE', $oldRoomNo, true);
+        }
+        \App\Services\TvVersionCacheService::clearHotelCache((int) $hotel->id, 'DEVICE', $newRoomNo, true);
+
+        // Broadcast real-time TV update event
+        try {
+            event(new \App\Events\TvConfigUpdatedEvent((int) $hotel->id, 'DEVICE', $newRoomNo, [
+                'action' => 'ROOM_NUMBER_UPDATED',
+                'device_id' => $device->device_id,
+                'old_room_no' => $oldRoomNo,
+                'new_room_no' => $newRoomNo,
+            ]));
+        } catch (\Throwable $e) {}
+
+        // Real-time Firestore sync
+        try {
+            $firestore = app(\App\Services\FirebaseFirestoreService::class);
+            $collectionPath = 'hotels/hotel_' . $hotel->id . '/rooms';
+            $documentId = 'device_' . preg_replace('/[^a-zA-Z0-9-_]/', '_', $device->device_id);
+            $firestore->setDocument($collectionPath, $documentId, [
+                'room_no' => $newRoomNo,
+                'device_id' => $device->device_id,
+                'updated_at' => now()->toIso8601String(),
+            ]);
+        } catch (\Throwable $e) {}
+
+        $msg = "Room number updated from {$oldRoomNo} to {$newRoomNo} successfully and synced to TV in real-time!";
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => $msg,
+                'device_id' => $device->id,
+                'room_no' => $newRoomNo,
+            ]);
+        }
+
+        return redirect()->route('hotel.devices.index')->with('success', $msg);
+    }
+
+    /**
      * Delete/Disconnect a device belonging to the authenticated hotel.
      */
     public function destroy(int $id)
