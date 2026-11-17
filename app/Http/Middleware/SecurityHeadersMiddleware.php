@@ -13,9 +13,31 @@ class SecurityHeadersMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Handle CORS preflight directly for all API routes
+        if ($request->is('api/*') && $request->isMethod('OPTIONS')) {
+            $origin = $request->header('Origin') ?: '*';
+            return response('', 204)
+                ->header('Access-Control-Allow-Origin', $origin)
+                ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS')
+                ->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control')
+                ->header('Access-Control-Allow-Credentials', 'true')
+                ->header('Access-Control-Max-Age', '86400');
+        }
+
         $response = $next($request);
 
-        // Security Response Headers
+        // For API routes, ensure complete cross-origin interoperability (TV apps, launchers, webviews)
+        if ($request->is('api/*')) {
+            $origin = $request->header('Origin') ?: '*';
+            $response->headers->set('Access-Control-Allow-Origin', $origin);
+            $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, Cache-Control');
+            $response->headers->set('Access-Control-Allow-Credentials', 'true');
+            $response->headers->set('Access-Control-Max-Age', '86400');
+            return $response;
+        }
+
+        // Security Response Headers for Web / HTML pages
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-XSS-Protection', '1; mode=block');

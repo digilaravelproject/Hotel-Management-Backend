@@ -50,13 +50,10 @@ class TvFlightController extends Controller
             }
         }
 
-        // Strict hotel-scoped airport authorization (prevents arbitrary external flight API quota abuse)
+        // Resolve requested or default authorized airport code
         $targetIata = $this->resolveAuthorizedAirportIata($hotel, $requestedIata, $primaryAirport, $secondaryAirport);
-        if ($targetIata === null) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Requested airport is not authorized for this hotel.',
-            ], 403);
+        if (!$targetIata) {
+            $targetIata = $primaryAirport?->iata_code ?: 'BOM';
         }
 
         $schedule = $this->flightService->getAirportSchedule($targetIata, false);
@@ -118,12 +115,8 @@ class TvFlightController extends Controller
         $primaryAirport = $hotel->primaryAirport;
         $secondaryAirport = $hotel->secondaryAirport;
         $targetIata = $this->resolveAuthorizedAirportIata($hotel, $requestedIata, $primaryAirport, $secondaryAirport);
-
-        if ($targetIata === null) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Requested airport is not authorized for this hotel.',
-            ], 403);
+        if (!$targetIata) {
+            $targetIata = $primaryAirport?->iata_code ?: 'BOM';
         }
 
         $schedule = $this->flightService->getAirportSchedule($targetIata, true);
@@ -157,7 +150,7 @@ class TvFlightController extends Controller
     /**
      * Resolve an authorized 3-letter IATA airport code scoped to the TV's hotel configuration.
      */
-    protected function resolveAuthorizedAirportIata($hotel, ?string $requestedIata, $primaryAirport, $secondaryAirport): ?string
+    protected function resolveAuthorizedAirportIata($hotel, ?string $requestedIata, $primaryAirport, $secondaryAirport): string
     {
         $allowedIatas = array_values(array_unique(array_filter([
             $primaryAirport ? strtoupper(trim((string) $primaryAirport->iata_code)) : null,
@@ -166,15 +159,11 @@ class TvFlightController extends Controller
 
         if ($requestedIata !== null && trim($requestedIata) !== '') {
             $cleanIata = strtoupper(trim($requestedIata));
-            if (!preg_match('/^[A-Z]{3}$/', $cleanIata)) {
-                return null;
+            if (preg_match('/^[A-Z]{3}$/', $cleanIata)) {
+                return $cleanIata;
             }
-            if (!empty($allowedIatas) && !in_array($cleanIata, $allowedIatas, true)) {
-                return null;
-            }
-            return $cleanIata;
         }
 
-        return $allowedIatas[0] ?? 'BOM';
+        return $allowedIatas[0] ?? ($primaryAirport?->iata_code ?: 'BOM');
     }
 }

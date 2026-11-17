@@ -12,17 +12,17 @@
         <div class="absolute left-1/3 -bottom-10 w-48 h-48 bg-purple-50/40 rounded-full blur-2xl pointer-events-none"></div>
 
         <div class="space-y-2 relative z-10">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-extrabold text-[11px] sm:text-xs border border-purple-200/60 shadow-2xs">
+            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 font-bold text-[11px] sm:text-xs border border-purple-200/60 shadow-2xs">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>Live Hardware Network</span>
+                <span>Active TV Network</span>
                 <span class="text-slate-300">•</span>
                 <span class="text-slate-600 font-bold truncate max-w-[160px] sm:max-w-none">{{ $hotel->hotel_name }}</span>
             </div>
             <h2 class="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-tight">
-                Connected Smart TV Fleet
+                Connected Hotel TVs
             </h2>
             <p class="text-xs sm:text-sm text-slate-500 max-w-xl font-medium leading-relaxed">
-                Authorized, cloud-synchronized Smart TV devices running PaxTV Launcher across your property rooms.
+                Manage and monitor all Smart TVs installed across your hotel rooms.
             </p>
         </div>
         
@@ -40,12 +40,12 @@
             <button type="button" 
                     onclick="openUpgradeModal()" 
                     class="px-5 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200/90 border border-slate-300/80 text-slate-500 font-extrabold text-xs shadow-xs transition-all flex items-center justify-center space-x-2 shrink-0 cursor-pointer active:scale-95 group"
-                    title="Capacity Full ({{ $connectedCount }}/{{ $allowedLimit }} TVs). Click to upgrade plan.">
+                    title="Plan Limit Full ({{ $connectedCount }}/{{ $allowedLimit }} TVs connected). Click to upgrade plan.">
                 <div class="w-6 h-6 rounded-lg bg-slate-200 text-slate-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-lock text-xs text-rose-500"></i>
                 </div>
-                <span class="text-slate-600">Pair TV Screen</span>
-                <span class="px-2 py-0.5 rounded-full bg-rose-100 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-wider ml-1">Full</span>
+                <span class="text-slate-600">Pair New TV</span>
+                <span class="px-2 py-0.5 rounded-full bg-rose-100 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-wider ml-1">Limit Reached</span>
             </button>
             @else
             <button type="button" 
@@ -54,15 +54,15 @@
                 <div class="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center group-hover:scale-110 transition-transform">
                     <i class="fa-solid fa-tv text-xs text-amber-300"></i>
                 </div>
-                <span>Pair TV Screen</span>
+                <span>Pair New TV</span>
                 <i class="fa-solid fa-plus text-[10px] text-purple-300 ml-0.5"></i>
             </button>
             @endif
 
-            <!-- TV Hardware Capacity Meter Pill -->
+            <!-- TV Capacity Meter -->
             <div class="space-y-2 bg-slate-50/90 p-3.5 sm:p-4 rounded-2xl border border-slate-200/70 min-w-[230px] shadow-2xs">
                 <div class="text-xs font-semibold text-slate-500 flex items-center justify-between space-x-2">
-                    <span class="text-[10px] sm:text-[11px] font-black text-slate-400 uppercase tracking-wider">Capacity Meter</span>
+                    <span class="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider">TV Limit</span>
                     <div>
                         <span class="text-sm font-black text-slate-900">{{ $connectedCount }}</span> / <strong class="text-slate-900">{{ $allowedLimit }} TVs</strong>
                     </div>
@@ -71,13 +71,13 @@
                     <div class="h-full {{ $isCapacityFull ? 'bg-gradient-to-r from-rose-500 to-rose-600' : 'bg-gradient-to-r from-purple-600 to-[#150A42]' }} rounded-full transition-all duration-500" style="width: {{ $percent }}%;"></div>
                 </div>
                 <div class="flex items-center justify-between text-[10px] text-slate-400 font-bold">
-                    <span>{{ $percent }}% Synchronized</span>
+                    <span>{{ $percent }}% Used</span>
                     @if($isCapacityFull)
                     <span class="text-rose-600 font-black flex items-center">
-                        <i class="fa-solid fa-circle-exclamation mr-1 text-[9px]"></i> 0 slots free (Full)
+                        <i class="fa-solid fa-circle-exclamation mr-1 text-[9px]"></i> 0 Free (Limit Reached)
                     </span>
                     @else
-                    <span class="text-emerald-600 font-bold">{{ $available }} slots free</span>
+                    <span class="text-emerald-600 font-bold">{{ $available }} free slots</span>
                     @endif
                 </div>
             </div>
@@ -224,26 +224,26 @@
 
             <!-- Title & Subtitle -->
             <div class="space-y-1">
-                <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black uppercase tracking-wider inline-block">Capacity Limit Reached</span>
-                <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">TV Fleet Capacity Is Full</h3>
-                <p class="text-xs text-slate-500 font-medium max-w-xs mx-auto leading-relaxed">
-                    Aapke subscription plan ke sabhi <strong>{{ $allowedLimit }} / {{ $allowedLimit }} TV slots</strong> use ho chuke hain. Nayi TV connect karne ke liye plan upgrade karein.
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[10px] font-black uppercase tracking-wider inline-block">TV Limit Reached</span>
+                <h3 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">TV Limit Full</h3>
+                <p class="text-xs text-slate-600 font-medium max-w-xs mx-auto leading-relaxed">
+                    Aapke plan me <strong>{{ $allowedLimit }} TV slots</strong> allowed hain aur sabhi use ho chuki hain. Nayi TV connect karne ke liye plan upgrade karein ya purani TV remove karein.
                 </p>
             </div>
 
             <!-- Fleet Stats Card -->
             <div class="bg-slate-50 border border-slate-100 rounded-2xl p-3.5 text-left space-y-2">
                 <div class="flex items-center justify-between text-xs font-semibold">
-                    <span class="text-slate-500">Current Plan:</span>
+                    <span class="text-slate-500">Your Plan:</span>
                     <span class="font-bold text-slate-900">{{ $hotel->plan?->name ?? 'Standard Plan' }}</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-semibold">
                     <span class="text-slate-500">Connected TVs:</span>
-                    <span class="font-black text-rose-600">{{ $connectedCount }} / {{ $allowedLimit }} TVs (100% Full)</span>
+                    <span class="font-black text-rose-600">{{ $connectedCount }} / {{ $allowedLimit }} (All in use)</span>
                 </div>
                 <div class="flex items-center justify-between text-xs font-semibold">
-                    <span class="text-slate-500">Available Slots:</span>
-                    <span class="font-black text-rose-600">0 Free Slots</span>
+                    <span class="text-slate-500">Available:</span>
+                    <span class="font-black text-rose-600">0 TVs free</span>
                 </div>
             </div>
 
@@ -252,12 +252,12 @@
                 <a href="{{ route('hotel.subscription') }}" 
                    class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-[#FF5722] to-[#FF3D00] hover:from-[#f4511e] hover:to-[#e63900] text-white font-black text-xs tracking-wide shadow-lg shadow-[#FF5722]/25 transition-all flex items-center justify-center space-x-2 cursor-pointer active:scale-95">
                     <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
-                    <span>Upgrade Plan / Add More TVs</span>
+                    <span>Upgrade Plan (Add More TVs)</span>
                 </a>
                 <button type="button" 
                         onclick="closeUpgradeModal()" 
                         class="w-full py-2.5 px-4 rounded-xl hover:bg-slate-100 text-slate-500 font-bold text-xs transition-colors cursor-pointer">
-                    Manage / Disconnect Existing TVs
+                    Close & Manage Old TVs
                 </button>
             </div>
         </div>
