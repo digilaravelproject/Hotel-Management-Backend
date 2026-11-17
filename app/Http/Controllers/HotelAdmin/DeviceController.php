@@ -295,11 +295,37 @@ class DeviceController extends Controller
             ], 410);
         }
 
+        $roomNo = trim((string) $request->room_no);
+
+        // Check if room number is already assigned to another TV in this hotel
+        $existingDeviceInRoom = $hotel->connectedDevices()
+            ->where('room_no', $roomNo)
+            ->first();
+
+        if ($existingDeviceInRoom && $existingDeviceInRoom->device_id !== $session->device_id) {
+            return response()->json([
+                'success' => false,
+                'message' => "Room {$roomNo} is already assigned to TV Device ({$existingDeviceInRoom->device_id}). Each TV must have a unique room number (e.g. {$roomNo}-B).",
+            ], 422);
+        }
+
+        // Check if plan TV capacity limit is reached
+        $allowedLimit = (int) ($hotel->allowed_device_limit ?: ($hotel->room_count ?: 0));
+        $currentCount = $hotel->connectedDevices()->count();
+        $isExistingDevice = $hotel->connectedDevices()->where('device_id', $session->device_id)->exists();
+
+        if (!$isExistingDevice && $allowedLimit > 0 && $currentCount >= $allowedLimit) {
+            return response()->json([
+                'success' => false,
+                'message' => "TV Limit Reached ({$currentCount}/{$allowedLimit} TVs connected). Please upgrade your subscription plan to add more TVs.",
+            ], 403);
+        }
+
         try {
             // Authenticate TV using existing service logic (validates limits & idempotency)
             $result = $tvLoginService->authenticateTv([
                 'license_key' => $hotel->license_key,
-                'room_no' => trim($request->room_no),
+                'room_no' => $roomNo,
                 'deviceId' => $session->device_id,
                 'macAddress' => $session->mac_address,
                 'ipAddress' => $session->ip_address,
@@ -312,12 +338,12 @@ class DeviceController extends Controller
             $session->update([
                 'status' => 'paired',
                 'hotel_admin_id' => $hotel->id,
-                'assigned_room_no' => trim($request->room_no),
+                'assigned_room_no' => $roomNo,
             ]);
 
             return response()->json([
                 'success' => true,
-                'message' => 'TV Room ' . trim($request->room_no) . ' paired and connected successfully!'
+                'message' => 'TV Room ' . $roomNo . ' paired and connected successfully!'
             ]);
 
         } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
