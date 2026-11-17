@@ -98,7 +98,7 @@
         </div>
 
         <!-- OTT Toggle Form -->
-        <form id="globalOttForm" action="{{ route('hotel.ott-apps') }}" method="POST" class="space-y-6">
+        <form id="globalOttForm" action="{{ route('hotel.ott-apps') }}" method="POST" data-ajax-form="true" class="space-y-6">
             @csrf
 
             @if($totalPlatforms > 0)
@@ -365,6 +365,9 @@
                 } finally {
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = originalHtml;
+                    if (typeof hideGlobalLoader === 'function') {
+                        hideGlobalLoader();
+                    }
                 }
             });
         }
