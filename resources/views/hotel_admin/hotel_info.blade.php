@@ -256,12 +256,33 @@
                                 <i class="fa-solid fa-stamp text-purple-600"></i>
                                 <span>Hotel Brand Logo</span>
                             </label>
-                            <span class="text-[10px] font-mono text-slate-400">PNG, SVG, WEBP</span>
+                            <span class="text-[10px] font-bold text-purple-700 bg-purple-50 border border-purple-200/70 px-2.5 py-0.5 rounded-lg">512×512 px Recommended</span>
                         </div>
 
                         <input type="file" name="hotel_logo" accept="image/*" 
                                onchange="previewImageInput(this, 'logo-preview', 'logo-preview-box')"
                                class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-[#150A42] file:text-white hover:file:bg-[#1f105e] file:cursor-pointer file:transition-all cursor-pointer">
+
+                        <!-- Size & Dimension Guidelines -->
+                        <div class="p-3 bg-white/90 rounded-2xl border border-slate-200/80 text-[11px] text-slate-500 space-y-2">
+                            <div class="font-bold text-slate-700 flex items-center space-x-1.5">
+                                <i class="fa-solid fa-circle-info text-purple-600 text-xs"></i>
+                                <span>Logo Size & Dimension Guidelines:</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10.5px]">
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block font-bold">Square Logo (1:1):</strong>
+                                    <span class="text-slate-600"><strong>512 × 512 px</strong> (Min: 256×256 px)</span>
+                                </div>
+                                <div class="bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                    <strong class="text-slate-800 block font-bold">Horizontal Logo (3:1):</strong>
+                                    <span class="text-slate-600"><strong>600 × 200 px</strong> (or 800×250 px)</span>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 font-medium">
+                                <i class="fa-solid fa-check text-emerald-600 mr-1"></i> Transparent PNG or SVG recommended so it fits cleanly on TV headers. Max file size: 5MB.
+                            </p>
+                        </div>
 
                         <div id="logo-preview-box" class="{{ $hotelAdmin->hotel_logo ? '' : 'hidden' }} flex items-center space-x-3 bg-white p-3 rounded-2xl border border-slate-200 shadow-2xs">
                             <img id="logo-preview" src="{{ $hotelAdmin->hotel_logo ? asset($hotelAdmin->hotel_logo) : '' }}" alt="Logo" class="w-14 h-14 rounded-xl object-contain border border-slate-100 bg-white p-1">

@@ -225,7 +225,7 @@
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
                                 <span>Hotel Logo (Optional)</span>
-                                <span class="text-[10px] text-slate-400">PNG, JPG, SVG up to 5MB</span>
+                                <span class="text-[10px] text-purple-700 font-semibold bg-purple-50 px-2 py-0.5 rounded border border-purple-200/60">512×512 px (1:1) Recommended • Max 5MB</span>
                             </label>
                             
                             <div class="flex items-center space-x-3.5 p-3.5 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-all">
