@@ -170,10 +170,14 @@
                     @endforeach
                 </div>
             @else
-                <div class="text-center py-12 text-xs text-slate-400 font-bold bg-[#F8F9FD] rounded-2xl border border-dashed border-slate-200 space-y-2">
-                    <i class="fa-solid fa-tv text-3xl text-slate-300 block mb-1"></i>
-                    <p class="text-slate-700 font-black">No OTT platforms available in your current Subscription Plan.</p>
-                    <p class="text-[11px] text-slate-400">Please upgrade plan or contact support to unlock streaming apps.</p>
+                <div class="text-center py-12 px-4 text-xs text-slate-500 font-medium bg-[#F8F9FD] rounded-2xl border border-dashed border-slate-200 space-y-3">
+                    <div class="w-14 h-14 mx-auto rounded-2xl bg-purple-50 text-[#150A42] flex items-center justify-center text-2xl shadow-2xs">
+                        <i class="fa-solid fa-tv"></i>
+                    </div>
+                    <div class="space-y-1">
+                        <h4 class="text-sm font-black text-slate-800">No Streaming Apps In Current Plan</h4>
+                        <p class="text-xs text-slate-500 max-w-md mx-auto">Aapke current plan (<strong>{{ $plan->name ?? 'Basic Plan' }}</strong>) me OTT apps provisioned nahi hain. Super Admin se plan me OTT apps add karne par bss wahi apps yahan show honge.</p>
+                    </div>
                 </div>
             @endif
 

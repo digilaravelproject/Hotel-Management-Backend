@@ -261,20 +261,28 @@ class DeviceController extends Controller
         $plan = $hotel->plan;
         
         $allPlatforms = \App\Models\Plan::getAvailableOttPlatforms();
-        $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
-        // Available OTTs bound by plan; if plan has no restriction array, all active platforms are available
-        if (empty($planPackageNames)) {
-            $availablePlatforms = $allPlatforms;
+        // Strict Plan OTT Boundary: Only show platforms explicitly permitted by the Super Admin plan
+        if (!$plan || !$plan->hasOtt() || empty($plan->ott_platforms)) {
+            $availablePlatforms = [];
+            $planPackageNames = [];
         } else {
+            $planPackageNames = array_values((array) $plan->ott_platforms);
             $availablePlatforms = array_values(array_filter($allPlatforms, function ($ott) use ($planPackageNames) {
                 return in_array($ott['package'], $planPackageNames);
             }));
         }
 
-        $globalSettings = $hotel->global_ott_settings ?? (!empty($planPackageNames) ? $planPackageNames : array_column($availablePlatforms, 'package'));
+        $savedGlobal = $hotel->global_ott_settings;
+        $globalSettings = is_array($savedGlobal)
+            ? array_values(array_intersect($savedGlobal, $planPackageNames))
+            : $planPackageNames;
+
         $hasOverride = !is_null($device->ott_overrides);
-        $currentDeviceSettings = $hasOverride ? $device->ott_overrides : $globalSettings;
+        $savedOverride = $device->ott_overrides;
+        $currentDeviceSettings = $hasOverride && is_array($savedOverride)
+            ? array_values(array_intersect($savedOverride, $planPackageNames))
+            : $globalSettings;
 
         return view('hotel_admin.devices.ott', compact('hotel', 'device', 'plan', 'availablePlatforms', 'currentDeviceSettings', 'hasOverride', 'globalSettings'));
     }
@@ -292,7 +300,6 @@ class DeviceController extends Controller
         $device = $hotel->connectedDevices()->findOrFail($id);
         $hotel->loadMissing('plan');
         $plan = $hotel->plan;
-        $planPackageNames = $plan && is_array($plan->ott_platforms) ? $plan->ott_platforms : [];
 
         $request->validate([
             'ott_platforms' => 'nullable|array',
@@ -300,13 +307,16 @@ class DeviceController extends Controller
         ]);
 
         $selected = $request->input('ott_platforms', []);
-        $validSelected = !empty($planPackageNames)
-            ? array_values(array_intersect($selected, $planPackageNames))
-            : array_values($selected);
+        $validSelected = (!$plan || !$plan->hasOtt() || empty($plan->ott_platforms))
+            ? []
+            : array_values(array_intersect($selected, (array) $plan->ott_platforms));
 
         $device->update([
             'ott_overrides' => $validSelected,
         ]);
+
+        // Invalidate TV version cache for real-time room sync
+        \App\Services\TvVersionCacheService::clearHotelCache((int) $hotel->id, 'OTT', $device->room_no, true);
 
         if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
@@ -332,6 +342,9 @@ class DeviceController extends Controller
         $device->update([
             'ott_overrides' => null,
         ]);
+
+        // Invalidate TV version cache for real-time room sync
+        \App\Services\TvVersionCacheService::clearHotelCache((int) $hotel->id, 'OTT', $device->room_no, true);
 
         if (request()->expectsJson() || request()->ajax()) {
             return response()->json([
