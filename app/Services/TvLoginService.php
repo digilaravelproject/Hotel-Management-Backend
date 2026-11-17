@@ -167,28 +167,34 @@ class TvLoginService
             ]);
         }
 
-        // 3. Check if there's already an existing device assigned to this room in this hotel
-        $existingRoomDevice = $hotel->connectedDevices()->where('room_no', $data['room_no'])->first();
+        // 3. Check if there's an unassigned placeholder device for this room (without a physical hardware ID)
+        $placeholderRoomDevice = $hotel->connectedDevices()
+            ->where('room_no', $data['room_no'])
+            ->where(function ($q) {
+                $q->whereNull('device_id')
+                  ->orWhere('device_id', '')
+                  ->orWhere('device_id', 'like', 'PLACEHOLDER%');
+            })
+            ->first();
 
         $token = Str::random(80);
         $fcmToken = $data['fcmToken'] ?? $data['fcm_token'] ?? null;
 
-        if (!$device && $existingRoomDevice) {
-            // Room already has a device record (e.g. placeholder or previous TV).
-            // Re-bind the existing room record to this TV's hardware identifiers.
-            $existingRoomDevice->update([
+        if (!$device && $placeholderRoomDevice) {
+            // Room has an unassigned placeholder record. Re-bind it to this TV's hardware identifiers.
+            $placeholderRoomDevice->update([
                 'device_id'   => $data['deviceId'],
                 'mac_address' => $data['macAddress'],
-                'ip_address'  => $data['ipAddress'] ?? $existingRoomDevice->ip_address,
-                'model'       => $data['model'] ?? $existingRoomDevice->model,
-                'brand'       => $data['brand'] ?? $existingRoomDevice->brand,
-                'os_version'  => $data['osVersion'] ?? $existingRoomDevice->os_version,
+                'ip_address'  => $data['ipAddress'] ?? $placeholderRoomDevice->ip_address,
+                'model'       => $data['model'] ?? $placeholderRoomDevice->model,
+                'brand'       => $data['brand'] ?? $placeholderRoomDevice->brand,
+                'os_version'  => $data['osVersion'] ?? $placeholderRoomDevice->os_version,
                 'api_token'   => $token,
-                'fcm_token'   => $fcmToken ?? $existingRoomDevice->fcm_token,
+                'fcm_token'   => $fcmToken ?? $placeholderRoomDevice->fcm_token,
             ]);
-            $device = $existingRoomDevice;
+            $device = $placeholderRoomDevice;
         } elseif (!$device) {
-            // New Registration - Check Allowed Limit
+            // New Registration - Check Allowed Limit (multiple TVs allowed per room)
             $allowedLimit = $hotel->allowed_device_limit;
             $currentCount = $hotel->connectedDevices()->count();
 

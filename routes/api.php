@@ -10,7 +10,7 @@ use App\Http\Controllers\Api\TvTemplateController;
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('throttle:60,1')->group(function () {
+Route::middleware('throttle:20,1')->group(function () {
     Route::post('/tv/login', [TvLoginController::class, 'login']);
     Route::post('/tv/demo-login', [TvLoginController::class, 'demoLogin']);
     Route::post('/tv/generate-pair-code', [\App\Http\Controllers\Api\TvPairController::class, 'generatePairCode']);

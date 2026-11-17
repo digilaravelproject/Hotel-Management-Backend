@@ -159,23 +159,6 @@ class DeviceController extends Controller
         $newRoomNo = trim((string) $validated['room_no']);
         $oldRoomNo = $device->room_no;
 
-        // Check if another device in this hotel already has this room_no
-        $existingDeviceInRoom = $hotel->connectedDevices()
-            ->where('room_no', $newRoomNo)
-            ->where('id', '!=', $device->id)
-            ->first();
-
-        if ($existingDeviceInRoom) {
-            $errMsg = "Room {$newRoomNo} is already assigned to TV Device ({$existingDeviceInRoom->device_id}). Please enter a different room number.";
-            if ($request->wantsJson() || $request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $errMsg,
-                ], 422);
-            }
-            return redirect()->back()->with('error', $errMsg);
-        }
-
         $device->update([
             'room_no' => $newRoomNo,
         ]);
@@ -296,18 +279,6 @@ class DeviceController extends Controller
         }
 
         $roomNo = trim((string) $request->room_no);
-
-        // Check if room number is already assigned to another TV in this hotel
-        $existingDeviceInRoom = $hotel->connectedDevices()
-            ->where('room_no', $roomNo)
-            ->first();
-
-        if ($existingDeviceInRoom && $existingDeviceInRoom->device_id !== $session->device_id) {
-            return response()->json([
-                'success' => false,
-                'message' => "Room {$roomNo} is already assigned to TV Device ({$existingDeviceInRoom->device_id}). Each TV must have a unique room number (e.g. {$roomNo}-B).",
-            ], 422);
-        }
 
         // Check if plan TV capacity limit is reached
         $allowedLimit = (int) ($hotel->allowed_device_limit ?: ($hotel->room_count ?: 0));

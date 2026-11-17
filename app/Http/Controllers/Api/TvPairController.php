@@ -19,7 +19,7 @@ class TvPairController extends Controller
     public function generatePairCode(Request $request)
     {
         $throttleKey = 'tv-pair-gen:' . $request->ip();
-        if (RateLimiter::tooManyAttempts($throttleKey, 60)) {
+        if (RateLimiter::tooManyAttempts($throttleKey, 30)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Too many pairing requests. Please wait a moment.'
