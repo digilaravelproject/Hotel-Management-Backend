@@ -142,15 +142,20 @@ class TvLoginService
 
         // 2. Check if device with this ID already exists globally (Idempotency / interface shifts)
         $device = ConnectedDevice::query()->where('device_id', '=', $data['deviceId'])->first();
-        $isFromDemoHotel = $device && $device->hotelAdmin && (
-            $device->hotelAdmin->license_key === 'DEMO-MASTER-SHOWCASE'
-            || str_contains(strtolower($device->hotelAdmin->hotel_name ?? ''), 'demo')
+        $isDemoDevice = $device && (
+            $device->is_demo
+            || in_array($device->demo_status, ['active', 'expired', 'converted'], true)
+            || str_starts_with(strtoupper((string) $device->room_no), 'DEMO')
+            || ($device->hotel_admin_id && (
+                $device->hotelAdmin?->license_key === 'DEMO-MASTER-SHOWCASE'
+                || str_contains(strtolower($device->hotelAdmin?->hotel_name ?? ''), 'demo')
+            ))
         );
-        $wasDemoDevice = $device && ($device->is_demo || $isFromDemoHotel);
+        $wasDemoDevice = (bool) $isDemoDevice;
 
         // Tenant isolation: never allow one hotel to hijack a non-demo device bound to another hotel
         if ($device && !$wasDemoDevice && (int) $device->hotel_admin_id !== (int) $hotel->id) {
-            throw new HttpException(403, 'This TV device is already registered to another hotel. Please disconnect it from the previous hotel first.');
+            throw new HttpException(403, 'This TV device is already registered to another hotel (' . ($device->hotelAdmin?->hotel_name ?? 'Other Hotel') . '). Please disconnect it from the previous hotel first.');
         }
 
         // If device was previously in demo mode, convert it to paid
