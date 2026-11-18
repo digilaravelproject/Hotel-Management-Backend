@@ -273,20 +273,16 @@ class HotelRegistrationService
     }
 
     /**
-     * Generate a unique 16-character license key formatted as XXXX-XXXX-XXXX-XXXX.
+     * Generate a unique 6-character license key formatted as 2 uppercase letters + 4 digits (e.g. AB1234).
      *
      * @return string
      */
     public function generateUniqueLicenseKey(): string
     {
         do {
-            $key = sprintf(
-                "%s-%s-%s-%s",
-                strtoupper(Str::random(4)),
-                strtoupper(Str::random(4)),
-                strtoupper(Str::random(4)),
-                strtoupper(Str::random(4))
-            );
+            $letters = chr(random_int(65, 90)) . chr(random_int(65, 90));
+            $numbers = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+            $key = $letters . $numbers;
         } while (HotelAdmin::where('license_key', $key)->exists());
 
         return $key;

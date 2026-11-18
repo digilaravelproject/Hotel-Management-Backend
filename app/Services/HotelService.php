@@ -382,16 +382,18 @@ class HotelService
     }
 
     /**
-     * Generate a collision-free unique license key (DRY chunk formatting).
+     * Generate a collision-free unique 6-character license key (2 uppercase letters + 4 digits, e.g. AB1234).
      */
     public function generateUniqueLicenseKey(?string $prefix = null): string
     {
         do {
-            $chunks = array_map(fn() => strtoupper(Str::random(4)), range(1, $prefix ? 3 : 4));
-            if ($prefix) {
-                array_unshift($chunks, strtoupper($prefix));
+            if ($prefix && strlen($prefix) >= 2) {
+                $letters = strtoupper(substr($prefix, 0, 2));
+            } else {
+                $letters = chr(random_int(65, 90)) . chr(random_int(65, 90));
             }
-            $key = implode('-', $chunks);
+            $numbers = str_pad((string) random_int(0, 9999), 4, '0', STR_PAD_LEFT);
+            $key = $letters . $numbers;
         } while (HotelAdmin::where('license_key', $key)->exists());
 
         return $key;
