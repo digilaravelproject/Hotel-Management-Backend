@@ -48,7 +48,10 @@ class TvLoginService
     {
         // Demo login path: bind to Demo Showcase Hotel if device not yet registered
         if (!empty($data['demo_login']) || !empty($data['is_demo'])) {
-            $demoHotel = HotelAdmin::where('license_key', 'DEMO-MASTER-SHOWCASE')->first();
+            $demoHotel = HotelAdmin::where('license_key', 'HF9495')
+                ->orWhere('license_key', 'DEMO-MASTER-SHOWCASE')
+                ->orWhere('email', 'demo.showcase@digihotel.com')
+                ->first();
             if (!$demoHotel) {
                 throw new HttpException(403, 'Demo showcase hotel not configured');
             }
@@ -148,6 +151,7 @@ class TvLoginService
             || str_starts_with(strtoupper((string) $device->room_no), 'DEMO')
             || ($device->hotel_admin_id && (
                 $device->hotelAdmin?->license_key === 'DEMO-MASTER-SHOWCASE'
+                || $device->hotelAdmin?->license_key === 'HF9495'
                 || str_contains(strtolower($device->hotelAdmin?->hotel_name ?? ''), 'demo')
             ))
         );
