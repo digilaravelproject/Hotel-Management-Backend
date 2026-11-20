@@ -27,7 +27,7 @@ class DashboardController extends Controller
         $hotel->loadMissing('plan');
 
         $hasActivePlan = $hotel->plan_id && $hotel->payment_status === 'paid' && ($hotel->expiry_date === null || $hotel->expiry_date->isFuture());
-        if (!$hasActivePlan) {
+        if (!$hasActivePlan && !session()->has('impersonated_by_super_admin')) {
             return redirect()->route('hotel.subscription');
         }
 
@@ -182,5 +182,27 @@ class DashboardController extends Controller
             'message' => 'Subscription activated successfully!',
             'new_expiry' => $verified['new_expiry']->format('Y-m-d'),
         ]);
+    }
+
+    /**
+     * Leave Super Admin impersonation mode and return to Super Admin hotels list.
+     */
+    public function leaveImpersonation()
+    {
+        if (!session()->has('impersonated_by_super_admin')) {
+            return redirect()->route('hotel.dashboard');
+        }
+
+        $superAdminId = session()->pull('impersonated_by_super_admin');
+
+        // Logout from hotel_admin guard
+        Auth::guard('hotel_admin')->logout();
+
+        // Ensure super_admin guard is still logged in
+        if (!Auth::guard('super_admin')->check() && $superAdminId) {
+            Auth::guard('super_admin')->loginUsingId($superAdminId);
+        }
+
+        return redirect()->route('super-admin.hotels.index')->with('success', 'Returned to Super Admin panel successfully.');
     }
 }

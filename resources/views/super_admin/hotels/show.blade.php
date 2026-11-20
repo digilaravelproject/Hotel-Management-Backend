@@ -14,6 +14,13 @@
         </a>
 
         <div class="flex items-center space-x-2 sm:space-x-3 shrink-0">
+            <form action="{{ route('super-admin.hotels.impersonate', $hotel->id) }}" method="POST" class="inline m-0">
+                @csrf
+                <button type="submit" class="inline-flex items-center px-4 py-2 sm:px-5 sm:py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-extrabold text-xs shadow-lg shadow-indigo-600/20 transition-all hover:-translate-y-0.5 whitespace-nowrap space-x-2 cursor-pointer">
+                    <i class="fa-solid fa-right-to-bracket text-xs text-amber-300"></i>
+                    <span>Login as Hotel</span>
+                </button>
+            </form>
             <a href="{{ route('super-admin.devices.index', ['hotel_id' => $hotel->id]) }}" class="inline-flex items-center px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-2xl bg-white border border-slate-200/90 text-slate-700 hover:text-[#150A42] hover:bg-purple-50/50 text-xs font-bold transition-all shadow-xs space-x-2">
                 <i class="fa-solid fa-tv text-purple-600 text-xs"></i>
                 <span>TVs <span class="font-mono text-purple-600 font-extrabold">({{ $hotel->connectedDevices ? $hotel->connectedDevices->count() : 0 }})</span></span>

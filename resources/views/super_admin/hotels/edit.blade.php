@@ -33,6 +33,13 @@
         </div>
 
         <div class="flex items-center space-x-2 shrink-0">
+            <form action="{{ route('super-admin.hotels.impersonate', $hotel->id) }}" method="POST" class="inline m-0">
+                @csrf
+                <button type="submit" class="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-xs font-bold transition-all shadow-md shadow-indigo-600/20 flex items-center space-x-1.5 cursor-pointer">
+                    <i class="fa-solid fa-right-to-bracket text-xs text-amber-300"></i>
+                    <span>Login as Hotel</span>
+                </button>
+            </form>
             <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="px-3.5 py-2.5 rounded-2xl bg-white border border-slate-200 text-slate-700 hover:text-[#150A42] hover:bg-purple-50 hover:border-purple-200 text-xs font-bold transition-all shadow-xs flex items-center space-x-1.5">
                 <i class="fa-regular fa-eye text-xs"></i>
                 <span>View Profile</span>

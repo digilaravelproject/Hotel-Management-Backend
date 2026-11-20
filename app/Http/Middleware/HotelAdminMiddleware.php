@@ -22,6 +22,11 @@ class HotelAdminMiddleware
 
         $hotelAdmin = $guard->user();
 
+        // Allow Super Admin in impersonation mode full unrestricted access to inspect or configure
+        if (session()->has('impersonated_by_super_admin')) {
+            return $next($request);
+        }
+
         // 1. Check Approval Status
         if ($hotelAdmin->approval_status === 'pending') {
             Auth::guard('hotel_admin')->logout();

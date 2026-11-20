@@ -400,6 +400,13 @@
                                                     <i class="fa-regular fa-pen-to-square w-4 text-center text-purple-600"></i>
                                                     <span>Edit Account</span>
                                                 </a>
+                                                <form action="{{ route('super-admin.hotels.impersonate', $hotel->id) }}" method="POST" class="m-0">
+                                                    @csrf
+                                                    <button type="submit" class="w-full flex items-center space-x-2.5 px-3 py-1.5 xl:py-2 rounded-xl text-xs font-bold text-indigo-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors text-left cursor-pointer">
+                                                        <i class="fa-solid fa-right-to-bracket w-4 text-center text-indigo-600"></i>
+                                                        <span>Login as Hotel</span>
+                                                    </button>
+                                                </form>
                                             </div>
 
                                             <div class="py-1">
@@ -581,7 +588,15 @@
                     </div>
 
                     <!-- Touch-Friendly Action Buttons Grid -->
-                    <div class="grid grid-cols-3 sm:grid-cols-5 gap-1.5 pt-1 border-t border-slate-100">
+                    <div class="grid grid-cols-3 sm:grid-cols-6 gap-1.5 pt-1 border-t border-slate-100">
+                        <form action="{{ route('super-admin.hotels.impersonate', $hotel->id) }}" method="POST" class="m-0 col-span-1">
+                            @csrf
+                            <button type="submit" class="w-full h-full py-2 px-1 text-center rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1 cursor-pointer">
+                                <i class="fa-solid fa-right-to-bracket text-xs text-indigo-600"></i>
+                                <span>Login</span>
+                            </button>
+                        </form>
+
                         <a href="{{ route('super-admin.hotels.show', $hotel->id) }}" class="py-2 px-1 text-center rounded-xl bg-slate-50 hover:bg-purple-50 text-slate-700 hover:text-[#150A42] text-[11px] font-bold transition-colors flex flex-col items-center justify-center space-y-1">
                             <i class="fa-regular fa-eye text-xs text-slate-500"></i>
                             <span>Details</span>

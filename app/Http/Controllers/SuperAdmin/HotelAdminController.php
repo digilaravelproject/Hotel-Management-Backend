@@ -429,4 +429,28 @@ class HotelAdminController extends Controller
         return redirect()->route('super-admin.hotels.index')
                          ->with('success', 'Hotel Admin deleted successfully!');
     }
+
+    /**
+     * Impersonate / Login as Hotel Admin directly from Super Admin panel.
+     */
+    public function impersonate(int $id)
+    {
+        $superAdmin = auth()->guard('super_admin')->user();
+        if (!$superAdmin) {
+            return redirect()->route('super-admin.login')->with('error', 'Unauthorized access.');
+        }
+
+        $hotel = HotelAdmin::findOrFail($id);
+
+        // Store super admin ID in session to allow returning later
+        session()->put('impersonated_by_super_admin', $superAdmin->id);
+
+        // Log into hotel_admin guard
+        auth()->guard('hotel_admin')->login($hotel);
+
+        // Mark 2FA as verified for this impersonation session
+        session(["2fa_verified:hotel_admin:{$hotel->id}" => true]);
+
+        return redirect()->route('hotel.dashboard')->with('success', "Logged into {$hotel->hotel_name} in Super Admin mode.");
+    }
 }

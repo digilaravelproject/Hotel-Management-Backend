@@ -28,6 +28,11 @@ class TwoFactorMiddleware
         }
 
         if ($user && $user->google2fa_enabled) {
+            // Impersonating super admin bypasses hotel's 2FA challenge
+            if ($guard === 'hotel_admin' && session()->has('impersonated_by_super_admin')) {
+                return $next($request);
+            }
+
             if (!session("2fa_verified:{$guard}:{$user->id}", false)) {
                 // Store pending 2FA state and logout current unverified session
                 Auth::guard($guard)->logout();
