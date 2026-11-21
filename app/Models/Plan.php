@@ -105,12 +105,15 @@ class Plan extends Model
         }
 
         // Backwards compatibility: If plan was created prior to input & settings inclusion,
-        // and has other standard interactive/hotel menus enabled, automatically grant input & settings
-        if (in_array($menuId, ['input', 'settings'], true)) {
+        // or had interactive_services enabled, grant access to child items
+        if (in_array($menuId, ['flights', 'weather', 'input', 'settings'], true)) {
             if (in_array($menuId, (array) $this->allowed_menus, true)) {
                 return true;
             }
-            if (in_array('weather', (array) $this->allowed_menus, true) || in_array('hotel_info', (array) $this->allowed_menus, true)) {
+            if (in_array('interactive_services', (array) $this->allowed_menus, true)) {
+                return true;
+            }
+            if (in_array($menuId, ['input', 'settings'], true) && (in_array('weather', (array) $this->allowed_menus, true) || in_array('hotel_info', (array) $this->allowed_menus, true))) {
                 return true;
             }
         }

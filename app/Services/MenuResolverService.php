@@ -16,18 +16,17 @@ class MenuResolverService
     public static function getItemCatalog(): array
     {
         return [
-            'hotel_menu'           => ['name' => 'Hotel Menu', 'icon' => 'assets/images/icons/hotelinfo.png', 'is_container' => true],
-            'hotel_info'           => ['name' => 'Hotel Info', 'icon' => 'assets/images/icons/hotelinfo.png', 'is_container' => false],
-            'room_info'            => ['name' => 'Room Info', 'icon' => 'assets/images/icons/amenities.png', 'is_container' => false],
+            'hotel_menu'           => ['name' => 'Hotel Information', 'icon' => 'assets/images/icons/hotelinfo.png', 'is_container' => true],
             'amenities'            => ['name' => 'Amenities', 'icon' => 'assets/images/icons/roomservice.png', 'is_container' => false],
+            'room_info'            => ['name' => 'Room', 'icon' => 'assets/images/icons/amenities.png', 'is_container' => false],
+            'hotel_info'           => ['name' => 'Facilities', 'icon' => 'assets/images/icons/hotelinfo.png', 'is_container' => false],
             'apps'                 => ['name' => 'Applications', 'icon' => 'assets/images/icons/apps.png', 'is_container' => false],
             'language'             => ['name' => 'Language', 'icon' => 'assets/images/icons/languages.png', 'is_container' => false],
             'livetv'               => ['name' => 'Live TV', 'icon' => 'assets/images/icons/livetv.png', 'is_container' => false],
-            'interactive_services' => ['name' => 'Interactive Services', 'icon' => 'assets/images/icons/roomservice.png', 'is_container' => true],
             'flights'              => ['name' => 'Flights', 'icon' => 'assets/images/icons/flights.png', 'is_container' => false],
             'weather'              => ['name' => 'Weather', 'icon' => 'assets/images/icons/weather.png', 'is_container' => false],
-            'input'                => ['name' => 'Input', 'icon' => 'assets/images/icons/input.png', 'is_container' => false],
             'settings'             => ['name' => 'Settings', 'icon' => 'assets/images/icons/settings.png', 'is_container' => false],
+            'input'                => ['name' => 'TV Input', 'icon' => 'assets/images/icons/input.png', 'is_container' => false],
             'ourcity'              => ['name' => 'Our City', 'icon' => 'assets/images/icons/ourcity.png', 'is_container' => false],
             'screen_cast'          => ['name' => 'Screen Cast', 'icon' => 'assets/images/icons/cast.png', 'is_container' => false],
         ];
@@ -43,26 +42,26 @@ class MenuResolverService
         return [
             [
                 'id' => 'hotel_menu',
-                'name' => 'Hotel Menu',
+                'name' => 'Hotel Information',
                 'icon' => 'assets/images/icons/hotelinfo.png',
                 'status' => 'show',
                 'sub_menus' => [
                     [
-                        'id' => 'hotel_info',
-                        'name' => 'Hotel Info',
-                        'icon' => 'assets/images/icons/hotelinfo.png',
+                        'id' => 'amenities',
+                        'name' => 'Amenities',
+                        'icon' => 'assets/images/icons/roomservice.png',
                         'status' => 'show',
                     ],
                     [
                         'id' => 'room_info',
-                        'name' => 'Room Info',
+                        'name' => 'Room',
                         'icon' => 'assets/images/icons/amenities.png',
                         'status' => 'show',
                     ],
                     [
-                        'id' => 'amenities',
-                        'name' => 'Amenities',
-                        'icon' => 'assets/images/icons/roomservice.png',
+                        'id' => 'hotel_info',
+                        'name' => 'Facilities',
+                        'icon' => 'assets/images/icons/hotelinfo.png',
                         'status' => 'show',
                     ],
                 ],
@@ -86,36 +85,28 @@ class MenuResolverService
                 'status' => 'show',
             ],
             [
-                'id' => 'interactive_services',
-                'name' => 'Interactive Services',
-                'icon' => 'assets/images/icons/roomservice.png',
+                'id' => 'flights',
+                'name' => 'Flights',
+                'icon' => 'assets/images/icons/flights.png',
                 'status' => 'show',
-                'sub_menus' => [
-                    [
-                        'id' => 'flights',
-                        'name' => 'Flights',
-                        'icon' => 'assets/images/icons/flights.png',
-                        'status' => 'show',
-                    ],
-                    [
-                        'id' => 'weather',
-                        'name' => 'Weather',
-                        'icon' => 'assets/images/icons/weather.png',
-                        'status' => 'show',
-                    ],
-                    [
-                        'id' => 'input',
-                        'name' => 'Input',
-                        'icon' => 'assets/images/icons/input.png',
-                        'status' => 'show',
-                    ],
-                    [
-                        'id' => 'settings',
-                        'name' => 'Settings',
-                        'icon' => 'assets/images/icons/settings.png',
-                        'status' => 'show',
-                    ],
-                ],
+            ],
+            [
+                'id' => 'weather',
+                'name' => 'Weather',
+                'icon' => 'assets/images/icons/weather.png',
+                'status' => 'show',
+            ],
+            [
+                'id' => 'settings',
+                'name' => 'Settings',
+                'icon' => 'assets/images/icons/settings.png',
+                'status' => 'show',
+            ],
+            [
+                'id' => 'input',
+                'name' => 'TV Input',
+                'icon' => 'assets/images/icons/input.png',
+                'status' => 'show',
             ],
             [
                 'id' => 'ourcity',
@@ -252,15 +243,49 @@ class MenuResolverService
             }
 
             $id = (string) $item['id'];
+
+            // If an older tree has interactive_services, unpack its sub_menus to top-level
+            if ($id === 'interactive_services') {
+                if (isset($item['sub_menus']) && is_array($item['sub_menus'])) {
+                    foreach ($item['sub_menus'] as $subItem) {
+                        if (!is_array($subItem) || empty($subItem['id'])) {
+                            continue;
+                        }
+                        $subId = (string) $subItem['id'];
+                        $subMeta = $catalog[$subId] ?? [
+                            'name' => ucwords(str_replace('_', ' ', $subId)),
+                            'icon' => 'assets/images/icons/hotelinfo.png',
+                            'is_container' => false,
+                        ];
+
+                        $normalized[] = [
+                            'id' => $subId,
+                            'name' => $subMeta['name'],
+                            'icon' => !empty($subItem['icon']) ? (string) $subItem['icon'] : $subMeta['icon'],
+                            'status' => (isset($subItem['status']) && $subItem['status'] === 'hide') ? 'hide' : 'show',
+                        ];
+                    }
+                }
+                continue;
+            }
+
             $meta = $catalog[$id] ?? [
                 'name' => ucwords(str_replace('_', ' ', $id)),
                 'icon' => 'assets/images/icons/hotelinfo.png',
                 'is_container' => !empty($item['sub_menus']),
             ];
 
+            // Normalize legacy names to the updated names
+            $itemName = !empty($item['name']) ? (string) $item['name'] : $meta['name'];
+            if ($id === 'hotel_menu' && ($itemName === 'Hotel Menu' || empty($itemName))) {
+                $itemName = 'Hotel Information';
+            } elseif ($id === 'input' && $itemName === 'Input') {
+                $itemName = 'TV Input';
+            }
+
             $node = [
                 'id' => $id,
-                'name' => !empty($item['name']) ? (string) $item['name'] : $meta['name'],
+                'name' => $itemName,
                 'icon' => !empty($item['icon']) ? (string) $item['icon'] : $meta['icon'],
                 'status' => (isset($item['status']) && $item['status'] === 'hide') ? 'hide' : 'show',
             ];
@@ -278,9 +303,16 @@ class MenuResolverService
                         'is_container' => false,
                     ];
 
+                    $subName = !empty($subItem['name']) ? (string) $subItem['name'] : $subMeta['name'];
+                    if ($subId === 'hotel_info' && ($subName === 'Hotel Info' || empty($subName))) {
+                        $subName = 'Facilities';
+                    } elseif ($subId === 'room_info' && ($subName === 'Room Info' || empty($subName))) {
+                        $subName = 'Room';
+                    }
+
                     $subMenus[] = [
                         'id' => $subId,
-                        'name' => !empty($subItem['name']) ? (string) $subItem['name'] : $subMeta['name'],
+                        'name' => $subName,
                         'icon' => !empty($subItem['icon']) ? (string) $subItem['icon'] : $subMeta['icon'],
                         'status' => (isset($subItem['status']) && $subItem['status'] === 'hide') ? 'hide' : 'show',
                     ];
