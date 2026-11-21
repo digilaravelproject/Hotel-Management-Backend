@@ -277,9 +277,9 @@ class MenuResolverService
 
             // Normalize legacy names to the updated names
             $itemName = !empty($item['name']) ? (string) $item['name'] : $meta['name'];
-            if ($id === 'hotel_menu' && ($itemName === 'Hotel Menu' || empty($itemName))) {
+            if ($id === 'hotel_menu') {
                 $itemName = 'Hotel Information';
-            } elseif ($id === 'input' && $itemName === 'Input') {
+            } elseif ($id === 'input') {
                 $itemName = 'TV Input';
             }
 
@@ -304,10 +304,12 @@ class MenuResolverService
                     ];
 
                     $subName = !empty($subItem['name']) ? (string) $subItem['name'] : $subMeta['name'];
-                    if ($subId === 'hotel_info' && ($subName === 'Hotel Info' || empty($subName))) {
+                    if ($subId === 'hotel_info') {
                         $subName = 'Facilities';
-                    } elseif ($subId === 'room_info' && ($subName === 'Room Info' || empty($subName))) {
+                    } elseif ($subId === 'room_info') {
                         $subName = 'Room';
+                    } elseif ($subId === 'amenities') {
+                        $subName = 'Amenities';
                     }
 
                     $subMenus[] = [
@@ -317,11 +319,45 @@ class MenuResolverService
                         'status' => (isset($subItem['status']) && $subItem['status'] === 'hide') ? 'hide' : 'show',
                     ];
                 }
+
+                // Strictly enforce sub-menu order under Hotel Information: Amenities (1) -> Room (2) -> Facilities (3)
+                if ($id === 'hotel_menu' && !empty($subMenus)) {
+                    $subOrderMap = [
+                        'amenities'  => 1,
+                        'room_info'  => 2,
+                        'hotel_info' => 3,
+                    ];
+                    usort($subMenus, function ($a, $b) use ($subOrderMap) {
+                        $posA = $subOrderMap[$a['id']] ?? 99;
+                        $posB = $subOrderMap[$b['id']] ?? 99;
+                        return $posA <=> $posB;
+                    });
+                }
+
                 $node['sub_menus'] = $subMenus;
             }
 
             $normalized[] = $node;
         }
+
+        // Strictly enforce top-level menu sequence
+        $topOrderMap = [
+            'hotel_menu'  => 1,
+            'apps'        => 2,
+            'language'    => 3,
+            'livetv'      => 4,
+            'flights'     => 5,
+            'weather'     => 6,
+            'settings'    => 7,
+            'input'       => 8,
+            'ourcity'     => 9,
+            'screen_cast' => 10,
+        ];
+        usort($normalized, function ($a, $b) use ($topOrderMap) {
+            $posA = $topOrderMap[$a['id']] ?? 99;
+            $posB = $topOrderMap[$b['id']] ?? 99;
+            return $posA <=> $posB;
+        });
 
         return !empty($normalized) ? $normalized : self::getDefaultMenus();
     }

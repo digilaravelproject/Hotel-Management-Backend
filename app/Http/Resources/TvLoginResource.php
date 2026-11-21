@@ -244,6 +244,7 @@ class TvLoginResource extends JsonResource
                 'active_ott' => $activeOttList,
                 'menus' => $menusList,
                 'hotel_info' => $hotelInfoList,
+                'facilities' => $hotelInfoList,
                 'amenities' => $amenitiesList,
                 'room_info' => $roomInfoList,
                 'our_city' => $ourCityList,
